@@ -1,0 +1,37 @@
+{
+  "name": "rroo",
+  "version": "0.1.0",
+  "description": "Like ReasonReact, but for js_of_ocaml",
+  "license": "MIT",
+  "esy": {
+    "build": "refmterr dune build ./example/App.bc.js",
+    "NOTE": "Optional release Section. Customizes result of `esy release`",
+    "release": {
+      "releasedBinaries": [
+        "Hello.exe"
+      ],
+      "deleteFromBinaryRelease": [
+        "*esy_ocaml_*",
+        "*refmterr-*",
+        "ocaml-*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@opam/dune": "*",
+    "@opam/js_of_ocaml": "*",
+    "@opam/js_of_ocaml-ppx": "*",
+    "@esy-ocaml/reason": "*",
+    "refmterr": "*",
+    "ocaml": "~4.6.0"
+  },
+  "resolutions": {
+    "@esy-ocaml/esy-installer": "0.0.1",
+    "@opam/menhir": "20171013",
+    "@opam/re": "1.8.0"
+  },
+  "devDependencies": {
+    "@esy-ocaml/merlin": "*",
+    "ocaml": "~4.6.0"
+  }
+}

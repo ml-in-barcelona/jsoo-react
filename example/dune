@@ -1,0 +1,4 @@
+(executable
+  (name App)
+  (public_name App.exe)
+(libraries rroo))

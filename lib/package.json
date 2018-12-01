@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "bundle": "browserify --standalone React --no-browser-field react.js -o react.compiled.js --bare"
+  },
+  "dependencies": {
+    "browserify": "^13.1.0",
+    "react": ">=15.0.0 || >=16.0.0",
+    "react-dom": ">=15.0.0 || >=16.0.0"
+  }
+}
