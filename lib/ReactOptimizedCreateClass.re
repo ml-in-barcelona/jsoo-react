@@ -20,5 +20,5 @@ let createClass = component =>
       factory,
       [|reactComponent, reactIsValidElement, reactNoopUpdateQueue|],
     ),
-    [|component|],
+    [|Js.Unsafe.inject(component)|],
   );

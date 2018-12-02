@@ -1,4 +1,4 @@
-let react = Js.Unsafe.global##.react##.react;
+let react = Js.Unsafe.global##React##react;
 
 type reactClass;
 
@@ -10,28 +10,34 @@ type reactRef;
 
 let null: reactElement = Js.Unsafe.js_expr("null");
 
-external string: string => reactElement = "%identity";
+let string: string => reactElement = (s) => Obj.magic(Js.string(s));
 
-external array: array(reactElement) => reactElement = "%identity";
+external array: Js.t(Js.js_array(reactElement)) => reactElement = "%identity";
 
 external refToJsObj: reactRef => Js.t({..}) = "%identity";
 
+external injectArray: array('a) => array(Js.Unsafe.any) = "%identity";
+let createParamsArray = (first, props, children) => {
+  let firstChunk =
+    switch (props) {
+    | Some(p) => [|Js.Unsafe.inject(first), Js.Unsafe.inject(p)|]
+    | None => [|Js.Unsafe.inject(first)|]
+    };
+  Array.append(firstChunk, injectArray(children));
+};
 let createElement:
   (reactClass, ~props: Js.t({..})=?, array(reactElement)) => reactElement =
-  react##.createElement;
+  (reactClass, ~props=?, children) =>
+    createParamsArray(reactClass, props, children)
+    |> Js.Unsafe.fun_call(react##createElement);
 
 let cloneElement:
   (reactElement, ~props: Js.t({..})=?, array(reactElement)) => reactElement =
-  react##.cloneElement;
+  (reactElement, ~props=?, children) =>
+    createParamsArray(reactElement, props, children)
+    |> Js.Unsafe.fun_call(react##cloneElement);
 
-let createElementVerbatim: 'a = react##.createElement;
-
-let createDomElement = (s, ~props, children) => {
-  let vararg =
-    Js.array([|Obj.magic(s), Obj.magic(props)|]) |> children##.concat;
-  /* Use varargs to avoid warnings on duplicate keys in children */
-  Obj.magic(createElementVerbatim)##apply(Js.null, vararg);
-};
+let createElementVerbatim: 'a = react##createElement;
 
 let magicNull: 'a = Js.Unsafe.js_expr("null");
 
@@ -62,7 +68,7 @@ and uncurriedJsPropsToReason('jsProps, 'state, 'retainedProps, 'action) =
  */
 and jsElementWrapped =
   option(
-    (~key: Js.opt(Js.js_string), ~ref: Js.opt(Js.opt(reactRef) => unit)) =>
+    (~key: Js.Opt.t(string), ~ref: Js.Opt.t(Js.Opt.t(reactRef) => unit)) =>
     reactElement,
   )
 and update('state, 'retainedProps, 'action) =
@@ -109,7 +115,7 @@ and self('state, 'retainedProps, 'action) = {
     unit,
 
   state: 'state,
-  retainedProps: 'retainedProps,
+  retainedPropsSelf: 'retainedProps,
   send: 'action => unit,
   onUnmount: (unit => unit) => unit,
 }
@@ -123,17 +129,12 @@ type jsComponentThis('state, 'props, 'retainedProps, 'action) = {
   "state": Js.readonly_prop(totalState('state, 'retainedProps, 'action)),
   "props": Js.readonly_prop({. "reasonProps": Js.readonly_prop('props)}),
   "setState":
-    Js.readonly_prop(
-      Js.meth_callback(
-        jsComponentThis('state, 'props, 'retainedProps, 'action),
-        (
-          (totalState('state, 'retainedProps, 'action), 'props) =>
-          totalState('state, 'retainedProps, 'action),
-          Js.opt(unit => unit)
-        ) =>
-        unit,
-      ),
-    ),
+    (
+      (totalState('state, 'retainedProps, 'action), 'props) =>
+      totalState('state, 'retainedProps, 'action),
+      Js.Opt.t(unit => unit)
+    ) =>
+    Js.meth(unit),
   "jsPropsToReason":
     Js.readonly_prop(
       option(
@@ -161,7 +162,7 @@ let anyToUnit = _ => ();
 
 let anyToTrue = _ => true;
 
-let willReceivePropsDefault = ({state}) => state;
+let willReceivePropsDefault = ({state, _}) => state;
 
 let renderDefault = _self => string("RenderNotImplemented");
 
@@ -173,7 +174,7 @@ let reducerDefault:
 
 let convertPropsIfTheyreFromJs = (props, jsPropsToReason, debugName) => {
   let props = Obj.magic(props);
-  switch (Js.Opt.to_option(props##.reasonProps), jsPropsToReason) {
+  switch (Js.Opt.to_option(props##reasonProps), jsPropsToReason) {
   | (Some(props), _) => props
   | (None, Some(toReasonProps)) => Element(toReasonProps(. props))
   | (None, None) =>
@@ -189,10 +190,9 @@ let convertPropsIfTheyreFromJs = (props, jsPropsToReason, debugName) => {
 
 let createClass =
     (type reasonState, type retainedProps, type action, debugName): reactClass =>
-  ReactOptimizedCreateClass.createClass(
+  ReactOptimizedCreateClass.createClass(.
     [%js
       {
-        as self; /* Equivalent of this */
         /***
          * TODO: Null out fields that aren't overridden beyond defaults in
          * `component`. React optimizes components that don't implement
@@ -203,12 +203,12 @@ let createClass =
         /***
          * TODO: Avoid allocating this every time we need it. Should be doable.
          */
-        pub self = (state, retainedProps) => {
-          handle: Obj.magic(self##.handleMethod),
-          send: Obj.magic(self##.sendMethod),
+        pub selfRef = (state, retainedProps) => {
+          handle: Obj.magic(Js.Unsafe.js_expr("this.handleMethod")),
+          send: Obj.magic(Js.Unsafe.js_expr("this.sendMethod")),
           state,
-          retainedProps,
-          onUnmount: Obj.magic(self##.onUnmountMethod),
+          retainedPropsSelf: retainedProps,
+          onUnmount: Obj.magic(Js.Unsafe.js_expr("this.onUnmountMethod")),
         };
         pub getInitialState = (): totalState('state, 'retainedProps, 'action) => {
           let thisJs:
@@ -239,7 +239,10 @@ let createClass =
           let curTotalState = thisJs##.state;
           let curReasonState = curTotalState##.reasonState;
           let self =
-            self##.self(curReasonState, Obj.magic(component.retainedProps));
+            this##selfRef(
+              curReasonState,
+              Obj.magic(component.retainedProps),
+            );
           let self = Obj.magic(self);
           if (component.didMount !== anyToUnit) {
             component.didMount(self);
@@ -269,20 +272,20 @@ let createClass =
                   debugName,
                 );
             let Element(oldComponent) = oldConvertedReasonProps;
-            let prevReasonState = prevState##.reasonState;
+            let prevReasonState = prevState##reasonState;
             let prevReasonState = Obj.magic(prevReasonState);
             let newSelf =
-              self##.self(
+              this##selfRef(
                 curReasonState,
                 Obj.magic(newComponent.retainedProps),
               );
             let newSelf = Obj.magic(newSelf);
-            /* bypass self##.self call for small perf boost */
+            /* bypass this##selfRef call for small perf boost */
             let oldSelf =
               Obj.magic({
                 ...newSelf,
                 state: prevReasonState,
-                retainedProps: oldComponent.retainedProps,
+                retainedPropsSelf: oldComponent.retainedProps,
               });
             newComponent.didUpdate({oldSelf, newSelf});
           };
@@ -303,16 +306,21 @@ let createClass =
           let curReasonState = curState##.reasonState;
           if (component.willUnmount !== anyToUnit) {
             let self =
-              self##.self(
+              this##selfRef(
                 curReasonState,
                 Obj.magic(component.retainedProps),
               );
             let self = Obj.magic(self);
             component.willUnmount(self);
           };
-          switch (Js.Opt.to_option(self##.subscriptions)) {
+          switch (Js.Opt.to_option(this##.subscriptions)) {
           | None => ()
-          | Some(subs) => subs##.forEach(unsubscribe => unsubscribe())
+          | Some(subs) =>
+            subs##forEach(
+              Js.wrap_callback((unsubscribe, _index, _array) =>
+                unsubscribe()
+              ),
+            )
           };
         };
         /***
@@ -349,17 +357,17 @@ let createClass =
             let curReasonState = Obj.magic(curReasonState);
             let nextReasonState = nextState##.reasonState;
             let newSelf =
-              self##.self(
+              this##selfRef(
                 nextReasonState,
                 Obj.magic(newComponent.retainedProps),
               );
             let newSelf = Obj.magic(newSelf);
-            /* bypass self##.self call for small perf boost */
+            /* bypass this##selfRef call for small perf boost */
             let oldSelf =
               Obj.magic({
                 ...newSelf,
                 state: curReasonState,
-                retainedProps: oldComponent.retainedProps,
+                retainedPropsSelf: oldComponent.retainedProps,
               });
             newComponent.willUpdate({oldSelf, newSelf});
           };
@@ -392,32 +400,29 @@ let createClass =
                   debugName,
                 );
             let Element(oldComponent) = oldConvertedReasonProps;
-            Js.Unsafe.fun_call(
-              thisJs##.setState,
-              [|
-                Js.Unsafe.inject((curTotalState, _) => {
-                  let curReasonState = Obj.magic(curTotalState##.reasonState);
-                  let oldSelf =
-                    Obj.magic(
-                      self##.self(
-                        curReasonState,
-                        Obj.magic(oldComponent.retainedProps),
-                      ),
-                    );
-                  let nextReasonState =
-                    Obj.magic(newComponent.willReceiveProps(oldSelf));
-                  if (nextReasonState !== curTotalState) {
-                    let nextTotalState: totalState(_) = [%js
-                      {val reasonState = nextReasonState}
-                    ];
-                    let nextTotalState = Obj.magic(nextTotalState);
-                    nextTotalState;
-                  } else {
-                    curTotalState;
-                  };
-                }),
-                Js.Unsafe.inject(Js.null),
-              |],
+            thisJs##setState(
+              (curTotalState, _) => {
+                let curReasonState = Obj.magic(curTotalState##.reasonState);
+                let oldSelf =
+                  Obj.magic(
+                    this##selfRef(
+                      curReasonState,
+                      Obj.magic(oldComponent.retainedProps),
+                    ),
+                  );
+                let nextReasonState =
+                  Obj.magic(newComponent.willReceiveProps(oldSelf));
+                if (nextReasonState !== curTotalState) {
+                  let nextTotalState: totalState(_) = [%js
+                    {val reasonState = nextReasonState}
+                  ];
+                  let nextTotalState = Obj.magic(nextTotalState);
+                  nextTotalState;
+                } else {
+                  curTotalState;
+                };
+              },
+              Js.null,
             );
           };
         };
@@ -465,7 +470,7 @@ let createClass =
           let Element(newComponent) = newConvertedReasonProps;
           let nextReasonState = nextState##.reasonState;
           let newSelf =
-            self##.self(
+            this##selfRef(
               nextReasonState,
               Obj.magic(newComponent.retainedProps),
             );
@@ -474,12 +479,12 @@ let createClass =
             let curReasonState = curState##.reasonState;
             let curReasonState = Obj.magic(curReasonState);
             let newSelf = Obj.magic(newSelf);
-            /* bypass self##.self call for small perf boost */
+            /* bypass this##selfRef call for small perf boost */
             let oldSelf =
               Obj.magic({
                 ...newSelf,
                 state: curReasonState,
-                retainedProps: oldComponent.retainedProps,
+                retainedPropsSelf: oldComponent.retainedProps,
               });
             newComponent.shouldUpdate({oldSelf, newSelf});
           } else {
@@ -487,9 +492,10 @@ let createClass =
           };
         };
         pub onUnmountMethod = subscription =>
-          switch (Js.Opt.to_option(self##.subscriptions)) {
-          | None => self##.subscriptions := Js.Opt.return([|subscription|])
-          | Some(subs) => ignore(subs##.push(subscription))
+          switch (Js.Opt.to_option(this##.subscriptions)) {
+          | None =>
+            this##.subscriptions := Js.Opt.return(Js.array([|subscription|]))
+          | Some(subs) => ignore(subs##push(subscription))
           };
         pub handleMethod = callback => {
           let thisJs:
@@ -508,7 +514,7 @@ let createClass =
             callback(
               callbackPayload,
               Obj.magic(
-                self##.self(
+                this##selfRef(
                   curReasonState,
                   Obj.magic(component.retainedProps),
                 ),
@@ -532,49 +538,49 @@ let createClass =
             /* allow side-effects to be executed here */
             let partialStateApplication =
               component.reducer(Obj.magic(action));
-            Js.Unsafe.fun_call(
-              thisJs##.setState,
-              [|
-                Js.Unsafe.inject((curTotalState, _) => {
-                  let curReasonState = curTotalState##.reasonState;
-                  let reasonStateUpdate =
-                    partialStateApplication(Obj.magic(curReasonState));
-                  if (reasonStateUpdate === NoUpdate) {
-                    magicNull;
-                  } else {
-                    let reasonStateUpdate = Obj.magic(reasonStateUpdate);
-                    let nextTotalState =
-                      switch (reasonStateUpdate) {
-                      | NoUpdate => curTotalState
-                      | Update(nextReasonState) =>
-                        %js
-                        {val reasonState = nextReasonState}
-                      | SideEffects(performSideEffects) =>
-                        sideEffects.contents = performSideEffects;
-                        curTotalState;
-                      | UpdateWithSideEffects(
-                          nextReasonState,
-                          performSideEffects,
-                        ) =>
-                        sideEffects.contents = performSideEffects;
-                        %js
-                        {val reasonState = nextReasonState};
-                      };
-                    if (nextTotalState !== curTotalState) {
-                      nextTotalState;
-                    } else {
-                      magicNull;
+            thisJs##setState(
+              (curTotalState, _) => {
+                let curReasonState = curTotalState##.reasonState;
+                let reasonStateUpdate =
+                  partialStateApplication(Obj.magic(curReasonState));
+                if (reasonStateUpdate === NoUpdate) {
+                  magicNull;
+                } else {
+                  let reasonStateUpdate = Obj.magic(reasonStateUpdate);
+                  let nextTotalState =
+                    switch (reasonStateUpdate) {
+                    | NoUpdate => curTotalState
+                    | Update(nextReasonState) =>
+                      %js
+                      {val reasonState = nextReasonState}
+                    | SideEffects(performSideEffects) =>
+                      sideEffects.contents = performSideEffects;
+                      curTotalState;
+                    | UpdateWithSideEffects(
+                        nextReasonState,
+                        performSideEffects,
+                      ) =>
+                      sideEffects.contents = performSideEffects;
+                      %js
+                      {val reasonState = nextReasonState};
                     };
+                  if (nextTotalState !== curTotalState) {
+                    nextTotalState;
+                  } else {
+                    magicNull;
                   };
-                }),
-                Js.Unsafe.inject(
-                  Js.Opt.return(
-                    self##.handleMethod(((), self) =>
-                      sideEffects.contents(self)
-                    ),
+                };
+              },
+              {
+                let cb = ((), self) => sideEffects.contents(self);
+                Js.Opt.return(
+                  Js.Unsafe.meth_call(
+                    this,
+                    "handleMethod",
+                    [|Js.Unsafe.inject(Js.wrap_callback(cb))|],
                   ),
-                ),
-              |],
+                );
+              },
             );
           };
         };
@@ -600,7 +606,7 @@ let createClass =
           let curReasonState = Obj.magic(curState##.reasonState);
           let self =
             Obj.magic(
-              self##.self(
+              this##selfRef(
                 curReasonState,
                 Obj.magic(component.retainedProps),
               ),
@@ -641,3 +647,253 @@ let basicComponent = debugName => {
 let statelessComponent =
     (debugName): component(stateless, noRetainedProps, actionless) =>
   basicComponent(debugName);
+
+let statelessComponentWithRetainedProps =
+    (debugName)
+    : componentSpec(
+        stateless,
+        stateless,
+        'retainedProps,
+        noRetainedProps,
+        actionless,
+      ) =>
+  basicComponent(debugName);
+
+let reducerComponent =
+    (debugName)
+    : componentSpec(
+        'state,
+        stateless,
+        noRetainedProps,
+        noRetainedProps,
+        'action,
+      ) =>
+  basicComponent(debugName);
+
+let reducerComponentWithRetainedProps =
+    (debugName)
+    : componentSpec(
+        'state,
+        stateless,
+        'retainedProps,
+        noRetainedProps,
+        'action,
+      ) =>
+  basicComponent(debugName);
+
+/***
+ * Convenience for creating React elements before we have a better JSX transform.  Hopefully this makes it
+ * usable to build some components while waiting to migrate the JSX transform to the next API.
+ *
+ * Constrain the component here instead of relying on the Element constructor which would lead to confusing
+ * error messages.
+ */
+let element =
+    (
+      ~key: string=Obj.magic(Js.undefined),
+      ~ref: Js.Opt.t(reactRef) => unit=Obj.magic(Js.undefined),
+      component: component('state, 'retainedProps, 'action),
+    ) => {
+  let element = Element(component);
+  switch (component.jsElementWrapped) {
+  | Some(jsElementWrapped) =>
+    jsElementWrapped(~key=Js.Opt.return(key), ~ref=Js.Opt.return(ref))
+  | None =>
+    createElement(
+      component.reactClassInternal,
+      ~props=[%js {val key = key; val ref = ref; val reasonProps = element}],
+      [||],
+    )
+  };
+};
+
+let wrapReasonForJs =
+    (
+      ~component,
+      jsPropsToReason:
+        jsPropsToReason('jsProps, 'state, 'retainedProps, 'action),
+    ) => {
+  let jsPropsToReason:
+    jsPropsToReason(jsProps, 'state, 'retainedProps, 'action) =
+    Obj.magic(jsPropsToReason) /* cast 'jsProps to jsProps */;
+  let uncurriedJsPropsToReason:
+    uncurriedJsPropsToReason(jsProps, 'state, 'retainedProps, 'action) =
+    (. jsProps) => jsPropsToReason(jsProps);
+  Obj.magic(component.reactClassInternal)##prototype##jsPropsToReason
+  := Some(uncurriedJsPropsToReason);
+  component.reactClassInternal;
+};
+
+/* module WrapProps = {
+  /* We wrap the props for reason->reason components, as a marker that "these props were passed from another
+     reason component" */
+  let wrapProps =
+      (
+        ~reactClass,
+        ~props,
+        children,
+        ~key: Js.Opt.t(string),
+        ~ref: Js.Opt.t(Js.Opt.t(reactRef) => unit),
+      ) => {
+    let props =
+      Js.Obj.assign(
+        Js.Obj.assign(Js.Obj.empty(), Obj.magic(props)),
+        {"ref": ref, "key": key},
+      );
+    let varargs =
+      [|Obj.magic(reactClass), Obj.magic(props)|]
+      |> Js.Array.concat(Obj.magic(children));
+    /* Use varargs under the hood */
+    Obj.magic(createElementVerbatim)##apply(Js.Nullable.null, varargs);
+  };
+  let dummyInteropComponent = basicComponent("interop");
+  let wrapJsForReason =
+      (~reactClass, ~props, children)
+      : component(stateless, noRetainedProps, _) => {
+    let jsElementWrapped = Some(wrapProps(~reactClass, ~props, children));
+    {...dummyInteropComponent, jsElementWrapped};
+  };
+};
+
+let wrapJsForReason = WrapProps.wrapJsForReason;
+
+[@bs.module "react"] external fragment: 'a = "Fragment";
+
+module Router = {
+  [@bs.get] external location: Dom.window => Dom.location = "";
+
+  [@bs.send]
+  /* actually the cb is Dom.event => unit, but let's restrict the access for now */
+  external addEventListener: (Dom.window, string, unit => unit) => unit = "";
+
+  [@bs.send]
+  external removeEventListener: (Dom.window, string, unit => unit) => unit =
+    "";
+
+  [@bs.send] external dispatchEvent: (Dom.window, Dom.event) => unit = "";
+
+  [@bs.get] external pathname: Dom.location => string = "";
+
+  [@bs.get] external hash: Dom.location => string = "";
+
+  [@bs.get] external search: Dom.location => string = "";
+
+  [@bs.send]
+  external pushState:
+    (Dom.history, [@bs.as {json|null|json}] _, [@bs.as ""] _, ~href: string) =>
+    unit =
+    "";
+
+  [@bs.val] external event: 'a = "Event";
+
+  [@bs.new] external makeEventIE11Compatible: string => Dom.event = "Event";
+
+  [@bs.val] [@bs.scope "document"]
+  external createEventNonIEBrowsers: string => Dom.event = "createEvent";
+
+  [@bs.send]
+  external initEventNonIEBrowsers: (Dom.event, string, bool, bool) => unit =
+    "initEvent";
+
+  let safeMakeEvent = eventName =>
+    if (Js.typeof(event) == "function") {
+      makeEventIE11Compatible(eventName);
+    } else {
+      let event = createEventNonIEBrowsers("Event");
+      initEventNonIEBrowsers(event, eventName, true, true);
+      event;
+    };
+
+  /* This is copied from array.ml. We want to cut dependencies for ReasonReact so
+     that it's friendlier to use in size-constrained codebases */
+  let arrayToList = a => {
+    let rec tolist = (i, res) =>
+      if (i < 0) {
+        res;
+      } else {
+        tolist(i - 1, [Array.unsafe_get(a, i), ...res]);
+      };
+    tolist(Array.length(a) - 1, []);
+  };
+  /* if we ever roll our own parser in the future, make sure you test all url combinations
+     e.g. foo.com/?#bar
+     */
+  /* sigh URLSearchParams doesn't work on IE11, edge16, etc. */
+  /* actually you know what, not gonna provide search for now. It's a mess.
+     We'll let users roll their own solution/data structure for now */
+  let path = () =>
+    switch ([%external window]) {
+    | None => []
+    | Some((window: Dom.window)) =>
+      switch (window |> location |> pathname) {
+      | ""
+      | "/" => []
+      | raw =>
+        /* remove the preceeding /, which every pathname seems to have */
+        let raw = Js.String.sliceToEnd(~from=1, raw);
+        /* remove the trailing /, which some pathnames might have. Ugh */
+        let raw =
+          switch (Js.String.get(raw, Js.String.length(raw) - 1)) {
+          | "/" => Js.String.slice(~from=0, ~to_=-1, raw)
+          | _ => raw
+          };
+        raw |> Js.String.split("/") |> arrayToList;
+      }
+    };
+  let hash = () =>
+    switch ([%external window]) {
+    | None => ""
+    | Some((window: Dom.window)) =>
+      switch (window |> location |> hash) {
+      | ""
+      | "#" => ""
+      | raw =>
+        /* remove the preceeding #, which every hash seems to have.
+           Why is this even included in location.hash?? */
+        raw |> Js.String.sliceToEnd(~from=1)
+      }
+    };
+  let search = () =>
+    switch ([%external window]) {
+    | None => ""
+    | Some((window: Dom.window)) =>
+      switch (window |> location |> search) {
+      | ""
+      | "?" => ""
+      | raw =>
+        /* remove the preceeding ?, which every search seems to have. */
+        raw |> Js.String.sliceToEnd(~from=1)
+      }
+    };
+  let push = path =>
+    switch ([%external history], [%external window]) {
+    | (None, _)
+    | (_, None) => ()
+    | (Some((history: Dom.history)), Some((window: Dom.window))) =>
+      pushState(history, ~href=path);
+      dispatchEvent(window, safeMakeEvent("popstate"));
+    };
+  type url = {
+    path: list(string),
+    hash: string,
+    search: string,
+  };
+  type watcherID = unit => unit;
+  let url = () => {path: path(), hash: hash(), search: search()};
+  /* alias exposed publicly */
+  let dangerouslyGetInitialUrl = url;
+  let watchUrl = callback =>
+    switch ([%external window]) {
+    | None => (() => ())
+    | Some((window: Dom.window)) =>
+      let watcherID = () => callback(url());
+      addEventListener(window, "popstate", watcherID);
+      watcherID;
+    };
+  let unwatchUrl = watcherID =>
+    switch ([%external window]) {
+    | None => ()
+    | Some((window: Dom.window)) =>
+      removeEventListener(window, "popstate", watcherID)
+    };
+}; */
