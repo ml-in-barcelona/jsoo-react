@@ -4,8 +4,8 @@
 
 class type factory = {
   pub factory:
-    ('compConstructor, 'isValidElement, 'noopUpdateQueue, 'comp) =>
-    Js.meth('createClass);
+    ('compConstructor, 'isValidElement, 'noopUpdateQueue) =>
+    Js.meth(Js.t({..}) => ReactClass.t);
 };
 
 let react = Js.Unsafe.global##.React;
@@ -20,10 +20,9 @@ let newReactComponent: unit => {. "updater": 'a} =
 
 let reactNoopUpdateQueue = newReactComponent()##.updater;
 
-let createClass = component =>
+let createClass = () =>
   factory##factory(
     reactComponent,
     reactIsValidElement,
-    reactNoopUpdateQueue,
-    component,
+    reactNoopUpdateQueue
   );

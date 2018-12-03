@@ -1,5 +1,3 @@
-type reactClass;
-
 type jsProps;
 
 type reactElement;
@@ -12,7 +10,7 @@ let string: string => reactElement = s => Obj.magic(Js.string(s));
 
 class type react = {
   pub createElement:
-    (reactClass, Js.Opt.t(Js.t({..})), Js.t(Js.js_array(reactElement))) =>
+    (ReactClass.t, Js.Opt.t(Js.t({..})), Js.t(Js.js_array(reactElement))) =>
     Js.meth(reactElement);
   pub cloneElement:
     (reactElement, Js.Opt.t(Js.t({..})), Js.t(Js.js_array(reactElement))) =>
@@ -27,7 +25,7 @@ external array: Js.t(Js.js_array(reactElement)) => reactElement =
 external refToJsObj: reactRef => Js.t({..}) = "%identity";
 
 let createElement:
-  (reactClass, ~props: Js.t({..})=?, array(reactElement)) => reactElement =
+  (ReactClass.t, ~props: Js.t({..})=?, array(reactElement)) => reactElement =
   (reactClass, ~props=?, children) =>
     react##createElement(reactClass, Js.Opt.option(props), Js.array(children));
 
@@ -40,7 +38,7 @@ let cloneElement:
 
 let magicNull: 'a = Js.Unsafe.js_expr("null");
 
-type reactClassInternal = reactClass;
+type reactClassInternal = ReactClass.t;
 
 type renderNotImplemented =
   | RenderNotImplemented;
@@ -187,9 +185,10 @@ let convertPropsIfTheyreFromJs = (props, jsPropsToReason, debugName) => {
   };
 };
 
+let _createClass = ReactOptimizedCreateClass.createClass();
 let createClass =
-    (type reasonState, type retainedProps, type action, debugName): reactClass =>
-  ReactOptimizedCreateClass.createClass(
+    (type reasonState, type retainedProps, type action, debugName): ReactClass.t =>
+  _createClass(
     [%js
       {
         /***
