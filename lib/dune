@@ -2,7 +2,7 @@
   (name Rroo)
   (public_name rroo)
   (wrapped false)
-  (js_of_ocaml (javascript_files "./react.compiled.js"))
+  (js_of_ocaml (javascript_files "./react.production.min.js" "./react-dom.production.min.js" "./react.js"))
   (preprocess (pps js_of_ocaml-ppx))
   (libraries js_of_ocaml)
 )

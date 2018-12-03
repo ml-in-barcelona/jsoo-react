@@ -1,14 +1,23 @@
-let react = Js.Unsafe.global##react##react;
-let reactDOM = Js.Unsafe.global##react##reactDOM;
-
 type props;
 
+class type reactDOM = {
+  pub render: (React.reactElement, Js.t(Dom_html.element)) => Js.meth(unit);
+};
+class type react = {
+  pub createElement:
+    (
+      Js.t(Js.js_string),
+      Js.Opt.t(props),
+      Js.t(Js.js_array(React.reactElement))
+    ) =>
+    Js.meth(React.reactElement);
+};
+
+let react: Js.t(react) = Js.Unsafe.global##.React;
+let reactDOM: Js.t(reactDOM) = Js.Unsafe.global##.ReactDOM;
+
 let render: (React.reactElement, Js.t(Dom_html.element)) => unit =
-  (reactElement, domElement) =>
-    Js.Unsafe.fun_call(
-      reactDOM##createElement,
-      [|Js.Unsafe.inject(reactElement), Js.Unsafe.inject(domElement)|],
-    );
+  (reactElement, domElement) => reactDOM##render(reactElement, domElement);
 
 [@bs.val]
 external _getElementsByClassName: string => array(Dom.element) =
@@ -39,20 +48,11 @@ let props = (~alt: option(string)=?, ~async: option(bool)=?, ()): props => {
   obj;
 };
 
-external injectArray: array('a) => array(Js.Unsafe.any) = "%identity";
 let createElement:
   (string, ~props: props=?, array(React.reactElement)) => React.reactElement =
-  (tag, ~props=?, children) => {
-    let firstChunk =
-      switch (props) {
-      | Some(p) => [|
-          Js.Unsafe.inject(Js.string(tag)),
-          Js.Unsafe.inject(p),
-        |]
-      | None => [|Js.Unsafe.inject(Js.string(tag))|]
-      };
-    Js.Unsafe.fun_call(
-      react##createElement,
-      Array.append(firstChunk, injectArray(children)),
+  (string, ~props=?, children) =>
+    react##createElement(
+      Js.string(string),
+      Js.Opt.option(props),
+      Js.array(children),
     );
-  };

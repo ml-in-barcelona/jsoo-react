@@ -1,5 +1,3 @@
-let react = Js.Unsafe.global##React##react;
-
 type reactClass;
 
 type jsProps;
@@ -10,34 +8,35 @@ type reactRef;
 
 let null: reactElement = Js.Unsafe.js_expr("null");
 
-let string: string => reactElement = (s) => Obj.magic(Js.string(s));
+let string: string => reactElement = s => Obj.magic(Js.string(s));
 
-external array: Js.t(Js.js_array(reactElement)) => reactElement = "%identity";
+class type react = {
+  pub createElement:
+    (reactClass, Js.Opt.t(Js.t({..})), Js.t(Js.js_array(reactElement))) =>
+    Js.meth(reactElement);
+  pub cloneElement:
+    (reactElement, Js.Opt.t(Js.t({..})), Js.t(Js.js_array(reactElement))) =>
+    Js.meth(reactElement);
+};
+
+let react: Js.t(react) = Js.Unsafe.global##.React;
+
+external array: Js.t(Js.js_array(reactElement)) => reactElement =
+  "%identity";
 
 external refToJsObj: reactRef => Js.t({..}) = "%identity";
 
-external injectArray: array('a) => array(Js.Unsafe.any) = "%identity";
-let createParamsArray = (first, props, children) => {
-  let firstChunk =
-    switch (props) {
-    | Some(p) => [|Js.Unsafe.inject(first), Js.Unsafe.inject(p)|]
-    | None => [|Js.Unsafe.inject(first)|]
-    };
-  Array.append(firstChunk, injectArray(children));
-};
 let createElement:
   (reactClass, ~props: Js.t({..})=?, array(reactElement)) => reactElement =
   (reactClass, ~props=?, children) =>
-    createParamsArray(reactClass, props, children)
-    |> Js.Unsafe.fun_call(react##createElement);
+    react##createElement(reactClass, Js.Opt.option(props), Js.array(children));
 
 let cloneElement:
   (reactElement, ~props: Js.t({..})=?, array(reactElement)) => reactElement =
   (reactElement, ~props=?, children) =>
-    createParamsArray(reactElement, props, children)
-    |> Js.Unsafe.fun_call(react##cloneElement);
+    react##cloneElement(reactElement, Js.Opt.option(props), Js.array(children));
 
-let createElementVerbatim: 'a = react##createElement;
+/* let createElementVerbatim: 'a = react##createElement; */
 
 let magicNull: 'a = Js.Unsafe.js_expr("null");
 
@@ -190,7 +189,7 @@ let convertPropsIfTheyreFromJs = (props, jsPropsToReason, debugName) => {
 
 let createClass =
     (type reasonState, type retainedProps, type action, debugName): reactClass =>
-  ReactOptimizedCreateClass.createClass(.
+  ReactOptimizedCreateClass.createClass(
     [%js
       {
         /***
@@ -719,181 +718,181 @@ let wrapReasonForJs =
   let uncurriedJsPropsToReason:
     uncurriedJsPropsToReason(jsProps, 'state, 'retainedProps, 'action) =
     (. jsProps) => jsPropsToReason(jsProps);
-  Obj.magic(component.reactClassInternal)##prototype##jsPropsToReason
-  := Some(uncurriedJsPropsToReason);
+  Obj.magic(component.reactClassInternal)##prototype##jsPropsToReason :=
+    Some(uncurriedJsPropsToReason);
   component.reactClassInternal;
 };
 
 /* module WrapProps = {
-  /* We wrap the props for reason->reason components, as a marker that "these props were passed from another
-     reason component" */
-  let wrapProps =
-      (
-        ~reactClass,
-        ~props,
-        children,
-        ~key: Js.Opt.t(string),
-        ~ref: Js.Opt.t(Js.Opt.t(reactRef) => unit),
-      ) => {
-    let props =
-      Js.Obj.assign(
-        Js.Obj.assign(Js.Obj.empty(), Obj.magic(props)),
-        {"ref": ref, "key": key},
-      );
-    let varargs =
-      [|Obj.magic(reactClass), Obj.magic(props)|]
-      |> Js.Array.concat(Obj.magic(children));
-    /* Use varargs under the hood */
-    Obj.magic(createElementVerbatim)##apply(Js.Nullable.null, varargs);
-  };
-  let dummyInteropComponent = basicComponent("interop");
-  let wrapJsForReason =
-      (~reactClass, ~props, children)
-      : component(stateless, noRetainedProps, _) => {
-    let jsElementWrapped = Some(wrapProps(~reactClass, ~props, children));
-    {...dummyInteropComponent, jsElementWrapped};
-  };
-};
+     /* We wrap the props for reason->reason components, as a marker that "these props were passed from another
+        reason component" */
+     let wrapProps =
+         (
+           ~reactClass,
+           ~props,
+           children,
+           ~key: Js.Opt.t(string),
+           ~ref: Js.Opt.t(Js.Opt.t(reactRef) => unit),
+         ) => {
+       let props =
+         Js.Obj.assign(
+           Js.Obj.assign(Js.Obj.empty(), Obj.magic(props)),
+           {"ref": ref, "key": key},
+         );
+       let varargs =
+         [|Obj.magic(reactClass), Obj.magic(props)|]
+         |> Js.Array.concat(Obj.magic(children));
+       /* Use varargs under the hood */
+       Obj.magic(createElementVerbatim)##apply(Js.Nullable.null, varargs);
+     };
+     let dummyInteropComponent = basicComponent("interop");
+     let wrapJsForReason =
+         (~reactClass, ~props, children)
+         : component(stateless, noRetainedProps, _) => {
+       let jsElementWrapped = Some(wrapProps(~reactClass, ~props, children));
+       {...dummyInteropComponent, jsElementWrapped};
+     };
+   };
 
-let wrapJsForReason = WrapProps.wrapJsForReason;
+   let wrapJsForReason = WrapProps.wrapJsForReason;
 
-[@bs.module "react"] external fragment: 'a = "Fragment";
+   [@bs.module "react"] external fragment: 'a = "Fragment";
 
-module Router = {
-  [@bs.get] external location: Dom.window => Dom.location = "";
+   module Router = {
+     [@bs.get] external location: Dom.window => Dom.location = "";
 
-  [@bs.send]
-  /* actually the cb is Dom.event => unit, but let's restrict the access for now */
-  external addEventListener: (Dom.window, string, unit => unit) => unit = "";
+     [@bs.send]
+     /* actually the cb is Dom.event => unit, but let's restrict the access for now */
+     external addEventListener: (Dom.window, string, unit => unit) => unit = "";
 
-  [@bs.send]
-  external removeEventListener: (Dom.window, string, unit => unit) => unit =
-    "";
+     [@bs.send]
+     external removeEventListener: (Dom.window, string, unit => unit) => unit =
+       "";
 
-  [@bs.send] external dispatchEvent: (Dom.window, Dom.event) => unit = "";
+     [@bs.send] external dispatchEvent: (Dom.window, Dom.event) => unit = "";
 
-  [@bs.get] external pathname: Dom.location => string = "";
+     [@bs.get] external pathname: Dom.location => string = "";
 
-  [@bs.get] external hash: Dom.location => string = "";
+     [@bs.get] external hash: Dom.location => string = "";
 
-  [@bs.get] external search: Dom.location => string = "";
+     [@bs.get] external search: Dom.location => string = "";
 
-  [@bs.send]
-  external pushState:
-    (Dom.history, [@bs.as {json|null|json}] _, [@bs.as ""] _, ~href: string) =>
-    unit =
-    "";
+     [@bs.send]
+     external pushState:
+       (Dom.history, [@bs.as {json|null|json}] _, [@bs.as ""] _, ~href: string) =>
+       unit =
+       "";
 
-  [@bs.val] external event: 'a = "Event";
+     [@bs.val] external event: 'a = "Event";
 
-  [@bs.new] external makeEventIE11Compatible: string => Dom.event = "Event";
+     [@bs.new] external makeEventIE11Compatible: string => Dom.event = "Event";
 
-  [@bs.val] [@bs.scope "document"]
-  external createEventNonIEBrowsers: string => Dom.event = "createEvent";
+     [@bs.val] [@bs.scope "document"]
+     external createEventNonIEBrowsers: string => Dom.event = "createEvent";
 
-  [@bs.send]
-  external initEventNonIEBrowsers: (Dom.event, string, bool, bool) => unit =
-    "initEvent";
+     [@bs.send]
+     external initEventNonIEBrowsers: (Dom.event, string, bool, bool) => unit =
+       "initEvent";
 
-  let safeMakeEvent = eventName =>
-    if (Js.typeof(event) == "function") {
-      makeEventIE11Compatible(eventName);
-    } else {
-      let event = createEventNonIEBrowsers("Event");
-      initEventNonIEBrowsers(event, eventName, true, true);
-      event;
-    };
+     let safeMakeEvent = eventName =>
+       if (Js.typeof(event) == "function") {
+         makeEventIE11Compatible(eventName);
+       } else {
+         let event = createEventNonIEBrowsers("Event");
+         initEventNonIEBrowsers(event, eventName, true, true);
+         event;
+       };
 
-  /* This is copied from array.ml. We want to cut dependencies for ReasonReact so
-     that it's friendlier to use in size-constrained codebases */
-  let arrayToList = a => {
-    let rec tolist = (i, res) =>
-      if (i < 0) {
-        res;
-      } else {
-        tolist(i - 1, [Array.unsafe_get(a, i), ...res]);
-      };
-    tolist(Array.length(a) - 1, []);
-  };
-  /* if we ever roll our own parser in the future, make sure you test all url combinations
-     e.g. foo.com/?#bar
-     */
-  /* sigh URLSearchParams doesn't work on IE11, edge16, etc. */
-  /* actually you know what, not gonna provide search for now. It's a mess.
-     We'll let users roll their own solution/data structure for now */
-  let path = () =>
-    switch ([%external window]) {
-    | None => []
-    | Some((window: Dom.window)) =>
-      switch (window |> location |> pathname) {
-      | ""
-      | "/" => []
-      | raw =>
-        /* remove the preceeding /, which every pathname seems to have */
-        let raw = Js.String.sliceToEnd(~from=1, raw);
-        /* remove the trailing /, which some pathnames might have. Ugh */
-        let raw =
-          switch (Js.String.get(raw, Js.String.length(raw) - 1)) {
-          | "/" => Js.String.slice(~from=0, ~to_=-1, raw)
-          | _ => raw
-          };
-        raw |> Js.String.split("/") |> arrayToList;
-      }
-    };
-  let hash = () =>
-    switch ([%external window]) {
-    | None => ""
-    | Some((window: Dom.window)) =>
-      switch (window |> location |> hash) {
-      | ""
-      | "#" => ""
-      | raw =>
-        /* remove the preceeding #, which every hash seems to have.
-           Why is this even included in location.hash?? */
-        raw |> Js.String.sliceToEnd(~from=1)
-      }
-    };
-  let search = () =>
-    switch ([%external window]) {
-    | None => ""
-    | Some((window: Dom.window)) =>
-      switch (window |> location |> search) {
-      | ""
-      | "?" => ""
-      | raw =>
-        /* remove the preceeding ?, which every search seems to have. */
-        raw |> Js.String.sliceToEnd(~from=1)
-      }
-    };
-  let push = path =>
-    switch ([%external history], [%external window]) {
-    | (None, _)
-    | (_, None) => ()
-    | (Some((history: Dom.history)), Some((window: Dom.window))) =>
-      pushState(history, ~href=path);
-      dispatchEvent(window, safeMakeEvent("popstate"));
-    };
-  type url = {
-    path: list(string),
-    hash: string,
-    search: string,
-  };
-  type watcherID = unit => unit;
-  let url = () => {path: path(), hash: hash(), search: search()};
-  /* alias exposed publicly */
-  let dangerouslyGetInitialUrl = url;
-  let watchUrl = callback =>
-    switch ([%external window]) {
-    | None => (() => ())
-    | Some((window: Dom.window)) =>
-      let watcherID = () => callback(url());
-      addEventListener(window, "popstate", watcherID);
-      watcherID;
-    };
-  let unwatchUrl = watcherID =>
-    switch ([%external window]) {
-    | None => ()
-    | Some((window: Dom.window)) =>
-      removeEventListener(window, "popstate", watcherID)
-    };
-}; */
+     /* This is copied from array.ml. We want to cut dependencies for ReasonReact so
+        that it's friendlier to use in size-constrained codebases */
+     let arrayToList = a => {
+       let rec tolist = (i, res) =>
+         if (i < 0) {
+           res;
+         } else {
+           tolist(i - 1, [Array.unsafe_get(a, i), ...res]);
+         };
+       tolist(Array.length(a) - 1, []);
+     };
+     /* if we ever roll our own parser in the future, make sure you test all url combinations
+        e.g. foo.com/?#bar
+        */
+     /* sigh URLSearchParams doesn't work on IE11, edge16, etc. */
+     /* actually you know what, not gonna provide search for now. It's a mess.
+        We'll let users roll their own solution/data structure for now */
+     let path = () =>
+       switch ([%external window]) {
+       | None => []
+       | Some((window: Dom.window)) =>
+         switch (window |> location |> pathname) {
+         | ""
+         | "/" => []
+         | raw =>
+           /* remove the preceeding /, which every pathname seems to have */
+           let raw = Js.String.sliceToEnd(~from=1, raw);
+           /* remove the trailing /, which some pathnames might have. Ugh */
+           let raw =
+             switch (Js.String.get(raw, Js.String.length(raw) - 1)) {
+             | "/" => Js.String.slice(~from=0, ~to_=-1, raw)
+             | _ => raw
+             };
+           raw |> Js.String.split("/") |> arrayToList;
+         }
+       };
+     let hash = () =>
+       switch ([%external window]) {
+       | None => ""
+       | Some((window: Dom.window)) =>
+         switch (window |> location |> hash) {
+         | ""
+         | "#" => ""
+         | raw =>
+           /* remove the preceeding #, which every hash seems to have.
+              Why is this even included in location.hash?? */
+           raw |> Js.String.sliceToEnd(~from=1)
+         }
+       };
+     let search = () =>
+       switch ([%external window]) {
+       | None => ""
+       | Some((window: Dom.window)) =>
+         switch (window |> location |> search) {
+         | ""
+         | "?" => ""
+         | raw =>
+           /* remove the preceeding ?, which every search seems to have. */
+           raw |> Js.String.sliceToEnd(~from=1)
+         }
+       };
+     let push = path =>
+       switch ([%external history], [%external window]) {
+       | (None, _)
+       | (_, None) => ()
+       | (Some((history: Dom.history)), Some((window: Dom.window))) =>
+         pushState(history, ~href=path);
+         dispatchEvent(window, safeMakeEvent("popstate"));
+       };
+     type url = {
+       path: list(string),
+       hash: string,
+       search: string,
+     };
+     type watcherID = unit => unit;
+     let url = () => {path: path(), hash: hash(), search: search()};
+     /* alias exposed publicly */
+     let dangerouslyGetInitialUrl = url;
+     let watchUrl = callback =>
+       switch ([%external window]) {
+       | None => (() => ())
+       | Some((window: Dom.window)) =>
+         let watcherID = () => callback(url());
+         addEventListener(window, "popstate", watcherID);
+         watcherID;
+       };
+     let unwatchUrl = watcherID =>
+       switch ([%external window]) {
+       | None => ()
+       | Some((window: Dom.window)) =>
+         removeEventListener(window, "popstate", watcherID)
+       };
+   }; */

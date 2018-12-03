@@ -2,8 +2,14 @@
    is not here because jsoo doesn't support embedding raw JS.
    It can be found in the react.js file. */
 
-let react = Js.Unsafe.global##.react##.react;
-let factory = Js.Unsafe.global##.react##.factory;
+class type factory = {
+  pub factory:
+    ('compConstructor, 'isValidElement, 'noopUpdateQueue, 'comp) =>
+    Js.meth('createClass);
+};
+
+let react = Js.Unsafe.global##.React;
+let factory: Js.t(factory) = Js.Unsafe.global##.Factory;
 
 let reactComponent: 'a = react##.Component;
 
@@ -15,10 +21,9 @@ let newReactComponent: unit => {. "updater": 'a} =
 let reactNoopUpdateQueue = newReactComponent()##.updater;
 
 let createClass = component =>
-  Js.Unsafe.fun_call(
-    Js.Unsafe.fun_call(
-      factory,
-      [|reactComponent, reactIsValidElement, reactNoopUpdateQueue|],
-    ),
-    [|Js.Unsafe.inject(component)|],
+  factory##factory(
+    reactComponent,
+    reactIsValidElement,
+    reactNoopUpdateQueue,
+    component,
   );
