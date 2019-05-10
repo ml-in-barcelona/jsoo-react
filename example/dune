@@ -1,4 +1,6 @@
 (executable
   (name App)
-  (public_name App.exe)
-(libraries rroo))
+  (public_name App.bc.js)
+  (libraries react)
+  (preprocess (pps reactjs_jsx_ppx_v3 js_of_ocaml-ppx))
+)

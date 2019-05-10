@@ -1,12 +1,19 @@
-let component = React.statelessComponent("Greeting");
+/* This is your familiar handleClick from ReactJS. This mandatorily takes the payload,
+   then the `self` record, which contains state (none here), `handle`, `send`
+   and other utilities */
+let handleClick = _event => print_endline("clicked!");
 
-/* underscores before names indicate unused variables. We name them for clarity */
-let make = (~name, _children) => {
-  ...component,
-  render: _self =>
-    ReactDOM.createElement(
+/* Which desugars to
+   `let make = ({name}) => ...` */
+[@react.component]
+let make = (~name, ()) => {
+  /*React.useEffect(() => {
+    print_endline("Hey!");
+    None;
+  }); 
+    ReactDOMRe.react##.createElement(
       "div",
-      ~props=ReactDOM.props(~alt="alt", ()),
-      [|React.string(name)|],
-    ),
+      ()
+    );*/
+  <div onClick=handleClick></div>;
 };

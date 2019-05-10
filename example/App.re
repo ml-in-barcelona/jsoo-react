@@ -1,3 +1,6 @@
-let greeting = React.element(~key="one", Greeting.make(~name="Joe", [||]));
+/* let greeting = <Greeting name=4 />; */
 
-ReactDOM.renderToElementWithId(greeting, "app");
+let greeting =
+  React.createElement(Greeting.make, Greeting.makeProps(~name="Joe", ()));
+
+/* ReactDOMRe.renderToElementWithId(greeting, "app"); */

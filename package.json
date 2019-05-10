@@ -4,7 +4,7 @@
   "description": "Like ReasonReact, but for js_of_ocaml",
   "license": "MIT",
   "esy": {
-    "build": "refmterr dune build ./example/App.bc.js",
+    "build": "refmterr dune build -p react,reactjs_jsx_ppx_v3",
     "NOTE": "Optional release Section. Customizes result of `esy release`",
     "release": {
       "releasedBinaries": [
@@ -16,6 +16,10 @@
         "ocaml-*"
       ]
     }
+  },
+  "scripts": {
+    "fmt": "dune build @fmt --auto-promote",
+    "clean": "dune clean"
   },
   "dependencies": {
     "@opam/dune": "*",
