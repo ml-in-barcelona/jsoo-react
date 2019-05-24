@@ -1,9 +1,5 @@
 {
-  "scripts": {
-    "bundle": "NODE_ENV=production browserify --standalone react --no-browser-field react.js -o react.compiled.js --bare"
-  },
   "dependencies": {
-    "browserify": "^13.1.0",
     "react": ">=16.8.1",
     "react-dom": ">=16.8.1"
   }

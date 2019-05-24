@@ -1,8 +1,11 @@
 (library
   (name React)
-  (public_name react)
   (wrapped false)
-  (js_of_ocaml (javascript_files "./react.production.min.js" "./react-dom.production.min.js" "./react.js"))
+  (js_of_ocaml (javascript_files
+    node_modules/react/umd/react.development.js
+    node_modules/react-dom/umd/react-dom.development.js
+    React.js
+    ReactDOMRe.js
+  ))
   (preprocess (pps js_of_ocaml-ppx))
-  (libraries js_of_ocaml)
 )
