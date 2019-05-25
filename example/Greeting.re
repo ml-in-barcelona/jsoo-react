@@ -1,5 +1,4 @@
 module Js = Js_of_ocaml.Js;
-module Firebug = Js_of_ocaml.Firebug;
 /* This is your familiar handleClick from ReactJS. This mandatorily takes the payload,
    then the `self` record, which contains state (none here), `handle`, `send`
    and other utilities */

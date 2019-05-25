@@ -8,9 +8,7 @@ external string: string => element = "stringElement";
 
 external array: array(element) => element = "%identity";
 
-type componentLike('props, 'return) = 'props => 'return;
-
-type component('props) = componentLike('props, element);
+type component('props) = 'props => element;
 
 external createElement: (component('props), 'props) => element =
   "createElement";
@@ -112,11 +110,9 @@ external createElementVariadic:
 external useState: (unit => 'state) => ('state, ('state => 'state) => unit) =
   "useState";
 
-// [@bs.module "react"]
-// external useReducer:
-//   ([@bs.uncurry] (('state, 'action) => 'state), 'state) =>
-//   ('state, 'action => unit) =
-//   "";
+external useReducer:
+  (('state, 'action) => 'state, 'state) => ('state, 'action => unit) =
+  "useReducer";
 
 // [@bs.module "react"]
 // external useReducerWithMapState:

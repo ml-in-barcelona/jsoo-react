@@ -33,11 +33,22 @@ let makeProps:
     |> Js.Unsafe.obj;
   };
 
+type action =
+  | Increment
+  | Decrement;
+
+let reducer = (state, action) =>
+  switch (action) {
+  | Increment => state + 1
+  | Decrement => state - 1
+  };
+
 let make = props => {
   let name = Js.Opt.get(props##.name |> Js.Opt.option, () => "");
   let _children = props##.children;
 
   let (count, setCount) = React.useState(() => 0);
+  let (state, dispatch) = React.useReducer(reducer, 0);
 
   ReactDOM.createDOMElementVariadic(
     "div",
@@ -52,12 +63,36 @@ let make = props => {
         "button",
         ~props=?
           Some(
+            ReactDOM.domProps(~onClick=?Some(_ => setCount(c => c + 1)), ()),
+          ),
+        [|"Count: " ++ string_of_int(count) |> React.string|],
+      ),
+      ReactDOM.createDOMElementVariadic(
+        "button",
+        ~props=?
+          Some(
             ReactDOM.domProps(
-              ~onClick=?Some(_ => setCount(c => c + 1)),
+              ~onClick=?Some(_ => dispatch @@ Decrement),
               (),
             ),
           ),
-        [|"Count: " ++ string_of_int(count) |> React.string|],
+        [|"Dec" |> React.string|],
+      ),
+      ReactDOM.createDOMElementVariadic(
+        "span",
+        ~props=?None,
+        [|string_of_int(state) |> React.string|],
+      ),
+      ReactDOM.createDOMElementVariadic(
+        "button",
+        ~props=?
+          Some(
+            ReactDOM.domProps(
+              ~onClick=?Some(_ => dispatch @@ Increment),
+              (),
+            ),
+          ),
+        [|"Inc" |> React.string|],
       ),
     |],
   );
