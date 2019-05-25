@@ -25,6 +25,5 @@ let domProps =
 };
 
 external createDOMElementVariadic:
-  (string, ~props: domProps=?, Js.t(Js.js_array(React.element))) =>
-  React.element =
+  (string, ~props: domProps=?, array(React.element)) => React.element =
   "createDOMElementVariadic";

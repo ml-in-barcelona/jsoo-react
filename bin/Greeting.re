@@ -18,15 +18,15 @@ let handleClick = _event => print_endline("clicked!");
 // };
 
 let makeProps:
-  (~one: 'one=?, ~children: 'children, ~key: string=?, unit) =>
+  (~name: 'name=?, ~children: 'children, ~key: string=?, unit) =>
   {
     .
-    "one": Js.readonly_prop(option('one)),
+    "name": Js.readonly_prop(option('name)),
     "children": Js.readonly_prop('children),
   } =
-  (~one=?, ~children, ~key=?, _) => {
+  (~name=?, ~children, ~key=?, _) => {
     React.Utils.(
-      [|("one", Js.Unsafe.inject(one))|]
+      [|("name", Js.Unsafe.inject(name))|]
       |> Array.append([|("children", Js.Unsafe.inject(children))|])
       |> Array.append([|("key", Js.Unsafe.inject(key))|])
     )
@@ -34,12 +34,31 @@ let makeProps:
   };
 
 let make = props => {
-  let one = Js.Opt.get(props##.one |> Js.Opt.option, () => "");
-  let children = props##.children;
+  let name = Js.Opt.get(props##.name |> Js.Opt.option, () => "");
+  let _children = props##.children;
+
+  let (count, setCount) = React.useState(() => 0);
 
   ReactDOM.createDOMElementVariadic(
     "div",
     ~props=?None,
-    Array.append(children, [|one |> React.string|]) |> Js.array,
+    [|
+      ReactDOM.createDOMElementVariadic(
+        "p",
+        ~props=?None,
+        [|"Hello " ++ name |> React.string|],
+      ),
+      ReactDOM.createDOMElementVariadic(
+        "button",
+        ~props=?
+          Some(
+            ReactDOM.domProps(
+              ~onClick=?Some(_ => setCount(c => c + 1)),
+              (),
+            ),
+          ),
+        [|"Count: " ++ string_of_int(count) |> React.string|],
+      ),
+    |],
   );
 };

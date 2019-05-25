@@ -18,3 +18,24 @@ Some of the things that change from BuckleScript and js_of_ocaml are:
 | Create JS objects            | TODO              | TODO                                     |
 | Access JS objects properties | `##`              | `##.`                                    |
 | Nullable values              | `Js.nullable`     | `Js.Opt.t`                               |
+
+
+It is much easier to use regular `external` statements and write bindings directly in JavaScript files.
+
+Only a few types need to be converted:
+
+#### Data from JavaScript to OCaml
+| Data type (JS)               | function            |
+| ---------------------------- | ------------------- |
+| string                       | `caml_js_to_string` |
+| array                        | `caml_js_to_array`  |
+| callback                     | `tbd`               |
+| option                       | `tbd`               | 
+
+#### Data from OCaml to JavaScript
+| Data type (OCaml)            | function                |
+| ---------------------------- | ----------------------- |
+| string                       | `caml_js_from_string`   |
+| array                        | `caml_js_from_array`    |
+| callback                     | `caml_js_wrap_callback` |
+| option                       | `ocamlOpt === 0 ? null : caml_js_from_array(ocamlOpt)[0]` | 

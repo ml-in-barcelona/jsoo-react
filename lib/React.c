@@ -24,3 +24,8 @@ void createElementVariadic () {
   fprintf(stderr, "Unimplemented React function `createElementVariadic`!\n");
   exit(1);
 }
+
+void useState () {
+  fprintf(stderr, "Unimplemented React function `useState`!\n");
+  exit(1);
+}
