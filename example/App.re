@@ -8,4 +8,4 @@
 
 let bar = Greeting.makeProps(~one="Joe", ~children=[|2|], ());
 let foo = React.createElement(_, bar);
-/* ReactDOMRe.renderToElementWithId(greeting, "app"); */
+/* ReactDOM.renderToElementWithId(greeting, "app"); */

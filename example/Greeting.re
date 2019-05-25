@@ -13,7 +13,7 @@ let handleClick = _event => print_endline("clicked!");
     print_endline("Hey!");
     None;
   });
-    ReactDOMRe.react##.createElement(
+    ReactDOM.react##.createElement(
       "div",
       ()
     );*/
@@ -50,5 +50,5 @@ let make =
     };
   let children = props##.children;
 
-  // ReactDOMRe.createDOMElementVariadic("div", ~props=?None, children);
+  // ReactDOM.createDOMElementVariadic("div", ~props=?None, children);
 };

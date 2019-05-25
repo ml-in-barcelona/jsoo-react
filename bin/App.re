@@ -1,9 +1,8 @@
 // <Greeting one="Joe"> "Hey " |> React.string </Greeting>
 let greeting =
-  React.createElementVariadic(
+  React.createElement(
     Greeting.make,
-    Greeting.makeProps(~one="Joe", ~children=[|"Hey " |> React.string|], ()),
-    [|"Hey there " |> React.string|],
+    Greeting.makeProps(~one="Joe", ~children=[|"Hello " |> React.string|], ()),
   );
 
-ReactDOMRe.renderToElementWithId(greeting, "app");
+ReactDOM.renderToElementWithId(greeting, "app");

@@ -13,18 +13,18 @@
   The actual transform:
 
   transform `[@JSX] div(~props1=a, ~props2=b, ~children=[foo, bar], ())` into
-  `ReactDOMRe.createElement("div", ~props={"props1": 1, "props2": b}, [|foo,
+  `ReactDOM.createElement("div", ~props={"props1": 1, "props2": b}, [|foo,
   bar|])`.
 
   transform `[@JSX] div(~props1=a, ~props2=b, ~children=foo, ())` into
-  `ReactDOMRe.createElementVariadic("div", ~props={"props1": 1, "props2": b}, foo)`.
+  `ReactDOM.createElementVariadic("div", ~props={"props1": 1, "props2": b}, foo)`.
 
   transform the upper-cased case
   `[@JSX] Foo.createElement(~key=a, ~ref=b, ~foo=bar, ~children=[], ())` into
   `ReasonReact.element(~key=a, ~ref=b, Foo.make(~foo=bar, [||]))`
 
   transform `[@JSX] [foo]` into
-  `ReactDOMRe.createElement(ReasonReact.fragment, [|foo|])`
+  `ReactDOM.createElement(ReasonReact.fragment, [|foo|])`
 *)
 
 (*
@@ -160,7 +160,7 @@ let jsxMapper () =
           ] in
         [(Labelled "children", Exp.apply
           ~loc
-          (Exp.ident ~loc {loc; txt = Ldot (Lident "ReactDOMRe", "createElement")})
+          (Exp.ident ~loc {loc; txt = Ldot (Lident "ReactDOM", "createElement")})
           args)])
       @ [(Nolabel, Exp.construct ~loc {loc; txt = Lident "()"} None)] in
     let isCap str = let first = String.sub str 0 1 in let capped = String.uppercase_ascii first in first = capped in
@@ -212,13 +212,13 @@ let jsxMapper () =
           let propsCall =
             Exp.apply
               ~loc
-              (Exp.ident ~loc {loc; txt = Ldot (Lident "ReactDOMRe", "props")})
+              (Exp.ident ~loc {loc; txt = Ldot (Lident "ReactDOM", "props")})
               (nonEmptyProps |> List.map (fun (label, expression) -> (label, mapper.expr mapper expression)))
           in
           [
             (* "div" *)
             (nolabel, componentNameExpr);
-            (* ReactDOMRe.props(~className=blabla, ~foo=bar, ()) *)
+            (* ReactDOM.props(~className=blabla, ~foo=bar, ()) *)
             (labelled "props", propsCall);
             (* [|moreCreateElementCallsHere|] *)
             (nolabel, childrenExpr)
@@ -227,8 +227,8 @@ let jsxMapper () =
         ~loc
         (* throw away the [@JSX] attribute and keep the others, if any *)
         ~attrs
-        (* ReactDOMRe.createElement *)
-        (Exp.ident ~loc {loc; txt = Ldot (Lident "ReactDOMRe", createElementCall)})
+        (* ReactDOM.createElement *)
+        (Exp.ident ~loc {loc; txt = Ldot (Lident "ReactDOM", createElementCall)})
         args
     in
 
@@ -288,13 +288,13 @@ let jsxMapper () =
         let propsCall =
           Exp.apply
             ~loc
-            (Exp.ident ~loc {loc; txt = Ldot (Lident "ReactDOMRe", "props")})
+            (Exp.ident ~loc {loc; txt = Ldot (Lident "ReactDOM", "props")})
             (nonEmptyProps |> List.map (fun (label, expression) -> (label, mapper.expr mapper expression)))
         in
         [
           (* "div" *)
           (nolabel, componentNameExpr);
-          (* ReactDOMRe.props(~className=blabla, ~foo=bar, ()) *)
+          (* ReactDOM.props(~className=blabla, ~foo=bar, ()) *)
           (labelled "props", propsCall);
           (* [|moreCreateElementCallsHere|] *)
           (nolabel, childrenExpr)
@@ -303,8 +303,8 @@ let jsxMapper () =
       ~loc
       (* throw away the [@JSX] attribute and keep the others, if any *)
       ~attrs
-      (* ReactDOMRe.createElement *)
-      (Exp.ident ~loc {loc; txt = Ldot (Lident "ReactDOMRe", createElementCall)})
+      (* ReactDOM.createElement *)
+      (Exp.ident ~loc {loc; txt = Ldot (Lident "ReactDOM", createElementCall)})
       args
   in
 
@@ -777,7 +777,7 @@ let jsxMapper () =
 
         (* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) *)
         (* turn that into
-          ReactDOMRe.createElement(~props=ReactDOMRe.props(~props1=foo, ~props2=bar, ()), [|bla|]) *)
+          ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [|bla|]) *)
         | {loc; txt = Lident id} ->
           (match !jsxVersion with
           | None
@@ -907,8 +907,8 @@ let jsxMapper () =
               ~loc
               (* throw away the [@JSX] attribute and keep the others, if any *)
               ~attrs:nonJSXAttributes
-              (* ReactDOMRe.createElement *)
-              (Exp.ident ~loc {loc; txt = Ldot (Lident "ReactDOMRe", "createElement")})
+              (* ReactDOM.createElement *)
+              (Exp.ident ~loc {loc; txt = Ldot (Lident "ReactDOM", "createElement")})
               args
          )
        (* Delegate to the default mapper, a deep identity traversal *)

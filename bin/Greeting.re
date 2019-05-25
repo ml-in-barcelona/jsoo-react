@@ -10,7 +10,7 @@ let handleClick = _event => print_endline("clicked!");
     print_endline("Hey!");
     None;
   });
-    ReactDOMRe.react##.createElement(
+    ReactDOM.react##.createElement(
       "div",
       ()
     );*/
@@ -37,7 +37,7 @@ let make = props => {
   let one = Js.Opt.get(props##.one |> Js.Opt.option, () => "");
   let children = props##.children;
 
-  ReactDOMRe.createDOMElementVariadic(
+  ReactDOM.createDOMElementVariadic(
     "div",
     ~props=?None,
     Array.append(children, [|one |> React.string|]) |> Js.array,
