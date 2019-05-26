@@ -23,7 +23,8 @@
     "fmt": "refmterr dune build @fmt --auto-promote",
     "clean": "refmterr dune clean",
     "test": "refmterr dune runtest",
-    "test:promote": "refmterr dune runtest --auto-promote"
+    "test:promote": "refmterr dune runtest --auto-promote",
+    "test:regen": "sh -c \"refmterr refmt ./ppx/test/test_src.re -p ml > ./ppx/test/test.ml\""
   },
   "dependencies": {
     "@opam/dune": "*",
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@esy-ocaml/merlin": "*",
-    "ocaml": "~4.6.0"
+    "ocaml": "~4.6.0",
+    "@opam/ocamlformat": "*"
   }
 }

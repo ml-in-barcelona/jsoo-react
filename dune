@@ -1,4 +1,6 @@
 (env
-  (_ (flags (:standard -w -9)))
-)
-(dirs :standard \ example) 
+ (_
+  (flags
+   (:standard -w -9))))
+
+(dirs :standard \ example)

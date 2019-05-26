@@ -5,8 +5,10 @@
 (rule
  (targets pp.result)
  (deps test.ml)
- (action (run ./main.exe --impl %{deps} -o %{targets})))
+ (action
+  (run ./main.exe --impl %{deps} -o %{targets})))
 
 (alias
  (name runtest)
- (action (diff pp.expected pp.result)))
+ (action
+  (diff pp.expected pp.result)))
