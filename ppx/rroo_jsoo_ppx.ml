@@ -24,7 +24,7 @@
 
 open Migrate_parsetree
 open Ast_406
-module To_current = Convert(OCaml_404)(OCaml_current)
+module To_current = Convert(OCaml_406)(OCaml_current)
 
 open Ast_helper
 open Ast_mapper
@@ -107,7 +107,7 @@ let extractChildren ?(removeLastPositionUnit=false) ~loc propsAndChildren =
   let rec allButLast_ lst acc = match lst with
     | [] -> []
     | (Nolabel, {pexp_desc = Pexp_construct ({txt = Lident "()"}, None)})::[] -> acc
-    | (Nolabel, _)::rest -> raise (Invalid_argument "JSX: found non-labelled argument before the last position")
+    | (Nolabel, _)::_rest -> raise (Invalid_argument "JSX: found non-labelled argument before the last position")
     | arg::rest -> allButLast_ rest (arg::acc)
   in
   let allButLast lst = allButLast_ lst [] |> List.rev in
@@ -210,7 +210,7 @@ let rec recursivelyMakeNamedArgsForExternal list args =
       ptyp_attributes = [];
     }
     (* ~foo: int=1 *)
-    | (label, Some type_, Some _) ->
+    | (_label, Some type_, Some _) ->
     type_
     (* ~foo: option(int)=? *)
     | (label, Some ({ptyp_desc = Ptyp_constr ({txt=(Lident "option")}, [type_])}), _)
@@ -232,7 +232,7 @@ let rec recursivelyMakeNamedArgsForExternal list args =
       ptyp_loc = loc;
       ptyp_attributes = [];
     }
-    | (label, Some type_, _) ->
+    | (_label, Some type_, _) ->
     type_
     )
     args)
@@ -885,7 +885,7 @@ let jsxMapper () =
           (* no file-level jsx config found *)
           | ([], _) -> default_mapper.structure mapper structure
           (* {jsx: 2} *)
-          | ((_, {pexp_desc = Pexp_constant (Pconst_integer (version, None))})::rest, recordFieldsWithoutJsx) -> begin
+          | ((_, {pexp_desc = Pexp_constant (Pconst_integer (version, None))})::_rest, recordFieldsWithoutJsx) -> begin
               (match version with
               | "2" -> jsxVersion := Some 2
               | "3" -> jsxVersion := Some 3

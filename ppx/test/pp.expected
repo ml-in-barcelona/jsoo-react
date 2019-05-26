@@ -1,0 +1,15 @@
+let div ~children  () = children
+module Test =
+  struct
+    external makeProps :
+      a:'a -> b:'b -> ?key:'key -> unit -> < a: 'a  ;b: 'b   >  Js.t = ""
+    [@@js ]
+    let make =
+      let Test$Test (Props : < a: 'a  ;b: 'b   >  Js.t) =
+        let a = Props ##. a in
+        let b = Props ##. b in
+        print_endline (a ^ b);
+        print_endline "This function should be named `Test`";
+        ReactDOM.createElement "div" [||] in
+      Test$Test
+  end

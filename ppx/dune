@@ -1,7 +1,6 @@
 (library
-  (name reactjs_jsx_ppx_v3)
-  (public_name reactjs_jsx_ppx_v3)
-  (flags (:standard -w -9))
+  (name rroo_jsoo_ppx)
+  (public_name rroo_jsoo_ppx)
   (libraries ocaml-migrate-parsetree)
   (kind ppx_rewriter)
 )

@@ -1,0 +1,12 @@
+(executable
+ (name main)
+ (libraries rroo_jsoo_ppx))
+
+(rule
+ (targets pp.result)
+ (deps test.ml)
+ (action (run ./main.exe --impl %{deps} -o %{targets})))
+
+(alias
+ (name runtest)
+ (action (diff pp.expected pp.result)))

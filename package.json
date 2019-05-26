@@ -20,8 +20,10 @@
   "scripts": {
     "build:watch": "refmterr dune build ./bin/App.bc.js -w",
     "build:prod": "refmterr dune build --profile=prod ./bin/App.bc.js",
-    "fmt": "dune build @fmt --auto-promote",
-    "clean": "dune clean"
+    "fmt": "refmterr dune build @fmt --auto-promote",
+    "clean": "refmterr dune clean",
+    "test": "refmterr dune runtest",
+    "test:promote": "refmterr dune runtest --auto-promote"
   },
   "dependencies": {
     "@opam/dune": "*",

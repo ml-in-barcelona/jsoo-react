@@ -2,5 +2,5 @@
   (name App)
   (public_name App.bc.js)
   (libraries react)
-  (preprocess (pps reactjs_jsx_ppx_v3 js_of_ocaml-ppx))
+  (preprocess (pps rroo_jsoo_ppx js_of_ocaml-ppx))
 )
