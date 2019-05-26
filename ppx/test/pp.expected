@@ -1,7 +1,9 @@
-external makeProps :
-  name:'name -> ?key:'key -> unit -> < name: 'name   >  Js.t = ""[@@js ]
+let makeProps
+  : ?name:'name -> ?key:string -> unit -> < name: 'name option   >  Js.t =
+  fun ?name -> fun ?key -> fun _ -> 2
 let make =
-  let Test (Props : < name: 'name   >  Js.t) =
-    let name = Props ##. name in
-    ReactDOM.createElement "div" [|(React.string ("Hello " ^ name))|] in
+  let Test (Props : < name: 'name option   >  Js.t) =
+    let name = match Props ## name with | Some name -> name | None -> "" in
+    ReactDOM.createDOMElementVariadic "div"
+      [|(React.string ("Hello " ^ name))|] in
   Test
