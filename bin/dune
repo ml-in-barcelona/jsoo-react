@@ -4,4 +4,4 @@
  (public_name App.exe)
  (libraries React)
  (preprocess
-  (pps js_of_ocaml-ppx)))
+  (pps rroo_jsoo_ppx js_of_ocaml-ppx)))

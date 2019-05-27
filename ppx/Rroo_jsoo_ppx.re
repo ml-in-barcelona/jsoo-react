@@ -320,58 +320,61 @@ let makeModuleName = (fileName, nestedModules, fnName) => {
 let rec makeArgsForMakePropsType = (list, args) =>
   switch (list) {
   | [(label, default, loc, interiorType), ...tl] =>
-    makeArgsForMakePropsType(
-      tl,
-      Typ.arrow(
+    let coreType =
+      switch (label, interiorType, default) {
+      /* ~foo=1 */
+      | (label, None, Some(_)) => {
+          ptyp_desc: Ptyp_var(safeTypeFromValue(label)),
+          ptyp_loc: loc,
+          ptyp_attributes: [],
+        }
+      /* ~foo: int=1 */
+      | (_label, Some(type_), Some(_)) => type_
+      /* ~foo: option(int)=? */
+      | (
+          label,
+          Some({
+            ptyp_desc: Ptyp_constr({txt: Lident("option")}, [type_]),
+          }),
+          _,
+        )
+      | (
+          label,
+          Some({
+            ptyp_desc:
+              Ptyp_constr(
+                {txt: Ldot(Lident("*predef*"), "option")},
+                [type_],
+              ),
+          }),
+          _,
+        )
+      /* ~foo: int=? - note this isnt valid. but we want to get a type error */
+      | (label, Some(type_), _) when isOptional(label) => type_
+      /* ~foo=? */
+      | (label, None, _) when isOptional(label) => {
+          ptyp_desc: Ptyp_var(safeTypeFromValue(label)),
+          ptyp_loc: loc,
+          ptyp_attributes: [],
+        }
+      /* ~foo */
+      | (label, None, _) => {
+          ptyp_desc: Ptyp_var(safeTypeFromValue(label)),
+          ptyp_loc: loc,
+          ptyp_attributes: [],
+        }
+      | (_label, Some(type_), _) => type_
+      };
+    let withJsType =
+      Typ.constr(
         ~loc,
-        label,
-        switch (label, interiorType, default) {
-        /* ~foo=1 */
-        | (label, None, Some(_)) => {
-            ptyp_desc: Ptyp_var(safeTypeFromValue(label)),
-            ptyp_loc: loc,
-            ptyp_attributes: [],
-          }
-        /* ~foo: int=1 */
-        | (_label, Some(type_), Some(_)) => type_
-        /* ~foo: option(int)=? */
-        | (
-            label,
-            Some({
-              ptyp_desc: Ptyp_constr({txt: Lident("option")}, [type_]),
-            }),
-            _,
-          )
-        | (
-            label,
-            Some({
-              ptyp_desc:
-                Ptyp_constr(
-                  {txt: Ldot(Lident("*predef*"), "option")},
-                  [type_],
-                ),
-            }),
-            _,
-          )
-        /* ~foo: int=? - note this isnt valid. but we want to get a type error */
-        | (label, Some(type_), _) when isOptional(label) => type_
-        /* ~foo=? */
-        | (label, None, _) when isOptional(label) => {
-            ptyp_desc: Ptyp_var(safeTypeFromValue(label)),
-            ptyp_loc: loc,
-            ptyp_attributes: [],
-          }
-        /* ~foo */
-        | (label, None, _) => {
-            ptyp_desc: Ptyp_var(safeTypeFromValue(label)),
-            ptyp_loc: loc,
-            ptyp_attributes: [],
-          }
-        | (_label, Some(type_), _) => type_
+        {
+          txt: Ldot(Ldot(Lident("Js_of_ocaml"), "Js"), "readonly_prop"),
+          loc,
         },
-        args,
-      ),
-    )
+        [coreType],
+      );
+    makeArgsForMakePropsType(tl, Typ.arrow(~loc, label, withJsType, args));
   | [] => args
   };
 
@@ -566,7 +569,7 @@ let makePropsType = (~loc, namedTypeList) =>
   Typ.mk(
     ~loc,
     Ptyp_constr(
-      {txt: Ldot(Lident("Js"), "t"), loc},
+      {txt: Ldot(Ldot(Lident("Js_of_ocaml"), "Js"), "t"), loc},
       [
         {
           ptyp_desc:
@@ -1406,19 +1409,23 @@ let jsxMapper = () => {
               };
 
             let expression =
-              Exp.apply(
-                ~loc,
-                Exp.ident(~loc, {txt: Lident("##."), loc}),
-                [
-                  (
-                    nolabel,
-                    Exp.ident(~loc, {txt: Lident(props.propsName), loc}),
-                  ),
-                  (
-                    nolabel,
-                    Exp.ident(~loc, {txt: Lident(labelString), loc}),
-                  ),
-                ],
+              /* We need to wrap it with Js_of_ocaml ppx so the ##. operator can be processed correctly */
+              Ppx_js.mapper.expr(
+                default_mapper,
+                Exp.apply(
+                  ~loc,
+                  Exp.ident(~loc, {txt: Lident("##."), loc}),
+                  [
+                    (
+                      nolabel,
+                      Exp.ident(~loc, {txt: Lident(props.propsName), loc}),
+                    ),
+                    (
+                      nolabel,
+                      Exp.ident(~loc, {txt: Lident(labelString), loc}),
+                    ),
+                  ],
+                ),
               );
 
             let expression =

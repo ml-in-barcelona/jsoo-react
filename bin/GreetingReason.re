@@ -17,6 +17,11 @@ let handleClick = _event => print_endline("clicked!");
 //   <div onClick=handleClick></div>;
 // };
 
+[@react.component]
+let make = (~name="") => {
+  <div> {React.string("Hello " ++ name)} </div>;
+};
+
 let makeProps:
   (~name: 'name=?, ~children: 'children, ~key: string=?, unit) =>
   {

@@ -1,5 +1,5 @@
 (library
  (name rroo_jsoo_ppx)
  (public_name rroo_jsoo_ppx)
- (libraries ocaml-migrate-parsetree)
+ (libraries ocaml-migrate-parsetree js_of_ocaml-ppx)
  (kind ppx_rewriter))
