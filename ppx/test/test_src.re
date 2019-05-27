@@ -8,5 +8,8 @@
  */
 [@react.component]
 let make = (~name="") => {
-  <div> {React.string("Hello " ++ name)} </div>;
+  <>
+    <div> {React.string("Hello " ++ name)} </div>
+    <Hello one="1"> {React.string("Hello " ++ name)} </Hello>
+  </>;
 };

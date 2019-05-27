@@ -1,7 +1,9 @@
 let makeProps
-  : ?name:'name Js_of_ocaml.Js.readonly_prop ->
-      ?key:string Js_of_ocaml.Js.readonly_prop ->
-        unit -> < name: 'name option   >  Js_of_ocaml.Js.t
+  : ?name:'name ->
+      ?key:string ->
+        unit ->
+          < name: 'name option Js_of_ocaml.Js.readonly_prop   > 
+            Js_of_ocaml.Js.t
   =
   fun ?name ->
     fun ?key ->
@@ -9,7 +11,10 @@ let makeProps
         let open Js_of_ocaml.Js.Unsafe in
           obj [|("key", (inject key));("name", (inject name))|]
 let make =
-  let Test (Props : < name: 'name option   >  Js_of_ocaml.Js.t) =
+  let Test
+    (Props :
+      < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+    =
     let name =
       match fun (type res) -> fun (type t0) ->
               fun (t0 : t0 Js_of_ocaml.Js.t) ->
@@ -20,6 +25,14 @@ let make =
       with
       | Some name -> name
       | None -> "" in
-    ReactDOM.createDOMElementVariadic "div"
-      [|(React.string ("Hello " ^ name))|] in
+    ReactDOM.createElement ReasonReact.fragment
+      [|(ReactDOM.createDOMElementVariadic "div"
+           [|(React.string ("Hello " ^ name))|]);(React.createElement
+                                                    Hello.make
+                                                    (Hello.makeProps ~one:"1"
+                                                       ~children:(React.string
+                                                                    (
+                                                                    "Hello "
+                                                                    ^ name))
+                                                       ()))|] in
   Test

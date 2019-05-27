@@ -1,6 +1,7 @@
 type element;
 
 external null: unit => element = "nullElement";
+let null = null();
 
 external string: string => element = "stringElement";
 

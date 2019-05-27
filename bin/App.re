@@ -1,14 +1,5 @@
-// <Greeting name="Joe"> "Hey " |> React.string </Greeting>
-let greeting =
-  React.createElement(
-    GreetingReason.make,
-    GreetingReason.makeProps(~children=[|"Hello " |> React.string|], ()),
-  );
+let test = <GreetingOCaml name="Hanna" />;
 
-let test =
-  React.createElement(
-    GreetingOCaml.make,
-    GreetingOCaml.makeProps(~name="Hello ", ()),
-  );
+let greeting = <GreetingReason name="Bill"> test </GreetingReason>;
 
-// ReactDOM.renderToElementWithId(greeting, "app");
+ReactDOM.renderToElementWithId(greeting, "app");

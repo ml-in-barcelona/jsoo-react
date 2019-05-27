@@ -365,16 +365,7 @@ let rec makeArgsForMakePropsType = (list, args) =>
         }
       | (_label, Some(type_), _) => type_
       };
-    let withJsType =
-      Typ.constr(
-        ~loc,
-        {
-          txt: Ldot(Ldot(Lident("Js_of_ocaml"), "Js"), "readonly_prop"),
-          loc,
-        },
-        [coreType],
-      );
-    makeArgsForMakePropsType(tl, Typ.arrow(~loc, label, withJsType, args));
+    makeArgsForMakePropsType(tl, Typ.arrow(~loc, label, coreType, args));
   | [] => args
   };
 
@@ -560,9 +551,16 @@ let makePropsExternalSig = (fnName, loc, namedArgListWithKeyAndRef, propsType) =
     ),
 };
 
-let makeObjectField = (loc, (str, _attrs, type_)) =>
+let makeObjectField = (loc, (str, _attrs, propType)) => {
+  let type_ =
+    Typ.constr(
+      ~loc,
+      {txt: Ldot(Ldot(Lident("Js_of_ocaml"), "Js"), "readonly_prop"), loc},
+      [propType],
+    );
   /* intentionally not using attrs - they probably don't work on object fields. use on *Props instead */
   Otag({loc, txt: str}, [], {...type_, ptyp_attributes: []});
+};
 
 /* Build an AST node representing a "closed" Js.t object representing a component's props */
 let makePropsType = (~loc, namedTypeList) =>
@@ -584,7 +582,7 @@ let makePropsType = (~loc, namedTypeList) =>
     ),
   );
 
-/* Builds an AST node for the entire `external` definition of props */
+/* Builds an AST node for the entire `let` definition of props */
 let makePropsDecl = (fnName, loc, namedArgListWithKeyAndRef, namedTypeList) =>
   makePropsItem(
     fnName,
@@ -1388,7 +1386,7 @@ let jsxMapper = () => {
             };
 
           let namedTypeList = List.fold_left(argToType, [], namedArgList);
-          let externalDecl =
+          let makePropsLet =
             makePropsDecl(
               fnName,
               attr_loc,
@@ -1514,7 +1512,7 @@ let jsxMapper = () => {
             };
 
           let newBinding = bindingWrapper(fullExpression);
-          (Some(externalDecl), newBinding);
+          (Some(makePropsLet), newBinding);
         } else {
           (None, binding);
         };
