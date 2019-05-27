@@ -10,7 +10,7 @@ Adapted from [ReasonReact](https://github.com/reasonml/reason-react/).
 
 Very experimental / early stage. Not ready for consumption yet.
 
-There are only bindings to the most basic rendering functions and `useState` / `useReducer`.
+Only bindings to the most basic rendering functions and `useState` / `useReducer` exist.
 The rest of the bindings are to be implemented yet.
 
 ## Ideas / decisions
@@ -35,7 +35,7 @@ cd ..
 esy
 ```
 
-Open `bin/index.html`.
+Open `bin/index.html` in your browser.
 
 
 ### Production bundle
@@ -66,4 +66,4 @@ Once esy updates to latest PnP, package management can be entirely be done with 
 
 Thanks to the authors and maintainers of ReasonReact, in particular @rickyvetter for his work on the v3 of the JSX ppx.
 Thanks to the authors and maintainers of Js_of_ocaml, in particular @hhugo who has been answering many many questions in GitHub threads.
-And thanks to the team behind ReactJS! What an amazing library :)
+And thanks to the team behind React.js! What an amazing library :)

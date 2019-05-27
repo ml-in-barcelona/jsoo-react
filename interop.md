@@ -1,12 +1,16 @@
-## Main idea: use `external`
+## js_of_ocaml: Interop with JavaScript
 
-It is much easier to use regular `external` statements and write bindings directly in JavaScript files.
+The main approach being used is just rely on OCaml `external`. After writing many bindings with both BuckleScript and js_of_ocaml, it seems much easier to use regular `external` statements and write the bindings directly in JavaScript files.
 
 The approach is:
 
 - In `Module.re` write `external myFun: int => string = "myFun"`
 - In `Module.js` write `var myFun = function(n){ return ... }`
 - Apply conversions in the JS implementation as needed (see table below)
+
+#### Examples
+
+See examples in `React.js` and `ReactDOM.js`.
 
 A few types need to be converted between OCaml and JavaScript:
 
