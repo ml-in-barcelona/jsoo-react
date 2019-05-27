@@ -375,6 +375,7 @@ let rec makeArgsForMakePropsType = (list, args) =>
   | [] => args
   };
 
+/* Build an AST node for the makeProps function body */
 let rec makeFunsForMakePropsBody = (list, args) =>
   switch (list) {
   | [(label, _default, loc, _interiorType), ...tl] =>
@@ -429,6 +430,44 @@ let makePropsName = (~loc, name) => {
   ppat_attributes: [],
 };
 
+/* AST for the creation of a JavaScript object using Js_of_ocaml.Js.obj */
+let makeJsObj = (~loc, namedArgListWithKeyAndRef) => {
+  /* Creates the ("key", inject(key)), ("name", inject(name)) tuples */
+  let labelToTuple = label =>
+    Exp.tuple(
+      ~loc,
+      [
+        constantString(~loc, getLabel(label)),
+        Exp.apply(
+          ~loc,
+          Exp.ident(~loc, {txt: Lident("inject"), loc}),
+          [
+            (
+              Nolabel,
+              Exp.ident(~loc, {txt: Lident(getLabel(label)), loc}),
+            ),
+          ],
+        ),
+      ],
+    );
+  Exp.apply(
+    ~loc,
+    Exp.ident(~loc, {txt: Lident("obj"), loc}),
+    [
+      (
+        Nolabel,
+        Exp.array(
+          ~loc,
+          List.map(
+            ((label, _, _, _)) => labelToTuple(label),
+            namedArgListWithKeyAndRef,
+          ),
+        ),
+      ),
+    ],
+  );
+};
+
 /* Build an AST node for the makeProps value binding */
 let makePropsValueBinding =
     (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
@@ -471,7 +510,15 @@ let makePropsValueBinding =
               Nolabel,
               None,
               {ppat_desc: Ppat_any, ppat_loc: loc, ppat_attributes: []},
-              Ast_helper.Exp.constant(Pconst_integer("2", None)),
+              Exp.open_(
+                ~loc,
+                Fresh,
+                {
+                  txt: Ldot(Ldot(Lident("Js_of_ocaml"), "Js"), "Unsafe"),
+                  loc,
+                },
+                makeJsObj(~loc, namedArgListWithKeyAndRef),
+              ),
             ),
           ),
           core_type,
@@ -726,10 +773,7 @@ let jsxMapper = () => {
           [
             (
               labelled("children"),
-              Exp.ident(
-                ~loc,
-                {loc, txt: [@implicit_arity] Ldot(Lident("React"), "null")},
-              ),
+              Exp.ident(~loc, {loc, txt: Ldot(Lident("React"), "null")}),
             ),
           ];
         }
@@ -744,18 +788,16 @@ let jsxMapper = () => {
 
     let ident =
       switch (modulePath) {
-      | Lident(_) => [@implicit_arity] Ldot(modulePath, "make")
-      | [@implicit_arity] Ldot(_modulePath, value) as fullPath
-          when isCap(value) =>
-        [@implicit_arity] Ldot(fullPath, "make")
+      | Lident(_) => Ldot(modulePath, "make")
+      | Ldot(_modulePath, value) as fullPath when isCap(value) =>
+        Ldot(fullPath, "make")
       | modulePath => modulePath
       };
 
     let propsIdent =
       switch (ident) {
       | Lident(path) => Lident(path ++ "Props")
-      | [@implicit_arity] Ldot(ident, path) =>
-        [@implicit_arity] Ldot(ident, path ++ "Props")
+      | Ldot(ident, path) => Ldot(ident, path ++ "Props")
       | _ =>
         raise(
           Invalid_argument(
@@ -781,10 +823,7 @@ let jsxMapper = () => {
         ~attrs,
         Exp.ident(
           ~loc,
-          {
-            loc,
-            txt: [@implicit_arity] Ldot(Lident("React"), "createElement"),
-          },
+          {loc, txt: Ldot(Lident("React"), "createElement")},
         ),
         [(nolabel, Exp.ident(~loc, {txt: ident, loc})), (nolabel, props)],
       )
@@ -794,12 +833,7 @@ let jsxMapper = () => {
         ~attrs,
         Exp.ident(
           ~loc,
-          {
-            loc,
-            txt:
-              [@implicit_arity]
-              Ldot(Lident("React"), "createElementVariadic"),
-          },
+          {loc, txt: Ldot(Lident("React"), "createElementVariadic")},
         ),
         [
           (nolabel, Exp.ident(~loc, {txt: ident, loc})),
@@ -819,12 +853,11 @@ let jsxMapper = () => {
       /* [@JSX] div(~children=[a]), coming from <div> a </div> */
       | {
           pexp_desc:
-            [@implicit_arity]
             Pexp_construct(
               {txt: Lident("::")},
               Some({pexp_desc: Pexp_tuple(_)}),
             ) |
-            [@implicit_arity] Pexp_construct({txt: Lident("[]")}, None),
+            Pexp_construct({txt: Lident("[]")}, None),
         } => "createDOMElementVariadic"
       /* [@JSX] div(~children= value), coming from <div> ...(value) </div> */
       | _ =>
@@ -848,10 +881,7 @@ let jsxMapper = () => {
             ~loc,
             Exp.ident(
               ~loc,
-              {
-                loc,
-                txt: [@implicit_arity] Ldot(Lident("ReactDOM"), "domProps"),
-              },
+              {loc, txt: Ldot(Lident("ReactDOM"), "domProps")},
             ),
             nonEmptyProps
             |> List.map(((label, expression)) =>
@@ -873,10 +903,7 @@ let jsxMapper = () => {
       /* ReactDOM.createElement */
       Exp.ident(
         ~loc,
-        {
-          loc,
-          txt: [@implicit_arity] Ldot(Lident("ReactDOM"), createElementCall),
-        },
+        {loc, txt: Ldot(Lident("ReactDOM"), createElementCall)},
       ),
       args,
     );
@@ -903,10 +930,7 @@ let jsxMapper = () => {
         ~loc,
         Exp.ident(
           ~loc,
-          {
-            loc,
-            txt: [@implicit_arity] Ldot(Lident("ReasonReact"), "element"),
-          },
+          {loc, txt: Ldot(Lident("ReasonReact"), "element")},
         ),
         argsKeyRef @ [(nolabel, e)],
       );
@@ -915,10 +939,7 @@ let jsxMapper = () => {
       ~loc,
       ~attrs,
       /* Foo.make */
-      Exp.ident(
-        ~loc,
-        {loc, txt: [@implicit_arity] Ldot(modulePath, "make")},
-      ),
+      Exp.ident(~loc, {loc, txt: Ldot(modulePath, "make")}),
       args,
     )
     |> wrapWithReasonReactElement;
@@ -933,12 +954,11 @@ let jsxMapper = () => {
       /* [@JSX] div(~children=[a]), coming from <div> a </div> */
       | {
           pexp_desc:
-            [@implicit_arity]
             Pexp_construct(
               {txt: Lident("::")},
               Some({pexp_desc: Pexp_tuple(_)}),
             ) |
-            [@implicit_arity] Pexp_construct({txt: Lident("[]")}, None),
+            Pexp_construct({txt: Lident("[]")}, None),
         } => "createElement"
       /* [@JSX] div(~children=[|a|]), coming from <div> ...[|a|] </div> */
       | {pexp_desc: Pexp_array(_)} =>
@@ -971,13 +991,7 @@ let jsxMapper = () => {
         let propsCall =
           Exp.apply(
             ~loc,
-            Exp.ident(
-              ~loc,
-              {
-                loc,
-                txt: [@implicit_arity] Ldot(Lident("ReactDOM"), "props"),
-              },
-            ),
+            Exp.ident(~loc, {loc, txt: Ldot(Lident("ReactDOM"), "props")}),
             nonEmptyProps
             |> List.map(((label, expression)) =>
                  (label, mapper.expr(mapper, expression))
@@ -998,10 +1012,7 @@ let jsxMapper = () => {
       /* ReactDOM.createElement */
       Exp.ident(
         ~loc,
-        {
-          loc,
-          txt: [@implicit_arity] Ldot(Lident("ReactDOM"), createElementCall),
-        },
+        {loc, txt: Ldot(Lident("ReactDOM"), createElementCall)},
       ),
       args,
     );
@@ -1011,36 +1022,32 @@ let jsxMapper = () => {
     let expr = mapper.expr(mapper, expr);
     switch (expr.pexp_desc) {
     /* TODO: make this show up with a loc. */
-    | [@implicit_arity] Pexp_fun(Labelled("key"), _, _, _)
-    | [@implicit_arity] Pexp_fun(Optional("key"), _, _, _) =>
+    | Pexp_fun(Labelled("key"), _, _, _)
+    | Pexp_fun(Optional("key"), _, _, _) =>
       raise(
         Invalid_argument(
           "Key cannot be accessed inside of a component. Don't worry - you can always key a component from its parent!",
         ),
       )
-    | [@implicit_arity] Pexp_fun(Labelled("ref"), _, _, _)
-    | [@implicit_arity] Pexp_fun(Optional("ref"), _, _, _) =>
+    | Pexp_fun(Labelled("ref"), _, _, _)
+    | Pexp_fun(Optional("ref"), _, _, _) =>
       raise(
         Invalid_argument(
           "Ref cannot be passed as a normal prop. Please use `forwardRef` API instead.",
         ),
       )
-    | [@implicit_arity] Pexp_fun(arg, default, pattern, expression)
+    | Pexp_fun(arg, default, pattern, expression)
         when isOptional(arg) || isLabelled(arg) =>
       let alias =
         switch (pattern) {
-        | {
-            ppat_desc:
-              [@implicit_arity] Ppat_alias(_, {txt}) | Ppat_var({txt}),
-          } => txt
+        | {ppat_desc: Ppat_alias(_, {txt}) | Ppat_var({txt})} => txt
         | {ppat_desc: Ppat_any} => "_"
         | _ => getLabel(arg)
         };
 
       let type_ =
         switch (pattern) {
-        | {ppat_desc: [@implicit_arity] Ppat_constraint(_, type_)} =>
-          Some(type_)
+        | {ppat_desc: Ppat_constraint(_, type_)} => Some(type_)
         | _ => None
         };
 
@@ -1049,23 +1056,17 @@ let jsxMapper = () => {
         expression,
         [(arg, default, pattern, alias, pattern.ppat_loc, type_), ...list],
       );
-    | [@implicit_arity]
-      Pexp_fun(
+    | Pexp_fun(
         Nolabel,
         _,
-        {
-          ppat_desc:
-            [@implicit_arity] Ppat_construct({txt: Lident("()")}, _) |
-            Ppat_any,
-        },
+        {ppat_desc: Ppat_construct({txt: Lident("()")}, _) | Ppat_any},
         expression,
       ) => (
         expression.pexp_desc,
         list,
         None,
       )
-    | [@implicit_arity]
-      Pexp_fun(Nolabel, _, {ppat_desc: Ppat_var({txt})}, expression) => (
+    | Pexp_fun(Nolabel, _, {ppat_desc: Ppat_var({txt})}, expression) => (
         expression.pexp_desc,
         list,
         Some(txt),
@@ -1077,11 +1078,7 @@ let jsxMapper = () => {
   let argToType = (types, (name, default, _noLabelName, _alias, loc, type_)) =>
     switch (type_, name, default) {
     | (
-        Some({
-          ptyp_desc:
-            [@implicit_arity]
-            Ptyp_constr({txt: Lident("option")}, [type_]),
-        }),
+        Some({ptyp_desc: Ptyp_constr({txt: Lident("option")}, [type_])}),
         name,
         _,
       )
@@ -1092,7 +1089,6 @@ let jsxMapper = () => {
           {
             ...type_,
             ptyp_desc:
-              [@implicit_arity]
               Ptyp_constr({loc: type_.ptyp_loc, txt: optionIdent}, [type_]),
           },
         ),
@@ -1103,9 +1099,7 @@ let jsxMapper = () => {
           getLabel(name),
           [],
           {
-            ptyp_desc:
-              [@implicit_arity]
-              Ptyp_constr({loc, txt: optionIdent}, [type_]),
+            ptyp_desc: Ptyp_constr({loc, txt: optionIdent}, [type_]),
             ptyp_loc: loc,
             ptyp_attributes: [],
           },
@@ -1119,7 +1113,6 @@ let jsxMapper = () => {
           [],
           {
             ptyp_desc:
-              [@implicit_arity]
               Ptyp_constr(
                 {loc, txt: optionIdent},
                 [
@@ -1177,13 +1170,11 @@ let jsxMapper = () => {
       | [_] =>
         let rec getPropTypes = (types, {ptyp_loc, ptyp_desc} as fullType) =>
           switch (ptyp_desc) {
-          | [@implicit_arity]
-            Ptyp_arrow(name, type_, {ptyp_desc: Ptyp_arrow(_)} as rest)
+          | Ptyp_arrow(name, type_, {ptyp_desc: Ptyp_arrow(_)} as rest)
               when isLabelled(name) || isOptional(name) =>
             getPropTypes([(name, ptyp_loc, type_), ...types], rest)
-          | [@implicit_arity] Ptyp_arrow(Nolabel, _type, rest) =>
-            getPropTypes(types, rest)
-          | [@implicit_arity] Ptyp_arrow(name, type_, returnValue)
+          | Ptyp_arrow(Nolabel, _type, rest) => getPropTypes(types, rest)
+          | Ptyp_arrow(name, type_, returnValue)
               when isLabelled(name) || isOptional(name) => (
               returnValue,
               [(name, returnValue.ptyp_loc, type_), ...types],
@@ -1214,12 +1205,8 @@ let jsxMapper = () => {
 
         /* can't be an arrow because it will defensively uncurry */
         let newExternalType =
-          [@implicit_arity]
           Ptyp_constr(
-            {
-              loc: pstr_loc,
-              txt: [@implicit_arity] Ldot(Lident("React"), "componentLike"),
-            },
+            {loc: pstr_loc, txt: Ldot(Lident("React"), "componentLike")},
             [retPropsType, innerType],
           );
 
@@ -1245,10 +1232,7 @@ let jsxMapper = () => {
         )
       }
     /* let component = ... */
-    | {
-        pstr_loc,
-        pstr_desc: [@implicit_arity] Pstr_value(recFlag, valueBindings),
-      } =>
+    | {pstr_loc, pstr_desc: Pstr_value(recFlag, valueBindings)} =>
       let mapBinding = binding =>
         if (hasAttrOnBinding(binding)) {
           let fnName = getFnName(binding);
@@ -1278,11 +1262,7 @@ let jsxMapper = () => {
                   expression,
                 )
               /* let make = {let foo = bar in (~prop) => ...} */
-              | {
-                  pexp_desc:
-                    [@implicit_arity]
-                    Pexp_let(recursive, vbs, returnExpression),
-                } =>
+              | {pexp_desc: Pexp_let(recursive, vbs, returnExpression)} =>
                 /* here's where we spelunk! */
                 let (wrapExpression, realReturnExpression) =
                   spelunkForFunExpression(returnExpression);
@@ -1292,7 +1272,6 @@ let jsxMapper = () => {
                     expressionDesc => {
                       ...expression,
                       pexp_desc:
-                        [@implicit_arity]
                         Pexp_let(
                           recursive,
                           vbs,
@@ -1305,7 +1284,6 @@ let jsxMapper = () => {
               /* let make = React.forwardRef((~prop) => ...) */
               | {
                   pexp_desc:
-                    [@implicit_arity]
                     Pexp_apply(
                       wrapperExpression,
                       [(Nolabel, innerFunctionExpression)],
@@ -1319,7 +1297,6 @@ let jsxMapper = () => {
                     expressionDesc => {
                       ...expression,
                       pexp_desc:
-                        [@implicit_arity]
                         Pexp_apply(
                           wrapperExpression,
                           [(nolabel, wrapExpression(expressionDesc))],
@@ -1330,7 +1307,6 @@ let jsxMapper = () => {
                 );
               | {
                   pexp_desc:
-                    [@implicit_arity]
                     Pexp_sequence(wrapperExpression, innerFunctionExpression),
                 } =>
                 let (wrapExpression, realReturnExpression) =
@@ -1341,7 +1317,6 @@ let jsxMapper = () => {
                     expressionDesc => {
                       ...expression,
                       pexp_desc:
-                        [@implicit_arity]
                         Pexp_sequence(
                           wrapperExpression,
                           wrapExpression(expressionDesc),
@@ -1433,7 +1408,7 @@ let jsxMapper = () => {
             let expression =
               Exp.apply(
                 ~loc,
-                Exp.ident(~loc, {txt: Lident("##"), loc}),
+                Exp.ident(~loc, {txt: Lident("##."), loc}),
                 [
                   (
                     nolabel,
@@ -1484,7 +1459,6 @@ let jsxMapper = () => {
             | Some(txt) => {
                 ...innerExpression,
                 pexp_desc:
-                  [@implicit_arity]
                   Pexp_fun(
                     nolabel,
                     None,
@@ -1500,13 +1474,11 @@ let jsxMapper = () => {
             };
 
           let fullExpression =
-            [@implicit_arity]
             Pexp_fun(
               nolabel,
               None,
               {
                 ppat_desc:
-                  [@implicit_arity]
                   Ppat_constraint(
                     makePropsName(~loc=emptyLoc, props.propsName),
                     makePropsType(~loc=emptyLoc, namedTypeList),
@@ -1521,7 +1493,6 @@ let jsxMapper = () => {
             switch (fullModuleName) {
             | "" => fullExpression
             | txt =>
-              [@implicit_arity]
               Pexp_let(
                 Nonrecursive,
                 [
@@ -1557,10 +1528,7 @@ let jsxMapper = () => {
 
       externs
       @ [
-        {
-          pstr_loc,
-          pstr_desc: [@implicit_arity] Pstr_value(recFlag, bindings),
-        },
+        {pstr_loc, pstr_desc: Pstr_value(recFlag, bindings)},
         ...returnStructures,
       ];
     | structure => [structure, ...returnStructures]
@@ -1583,13 +1551,11 @@ let jsxMapper = () => {
       | [_] =>
         let rec getPropTypes = (types, {ptyp_loc, ptyp_desc} as fullType) =>
           switch (ptyp_desc) {
-          | [@implicit_arity]
-            Ptyp_arrow(name, type_, {ptyp_desc: Ptyp_arrow(_)} as rest)
+          | Ptyp_arrow(name, type_, {ptyp_desc: Ptyp_arrow(_)} as rest)
               when isOptional(name) || isLabelled(name) =>
             getPropTypes([(name, ptyp_loc, type_), ...types], rest)
-          | [@implicit_arity] Ptyp_arrow(Nolabel, _type, rest) =>
-            getPropTypes(types, rest)
-          | [@implicit_arity] Ptyp_arrow(name, type_, returnValue)
+          | Ptyp_arrow(Nolabel, _type, rest) => getPropTypes(types, rest)
+          | Ptyp_arrow(name, type_, returnValue)
               when isOptional(name) || isLabelled(name) => (
               returnValue,
               [(name, returnValue.ptyp_loc, type_), ...types],
@@ -1620,12 +1586,8 @@ let jsxMapper = () => {
 
         /* can't be an arrow because it will defensively uncurry */
         let newExternalType =
-          [@implicit_arity]
           Ptyp_constr(
-            {
-              loc: psig_loc,
-              txt: [@implicit_arity] Ldot(Lident("React"), "componentLike"),
-            },
+            {loc: psig_loc, txt: Ldot(Lident("React"), "componentLike")},
             [retPropsType, innerType],
           );
 
@@ -1667,10 +1629,7 @@ let jsxMapper = () => {
           ),
         )
       /* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) */
-      | {
-          loc,
-          txt: [@implicit_arity] Ldot(modulePath, "createElement" | "make"),
-        } =>
+      | {loc, txt: Ldot(modulePath, "createElement" | "make")} =>
         switch (jsxVersion^) {
         | Some(2) =>
           transformUppercaseCall(
@@ -1707,7 +1666,7 @@ let jsxMapper = () => {
         | Some(_) =>
           raise(Invalid_argument("JSX: the JSX version must be 2 or 3"))
         }
-      | {txt: [@implicit_arity] Ldot(_, anythingNotCreateElementOrMake)} =>
+      | {txt: Ldot(_, anythingNotCreateElementOrMake)} =>
         raise(
           Invalid_argument(
             "JSX: the JSX attribute should be attached to a `YourModuleName.createElement` or `YourModuleName.make` call. We saw `"
@@ -1755,23 +1714,18 @@ let jsxMapper = () => {
         {
           pstr_loc,
           pstr_desc:
-            [@implicit_arity]
-            Pstr_attribute(
+            Pstr_attribute((
               {txt: "bs.config"} as bsConfigLabel,
               PStr([
                 {
                   pstr_desc:
-                    [@implicit_arity]
                     Pstr_eval(
-                      {
-                        pexp_desc:
-                          [@implicit_arity] Pexp_record(recordFields, b),
-                      } as innerConfigRecord,
+                      {pexp_desc: Pexp_record(recordFields, b)} as innerConfigRecord,
                       a,
                     ),
                 } as configRecord,
               ]),
-            ),
+            )),
         },
         ...restOfStructure,
       ] =>
@@ -1785,15 +1739,7 @@ let jsxMapper = () => {
       /* {jsx: 2} */
       | (
           [
-            (
-              _,
-              {
-                pexp_desc:
-                  Pexp_constant(
-                    [@implicit_arity] Pconst_integer(version, None),
-                  ),
-              },
-            ),
+            (_, {pexp_desc: Pexp_constant(Pconst_integer(version, None))}),
             ..._rest,
           ],
           recordFieldsWithoutJsx,
@@ -1820,25 +1766,22 @@ let jsxMapper = () => {
               {
                 pstr_loc,
                 pstr_desc:
-                  [@implicit_arity]
-                  Pstr_attribute(
+                  Pstr_attribute((
                     bsConfigLabel,
                     PStr([
                       {
                         ...configRecord,
                         pstr_desc:
-                          [@implicit_arity]
                           Pstr_eval(
                             {
                               ...innerConfigRecord,
-                              pexp_desc:
-                                [@implicit_arity] Pexp_record(fields, b),
+                              pexp_desc: Pexp_record(fields, b),
                             },
                             a,
                           ),
                       },
                     ]),
-                  ),
+                  )),
               },
               ...reactComponentTransform(mapper, restOfStructure),
             ],
@@ -1859,10 +1802,7 @@ let jsxMapper = () => {
   let expr = (mapper, expression) =>
     switch (expression) {
     /* Does the function application have the @JSX attribute? */
-    | {
-        pexp_desc: [@implicit_arity] Pexp_apply(callExpression, callArguments),
-        pexp_attributes,
-      } =>
+    | {pexp_desc: Pexp_apply(callExpression, callArguments), pexp_attributes} =>
       let (jsxAttribute, nonJSXAttributes) =
         List.partition(
           ((attribute, _)) => attribute.txt == "JSX",
@@ -1883,12 +1823,11 @@ let jsxMapper = () => {
     /* is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo]*/
     | {
         pexp_desc:
-          [@implicit_arity]
           Pexp_construct(
             {txt: Lident("::"), loc},
             Some({pexp_desc: Pexp_tuple(_)}),
           ) |
-          [@implicit_arity] Pexp_construct({txt: Lident("[]"), loc}, None),
+          Pexp_construct({txt: Lident("[]"), loc}, None),
         pexp_attributes,
       } as listItems =>
       let (jsxAttribute, nonJSXAttributes) =
@@ -1904,10 +1843,7 @@ let jsxMapper = () => {
         let fragment =
           Exp.ident(
             ~loc,
-            {
-              loc,
-              txt: [@implicit_arity] Ldot(Lident("ReasonReact"), "fragment"),
-            },
+            {loc, txt: Ldot(Lident("ReasonReact"), "fragment")},
           );
 
         let childrenExpr = transformChildrenIfList(~loc, ~mapper, listItems);
@@ -1925,11 +1861,7 @@ let jsxMapper = () => {
           /* ReactDOM.createElement */
           Exp.ident(
             ~loc,
-            {
-              loc,
-              txt:
-                [@implicit_arity] Ldot(Lident("ReactDOM"), "createElement"),
-            },
+            {loc, txt: Ldot(Lident("ReactDOM"), "createElement")},
           ),
           args,
         );

@@ -1,5 +1,3 @@
-module Utils = Utils;
-
 type element;
 
 external null: unit => element = "nullElement";
