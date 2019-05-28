@@ -1,6 +1,7 @@
-let caml = <GreetingOCaml name="Hanna" />;
+let caml = <GreetingOCaml key="bar" name="Hanna" />;
 
-let reason = <GreetingReason name="Bill" />;
+let div = <div key="foo" />;
+let reason = <GreetingReason name="Bill"> <> div <div /> </> </GreetingReason>;
 
 let main =
   <div>

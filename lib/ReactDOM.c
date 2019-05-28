@@ -14,3 +14,8 @@ void createDOMElementVariadic () {
   fprintf(stderr, "Unimplemented ReactDOM function `createDOMElementVariadic`!\n");
   exit(1);
 }
+
+void createFragment () {
+  fprintf(stderr, "Unimplemented ReactDOM function `createFragment`!\n");
+  exit(1);
+}

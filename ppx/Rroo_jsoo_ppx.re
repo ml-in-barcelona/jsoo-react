@@ -1,15 +1,11 @@
 /*
    This is the file that handles turning Reason JSX' agnostic function call into
-   a ReasonReact-specific function call. Aka, this is a macro, using OCaml's ppx
-   facilities; https://whitequark.org/blog/2014/04/16/a-guide-to-extension-
-   points-in-ocaml/
-   You wouldn't use this file directly; it's used by BuckleScript's
-   bsconfig.json. Specifically, there's a field called `react-jsx` inside the
-   field `reason`, which enables this ppx through some internal call in bsb
+   a React-specific function call. Aka, this is a macro, using OCaml's ppx
+   facilities; https://whitequark.org/blog/2014/04/16/a-guide-to-extension-points-in-ocaml/
  */
 
 /*
-   The transform (v3):
+   The transform:
    transform `[@JSX] div(~props1=a, ~props2=b, ~children=[foo, bar], ())` into
    `ReactDOM.createDOMElementVariadic("div", ReactDOM.domProps(~props1=1, ~props2=b), [|foo, bar|])`.
    transform the upper-cased case
@@ -19,7 +15,7 @@
    `[@JSX] Foo.createElement(~foo=bar, ~children=[foo, bar], ())` into
    `React.createElementVariadic(Foo.make, Foo.makeProps(~foo=bar, ~children=React.null, ()), [|foo, bar|])`
    transform `[@JSX] [foo]` into
-   `ReactDOM.createElement(ReasonReact.fragment, [|foo|])`
+   `ReactDOM.createFragment([|foo|])`
  */
 
 open Migrate_parsetree;
@@ -591,164 +587,9 @@ let makePropsDecl = (fnName, loc, namedArgListWithKeyAndRef, namedTypeList) =>
     makePropsType(~loc, namedTypeList),
   );
 
-let transformUppercaseCall =
-    (modulePath, mapper, loc, attrs, _, callArguments) => {
-  let (children, argsWithLabels) =
-    extractChildren(~loc, ~removeLastPositionUnit=true, callArguments);
-
-  let argsForMake = argsWithLabels;
-  let childrenExpr = transformChildrenIfListUpper(~loc, ~mapper, children);
-  let recursivelyTransformedArgsForMake =
-    argsForMake
-    |> List.map(((label, expression)) =>
-         (label, mapper.expr(mapper, expression))
-       );
-
-  let childrenArg = ref(None);
-  let args =
-    recursivelyTransformedArgsForMake
-    @ (
-      switch (childrenExpr) {
-      | Exact(children) => [(labelled("children"), children)]
-      | ListLiteral({pexp_desc: Pexp_array(list)}) when list == [] => []
-      | ListLiteral(expression) =>
-        /* this is a hack to support react components that introspect into their children */
-        childrenArg := Some(expression);
-        [
-          (
-            labelled("children"),
-            Exp.ident(~loc, {loc, txt: Ldot(Lident("React"), "null")}),
-          ),
-        ];
-      }
-    )
-    @ [(nolabel, Exp.construct(~loc, {loc, txt: Lident("()")}, None))];
-
-  let isCap = str => {
-    let first = String.sub(str, 0, 1);
-    let capped = String.uppercase_ascii(first);
-    first == capped;
-  };
-
-  let ident =
-    switch (modulePath) {
-    | Lident(_) => Ldot(modulePath, "make")
-    | Ldot(_modulePath, value) as fullPath when isCap(value) =>
-      Ldot(fullPath, "make")
-    | modulePath => modulePath
-    };
-
-  let propsIdent =
-    switch (ident) {
-    | Lident(path) => Lident(path ++ "Props")
-    | Ldot(ident, path) => Ldot(ident, path ++ "Props")
-    | _ =>
-      raise(
-        Invalid_argument(
-          "JSX name can't be the result of function applications",
-        ),
-      )
-    };
-
-  let props =
-    Exp.apply(~attrs, ~loc, Exp.ident(~loc, {loc, txt: propsIdent}), args);
-
-  /* handle key, ref, children */
-  /* React.createElement(Component.make, props, ...children) */
-  switch (childrenArg^) {
-  | None =>
-    Exp.apply(
-      ~loc,
-      ~attrs,
-      Exp.ident(~loc, {loc, txt: Ldot(Lident("React"), "createElement")}),
-      [(nolabel, Exp.ident(~loc, {txt: ident, loc})), (nolabel, props)],
-    )
-  | Some(children) =>
-    Exp.apply(
-      ~loc,
-      ~attrs,
-      Exp.ident(
-        ~loc,
-        {loc, txt: Ldot(Lident("React"), "createElementVariadic")},
-      ),
-      [
-        (nolabel, Exp.ident(~loc, {txt: ident, loc})),
-        (nolabel, props),
-        (nolabel, children),
-      ],
-    )
-  };
-};
-
-let transformLowercaseCall = (mapper, loc, attrs, callArguments, id) => {
-  let (children, nonChildrenProps) = extractChildren(~loc, callArguments);
-  let componentNameExpr = constantString(~loc, id);
-  let childrenExpr = transformChildrenIfList(~loc, ~mapper, children);
-  let createElementCall =
-    switch (children) {
-    /* [@JSX] div(~children=[a]), coming from <div> a </div> */
-    | {
-        pexp_desc:
-          Pexp_construct(
-            {txt: Lident("::")},
-            Some({pexp_desc: Pexp_tuple(_)}),
-          ) |
-          Pexp_construct({txt: Lident("[]")}, None),
-      } => "createDOMElementVariadic"
-    /* [@JSX] div(~children= value), coming from <div> ...(value) </div> */
-    | _ =>
-      raise(
-        Invalid_argument(
-          "A spread as a DOM element's children don't make sense written together. You can simply remove the spread.",
-        ),
-      )
-    };
-
-  let args =
-    switch (nonChildrenProps) {
-    | [_justTheUnitArgumentAtEnd] => [
-        /* "div" */
-        (nolabel, componentNameExpr), /* [|moreCreateElementCallsHere|] */
-        (nolabel, childrenExpr),
-      ]
-    | nonEmptyProps =>
-      let propsCall =
-        Exp.apply(
-          ~loc,
-          Exp.ident(
-            ~loc,
-            {loc, txt: Ldot(Lident("ReactDOM"), "domProps")},
-          ),
-          nonEmptyProps
-          |> List.map(((label, expression)) =>
-               (label, mapper.expr(mapper, expression))
-             ),
-        );
-
-      [
-        /* "div" */
-        (nolabel, componentNameExpr), /* ReactDOM.props(~className=blabla, ~foo=bar, ()) */
-        (labelled("props"), propsCall), /* [|moreCreateElementCallsHere|] */
-        (nolabel, childrenExpr),
-      ];
-    };
-
-  Exp.apply(
-    ~loc, /* throw away the [@JSX] attribute and keep the others, if any */
-    ~attrs,
-    /* ReactDOM.createElement */
-    Exp.ident(
-      ~loc,
-      {loc, txt: Ldot(Lident("ReactDOM"), createElementCall)},
-    ),
-    args,
-  );
-};
-
 /* TODO: some line number might still be wrong */
 let jsxMapper = () => {
-  let jsxVersion = ref(None);
-  let transformUppercaseCall3 =
+  let transformUppercaseCall =
       (modulePath, mapper, loc, attrs, _, callArguments) => {
     let (children, argsWithLabels) =
       extractChildren(~loc, ~removeLastPositionUnit=true, callArguments);
@@ -845,7 +686,7 @@ let jsxMapper = () => {
     };
   };
 
-  let transformLowercaseCall3 = (mapper, loc, attrs, callArguments, id) => {
+  let transformLowercaseCall = (mapper, loc, attrs, callArguments, id) => {
     let (children, nonChildrenProps) = extractChildren(~loc, callArguments);
     let componentNameExpr = constantString(~loc, id);
     let childrenExpr = transformChildrenIfList(~loc, ~mapper, children);
@@ -884,115 +725,6 @@ let jsxMapper = () => {
               ~loc,
               {loc, txt: Ldot(Lident("ReactDOM"), "domProps")},
             ),
-            nonEmptyProps
-            |> List.map(((label, expression)) =>
-                 (label, mapper.expr(mapper, expression))
-               ),
-          );
-
-        [
-          /* "div" */
-          (nolabel, componentNameExpr), /* ReactDOM.props(~className=blabla, ~foo=bar, ()) */
-          (labelled("props"), propsCall), /* [|moreCreateElementCallsHere|] */
-          (nolabel, childrenExpr),
-        ];
-      };
-
-    Exp.apply(
-      ~loc, /* throw away the [@JSX] attribute and keep the others, if any */
-      ~attrs,
-      /* ReactDOM.createElement */
-      Exp.ident(
-        ~loc,
-        {loc, txt: Ldot(Lident("ReactDOM"), createElementCall)},
-      ),
-      args,
-    );
-  };
-
-  let transformUppercaseCall =
-      (modulePath, mapper, loc, attrs, _, callArguments) => {
-    let (children, argsWithLabels) =
-      extractChildren(~loc, ~removeLastPositionUnit=true, callArguments);
-
-    let (argsKeyRef, argsForMake) =
-      List.partition(argIsKeyRef, argsWithLabels);
-    let childrenExpr = transformChildrenIfList(~loc, ~mapper, children);
-    let recursivelyTransformedArgsForMake =
-      argsForMake
-      |> List.map(((label, expression)) =>
-           (label, mapper.expr(mapper, expression))
-         );
-
-    let args = recursivelyTransformedArgsForMake @ [(nolabel, childrenExpr)];
-    let wrapWithReasonReactElement = e =>
-      /* ReasonReact.element(~key, ~ref, ...) */
-      Exp.apply(
-        ~loc,
-        Exp.ident(
-          ~loc,
-          {loc, txt: Ldot(Lident("ReasonReact"), "element")},
-        ),
-        argsKeyRef @ [(nolabel, e)],
-      );
-
-    Exp.apply(
-      ~loc,
-      ~attrs,
-      /* Foo.make */
-      Exp.ident(~loc, {loc, txt: Ldot(modulePath, "make")}),
-      args,
-    )
-    |> wrapWithReasonReactElement;
-  };
-
-  let transformLowercaseCall = (mapper, loc, attrs, callArguments, id) => {
-    let (children, nonChildrenProps) = extractChildren(~loc, callArguments);
-    let componentNameExpr = constantString(~loc, id);
-    let childrenExpr = transformChildrenIfList(~loc, ~mapper, children);
-    let createElementCall =
-      switch (children) {
-      /* [@JSX] div(~children=[a]), coming from <div> a </div> */
-      | {
-          pexp_desc:
-            Pexp_construct(
-              {txt: Lident("::")},
-              Some({pexp_desc: Pexp_tuple(_)}),
-            ) |
-            Pexp_construct({txt: Lident("[]")}, None),
-        } => "createElement"
-      /* [@JSX] div(~children=[|a|]), coming from <div> ...[|a|] </div> */
-      | {pexp_desc: Pexp_array(_)} =>
-        raise(
-          Invalid_argument(
-            "A spread + an array literal as a DOM element's children would cancel each other out, and thus don't make sense written together. You can simply remove the spread and the array literal.",
-          ),
-        )
-      /* [@JSX] div(~children= <div />), coming from <div> ...<div/> </div> */
-      | {pexp_attributes}
-          when
-            pexp_attributes
-            |> List.exists(((attribute, _)) => attribute.txt == "JSX") =>
-        raise(
-          Invalid_argument(
-            "A spread + a JSX literal as a DOM element's children don't make sense written together. You can simply remove the spread.",
-          ),
-        )
-      | _ => "createElementVariadic"
-      };
-
-    let args =
-      switch (nonChildrenProps) {
-      | [_justTheUnitArgumentAtEnd] => [
-          /* "div" */
-          (nolabel, componentNameExpr), /* [|moreCreateElementCallsHere|] */
-          (nolabel, childrenExpr),
-        ]
-      | nonEmptyProps =>
-        let propsCall =
-          Exp.apply(
-            ~loc,
-            Exp.ident(~loc, {loc, txt: Ldot(Lident("ReactDOM"), "props")}),
             nonEmptyProps
             |> List.map(((label, expression)) =>
                  (label, mapper.expr(mapper, expression))
@@ -1635,42 +1367,19 @@ let jsxMapper = () => {
         )
       /* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) */
       | {loc, txt: Ldot(modulePath, "createElement" | "make")} =>
-        switch (jsxVersion^) {
-        | Some(2) =>
-          transformUppercaseCall(
-            modulePath,
-            mapper,
-            loc,
-            attrs,
-            callExpression,
-            callArguments,
-          )
-        | None
-        | Some(3) =>
-          transformUppercaseCall3(
-            modulePath,
-            mapper,
-            loc,
-            attrs,
-            callExpression,
-            callArguments,
-          )
-        | Some(_) =>
-          raise(Invalid_argument("JSX: the JSX version must be 2 or 3"))
-        }
+        transformUppercaseCall(
+          modulePath,
+          mapper,
+          loc,
+          attrs,
+          callExpression,
+          callArguments,
+        )
       /* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) */
       /* turn that into
          ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [|bla|]) */
       | {loc, txt: Lident(id)} =>
-        switch (jsxVersion^) {
-        | Some(2) =>
-          transformLowercaseCall(mapper, loc, attrs, callArguments, id)
-        | None
-        | Some(3) =>
-          transformLowercaseCall3(mapper, loc, attrs, callArguments, id)
-        | Some(_) =>
-          raise(Invalid_argument("JSX: the JSX version must be 2 or 3"))
-        }
+        transformLowercaseCall(mapper, loc, attrs, callArguments, id)
       | {txt: Ldot(_, anythingNotCreateElementOrMake)} =>
         raise(
           Invalid_argument(
@@ -1699,110 +1408,9 @@ let jsxMapper = () => {
     default_mapper.signature(mapper) @@
     reactComponentSignatureTransform(mapper, signature);
 
-  let structure = (mapper, structure) =>
-    switch (structure) {
-    /*
-       match against [@bs.config {foo, jsx: ...}] at the file-level. This
-       indicates which version of JSX we're using. This code stays here because
-       we used to have 2 versions of JSX PPX (and likely will again in the
-       future when JSX PPX changes). So the architecture for switching between
-       JSX behavior stayed here. To create a new JSX ppx, copy paste this
-       entire file and change the relevant parts.
-       Description of architecture: in bucklescript's bsconfig.json, you can
-       specify a project-wide JSX version. You can also specify a file-level
-       JSX version. This degree of freedom allows a person to convert a project
-       one file at time onto the new JSX, when it was released. It also enabled
-       a project to depend on a third-party which is still using an old version
-       of JSX
-     */
-    | [
-        {
-          pstr_loc,
-          pstr_desc:
-            Pstr_attribute((
-              {txt: "bs.config"} as bsConfigLabel,
-              PStr([
-                {
-                  pstr_desc:
-                    Pstr_eval(
-                      {pexp_desc: Pexp_record(recordFields, b)} as innerConfigRecord,
-                      a,
-                    ),
-                } as configRecord,
-              ]),
-            )),
-        },
-        ...restOfStructure,
-      ] =>
-      let (jsxField, recordFieldsWithoutJsx) =
-        recordFields
-        |> List.partition((({txt}, _)) => txt == Lident("jsx"));
-
-      switch (jsxField, recordFieldsWithoutJsx) {
-      /* no file-level jsx config found */
-      | ([], _) => default_mapper.structure(mapper, structure)
-      /* {jsx: 2} */
-      | (
-          [
-            (_, {pexp_desc: Pexp_constant(Pconst_integer(version, None))}),
-            ..._rest,
-          ],
-          recordFieldsWithoutJsx,
-        ) =>
-        switch (version) {
-        | "2" => jsxVersion := Some(2)
-        | "3" => jsxVersion := Some(3)
-        | _ =>
-          raise(
-            Invalid_argument(
-              "JSX: the file-level bs.config's jsx version must be 2 or 3",
-            ),
-          )
-        };
-        switch (recordFieldsWithoutJsx) {
-        /* record empty now, remove the whole bs.config attribute */
-        | [] =>
-          default_mapper.structure(mapper) @@
-          reactComponentTransform(mapper, restOfStructure)
-        | fields =>
-          default_mapper.structure(
-            mapper,
-            [
-              {
-                pstr_loc,
-                pstr_desc:
-                  Pstr_attribute((
-                    bsConfigLabel,
-                    PStr([
-                      {
-                        ...configRecord,
-                        pstr_desc:
-                          Pstr_eval(
-                            {
-                              ...innerConfigRecord,
-                              pexp_desc: Pexp_record(fields, b),
-                            },
-                            a,
-                          ),
-                      },
-                    ]),
-                  )),
-              },
-              ...reactComponentTransform(mapper, restOfStructure),
-            ],
-          )
-        };
-      | _ =>
-        raise(
-          Invalid_argument(
-            "JSX: the file-level bs.config's {jsx: ...} config accepts only a version number",
-          ),
-        )
-      };
-    | structures =>
-      default_mapper.structure(mapper) @@
-      reactComponentTransform(mapper, structures)
-    };
+  let structure = (mapper, structures) =>
+    default_mapper.structure(mapper) @@
+    reactComponentTransform(mapper, structures);
 
   let expr = (mapper, expression) =>
     switch (expression) {
@@ -1845,30 +1453,18 @@ let jsxMapper = () => {
       /* no JSX attribute */
       | ([], _) => default_mapper.expr(mapper, expression)
       | (_, nonJSXAttributes) =>
-        let fragment =
-          Exp.ident(
-            ~loc,
-            {loc, txt: Ldot(Lident("ReasonReact"), "fragment")},
-          );
-
         let childrenExpr = transformChildrenIfList(~loc, ~mapper, listItems);
-
-        let args = [
-          /* "div" */
-          (nolabel, fragment), /* [|moreCreateElementCallsHere|] */
-          (nolabel, childrenExpr),
-        ];
 
         Exp.apply(
           ~loc,
           /* throw away the [@JSX] attribute and keep the others, if any */
           ~attrs=nonJSXAttributes,
-          /* ReactDOM.createElement */
+          /* ReactDOM.createFragment */
           Exp.ident(
             ~loc,
-            {loc, txt: Ldot(Lident("ReactDOM"), "createElement")},
+            {loc, txt: Ldot(Lident("ReactDOM"), "createFragment")},
           ),
-          args,
+          [(Nolabel, childrenExpr)],
         );
       };
     /* Delegate to the default mapper, a deep identity traversal */

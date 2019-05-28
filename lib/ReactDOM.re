@@ -26,6 +26,7 @@ module Ref = {
 type domProps;
 external domProps:
   (
+    ~key: string=?,
     ~ref: domRef=?,
     ~alt: string=?,
     ~async: bool=?,
@@ -39,3 +40,8 @@ external domProps:
 external createDOMElementVariadic:
   (string, ~props: domProps=?, array(React.element)) => React.element =
   "createDOMElementVariadic";
+
+// TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
+// Although Reason parser doesn't support it so that's a requirement before adding it here
+external createFragment: array(React.element) => React.element =
+  "createFragment";
