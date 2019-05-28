@@ -113,6 +113,10 @@ external useReducer:
   (('state, 'action) => 'state, 'state) => ('state, 'action => unit) =
   "useReducer";
 
+external useEffect: 
+  (unit => option(unit => unit)) => unit = 
+  "useEffect";
+
 // [@bs.module "react"]
 // external useReducerWithMapState:
 //   (

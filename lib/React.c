@@ -34,3 +34,8 @@ void useReducer () {
   fprintf(stderr, "Unimplemented React function `useReducer`!\n");
   exit(1);
 }
+
+void useEffect () {
+  fprintf(stderr, "Unimplemented React function `useEffect`!\n");
+  exit(1);
+}

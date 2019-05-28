@@ -15,6 +15,11 @@ let make = (~name="Billy", ~children=?) => {
   let (count, setCount) = React.useState(() => 0);
   let (state, dispatch) = React.useReducer(reducer, 0);
 
+  React.useEffect(() => {
+    print_endline("app mounted");
+    Some(() => ());
+  });
+
   <div>
     <p> {"Hello from GreetingReason " ++ name |> React.string} </p>
     <button
