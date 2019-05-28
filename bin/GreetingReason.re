@@ -1,5 +1,3 @@
-module Js = Js_of_ocaml.Js;
-
 type action =
   | Increment
   | Decrement;
