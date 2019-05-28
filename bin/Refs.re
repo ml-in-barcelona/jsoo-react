@@ -7,11 +7,14 @@ let map = (f, opt) =>
 module FancyButton = {
   [@react.component]
   let make =
-    React.forwardRef(ref =>
+    React.forwardRef(ref => {
+      let console = Js_of_ocaml.Firebug.console;
+      console##log("FancyButton got ref");
+      console##log(ref);
       <button ref=?{map(ReactDOM.Ref.domRef, ref)} className="FancyButton">
         {"Click me!" |> React.string}
-      </button>
-    );
+      </button>;
+    });
 };
 
 [@react.component]
