@@ -19,14 +19,18 @@ external createElementVariadic:
   (component('props), 'props, array(element)) => element =
   "createElementVariadic";
 
-// module Ref = {
-//   type t('value);
+module Ref = {
+  type t('value);
 
-//   external current: t('value) => 'value = "Ref_current";
-//   external setCurrent: (t('value), 'value) => unit = "Ref_setCurrent";
-// };
+  external current: t('value) => 'value = "Ref_current";
+  external setCurrent: (t('value), 'value) => unit = "Ref_setCurrent";
+};
 
-// external createRef: unit => Ref.t(option('a)) = "createRef";
+external createRef: unit => Ref.t(option('a)) = "createRef";
+
+external forwardRef:
+  (('props, option(Ref.t('a))) => element) => component('props) =
+  "forwardRef";
 
 // module Children = {
 //   external map: (element, element => element) => element = "Children_map";
@@ -51,12 +55,6 @@ external createElementVariadic:
 // };
 
 // [@bs.module "react"] external createContext: 'a => Context.t('a) = "";
-
-// [@bs.module "react"]
-// external forwardRef:
-//   ([@bs.uncurry] (('props, Js.Nullable.t(Ref.t('a))) => element)) =>
-//   component('props) =
-//   "";
 
 // [@bs.module "react"]
 // external memo: component('props) => component('props) = "";
@@ -289,7 +287,7 @@ external useReducer:
 
 // [@bs.module "react"] external useContext: Context.t('any) => 'any = "";
 
-// [@bs.module "react"] external useRef: 'value => Ref.t('value) = "";
+external useRef: 'value => Ref.t('value) = "useRef";
 
 // [@bs.module "react"]
 // external useImperativeHandle0:
