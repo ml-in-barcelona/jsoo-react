@@ -3,7 +3,8 @@
  (wrapped false)
  (js_of_ocaml
   (javascript_files node_modules/react/umd/react.development.js
-    node_modules/react-dom/umd/react-dom.development.js React.js ReactDOM.js))
+    node_modules/react-dom/umd/react-dom.development.js InteropUtils.js
+    React.js ReactDOM.js))
  (c_names ReactDOM React)
  (preprocess
   (pps js_of_ocaml-ppx)))

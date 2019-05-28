@@ -24,24 +24,17 @@ module Ref = {
 };
 
 type domProps;
-let domProps =
-    (
-      ~ref: option(domRef)=?,
-      ~alt: option(string)=?,
-      ~async: option(bool)=?,
-      ~className: option(string)=?,
-      ~onClick: option(ReactEvent.Mouse.t => unit)=?,
-      (),
-    )
-    : domProps => {
-  /* TODO: Add others */
-  optInj("ref", ref)
-  |> Array.append(optInj("alt", alt))
-  |> Array.append(optInj("className", className))
-  |> Array.append(optInj("async", async))
-  |> Array.append(optInj(~f=Js.wrap_callback, "onClick", onClick))
-  |> Js.Unsafe.obj;
-};
+external domProps:
+  (
+    ~ref: domRef=?,
+    ~alt: string=?,
+    ~async: bool=?,
+    ~className: string=?,
+    ~onClick: ReactEvent.Mouse.t => unit=?,
+    unit
+  ) =>
+  domProps =
+  "domProps";
 
 external createDOMElementVariadic:
   (string, ~props: domProps=?, array(React.element)) => React.element =

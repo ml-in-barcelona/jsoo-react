@@ -5,6 +5,11 @@ void render () {
   exit(1);
 }
 
+void domProps () {
+  fprintf(stderr, "Unimplemented ReactDOM function `domProps`!\n");
+  exit(1);
+}
+
 void createDOMElementVariadic () {
   fprintf(stderr, "Unimplemented ReactDOM function `createDOMElementVariadic`!\n");
   exit(1);
