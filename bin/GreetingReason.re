@@ -1,5 +1,3 @@
-module Js = Js_of_ocaml.Js;
-
 type action =
   | Increment
   | Decrement;
@@ -15,12 +13,8 @@ let make = (~name="Billy", ~children=?) => {
   let (count, setCount) = React.useState(() => 0);
   let (state, dispatch) = React.useReducer(reducer, 0);
 
-  React.useEffect(() => {
-    print_endline("app mounted");
-    Some(() => ());
-  });
-
   <div>
+    <UseEffect count=count />
     <p> {"Hello from GreetingReason " ++ name |> React.string} </p>
     <button
       onClick={_ => {
