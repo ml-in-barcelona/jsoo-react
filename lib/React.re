@@ -111,77 +111,65 @@ external useReducer:
   (('state, 'action) => 'state, 'state) => ('state, 'action => unit) =
   "useReducer";
 
-external useEffect: 
-  (unit => option(unit => unit)) => unit = 
+external useEffect: (unit => option(unit => unit)) => unit = "useEffect";
+
+external useEffect0: (unit => option(unit => unit), array(unit)) => unit =
   "useEffect";
 
-external useEffect0:
-  (unit => option(unit => unit), array(unit)) => unit =
+external useEffect1: (unit => option(unit => unit), array('a)) => unit =
   "useEffect";
 
-external useEffect1:
-  (unit => option(unit => unit), array('a)) => unit =
-  "useEffect";
-  
-external useEffect2:
-  (unit => option(unit => unit), ('a, 'b)) => unit =
+external useEffect2: (unit => option(unit => unit), ('a, 'b)) => unit =
   "useEffect";
 
-external useEffect3:
-  (unit => option(unit => unit), ('a, 'b, 'c)) => unit =
+external useEffect3: (unit => option(unit => unit), ('a, 'b, 'c)) => unit =
   "useEffect";
-  
-external useEffect4:
-  (unit => option(unit => unit), ('a, 'b, 'c, 'd)) => unit =
+
+external useEffect4: (unit => option(unit => unit), ('a, 'b, 'c, 'd)) => unit =
   "useEffect";
 external useEffect5:
   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e)) => unit =
   "useEffect";
-  
+
 external useEffect6:
   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f)) => unit =
   "useEffect";
-  
+
 external useEffect7:
   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f, 'g)) => unit =
   "useEffect";
 
-external useLayoutEffect: 
-  (unit => option(unit => unit)) => unit = 
+external useLayoutEffect: (unit => option(unit => unit)) => unit =
   "useLayoutEffect";
 
 external useLayoutEffect0:
   (unit => option(unit => unit), array(unit)) => unit =
   "useLayoutEffect";
 
-external useLayoutEffect1:
-  (unit => option(unit => unit), array('a)) => unit =
+external useLayoutEffect1: (unit => option(unit => unit), array('a)) => unit =
   "useLayoutEffect";
-  
-external useLayoutEffect2:
-  (unit => option(unit => unit), ('a, 'b)) => unit =
+
+external useLayoutEffect2: (unit => option(unit => unit), ('a, 'b)) => unit =
   "useLayoutEffect";
 
 external useLayoutEffect3:
   (unit => option(unit => unit), ('a, 'b, 'c)) => unit =
   "useLayoutEffect";
-  
+
 external useLayoutEffect4:
   (unit => option(unit => unit), ('a, 'b, 'c, 'd)) => unit =
   "useLayoutEffect";
 external useLayoutEffect5:
   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e)) => unit =
   "useLayoutEffect";
-  
+
 external useLayoutEffect6:
   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f)) => unit =
   "useLayoutEffect";
-  
+
 external useLayoutEffect7:
   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f, 'g)) => unit =
   "useLayoutEffect";
-
-
 
 // [@bs.module "react"]
 // external useReducerWithMapState:
