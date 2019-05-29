@@ -111,6 +111,78 @@ external useReducer:
   (('state, 'action) => 'state, 'state) => ('state, 'action => unit) =
   "useReducer";
 
+external useEffect: 
+  (unit => option(unit => unit)) => unit = 
+  "useEffect";
+
+external useEffect0:
+  (unit => option(unit => unit), array(unit)) => unit =
+  "useEffect";
+
+external useEffect1:
+  (unit => option(unit => unit), array('a)) => unit =
+  "useEffect";
+  
+external useEffect2:
+  (unit => option(unit => unit), ('a, 'b)) => unit =
+  "useEffect";
+
+external useEffect3:
+  (unit => option(unit => unit), ('a, 'b, 'c)) => unit =
+  "useEffect";
+  
+external useEffect4:
+  (unit => option(unit => unit), ('a, 'b, 'c, 'd)) => unit =
+  "useEffect";
+external useEffect5:
+  (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e)) => unit =
+  "useEffect";
+  
+external useEffect6:
+  (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f)) => unit =
+  "useEffect";
+  
+external useEffect7:
+  (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f, 'g)) => unit =
+  "useEffect";
+
+external useLayoutEffect: 
+  (unit => option(unit => unit)) => unit = 
+  "useLayoutEffect";
+
+external useLayoutEffect0:
+  (unit => option(unit => unit), array(unit)) => unit =
+  "useLayoutEffect";
+
+external useLayoutEffect1:
+  (unit => option(unit => unit), array('a)) => unit =
+  "useLayoutEffect";
+  
+external useLayoutEffect2:
+  (unit => option(unit => unit), ('a, 'b)) => unit =
+  "useLayoutEffect";
+
+external useLayoutEffect3:
+  (unit => option(unit => unit), ('a, 'b, 'c)) => unit =
+  "useLayoutEffect";
+  
+external useLayoutEffect4:
+  (unit => option(unit => unit), ('a, 'b, 'c, 'd)) => unit =
+  "useLayoutEffect";
+external useLayoutEffect5:
+  (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e)) => unit =
+  "useLayoutEffect";
+  
+external useLayoutEffect6:
+  (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f)) => unit =
+  "useLayoutEffect";
+  
+external useLayoutEffect7:
+  (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f, 'g)) => unit =
+  "useLayoutEffect";
+
+
+
 // [@bs.module "react"]
 // external useReducerWithMapState:
 //   (
@@ -120,93 +192,6 @@ external useReducer:
 //   ) =>
 //   ('state, 'action => unit) =
 //   "useReducer";
-
-// [@bs.module "react"]
-// external useEffect: ([@bs.uncurry] (unit => option(unit => unit))) => unit =
-//   "useEffect";
-// [@bs.module "react"]
-// external useEffect0:
-//   ([@bs.uncurry] (unit => option(unit => unit)), [@bs.as {json|[]|json}] _) =>
-//   unit =
-//   "useEffect";
-// [@bs.module "react"]
-// external useEffect1:
-//   ([@bs.uncurry] (unit => option(unit => unit)), array('a)) => unit =
-//   "useEffect";
-// [@bs.module "react"]
-// external useEffect2:
-//   ([@bs.uncurry] (unit => option(unit => unit)), ('a, 'b)) => unit =
-//   "useEffect";
-// [@bs.module "react"]
-// external useEffect3:
-//   ([@bs.uncurry] (unit => option(unit => unit)), ('a, 'b, 'c)) => unit =
-//   "useEffect";
-// [@bs.module "react"]
-// external useEffect4:
-//   ([@bs.uncurry] (unit => option(unit => unit)), ('a, 'b, 'c, 'd)) => unit =
-//   "useEffect";
-// [@bs.module "react"]
-// external useEffect5:
-//   ([@bs.uncurry] (unit => option(unit => unit)), ('a, 'b, 'c, 'd, 'e)) =>
-//   unit =
-//   "useEffect";
-// [@bs.module "react"]
-// external useEffect6:
-//   ([@bs.uncurry] (unit => option(unit => unit)), ('a, 'b, 'c, 'd, 'e, 'f)) =>
-//   unit =
-//   "useEffect";
-// [@bs.module "react"]
-// external useEffect7:
-//   (
-//     [@bs.uncurry] (unit => option(unit => unit)),
-//     ('a, 'b, 'c, 'd, 'e, 'f, 'g)
-//   ) =>
-//   unit =
-//   "useEffect";
-
-// [@bs.module "react"]
-// external useLayoutEffect:
-//   ([@bs.uncurry] (unit => option(unit => unit))) => unit =
-//   "useLayoutEffect";
-// [@bs.module "react"]
-// external useLayoutEffect0:
-//   ([@bs.uncurry] (unit => option(unit => unit)), [@bs.as {json|[]|json}] _) =>
-//   unit =
-//   "useLayoutEffect";
-// [@bs.module "react"]
-// external useLayoutEffect1:
-//   ([@bs.uncurry] (unit => option(unit => unit)), array('a)) => unit =
-//   "useLayoutEffect";
-// [@bs.module "react"]
-// external useLayoutEffect2:
-//   ([@bs.uncurry] (unit => option(unit => unit)), ('a, 'b)) => unit =
-//   "useLayoutEffect";
-// [@bs.module "react"]
-// external useLayoutEffect3:
-//   ([@bs.uncurry] (unit => option(unit => unit)), ('a, 'b, 'c)) => unit =
-//   "useLayoutEffect";
-// [@bs.module "react"]
-// external useLayoutEffect4:
-//   ([@bs.uncurry] (unit => option(unit => unit)), ('a, 'b, 'c, 'd)) => unit =
-//   "useLayoutEffect";
-// [@bs.module "react"]
-// external useLayoutEffect5:
-//   ([@bs.uncurry] (unit => option(unit => unit)), ('a, 'b, 'c, 'd, 'e)) =>
-//   unit =
-//   "useLayoutEffect";
-// [@bs.module "react"]
-// external useLayoutEffect6:
-//   ([@bs.uncurry] (unit => option(unit => unit)), ('a, 'b, 'c, 'd, 'e, 'f)) =>
-//   unit =
-//   "useLayoutEffect";
-// [@bs.module "react"]
-// external useLayoutEffect7:
-//   (
-//     [@bs.uncurry] (unit => option(unit => unit)),
-//     ('a, 'b, 'c, 'd, 'e, 'f, 'g)
-//   ) =>
-//   unit =
-//   "useLayoutEffect";
 
 // [@bs.module "react"]
 // external useMemo: ([@bs.uncurry] (unit => 'any)) => 'any = "useMemo";

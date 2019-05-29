@@ -30,6 +30,7 @@
     "@opam/dune": "*",
     "@opam/js_of_ocaml": "*",
     "@opam/js_of_ocaml-ppx": "*",
+    "@opam/js_of_ocaml-lwt": "*",
     "@esy-ocaml/reason": "*",
     "refmterr": "*",
     "ocaml": "~4.6.0"

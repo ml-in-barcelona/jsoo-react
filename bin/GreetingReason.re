@@ -14,6 +14,7 @@ let make = (~name="Billy", ~children=?) => {
   let (state, dispatch) = React.useReducer(reducer, 0);
 
   <div>
+    <UseEffect count=count />
     <p> {"Hello from GreetingReason " ++ name |> React.string} </p>
     <button
       onClick={_ => {

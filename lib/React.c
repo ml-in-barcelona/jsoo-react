@@ -35,6 +35,16 @@ void useReducer () {
   exit(1);
 }
 
+void useEffect () {
+  fprintf(stderr, "Unimplemented React function `useEffect`!\n");
+  exit(1);
+}
+
+void useLayoutEffect () {
+  fprintf(stderr, "Unimplemented React function `useLayoutEffect`!\n");
+  exit(1);
+}
+
 void Ref_current () {
   fprintf(stderr, "Unimplemented React function `Ref_current`!\n");
   exit(1);
@@ -59,3 +69,4 @@ void useRef () {
   fprintf(stderr, "Unimplemented React function `useRef`!\n");
   exit(1);
 }
+
