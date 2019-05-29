@@ -11,13 +11,6 @@ let make = (~count) => {
             "count changed 1 sec ago! Previous value was: "
             ++ string_of_int(count),
           );
-          sleep(1.);
-        })
-      ->bind(() => {
-          print_endline(
-            "count changed 2 sec ago! Previous value was: "
-            ++ string_of_int(count),
-          );
           return();
         })
       ->ignore;
