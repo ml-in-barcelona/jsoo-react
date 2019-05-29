@@ -124,26 +124,26 @@ external useEffect1:
   "useEffect";
   
 external useEffect2:
-  (unit => option(unit => unit), array('a, 'b)) => unit =
+  (unit => option(unit => unit), ('a, 'b)) => unit =
   "useEffect";
 
 external useEffect3:
-  (unit => option(unit => unit), array('a, 'b, 'c)) => unit =
+  (unit => option(unit => unit), ('a, 'b, 'c)) => unit =
   "useEffect";
   
 external useEffect4:
-  (unit => option(unit => unit), array('a, 'b, 'c, 'd)) => unit =
+  (unit => option(unit => unit), ('a, 'b, 'c, 'd)) => unit =
   "useEffect";
 external useEffect5:
-  (unit => option(unit => unit), array('a, 'b, 'c, 'd, 'e)) => unit =
+  (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e)) => unit =
   "useEffect";
   
 external useEffect6:
-  (unit => option(unit => unit), array('a, 'b, 'c, 'd, 'e, 'f)) => unit =
+  (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f)) => unit =
   "useEffect";
   
 external useEffect7:
-  (unit => option(unit => unit), array('a, 'b, 'c, 'd, 'e, 'f, 'g)) => unit =
+  (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f, 'g)) => unit =
   "useEffect";
 
 // [@bs.module "react"]
