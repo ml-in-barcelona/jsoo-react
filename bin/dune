@@ -2,6 +2,6 @@
  (name App)
  (package react)
  (public_name App.exe)
- (libraries React)
+ (libraries js_of_ocaml-lwt React)
  (preprocess
   (pps rroo_jsoo_ppx js_of_ocaml-ppx)))
