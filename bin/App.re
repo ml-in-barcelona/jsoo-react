@@ -1,5 +1,16 @@
-let test = <GreetingOCaml name="Hanna" />;
+let caml = <GreetingOCaml key="bar" name="Hanna" />;
 
-let greeting = <GreetingReason name="Bill"> test </GreetingReason>;
+let div = <div key="foo" />;
+let reason = <GreetingReason name="Bill"> <> div <div /> </> </GreetingReason>;
 
-ReactDOM.renderToElementWithId(greeting, "app");
+let main =
+  <div>
+    <h1 className="hello"> {"OCaml component" |> React.string} </h1>
+    caml
+    <h1> {"Reason component" |> React.string} </h1>
+    reason
+    <h1> {"Refs" |> React.string} </h1>
+    <Refs />
+  </div>;
+
+ReactDOM.renderToElementWithId(main, "app");
