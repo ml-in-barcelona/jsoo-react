@@ -8,7 +8,7 @@ let make = (~count) => {
       sleep(1.)
       ->bind(() => {
           print_endline(
-            "count changed 1 sec ago! Previous value was: "
+            "count changed 1 sec ago! Value is: "
             ++ string_of_int(count),
           );
           return();
@@ -17,7 +17,7 @@ let make = (~count) => {
       Some(
         () =>
           print_endline(
-            "unmounting previous effect for count: " ++ string_of_int(count),
+            "Unmounting effect for value: " ++ string_of_int(count),
           ),
       );
     },
