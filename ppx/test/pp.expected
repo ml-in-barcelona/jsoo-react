@@ -25,7 +25,7 @@ let make =
       with
       | Some name -> name
       | None -> "" in
-    ReactDOM.createElement ReasonReact.fragment
+    ReactDOM.createFragment
       [|(ReactDOM.createDOMElementVariadic "div"
            [|(React.string ("Hello " ^ name))|]);(React.createElement
                                                     Hello.make

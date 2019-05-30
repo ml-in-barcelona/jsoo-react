@@ -32,6 +32,7 @@
     "@opam/js_of_ocaml-ppx": "*",
     "@opam/js_of_ocaml-lwt": "*",
     "@esy-ocaml/reason": "*",
+    "ppx_pipe_first": "sodaplayer/PipeFirst#10f35c4",
     "refmterr": "*",
     "ocaml": "~4.6.0"
   },
