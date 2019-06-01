@@ -1,15 +1,18 @@
 open Js_of_ocaml;
 
+type element;
+
+type component('props) = 'props => element;
+
 class type react = {
   pub useState: Js.callback(unit => 'state) => Js.meth(Js.js_array('a));
   pub useReducer:
     (Js.callback(('state, 'action) => 'state), 'state) =>
     Js.meth(Js.js_array('a));
+  pub createElement: (component('props), 'props) => Js.meth(element);
 };
 
 let react: Js.t(react) = Js.Unsafe.global##.React;
-
-type element;
 
 let null: element = Js.Unsafe.js_expr("null");
 
@@ -18,10 +21,18 @@ let string = s => Js.string(s) |> jsStringToElement;
 
 external array: array(element) => element = "%identity";
 
-type component('props) = 'props => element;
+let convertKeyToJs = obj => {
+  let keyProperty = "key";
+  switch (Js.Unsafe.get(obj, keyProperty)) {
+  | None => Js.Unsafe.delete(obj, keyProperty)
+  | Some(s) => Js.Unsafe.set(obj, keyProperty, s)
+  };
+};
 
-external createElement: (component('props), 'props) => element =
-  "createElement";
+let createElement = (comp, props) => {
+  convertKeyToJs(props);
+  react##createElement(comp, props);
+};
 
 external cloneElement: (component('props), 'props) => element =
   "cloneElement";
