@@ -6,14 +6,15 @@ class type react = {
     (Js.callback(('state, 'action) => 'state), 'state) =>
     Js.meth(Js.js_array('a));
 };
+
 let react: Js.t(react) = Js.Unsafe.global##.React;
 
 type element;
 
-external null: unit => element = "nullElement";
-let null = null();
+let null: element = Js.Unsafe.js_expr("null");
 
-external string: string => element = "stringElement";
+external jsStringToElement: Js.t(Js.js_string) => element = "%identity";
+let string = s => Js.string(s) |> jsStringToElement;
 
 external array: array(element) => element = "%identity";
 
