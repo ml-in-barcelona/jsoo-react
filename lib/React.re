@@ -1,3 +1,13 @@
+open Js_of_ocaml;
+
+class type react = {
+  pub useState: Js.callback(unit => 'state) => Js.meth(Js.js_array('a));
+  pub useReducer:
+    (Js.callback(('state, 'action) => 'state), 'state) =>
+    Js.meth(Js.js_array('a));
+};
+let react: Js.t(react) = Js.Unsafe.global##.React;
+
 type element;
 
 external null: unit => element = "nullElement";
@@ -104,12 +114,21 @@ external forwardRef:
 
 /* HOOKS */
 
-external useState: (unit => 'state) => ('state, ('state => 'state) => unit) =
-  "useState";
+let useState = initialState => {
+  let callback = Js.wrap_callback(initialState);
+  let tuple = react##useState(callback);
+  let state: 'state = Js.Unsafe.get(tuple, 0);
+  let setState: ('state => 'state) => unit = Js.Unsafe.get(tuple, 1);
+  (state, setState);
+};
 
-external useReducer:
-  (('state, 'action) => 'state, 'state) => ('state, 'action => unit) =
-  "useReducer";
+let useReducer = (reducer, initialState) => {
+  let jsReducer = Js.wrap_callback(reducer);
+  let tuple = react##useReducer(jsReducer, initialState);
+  let state: 'state = Js.Unsafe.get(tuple, 0);
+  let dispatch: 'action => unit = Js.Unsafe.get(tuple, 1);
+  (state, dispatch);
+};
 
 external useEffect: (unit => option(unit => unit)) => unit = "useEffect";
 
