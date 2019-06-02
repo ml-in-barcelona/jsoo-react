@@ -16,14 +16,21 @@ let optInj = (~f=?, prop, opt) =>
 type domRef;
 module Ref = {
   type t = domRef;
-  type currentDomRef = React.Ref.t(Js.opt(Dom_html.element));
-  type callbackDomRef = Js.opt(Dom_html.element) => unit;
+  type currentDomRef = React.Ref.t(option(Dom_html.element));
+  type callbackDomRef = option(Dom_html.element) => unit;
 
-  external domRef: currentDomRef => domRef = "%identity";
-  external callbackDomRef: callbackDomRef => domRef = "%identity";
+  external domRef: currentDomRef => domRef = "domRef";
+  external callbackDomRef: callbackDomRef => domRef = "callbackDomRef";
 };
 
+external forwardRef:
+  (('props, option(domRef)) => React.element) => React.component('props) =
+  "forwardRef";
+
 type domProps;
+
+/* Important: the order of these labelled arguments must match the order in which
+the params are listed in the ReactDOM.js external implementation of `domProps` */
 external domProps:
   (
     ~key: string=?,
@@ -31,6 +38,7 @@ external domProps:
     ~alt: string=?,
     ~async: bool=?,
     ~className: string=?,
+    ~href: string=?,
     ~onClick: ReactEvent.Mouse.t => unit=?,
     unit
   ) =>

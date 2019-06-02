@@ -28,10 +28,6 @@ module Ref = {
 
 external createRef: unit => Ref.t(option('a)) = "createRef";
 
-external forwardRef:
-  (('props, option(Ref.t('a))) => element) => component('props) =
-  "forwardRef";
-
 // module Children = {
 //   external map: (element, element => element) => element = "Children_map";
 //   external forEach: (element, element => unit) => unit = "Children_forEach";

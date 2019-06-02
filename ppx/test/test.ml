@@ -5,3 +5,11 @@ let make ?(name= "")  =
         ())
     [@JSX ])])
   [@JSX ])[@@react.component ]
+module ForwardRef =
+  struct
+    let make =
+      React.forwardRef
+        (fun theRef ->
+           ((div ~ref:theRef ~children:["ForwardRef" |. React.string] ())
+           [@JSX ]))[@@react.component ]
+  end

@@ -14,3 +14,11 @@ let make = (~name="") => {
     <Hello one="1"> {React.string("Hello " ++ name)} </Hello>
   </>;
 };
+
+module ForwardRef = {
+  [@react.component]
+  let make =
+    React.forwardRef(theRef =>
+      <div ref=theRef> "ForwardRef"->React.string </div>
+    );
+};

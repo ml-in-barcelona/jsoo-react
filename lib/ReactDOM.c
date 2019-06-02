@@ -5,6 +5,21 @@ void render () {
   exit(1);
 }
 
+void domRef () {
+  fprintf(stderr, "Unimplemented ReactDOM function `domRef`!\n");
+  exit(1);
+}
+
+void callbackDomRef () {
+  fprintf(stderr, "Unimplemented ReactDOM function `callbackDomRef`!\n");
+  exit(1);
+}
+
+void forwardRef () {
+  fprintf(stderr, "Unimplemented ReactDOM function `forwardRef`!\n");
+  exit(1);
+}
+
 void domProps () {
   fprintf(stderr, "Unimplemented ReactDOM function `domProps`!\n");
   exit(1);

@@ -88,6 +88,9 @@ let keyType = loc =>
     [Typ.constr(~loc, {loc, txt: Lident("string")}, [])],
   );
 
+let refType = loc =>
+  Typ.constr(~loc, {loc, txt: Ldot(Lident("ReactDOM"), "domRef")}, []);
+
 type children('a) =
   | ListLiteral('a)
   | Exact('a);
@@ -1110,7 +1113,7 @@ let jsxMapper = () => {
                   Pat.var({txt: "key", loc: emptyLoc}),
                   "ref",
                   emptyLoc,
-                  None,
+                  Some(refType(emptyLoc)),
                 ),
                 ...namedArgListWithKeyAndRef,
               ]

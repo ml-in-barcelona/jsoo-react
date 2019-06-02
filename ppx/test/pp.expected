@@ -36,3 +36,21 @@ let make =
                                                                     ^ name))
                                                        ()))|] in
   Test
+module ForwardRef =
+  struct
+    let makeProps
+      : ?key:string -> ?ref:ReactDOM.domRef -> unit -> <  >  Js_of_ocaml.Js.t
+      =
+      fun ?key ->
+        fun ?ref ->
+          fun _ ->
+            let open Js_of_ocaml.Js.Unsafe in
+              obj [|("ref", (inject ref));("key", (inject key))|]
+    let make =
+      React.forwardRef
+        (let Test$ForwardRef (Props : <  >  Js_of_ocaml.Js.t) theRef =
+           ReactDOM.createDOMElementVariadic "div"
+             ~props:(ReactDOM.domProps ~ref:theRef ())
+             [|("ForwardRef" |. React.string)|] in
+         Test$ForwardRef)
+  end
