@@ -30,7 +30,7 @@ external forwardRef:
 type domProps;
 
 /* Important: the order of these labelled arguments must match the order in which
-the params are listed in the ReactDOM.js external implementation of `domProps` */
+   the params are listed in the ReactDOM.js external implementation of `domProps` */
 external domProps:
   (
     ~key: string=?,

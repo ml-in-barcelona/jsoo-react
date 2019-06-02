@@ -8,8 +8,7 @@ let make = (~count) => {
       sleep(1.)
       ->bind(() => {
           print_endline(
-            "count changed 1 sec ago! Value is: "
-            ++ string_of_int(count),
+            "count changed 1 sec ago! Value is: " ++ string_of_int(count),
           );
           return();
         })
