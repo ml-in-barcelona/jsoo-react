@@ -60,11 +60,6 @@ void createRef () {
   exit(1);
 }
 
-void forwardRef () {
-  fprintf(stderr, "Unimplemented React function `forwardRef`!\n");
-  exit(1);
-}
-
 void useRef () {
   fprintf(stderr, "Unimplemented React function `useRef`!\n");
   exit(1);
