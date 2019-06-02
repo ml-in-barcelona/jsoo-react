@@ -6,13 +6,6 @@ external render: (React.element, Js.t(Dom_html.element)) => unit = "render";
 let renderToElementWithId = (reactElement, id) =>
   render(reactElement, Dom_html.getElementById_exn(id));
 
-let optInj = (~f=?, prop, opt) =>
-  switch (f, opt) {
-  | (Some(f), Some(s)) => [|(prop, Js.Unsafe.inject(f(s)))|]
-  | (None, Some(s)) => [|(prop, Js.Unsafe.inject(s))|]
-  | _ => [||]
-  };
-
 type domRef;
 module Ref = {
   type t = domRef;
