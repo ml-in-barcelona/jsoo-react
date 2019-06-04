@@ -1485,7 +1485,20 @@ type componentConfig = {propsName: string};
  };
  */
 
-let default =
+let transformChildrenIfList = (~loc, ~mapper, theList) => {
+  let rec transformChildren_ = (theList, accum) =>
+    /* Not in the sense of converting a list to an array; convert the AST
+       representation of a list to the AST representation of an array */
+    switch (theList) {
+    | [%expr []] => List.rev(accum) |> Exp.array(~loc)
+    | [%expr [[%e? v], ...[%e? acc]]] =>
+      transformChildren_(acc, [mapper(v), ...accum])
+    | notAList => mapper(notAList)
+    };
+  transformChildren_(theList, []);
+};
+
+let jsxAttribute =
   Attribute.declare(
     "JSX",
     Attribute.Context.expression,
@@ -1498,14 +1511,18 @@ let mapExprs = {
   inherit class Ast_traverse.map as super;
   pub! expression = expr => {
     let expr = super#expression(expr);
-    switch (Attribute.consume(default, expr)) {
+    switch (Attribute.consume(jsxAttribute, expr)) {
     | Some((e, _)) =>
       let loc = e.pexp_loc;
       switch (e) {
       /* Is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo] */
-      | [%expr [[%e? _els]]] =>
+      | [%expr [[%e? _v], ...[%e? _acc]]] as children =>
         %expr
-        children
+        ReactDOM.createFragment(
+          [%e
+            transformChildrenIfList(~loc, ~mapper=super#expression, children)
+          ],
+        )
       | _ => e
       };
     | None => expr

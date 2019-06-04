@@ -38,3 +38,5 @@ module ForwardRef =
            [@JSX ]))[@@react.component ]
   end
 let fragment foo = (([foo])[@JSX ])
+let polyChildrenFragment foo bar = (([foo; bar])[@JSX ])
+let nestedFragment foo bar baz = (([foo; (([bar; baz])[@JSX ])])[@JSX ])
