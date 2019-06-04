@@ -1,0 +1,27 @@
+{
+  "parserOptions": {
+      "ecmaVersion": 5
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "no-undef": "error",
+    "no-unused-vars": ["warn", { "vars": "local" }]
+  },
+  "globals": {
+    "joo_global_object": "readonly",
+    "caml_js_from_string": "readonly",
+    "updateJsPropFromOpt": "readonly",
+    "caml_js_to_array": "readonly",
+    "caml_js_wrap_callback": "readonly",
+    "caml_js_from_array": "readonly",
+    "jsUndefinedFromOption": "readonly",
+    "jsNullToOption": "readonly",
+    "React": "readonly",
+    "setIfSomeMap": "readonly",
+    "setIfSome": "readonly",
+    "jsNullFromOption": "readonly"
+  },
+  "env": {
+      "browser": true
+  }
+}
