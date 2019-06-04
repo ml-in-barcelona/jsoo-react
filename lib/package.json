@@ -1,6 +1,12 @@
 {
+  "scripts": {
+    "lint": "eslint *.js"
+  },
   "dependencies": {
     "react": ">=16.8.1",
     "react-dom": ">=16.8.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0"
   }
 }
