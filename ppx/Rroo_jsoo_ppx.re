@@ -1485,26 +1485,30 @@ type componentConfig = {propsName: string};
  };
  */
 
-// let attributePattern = (name, expr) =>
-//   Ast_pattern.(
-//     attribute(
-//       pstr_value(nonrecursive, value_binding(~pat=pstring(__), ~expr=__))
-//       ^:: nil,
-//     )
-//   );
+let default =
+  Attribute.declare(
+    "JSX",
+    Attribute.Context.expression,
+    Ppxlib.Ast_pattern.__,
+    ignore,
+  );
 
 let mapExprs = {
+  as _;
   inherit class Ast_traverse.map as super;
   pub! expression = expr => {
     let expr = super#expression(expr);
-    if (contains_jsx(expr.pexp_attributes)) {
-      let acc = super#expression(e, acc);
-      switch (e.pexp_desc) {
-      | Pexp_constant(Const_string(s, _)) => [s, ...acc]
-      | _ => acc
+    switch (Attribute.consume(default, expr)) {
+    | Some((e, _)) =>
+      let loc = e.pexp_loc;
+      switch (e) {
+      /* Is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo] */
+      | [%expr [[%e? _els]]] =>
+        %expr
+        children
+      | _ => e
       };
-    } else {
-      expr;
+    | None => expr
     };
   }
 };
@@ -1512,6 +1516,6 @@ let mapExprs = {
 let () =
   Ppxlib.Driver.register_transformation(
     "rroo_jsoo_ppx",
-    ~impl=map_exprs#structure,
-    ~intf=map_exprs#signature,
+    ~impl=mapExprs#structure,
+    ~intf=mapExprs#signature,
   );
