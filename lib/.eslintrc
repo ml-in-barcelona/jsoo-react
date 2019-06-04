@@ -5,7 +5,7 @@
   "extends": "eslint:recommended",
   "rules": {
     "no-undef": "error",
-    "no-unused-vars": "warn"
+    "no-unused-vars": ["warn", { "vars": "local" }]
   },
   "globals": {
     "joo_global_objec": "readonly",
@@ -15,7 +15,12 @@
     "caml_js_to_array": "readonly",
     "caml_js_wrap_callback": "readonly",
     "caml_js_from_array": "readonly",
-    "jsUndefinedFromOption": "readonly"
+    "jsUndefinedFromOption": "readonly",
+    "jsNullToOption": "readonly",
+    "React": "readonly",
+    "setIfSomeMap": "readonly",
+    "setIfSome": "readonly",
+    "jsNullFromOption": "readonly"
   },
   "env": {
       "browser": true

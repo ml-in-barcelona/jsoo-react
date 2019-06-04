@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "lint": "eslint React.js"
+    "lint": "eslint *.js"
   },
   "dependencies": {
     "react": ">=16.8.1",
