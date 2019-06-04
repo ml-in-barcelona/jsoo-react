@@ -1,0 +1,145 @@
+{
+  "checksum": "4281f6cc2faca437691ef7af087fc9d5",
+  "root": "lib@link-dev:./package.json",
+  "node": {
+    "scheduler@0.13.6@d41d8cd9": {
+      "id": "scheduler@0.13.6@d41d8cd9",
+      "name": "scheduler",
+      "version": "0.13.6",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/scheduler/-/scheduler-0.13.6.tgz#sha1:466a4ec332467b31a91b9bf74e5347072e4cd889"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [
+        "object-assign@4.1.1@d41d8cd9", "loose-envify@1.4.0@d41d8cd9"
+      ],
+      "devDependencies": []
+    },
+    "react-is@16.8.6@d41d8cd9": {
+      "id": "react-is@16.8.6@d41d8cd9",
+      "name": "react-is",
+      "version": "16.8.6",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/react-is/-/react-is-16.8.6.tgz#sha1:5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [],
+      "devDependencies": []
+    },
+    "react-dom@16.8.6@d41d8cd9": {
+      "id": "react-dom@16.8.6@d41d8cd9",
+      "name": "react-dom",
+      "version": "16.8.6",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/react-dom/-/react-dom-16.8.6.tgz#sha1:71d6303f631e8b0097f56165ef608f051ff6e10f"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [
+        "scheduler@0.13.6@d41d8cd9", "react@16.8.6@d41d8cd9",
+        "prop-types@15.7.2@d41d8cd9", "object-assign@4.1.1@d41d8cd9",
+        "loose-envify@1.4.0@d41d8cd9"
+      ],
+      "devDependencies": []
+    },
+    "react@16.8.6@d41d8cd9": {
+      "id": "react@16.8.6@d41d8cd9",
+      "name": "react",
+      "version": "16.8.6",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/react/-/react-16.8.6.tgz#sha1:ad6c3a9614fd3a4e9ef51117f54d888da01f2bbe"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [
+        "scheduler@0.13.6@d41d8cd9", "prop-types@15.7.2@d41d8cd9",
+        "object-assign@4.1.1@d41d8cd9", "loose-envify@1.4.0@d41d8cd9"
+      ],
+      "devDependencies": []
+    },
+    "prop-types@15.7.2@d41d8cd9": {
+      "id": "prop-types@15.7.2@d41d8cd9",
+      "name": "prop-types",
+      "version": "15.7.2",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz#sha1:52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [
+        "react-is@16.8.6@d41d8cd9", "object-assign@4.1.1@d41d8cd9",
+        "loose-envify@1.4.0@d41d8cd9"
+      ],
+      "devDependencies": []
+    },
+    "object-assign@4.1.1@d41d8cd9": {
+      "id": "object-assign@4.1.1@d41d8cd9",
+      "name": "object-assign",
+      "version": "4.1.1",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/object-assign/-/object-assign-4.1.1.tgz#sha1:2109adc7965887cfc05cbbd442cac8bfbb360863"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [],
+      "devDependencies": []
+    },
+    "loose-envify@1.4.0@d41d8cd9": {
+      "id": "loose-envify@1.4.0@d41d8cd9",
+      "name": "loose-envify",
+      "version": "1.4.0",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/loose-envify/-/loose-envify-1.4.0.tgz#sha1:71ee51fa7be4caec1a63839f7e682d8132d30caf"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [ "js-tokens@4.0.0@d41d8cd9" ],
+      "devDependencies": []
+    },
+    "lib@link-dev:./package.json": {
+      "id": "lib@link-dev:./package.json",
+      "name": "lib",
+      "version": "link-dev:./package.json",
+      "source": {
+        "type": "link-dev",
+        "path": ".",
+        "manifest": "package.json"
+      },
+      "overrides": [],
+      "dependencies": [
+        "react-dom@16.8.6@d41d8cd9", "react@16.8.6@d41d8cd9"
+      ],
+      "devDependencies": []
+    },
+    "js-tokens@4.0.0@d41d8cd9": {
+      "id": "js-tokens@4.0.0@d41d8cd9",
+      "name": "js-tokens",
+      "version": "4.0.0",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz#sha1:19203fb59991df98e3a287050d4647cdeaf32499"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [],
+      "devDependencies": []
+    }
+  }
+}
