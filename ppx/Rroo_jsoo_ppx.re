@@ -1485,17 +1485,17 @@ type componentConfig = {propsName: string};
  };
  */
 
-let transformChildrenIfList = (~loc, ~mapper, theList) => {
-  let rec transformChildren_ = (theList, accum) =>
+let transformFragmentChildren = (~loc, children) => {
+  let rec processChildren = (children, accum) =>
     /* Not in the sense of converting a list to an array; convert the AST
        representation of a list to the AST representation of an array */
-    switch (theList) {
+    switch (children) {
     | [%expr []] => List.rev(accum) |> Exp.array(~loc)
-    | [%expr [[%e? v], ...[%e? acc]]] =>
-      transformChildren_(acc, [mapper(v), ...accum])
-    | notAList => mapper(notAList)
+    | [%expr [[%e? child], ...[%e? acc]]] =>
+      processChildren(acc, [child, ...accum])
+    | _notAList => children
     };
-  transformChildren_(theList, []);
+  processChildren(children, []);
 };
 
 let jsxAttribute =
@@ -1507,7 +1507,7 @@ let jsxAttribute =
   );
 
 let mapExprs = {
-  as _;
+  as _self;
   inherit class Ast_traverse.map as super;
   pub! expression = expr => {
     let expr = super#expression(expr);
@@ -1519,9 +1519,7 @@ let mapExprs = {
       | [%expr [[%e? _v], ...[%e? _acc]]] as children =>
         %expr
         ReactDOM.createFragment(
-          [%e
-            transformChildrenIfList(~loc, ~mapper=super#expression, children)
-          ],
+          [%e transformFragmentChildren(~loc, children)],
         )
       | _ => e
       };
