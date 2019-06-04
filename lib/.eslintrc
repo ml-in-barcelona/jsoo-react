@@ -4,8 +4,18 @@
   },
   "extends": "eslint:recommended",
   "rules": {
-    "no-undef": "warn",
+    "no-undef": "error",
     "no-unused-vars": "warn"
+  },
+  "globals": {
+    "joo_global_objec": "readonly",
+    "joo_global_object": "readonly",
+    "caml_js_from_string": "readonly",
+    "updateJsPropFromOpt": "readonly",
+    "caml_js_to_array": "readonly",
+    "caml_js_wrap_callback": "readonly",
+    "caml_js_from_array": "readonly",
+    "jsUndefinedFromOption": "readonly"
   },
   "env": {
       "browser": true
