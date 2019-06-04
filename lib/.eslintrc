@@ -8,7 +8,6 @@
     "no-unused-vars": ["warn", { "vars": "local" }]
   },
   "globals": {
-    "joo_global_objec": "readonly",
     "joo_global_object": "readonly",
     "caml_js_from_string": "readonly",
     "updateJsPropFromOpt": "readonly",
