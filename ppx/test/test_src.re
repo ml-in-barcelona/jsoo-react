@@ -62,7 +62,7 @@ module ForwardRef = {
     );
 };
 
-let fragment = foo => <> foo </>;
+let fragment = foo => [@bla] <> foo </>;
 
 let polyChildrenFragment = (foo, bar) => <> foo bar </>;
 

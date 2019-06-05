@@ -20,9 +20,6 @@
 
 open Ppxlib;
 open Ast_helper;
-open Asttypes;
-open Parsetree;
-open Longident;
 
 let rec find_opt = p =>
   fun
@@ -33,12 +30,6 @@ let rec find_opt = p =>
     } else {
       find_opt(p, l);
     };
-
-let nolabel = Nolabel;
-
-let labelled = str => Labelled(str);
-
-let optional = str => Optional(str);
 
 let isOptional = str =>
   switch (str) {
@@ -68,7 +59,7 @@ let argIsKeyRef =
   | _ => false;
 
 let constantString = (~loc, str) =>
-  Ast_helper.Exp.constant(~loc, Pconst_string(str, None));
+  Exp.constant(~loc, Pconst_string(str, None));
 
 let safeTypeFromValue = valueStr => {
   let valueStr = getLabel(valueStr);
@@ -78,46 +69,23 @@ let safeTypeFromValue = valueStr => {
   };
 };
 
-let keyType = loc =>
-  Typ.constr(
-    ~loc,
-    {loc, txt: optionIdent},
-    [Typ.constr(~loc, {loc, txt: Lident("string")}, [])],
-  );
+/*
+ let keyType = loc =>
+   Typ.constr(
+     ~loc,
+     {loc, txt: optionIdent},
+     [Typ.constr(~loc, {loc, txt: Lident("string")}, [])],
+   );
 
-let refType = loc =>
-  Typ.constr(~loc, {loc, txt: Ldot(Lident("ReactDOM"), "domRef")}, []);
+ let refType = loc =>
+   Typ.constr(~loc, {loc, txt: Ldot(Lident("ReactDOM"), "domRef")}, []);
+ */
 
 type children('a) =
   | ListLiteral('a)
   | Exact('a);
 
 type componentConfig = {propsName: string};
-
-/* if children is a list, convert it to an array while mapping each element. If not, just map over it, as usual */
-/*let transformChildrenIfListUpper = (~loc, ~mapper, theList) => {
-    let rec transformChildren_ = (theList, accum) =>
-      /* not in the sense of converting a list to an array; convert the AST
-         reprensentation of a list to the AST reprensentation of an array */
-      switch (theList) {
-      | {pexp_desc: Pexp_construct({txt: Lident("[]")}, None)} =>
-        switch (accum) {
-        | [singleElement] => Exact(singleElement)
-        | accum => ListLiteral(List.rev(accum) |> Exp.array(~loc))
-        }
-      | {
-          pexp_desc:
-            Pexp_construct(
-              {txt: Lident("::")},
-              Some({pexp_desc: Pexp_tuple([v, acc])}),
-            ),
-        } =>
-        transformChildren_(acc, [mapper.expr(mapper, v), ...accum])
-      | notAList => Exact(mapper.expr(mapper, notAList))
-      };
-
-    transformChildren_(theList, []);
-  };*/
 
 /*
  let transformChildrenIfList = (~loc, ~mapper, theList) => {
@@ -142,51 +110,6 @@ type componentConfig = {propsName: string};
  };*/
 
 /*
- let extractChildren = (~removeLastPositionUnit=false, ~loc, propsAndChildren) => {
-   let rec allButLast_ = (lst, acc) =>
-     switch (lst) {
-     | [] => []
-     | [(Nolabel, {pexp_desc: Pexp_construct({txt: Lident("()")}, None)})] => acc
-     | [(Nolabel, _), ..._rest] =>
-       raise(
-         Invalid_argument(
-           "JSX: found non-labelled argument before the last position",
-         ),
-       )
-     | [arg, ...rest] => allButLast_(rest, [arg, ...acc])
-     };
-
-   let allButLast = lst => allButLast_(lst, []) |> List.rev;
-   switch (
-     List.partition(
-       ((label, _)) => label == labelled("children"),
-       propsAndChildren,
-     )
-   ) {
-   | ([], props) =>
-     /* no children provided? Place a placeholder list */
-     (
-       Exp.construct(~loc, {loc, txt: Lident("[]")}, None),
-       if (removeLastPositionUnit) {
-         allButLast(props);
-       } else {
-         props;
-       },
-     )
-   | ([(_, childrenExpr)], props) => (
-       childrenExpr,
-       if (removeLastPositionUnit) {
-         allButLast(props);
-       } else {
-         props;
-       },
-     )
-   | _ =>
-     raise(
-       Invalid_argument("JSX: somehow there's more than one `children` label"),
-     )
-   };
- };
 
  /* Helper method to look up the [@react.component] attribute */
  let hasAttr = ((loc, _)) => loc.txt == "react.component";
@@ -592,104 +515,7 @@ type componentConfig = {propsName: string};
 /* TODO: some line number might still be wrong */
 /*
  let jsxMapper = () => {
-   let transformUppercaseCall =
-       (modulePath, mapper, loc, attrs, _, callArguments) => {
-     let (children, argsWithLabels) =
-       extractChildren(~loc, ~removeLastPositionUnit=true, callArguments);
-
-     let argsForMake = argsWithLabels;
-     let childrenExpr = transformChildrenIfListUpper(~loc, ~mapper, children);
-     let recursivelyTransformedArgsForMake =
-       argsForMake
-       |> List.map(((label, expression)) =>
-            (label, mapper.expr(mapper, expression))
-          );
-
-     let childrenArg = ref(None);
-     let args =
-       recursivelyTransformedArgsForMake
-       @ (
-         switch (childrenExpr) {
-         | Exact(children) => [(labelled("children"), children)]
-         | ListLiteral({pexp_desc: Pexp_array(list)}) when list == [] => []
-         | ListLiteral(expression) =>
-           /* this is a hack to support react components that introspect into their children */
-           childrenArg := Some(expression);
-           [
-             (
-               labelled("children"),
-               Exp.ident(~loc, {loc, txt: Ldot(Lident("React"), "null")}),
-             ),
-           ];
-         }
-       )
-       @ [(nolabel, Exp.construct(~loc, {loc, txt: Lident("()")}, None))];
-
-     let isCap = str => {
-       let first = String.sub(str, 0, 1);
-       let capped = String.uppercase_ascii(first);
-       first == capped;
-     };
-
-     let ident =
-       switch (modulePath) {
-       | Lident(_) => Ldot(modulePath, "make")
-       | Ldot(_modulePath, value) as fullPath when isCap(value) =>
-         Ldot(fullPath, "make")
-       | modulePath => modulePath
-       };
-
-     let propsIdent =
-       switch (ident) {
-       | Lident(path) => Lident(path ++ "Props")
-       | Ldot(ident, path) => Ldot(ident, path ++ "Props")
-       | _ =>
-         raise(
-           Invalid_argument(
-             "JSX name can't be the result of function applications",
-           ),
-         )
-       };
-
-     let props =
-       Exp.apply(
-         ~attrs,
-         ~loc,
-         Exp.ident(~loc, {loc, txt: propsIdent}),
-         args,
-       );
-
-     /* handle key, ref, children */
-     /* React.createElement(Component.make, props, ...children) */
-     switch (childrenArg^) {
-     | None =>
-       Exp.apply(
-         ~loc,
-         ~attrs,
-         Exp.ident(
-           ~loc,
-           {loc, txt: Ldot(Lident("React"), "createElement")},
-         ),
-         [(nolabel, Exp.ident(~loc, {txt: ident, loc})), (nolabel, props)],
-       )
-     | Some(children) =>
-       Exp.apply(
-         ~loc,
-         ~attrs,
-         Exp.ident(
-           ~loc,
-           {loc, txt: Ldot(Lident("React"), "createElementVariadic")},
-         ),
-         [
-           (nolabel, Exp.ident(~loc, {txt: ident, loc})),
-           (nolabel, props),
-           (nolabel, children),
-         ],
-       )
-     };
-   };
-
-   let transformLowercaseCall = (mapper, loc, attrs, callArguments, id) => {
+    let transformLowercaseCall = (mapper, loc, attrs, callArguments, id) => {
      let (children, nonChildrenProps) = extractChildren(~loc, callArguments);
      let componentNameExpr = constantString(~loc, id);
      let childrenExpr = transformChildrenIfList(~loc, ~mapper, children);
@@ -1358,55 +1184,6 @@ type componentConfig = {propsName: string};
    let reactComponentSignatureTransform = (mapper, signatures) =>
      List.fold_right(transformComponentSignature(mapper), signatures, []);
 
-   let transformJsxCall = (mapper, callExpression, callArguments, attrs) =>
-     switch (callExpression.pexp_desc) {
-     | Pexp_ident(caller) =>
-       switch (caller) {
-       | {txt: Lident("createElement")} =>
-         raise(
-           Invalid_argument(
-             "JSX: `createElement` should be preceeded by a module name.",
-           ),
-         )
-       /* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) */
-       | {loc, txt: Ldot(modulePath, "createElement" | "make")} =>
-         transformUppercaseCall(
-           modulePath,
-           mapper,
-           loc,
-           attrs,
-           callExpression,
-           callArguments,
-         )
-       /* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) */
-       /* turn that into
-          ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [|bla|]) */
-       | {loc, txt: Lident(id)} =>
-         transformLowercaseCall(mapper, loc, attrs, callArguments, id)
-       | {txt: Ldot(_, anythingNotCreateElementOrMake)} =>
-         raise(
-           Invalid_argument(
-             "JSX: the JSX attribute should be attached to a `YourModuleName.createElement` or `YourModuleName.make` call. We saw `"
-             ++ anythingNotCreateElementOrMake
-             ++ "` instead",
-           ),
-         )
-       | {txt: Lapply(_)} =>
-         /* don't think there's ever a case where this is reached */
-         raise(
-           Invalid_argument(
-             "JSX: encountered a weird case while processing the code. Please report this!",
-           ),
-         )
-       }
-     | _ =>
-       raise(
-         Invalid_argument(
-           "JSX: `createElement` should be preceeded by a simple, direct module name.",
-         ),
-       )
-     };
-
    let signature = (mapper, signature) =>
      default_mapper.signature(mapper) @@
      reactComponentSignatureTransform(mapper, signature);
@@ -1414,65 +1191,6 @@ type componentConfig = {propsName: string};
    let structure = (mapper, structures) =>
      default_mapper.structure(mapper) @@
      reactComponentTransform(mapper, structures);
-
-   let expr = (mapper, expression) =>
-     switch (expression) {
-     /* Does the function application have the @JSX attribute? */
-     | {pexp_desc: Pexp_apply(callExpression, callArguments), pexp_attributes} =>
-       let (jsxAttribute, nonJSXAttributes) =
-         List.partition(
-           ((attribute, _)) => attribute.txt == "JSX",
-           pexp_attributes,
-         );
-
-       switch (jsxAttribute, nonJSXAttributes) {
-       /* no JSX attribute */
-       | ([], _) => default_mapper.expr(mapper, expression)
-       | (_, nonJSXAttributes) =>
-         transformJsxCall(
-           mapper,
-           callExpression,
-           callArguments,
-           nonJSXAttributes,
-         )
-       };
-     /* is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo]*/
-     | {
-         pexp_desc:
-           Pexp_construct(
-             {txt: Lident("::"), loc},
-             Some({pexp_desc: Pexp_tuple(_)}),
-           ) |
-           Pexp_construct({txt: Lident("[]"), loc}, None),
-         pexp_attributes,
-       } as listItems =>
-       let (jsxAttribute, nonJSXAttributes) =
-         List.partition(
-           ((attribute, _)) => attribute.txt == "JSX",
-           pexp_attributes,
-         );
-
-       switch (jsxAttribute, nonJSXAttributes) {
-       /* no JSX attribute */
-       | ([], _) => default_mapper.expr(mapper, expression)
-       | (_, nonJSXAttributes) =>
-         let childrenExpr = transformChildrenIfList(~loc, ~mapper, listItems);
-
-         Exp.apply(
-           ~loc,
-           /* throw away the [@JSX] attribute and keep the others, if any */
-           ~attrs=nonJSXAttributes,
-           /* ReactDOM.createFragment */
-           Exp.ident(
-             ~loc,
-             {loc, txt: Ldot(Lident("ReactDOM"), "createFragment")},
-           ),
-           [(Nolabel, childrenExpr)],
-         );
-       };
-     /* Delegate to the default mapper, a deep identity traversal */
-     | e => default_mapper.expr(mapper, e)
-     };
 
    let module_binding = (mapper, module_binding) => {
      let _ = nestedModules := [module_binding.pmb_name.txt, ...nestedModules^];
@@ -1485,17 +1203,194 @@ type componentConfig = {propsName: string};
  };
  */
 
-let transformFragmentChildren = (~loc, children) => {
+let childrenListToArray = (~loc, ~attrs=?, children) => {
   let rec processChildren = (children, accum) =>
     /* Not in the sense of converting a list to an array; convert the AST
        representation of a list to the AST representation of an array */
     switch (children) {
-    | [%expr []] => List.rev(accum) |> Exp.array(~loc)
+    | [%expr []] => List.rev(accum) |> Exp.array(~attrs?, ~loc)
     | [%expr [[%e? child], ...[%e? acc]]] =>
       processChildren(acc, [child, ...accum])
-    | _notAList => children
+    | notAList => notAList
     };
   processChildren(children, []);
+};
+
+let extractChildren = (~removeLastPositionUnit=false, ~loc, propsAndChildren) => {
+  let rec allButLast_ = (lst, acc) =>
+    switch (lst) {
+    | [] => []
+    | [(Nolabel, [%expr ()])] => acc
+    | [(Nolabel, _), ..._rest] =>
+      raise(
+        Invalid_argument(
+          "JSX: found non-labelled argument before the last position",
+        ),
+      )
+    | [arg, ...rest] => allButLast_(rest, [arg, ...acc])
+    };
+
+  let allButLast = lst => allButLast_(lst, []) |> List.rev;
+  switch (
+    List.partition(
+      ((label, _)) => label == Labelled("children"),
+      propsAndChildren,
+    )
+  ) {
+  | ([], props) =>
+    /* no children provided? Place a placeholder list */
+    (
+      [%expr []],
+      if (removeLastPositionUnit) {
+        allButLast(props);
+      } else {
+        props;
+      },
+    )
+  | ([(_, childrenExpr)], props) => (
+      childrenExpr,
+      if (removeLastPositionUnit) {
+        allButLast(props);
+      } else {
+        props;
+      },
+    )
+  | _ =>
+    raise(
+      Invalid_argument("JSX: somehow there's more than one `children` label"),
+    )
+  };
+};
+
+let transformUppercaseCall =
+    (modulePath, mapper, loc, attrs, _, callArguments) => {
+  let (children, argsWithLabels) =
+    extractChildren(~loc, ~removeLastPositionUnit=true, callArguments);
+
+  let argsForMake = argsWithLabels;
+
+  let childrenArg = ref(None);
+  let args =
+    argsForMake
+    @ (
+      switch (children) {
+      | [%expr []] => []
+      | [%expr [[%e? child]]] => [(Labelled("children"), child)]
+      | [%expr [[%e? child], ...[%e? acc]]] =>
+        /* this is a hack to support react components that introspect into their children */
+        childrenArg := Some(childrenListToArray(~loc, children));
+        [
+          (
+            Labelled("children"),
+            Exp.ident(~loc, {loc, txt: Ldot(Lident("React"), "null")}),
+          ),
+        ];
+      | [%expr [%e? notListChildren]] => [
+          (Labelled("children"), notListChildren),
+        ]
+      }
+    )
+    @ [(Nolabel, Exp.construct(~loc, {loc, txt: Lident("()")}, None))];
+
+  let isCap = str => {
+    let first = String.sub(str, 0, 1);
+    let capped = String.uppercase_ascii(first);
+    first == capped;
+  };
+
+  let ident =
+    switch (modulePath) {
+    | Lident(_) => Ldot(modulePath, "make")
+    | Ldot(_modulePath, value) as fullPath when isCap(value) =>
+      Ldot(fullPath, "make")
+    | modulePath => modulePath
+    };
+
+  let propsIdent =
+    switch (ident) {
+    | Lident(path) => Lident(path ++ "Props")
+    | Ldot(ident, path) => Ldot(ident, path ++ "Props")
+    | _ =>
+      raise(
+        Invalid_argument(
+          "JSX name can't be the result of function applications",
+        ),
+      )
+    };
+
+  let props =
+    Exp.apply(~attrs, ~loc, Exp.ident(~loc, {loc, txt: propsIdent}), args);
+
+  /* handle key, ref, children */
+  /* React.createElement(Component.make, props, ...children) */
+  switch (childrenArg^) {
+  | None =>
+    Exp.apply(
+      ~loc,
+      ~attrs,
+      Exp.ident(~loc, {loc, txt: Ldot(Lident("React"), "createElement")}),
+      [(Nolabel, Exp.ident(~loc, {txt: ident, loc})), (Nolabel, props)],
+    )
+  | Some(children) =>
+    Exp.apply(
+      ~loc,
+      ~attrs,
+      Exp.ident(
+        ~loc,
+        {loc, txt: Ldot(Lident("React"), "createElementVariadic")},
+      ),
+      [
+        (Nolabel, Exp.ident(~loc, {txt: ident, loc})),
+        (Nolabel, props),
+        (Nolabel, children),
+      ],
+    )
+  };
+};
+
+let transformJsxCall = (callExpression, _callArguments, _attrs) => {
+  let loc = callExpression.pexp_loc;
+  switch (callExpression) {
+  | [%expr createElement] =>
+    raise(
+      Invalid_argument(
+        "JSX: `createElement` should be preceeded by a module name.",
+      ),
+    )
+  /* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) */
+  | [%expr [%e? modulePath].createElement]
+  | [%expr [%e? modulePath].make] =>
+    transformUppercaseCall(
+      modulePath,
+      mapper,
+      loc,
+      attrs,
+      callExpression,
+      callArguments,
+    )
+  /* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) */
+  /* turn that into
+     ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [|bla|]) */
+  | [%expr [%e? _id]] =>
+    %expr
+    2
+  // transformLowercaseCall(mapper, loc, attrs, callArguments, id)
+  // | [%expr [%e? _].[%e? _anythingNotCreateElementOrMake]] =>
+  //   raise(
+  //     Invalid_argument(
+  //       "JSX: the JSX attribute should be attached to a `YourModuleName.createElement` or `YourModuleName.make` call. We saw `"
+  //       ++ anythingNotCreateElementOrMake
+  //       ++ "` instead",
+  //     ),
+  //   )
+  // | {txt: Lapply(_)} =>
+  //   /* don't think there's ever a case where this is reached */
+  //   raise(
+  //     Invalid_argument(
+  //       "JSX: encountered a weird case while processing the code. Please report this!",
+  //     ),
+  //   )
+  };
 };
 
 let jsxAttribute =
@@ -1514,12 +1409,19 @@ let mapExprs = {
     switch (Attribute.consume(jsxAttribute, expr)) {
     | Some((e, _)) =>
       let loc = e.pexp_loc;
+      let nonJSXAttributes = e.pexp_attributes;
       switch (e) {
+      /* Is it a function application with the @JSX attribute? e.g. <Hello /> or <div /> */
+      | {
+          pexp_desc: Pexp_apply(callExpression, callArguments),
+          pexp_attributes: _,
+        } =>
+        transformJsxCall(callExpression, callArguments, nonJSXAttributes)
       /* Is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo] */
       | [%expr [[%e? _v], ...[%e? _acc]]] as children =>
         %expr
         ReactDOM.createFragment(
-          [%e transformFragmentChildren(~loc, children)],
+          [%e childrenListToArray(~attrs=nonJSXAttributes, ~loc, children)],
         )
       | _ => e
       };
