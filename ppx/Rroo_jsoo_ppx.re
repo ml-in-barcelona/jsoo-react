@@ -515,71 +515,6 @@ type componentConfig = {propsName: string};
 /* TODO: some line number might still be wrong */
 /*
  let jsxMapper = () => {
-    let transformLowercaseCall = (mapper, loc, attrs, callArguments, id) => {
-     let (children, nonChildrenProps) = extractChildren(~loc, callArguments);
-     let componentNameExpr = constantString(~loc, id);
-     let childrenExpr = transformChildrenIfList(~loc, ~mapper, children);
-     let createElementCall =
-       switch (children) {
-       /* [@JSX] div(~children=[a]), coming from <div> a </div> */
-       | {
-           pexp_desc:
-             Pexp_construct(
-               {txt: Lident("::")},
-               Some({pexp_desc: Pexp_tuple(_)}),
-             ) |
-             Pexp_construct({txt: Lident("[]")}, None),
-         } => "createDOMElementVariadic"
-       /* [@JSX] div(~children= value), coming from <div> ...(value) </div> */
-       | _ =>
-         raise(
-           Invalid_argument(
-             "A spread as a DOM element's children don't make sense written together. You can simply remove the spread.",
-           ),
-         )
-       };
-
-     let args =
-       switch (nonChildrenProps) {
-       | [_justTheUnitArgumentAtEnd] => [
-           /* "div" */
-           (nolabel, componentNameExpr), /* [|moreCreateElementCallsHere|] */
-           (nolabel, childrenExpr),
-         ]
-       | nonEmptyProps =>
-         let propsCall =
-           Exp.apply(
-             ~loc,
-             Exp.ident(
-               ~loc,
-               {loc, txt: Ldot(Lident("ReactDOM"), "domProps")},
-             ),
-             nonEmptyProps
-             |> List.map(((label, expression)) =>
-                  (label, mapper.expr(mapper, expression))
-                ),
-           );
-
-         [
-           /* "div" */
-           (nolabel, componentNameExpr), /* ReactDOM.props(~className=blabla, ~foo=bar, ()) */
-           (labelled("props"), propsCall), /* [|moreCreateElementCallsHere|] */
-           (nolabel, childrenExpr),
-         ];
-       };
-
-     Exp.apply(
-       ~loc, /* throw away the [@JSX] attribute and keep the others, if any */
-       ~attrs,
-       /* ReactDOM.createElement */
-       Exp.ident(
-         ~loc,
-         {loc, txt: Ldot(Lident("ReactDOM"), createElementCall)},
-       ),
-       args,
-     );
-   };
-
    let rec recursivelyTransformNamedArgsForMake = (mapper, expr, list) => {
      let expr = mapper.expr(mapper, expr);
      switch (expr.pexp_desc) {
@@ -1211,7 +1146,7 @@ let childrenListToArray = (~loc, ~attrs=?, children) => {
     | [%expr []] => List.rev(accum) |> Exp.array(~attrs?, ~loc)
     | [%expr [[%e? child], ...[%e? acc]]] =>
       processChildren(acc, [child, ...accum])
-    | notAList => notAList
+    | _notAList => children
     };
   processChildren(children, []);
 };
@@ -1221,76 +1156,62 @@ let extractChildren = (~removeLastPositionUnit=false, ~loc, propsAndChildren) =>
     switch (lst) {
     | [] => []
     | [(Nolabel, [%expr ()])] => acc
-    | [(Nolabel, _), ..._rest] =>
-      raise(
-        Invalid_argument(
-          "JSX: found non-labelled argument before the last position",
-        ),
-      )
     | [arg, ...rest] => allButLast_(rest, [arg, ...acc])
     };
 
   let allButLast = lst => allButLast_(lst, []) |> List.rev;
-  switch (
+
+  let (children, restProps) =
     List.partition(
       ((label, _)) => label == Labelled("children"),
       propsAndChildren,
-    )
-  ) {
-  | ([], props) =>
-    /* no children provided? Place a placeholder list */
-    (
-      [%expr []],
-      if (removeLastPositionUnit) {
-        allButLast(props);
-      } else {
-        props;
-      },
-    )
-  | ([(_, childrenExpr)], props) => (
-      childrenExpr,
-      if (removeLastPositionUnit) {
-        allButLast(props);
-      } else {
-        props;
-      },
-    )
-  | _ =>
-    raise(
-      Invalid_argument("JSX: somehow there's more than one `children` label"),
-    )
-  };
+    );
+
+  let childrenExpr =
+    switch (children) {
+    | [] =>
+      /* No children provided? Add a placeholder list */
+      %expr
+      []
+    | [(_childrenLabel, childrenExpr)] => childrenExpr
+    | _ =>
+      raise(
+        Invalid_argument(
+          "JSX: somehow there's more than one `children` label",
+        ),
+      )
+    };
+  let rest = removeLastPositionUnit ? allButLast(restProps) : restProps;
+  (childrenExpr, rest);
 };
 
-let transformUppercaseCall =
-    (modulePath, mapper, loc, attrs, _, callArguments) => {
+let transformUppercaseCall = (modulePath, loc, attrs, callArguments) => {
   let (children, argsWithLabels) =
     extractChildren(~loc, ~removeLastPositionUnit=true, callArguments);
 
   let argsForMake = argsWithLabels;
 
   let childrenArg = ref(None);
+
+  let processedChildren =
+    switch (children) {
+    | [%expr []] => None
+    | [%expr [[%e? child]]] => Some(child)
+    | [%expr [[%e? _child], ...[%e? _acc]]] =>
+      /* this is a hack to support react components that introspect into their children */
+      childrenArg := Some(childrenListToArray(~loc, children));
+      Some([%expr React.null]);
+    | [%expr [%e? notListChildren]] => Some(notListChildren)
+    };
   let args =
     argsForMake
-    @ (
-      switch (children) {
-      | [%expr []] => []
-      | [%expr [[%e? child]]] => [(Labelled("children"), child)]
-      | [%expr [[%e? child], ...[%e? acc]]] =>
-        /* this is a hack to support react components that introspect into their children */
-        childrenArg := Some(childrenListToArray(~loc, children));
-        [
-          (
-            Labelled("children"),
-            Exp.ident(~loc, {loc, txt: Ldot(Lident("React"), "null")}),
-          ),
-        ];
-      | [%expr [%e? notListChildren]] => [
-          (Labelled("children"), notListChildren),
-        ]
-      }
-    )
-    @ [(Nolabel, Exp.construct(~loc, {loc, txt: Lident("()")}, None))];
+    @ {
+      switch (processedChildren) {
+      | Some(c) => [(Labelled("children"), c)]
+      | None => []
+      };
+    }
+    @ [(Nolabel, [%expr ()])];
 
   let isCap = str => {
     let first = String.sub(str, 0, 1);
@@ -1328,17 +1249,14 @@ let transformUppercaseCall =
     Exp.apply(
       ~loc,
       ~attrs,
-      Exp.ident(~loc, {loc, txt: Ldot(Lident("React"), "createElement")}),
+      [%expr React.createElement],
       [(Nolabel, Exp.ident(~loc, {txt: ident, loc})), (Nolabel, props)],
     )
   | Some(children) =>
     Exp.apply(
       ~loc,
       ~attrs,
-      Exp.ident(
-        ~loc,
-        {loc, txt: Ldot(Lident("React"), "createElementVariadic")},
-      ),
+      [%expr React.createElementVariadic],
       [
         (Nolabel, Exp.ident(~loc, {txt: ident, loc})),
         (Nolabel, props),
@@ -1348,8 +1266,58 @@ let transformUppercaseCall =
   };
 };
 
-let transformJsxCall = (callExpression, _callArguments, _attrs) => {
-  let loc = callExpression.pexp_loc;
+let transformLowercaseCall = (loc, attrs, callArguments, id) => {
+  let (children, nonChildrenProps) = extractChildren(~loc, callArguments);
+  let componentNameExpr = constantString(~loc, id);
+  let childrenExpr = childrenListToArray(~loc, children);
+  let createElementCall =
+    switch (children) {
+    /* [@JSX] div(~children=[a]), coming from <div> a </div> */
+    | [%expr []] => "createDOMElementVariadic"
+    | [%expr [[%e? _child], ...[%e? _acc]]] => "createDOMElementVariadic"
+    /* [@JSX] div(~children= value), coming from <div> ...(value) </div> */
+    | _ =>
+      raise(
+        Invalid_argument(
+          "A spread as a DOM element's children don't make sense written together. You can simply remove the spread.",
+        ),
+      )
+    };
+
+  let args =
+    switch (nonChildrenProps) {
+    | [_justTheUnitArgumentAtEnd] => [
+        /* "div" */
+        (Nolabel, componentNameExpr),
+        /* [|moreCreateElementCallsHere|] */
+        (Nolabel, childrenExpr),
+      ]
+    | nonEmptyProps =>
+      let propsCall =
+        Exp.apply(~loc, [%expr ReactDOM.domProps], nonEmptyProps);
+      [
+        /* "div" */
+        (Nolabel, componentNameExpr),
+        /* ReactDOM.props(~className=blabla, ~foo=bar, ()) */
+        (Labelled("props"), propsCall),
+        /* [|moreCreateElementCallsHere|] */
+        (Nolabel, childrenExpr),
+      ];
+    };
+
+  Exp.apply(
+    ~loc, /* throw away the [@JSX] attribute and keep the others, if any */
+    ~attrs,
+    /* ReactDOM.createElement */
+    Exp.ident(
+      ~loc,
+      {loc, txt: Ldot(Lident("ReactDOM"), createElementCall)},
+    ),
+    args,
+  );
+};
+
+let transformJsxCall = (callExpression, callArguments, attrs) => {
   switch (callExpression) {
   | [%expr createElement] =>
     raise(
@@ -1358,23 +1326,16 @@ let transformJsxCall = (callExpression, _callArguments, _attrs) => {
       ),
     )
   /* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) */
-  | [%expr [%e? modulePath].createElement]
-  | [%expr [%e? modulePath].make] =>
-    transformUppercaseCall(
-      modulePath,
-      mapper,
-      loc,
-      attrs,
-      callExpression,
-      callArguments,
-    )
+  | {
+      pexp_desc:
+        Pexp_ident({loc, txt: Ldot(modulePath, "createElement" | "make")}),
+    } =>
+    transformUppercaseCall(modulePath, loc, attrs, callArguments)
   /* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) */
   /* turn that into
      ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [|bla|]) */
-  | [%expr [%e? _id]] =>
-    %expr
-    2
-  // transformLowercaseCall(mapper, loc, attrs, callArguments, id)
+  | {pexp_desc: Pexp_ident({loc, txt: Lident(id)})} =>
+    transformLowercaseCall(loc, attrs, callArguments, id)
   // | [%expr [%e? _].[%e? _anythingNotCreateElementOrMake]] =>
   //   raise(
   //     Invalid_argument(
@@ -1383,13 +1344,14 @@ let transformJsxCall = (callExpression, _callArguments, _attrs) => {
   //       ++ "` instead",
   //     ),
   //   )
-  // | {txt: Lapply(_)} =>
-  //   /* don't think there's ever a case where this is reached */
-  //   raise(
-  //     Invalid_argument(
-  //       "JSX: encountered a weird case while processing the code. Please report this!",
-  //     ),
-  //   )
+  | _ =>
+    /* don't think there's ever a case where this is reached */
+    // | {txt: Lapply(_)} =>
+    raise(
+      Invalid_argument(
+        "JSX: encountered a weird case while processing the code. Please report this!",
+      ),
+    )
   };
 };
 

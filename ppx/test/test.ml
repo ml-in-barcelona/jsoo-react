@@ -40,3 +40,10 @@ module ForwardRef =
 let fragment foo = (([foo])[@bla ][@JSX ])
 let polyChildrenFragment foo bar = (([foo; bar])[@JSX ])
 let nestedFragment foo bar baz = (([foo; (([bar; baz])[@JSX ])])[@JSX ])
+let upper = ((Upper.createElement ~children:[] ())[@JSX ])
+let upperWithChild foo = ((Upper.createElement ~children:[foo] ())[@JSX ])
+let upperWithChildren foo bar =
+  ((Upper.createElement ~children:[foo; bar] ())[@JSX ])
+let lower = ((lower ~children:[] ())[@JSX ])
+let lowerWithChild foo = ((lower ~children:[foo] ())[@JSX ])
+let lowerWithChildren foo bar = ((lower ~children:[foo; bar] ())[@JSX ])

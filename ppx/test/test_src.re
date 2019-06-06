@@ -67,3 +67,18 @@ let fragment = foo => [@bla] <> foo </>;
 let polyChildrenFragment = (foo, bar) => <> foo bar </>;
 
 let nestedFragment = (foo, bar, baz) => <> foo <> bar baz </> </>;
+
+let upper = <Upper />;
+
+let upperWithChild = foo => <Upper> foo </Upper>;
+
+let upperWithChildren = (foo, bar) => <Upper> foo bar </Upper>;
+
+let lower = <lower />;
+
+let lowerWithChild = foo => <lower> foo </lower>;
+
+let lowerWithChildren = (foo, bar) => <lower> foo bar </lower>;
+
+// This throws exception (expected)
+// let lowerSpread = value => <lower> ...value </lower>;
