@@ -1399,6 +1399,20 @@ let jsxMapper = () => {
           ),
         )
       }
+    /* This is just included because of the tests. We can't feed Reason-syntax code to the pp.expected tests.
+       So we feed OCaml code. But the generated Foo.make.createElement in OCaml code is parsed as Pexp_field */
+    | Pexp_field(
+        {pexp_desc: Pexp_ident({txt: modulePath}), pexp_loc: loc},
+        {txt: Lident("createElement")},
+      ) =>
+      transformUppercaseCall(
+        modulePath,
+        mapper,
+        loc,
+        attrs,
+        callExpression,
+        callArguments,
+      )
     | _ =>
       raise(
         Invalid_argument(
