@@ -1336,26 +1336,39 @@ let transformJsxCall = (callExpression, callArguments, attrs) => {
      ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [|bla|]) */
   | {pexp_desc: Pexp_ident({loc, txt: Lident(id)})} =>
     transformLowercaseCall(loc, attrs, callArguments, id)
-  // | [%expr [%e? _].[%e? _anythingNotCreateElementOrMake]] =>
-  //   raise(
-  //     Invalid_argument(
-  //       "JSX: the JSX attribute should be attached to a `YourModuleName.createElement` or `YourModuleName.make` call. We saw `"
-  //       ++ anythingNotCreateElementOrMake
-  //       ++ "` instead",
-  //     ),
-  //   )
-  | _ =>
+  | {pexp_desc: Pexp_ident({txt: Ldot(_, anythingNotCreateElementOrMake)})} =>
+    raise(
+      Invalid_argument(
+        "JSX: the JSX attribute should be attached to a `YourModuleName.createElement` or `YourModuleName.make` call. We saw `"
+        ++ anythingNotCreateElementOrMake
+        ++ "` instead",
+      ),
+    )
+  | {pexp_desc: Pexp_ident({txt: Lapply(_)})} =>
     /* don't think there's ever a case where this is reached */
-    // | {txt: Lapply(_)} =>
     raise(
       Invalid_argument(
         "JSX: encountered a weird case while processing the code. Please report this!",
       ),
     )
+  | _ =>
+    raise(
+      Invalid_argument(
+        "JSX: `createElement` should be preceeded by a simple, direct module name.",
+      ),
+    )
   };
 };
 
-let jsxAttribute =
+let reactCompAttr =
+  Attribute.declare(
+    "react.component",
+    Attribute.Context.value_binding,
+    Ppxlib.Ast_pattern.__,
+    ignore,
+  );
+
+let jsxAttr =
   Attribute.declare(
     "JSX",
     Attribute.Context.expression,
@@ -1366,9 +1379,19 @@ let jsxAttribute =
 let mapExprs = {
   as _self;
   inherit class Ast_traverse.map as super;
+  pub! value_binding = vb => {
+    let str = super#value_binding(vb);
+    switch (Attribute.consume(reactCompAttr, str)) {
+    | Some((v, _)) =>
+      let loc = v.pvb_loc;
+      let attrs = v.pvb_attributes;
+      Vb.mk(~loc, ~attrs /*, ~docs, ~text?? */, v.pvb_pat, [%expr 2]);
+    | None => str
+    };
+  };
   pub! expression = expr => {
     let expr = super#expression(expr);
-    switch (Attribute.consume(jsxAttribute, expr)) {
+    switch (Attribute.consume(jsxAttr, expr)) {
     | Some((e, _)) =>
       let loc = e.pexp_loc;
       let nonJSXAttributes = e.pexp_attributes;
