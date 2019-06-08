@@ -17,28 +17,24 @@ let make = (~name="") => {
 
 [@react.component]
 let make = (~a, ~b, _) => {
-  Js.log("This function should be named `Test`");
+  print_endline("This function should be named `Test`");
   <div />;
 };
 
-/* Not supported yet, how does RR do it without matching against `Pexp_field`??? */
-/*
- module Foo = {
-   [@react.component] [@bs.module "Foo"]
-   external component: (~a: int, ~b: string, _) => React.element = "";
- };
- <Foo.component a=1 b="1" />;
- */
+module External = {
+  [@react.component] [@otherAttribute "bla"]
+  external component: (~a: int, ~b: string, _) => React.element = "";
+};
 
 module Bar = {
   [@react.component]
   let make = (~a, ~b, _) => {
-    Js.log("This function should be named `Test$Bar`");
+    print_endline("This function should be named `Test$Bar`");
     <div />;
   };
   [@react.component]
   let component = (~a, ~b, _) => {
-    Js.log("This function should be named `Test$Bar$component`");
+    print_endline("This function should be named `Test$Bar$component`");
     <div />;
   };
 };
@@ -49,7 +45,7 @@ module Func = (M: X_int) => {
   let x = M.x + 1;
   [@react.component]
   let make = (~a, ~b, _) => {
-    Js.log("This function should be named `Test$Func`", M.x);
+    print_endline("This function should be named `Test$Func`", M.x);
     <div />;
   };
 };
@@ -79,6 +75,10 @@ let lower = <lower />;
 let lowerWithChild = foo => <lower> foo </lower>;
 
 let lowerWithChildren = (foo, bar) => <lower> foo bar </lower>;
+
+let nestedElement = <Foo.Bar a=1 b="1" />;
+
+let nestedElementCustomName = <Foo.component a=1 b="1" />;
 
 // This throws exception (expected)
 // let lowerSpread = value => <lower> ...value </lower>;

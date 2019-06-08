@@ -76,9 +76,37 @@ let make =
             (Js_of_ocaml.Js.Unsafe.get t0 "b" : res)
         (Props : < .. >  Js_of_ocaml.Js.t)
         (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
-    Js.log "This function should be named `Test`";
+    print_endline "This function should be named `Test`";
     ReactDOM.createDOMElementVariadic "div" [||] in
   Test
+module External =
+  struct
+    let componentProps
+      : a:int ->
+          b:string ->
+            ?key:string ->
+              unit ->
+                <
+                  a: int Js_of_ocaml.Js.readonly_prop  ;b: string
+                                                             Js_of_ocaml.Js.readonly_prop
+                                                            > 
+                  Js_of_ocaml.Js.t
+      =
+      fun ~a ->
+        fun ~b ->
+          fun ?key ->
+            fun _ ->
+              let open Js_of_ocaml.Js.Unsafe in
+                obj
+                  [|("key", (inject key));("b", (inject b));("a", (inject a))|]
+    external component :
+      (<
+         a: int Js_of_ocaml.Js.readonly_prop  ;b: string
+                                                    Js_of_ocaml.Js.readonly_prop
+                                                   > 
+         Js_of_ocaml.Js.t,
+        React.element) React.componentLike = ""[@@otherAttribute "bla"]
+  end
 module Bar =
   struct
     let makeProps
@@ -122,7 +150,7 @@ module Bar =
                 (Js_of_ocaml.Js.Unsafe.get t5 "b" : res)
             (Props : < .. >  Js_of_ocaml.Js.t)
             (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
-        Js.log "This function should be named `Test$Bar`";
+        print_endline "This function should be named `Test$Bar`";
         ReactDOM.createDOMElementVariadic "div" [||] in
       Test$Bar
     let componentProps
@@ -166,7 +194,7 @@ module Bar =
                 (Js_of_ocaml.Js.Unsafe.get t3 "b" : res)
             (Props : < .. >  Js_of_ocaml.Js.t)
             (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
-        Js.log "This function should be named `Test$Bar$component`";
+        print_endline "This function should be named `Test$Bar$component`";
         ReactDOM.createDOMElementVariadic "div" [||] in
       Test$Bar$component
   end
@@ -215,7 +243,7 @@ module Func(M:X_int) =
                 (Js_of_ocaml.Js.Unsafe.get t7 "b" : res)
             (Props : < .. >  Js_of_ocaml.Js.t)
             (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
-        Js.log "This function should be named `Test$Func`" M.x;
+        print_endline "This function should be named `Test$Func`" M.x;
         ReactDOM.createDOMElementVariadic "div" [||] in
       Test$Func
   end
@@ -237,4 +265,21 @@ module ForwardRef =
              [|("ForwardRef" |. React.string)|] in
          Test$ForwardRef)
   end
-let fragment foo = ReactDOM.createFragment [|foo|]
+let fragment foo = ((ReactDOM.createFragment [|foo|])[@bla ])
+let polyChildrenFragment foo bar = ReactDOM.createFragment [|foo;bar|]
+let nestedFragment foo bar baz =
+  ReactDOM.createFragment [|foo;(ReactDOM.createFragment [|bar;baz|])|]
+let upper = React.createElement Upper.make (Upper.makeProps ())
+let upperWithChild foo =
+  React.createElement Upper.make (Upper.makeProps ~children:foo ())
+let upperWithChildren foo bar =
+  React.createElementVariadic Upper.make
+    (Upper.makeProps ~children:React.null ()) [|foo;bar|]
+let lower = ReactDOM.createDOMElementVariadic "lower" [||]
+let lowerWithChild foo = ReactDOM.createDOMElementVariadic "lower" [|foo|]
+let lowerWithChildren foo bar =
+  ReactDOM.createDOMElementVariadic "lower" [|foo;bar|]
+let nestedElement =
+  React.createElement Foo.Bar.make (Foo.Bar.makeProps ~a:1 ~b:"1" ())
+let nestedElementCustomName =
+  React.createElement Foo.component (Foo.componentProps ~a:1 ~b:"1" ())
