@@ -1360,13 +1360,17 @@ let transformJsxCall = (callExpression, callArguments, attrs) => {
   };
 };
 
-let reactCompAttr =
+let reactCompAttr = context =>
   Attribute.declare(
     "react.component",
-    Attribute.Context.value_binding,
+    context,
     Ppxlib.Ast_pattern.__,
     ignore,
   );
+let reactCompVbAttr = reactCompAttr(Attribute.Context.value_binding);
+
+let reactCompExternalAttr =
+  reactCompAttr(Attribute.Context.value_description);
 
 let jsxAttr =
   Attribute.declare(
@@ -1381,7 +1385,7 @@ let mapExprs = {
   inherit class Ast_traverse.map as super;
   pub! value_binding = vb => {
     let str = super#value_binding(vb);
-    switch (Attribute.consume(reactCompAttr, str)) {
+    switch (Attribute.consume(reactCompVbAttr, str)) {
     | Some((v, _)) =>
       let loc = v.pvb_loc;
       let attrs = v.pvb_attributes;
