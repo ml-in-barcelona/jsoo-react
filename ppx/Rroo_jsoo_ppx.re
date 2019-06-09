@@ -18,8 +18,12 @@
    `ReactDOM.createFragment([|foo|])`
  */
 
-open Ppxlib;
+open Migrate_parsetree;
+open Asttypes;
+open Longident;
 open Ast_helper;
+open Parsetree;
+open Ast_mapper;
 
 let rec find_opt = p =>
   fun
@@ -127,14 +131,6 @@ type componentConfig = {propsName: string};
    pvb_attributes: List.filter(otherAttrsPure, binding.pvb_attributes),
  };
 
- /* Finds the name of the variable the binding is assigned to, otherwise raises Invalid_argument */
- let getFnName = binding =>
-   switch (binding) {
-   | {pvb_pat: {ppat_desc: Ppat_var({txt})}} => txt
-   | _ =>
-     raise(Invalid_argument("react.component calls cannot be destructured."))
-   };
-
  /* Lookup the value of `props` otherwise raise Invalid_argument error */
  let getPropsNameValue = (_acc, (loc, exp)) =>
    switch (loc, exp) {
@@ -192,44 +188,6 @@ type componentConfig = {propsName: string};
    loc,
    type_,
  );
-
- /* Lookup the filename from the location information on the AST node and turn it into a valid module identifier */
- let filenameFromLoc = (pstr_loc: Location.t) => {
-   let fileName =
-     switch (pstr_loc.loc_start.pos_fname) {
-     | "" => Location.input_name^
-     | fileName => fileName
-     };
-
-   let fileName =
-     try (Filename.chop_extension(Filename.basename(fileName))) {
-     | Invalid_argument(_) => fileName
-     };
-
-   let fileName = String.capitalize_ascii(fileName);
-   fileName;
- };
-
- /* Build a string representation of a module name with segments separated by $ */
- let makeModuleName = (fileName, nestedModules, fnName) => {
-   let fullModuleName =
-     switch (fileName, nestedModules, fnName) {
-     /* TODO: is this even reachable? It seems like the fileName always exists */
-     | ("", nestedModules, "make") => nestedModules
-     | ("", nestedModules, fnName) => List.rev([fnName, ...nestedModules])
-     | (fileName, nestedModules, "make") => [
-         fileName,
-         ...List.rev(nestedModules),
-       ]
-     | (fileName, nestedModules, fnName) => [
-         fileName,
-         ...List.rev([fnName, ...nestedModules]),
-       ]
-     };
-
-   let fullModuleName = String.concat("$", fullModuleName);
-   fullModuleName;
- };
 
  /*
     AST node builders
@@ -652,391 +610,6 @@ type componentConfig = {propsName: string};
      };
 
    let nestedModules = ref([]);
-   let transformComponentDefinition = (mapper, structure, returnStructures) =>
-     switch (structure) {
-     /* external */
-     | {
-         pstr_loc,
-         pstr_desc:
-           Pstr_primitive(
-             {pval_name: {txt: fnName}, pval_attributes, pval_type} as value_description,
-           ),
-       } as pstr =>
-       switch (List.filter(hasAttr, pval_attributes)) {
-       | [] => [structure, ...returnStructures]
-       | [_] =>
-         let rec getPropTypes = (types, {ptyp_loc, ptyp_desc} as fullType) =>
-           switch (ptyp_desc) {
-           | Ptyp_arrow(name, type_, {ptyp_desc: Ptyp_arrow(_)} as rest)
-               when isLabelled(name) || isOptional(name) =>
-             getPropTypes([(name, ptyp_loc, type_), ...types], rest)
-           | Ptyp_arrow(Nolabel, _type, rest) => getPropTypes(types, rest)
-           | Ptyp_arrow(name, type_, returnValue)
-               when isLabelled(name) || isOptional(name) => (
-               returnValue,
-               [(name, returnValue.ptyp_loc, type_), ...types],
-             )
-           | _ => (fullType, types)
-           };
-
-         let (innerType, propTypes) = getPropTypes([], pval_type);
-         let namedTypeList = List.fold_left(argToConcreteType, [], propTypes);
-         let pluckLabelAndLoc = ((label, loc, type_)) => (
-           label,
-           None /* default */,
-           loc,
-           Some(type_),
-         );
-
-         let retPropsType = makePropsType(~loc=pstr_loc, namedTypeList);
-         let externalPropsDecl =
-           makePropsItem(
-             fnName,
-             pstr_loc,
-             [
-               (optional("key"), None, pstr_loc, Some(keyType(pstr_loc))),
-               ...List.map(pluckLabelAndLoc, propTypes),
-             ],
-             retPropsType,
-           );
-
-         /* can't be an arrow because it will defensively uncurry */
-         let newExternalType =
-           Ptyp_constr(
-             {loc: pstr_loc, txt: Ldot(Lident("React"), "componentLike")},
-             [retPropsType, innerType],
-           );
-
-         let newStructure = {
-           ...pstr,
-           pstr_desc:
-             Pstr_primitive({
-               ...value_description,
-               pval_type: {
-                 ...pval_type,
-                 ptyp_desc: newExternalType,
-               },
-               pval_attributes: List.filter(otherAttrsPure, pval_attributes),
-             }),
-         };
-
-         [externalPropsDecl, newStructure, ...returnStructures];
-       | _ =>
-         raise(
-           Invalid_argument(
-             "Only one react.component call can exist on a component at one time",
-           ),
-         )
-       }
-     /* let component = ... */
-     | {pstr_loc, pstr_desc: Pstr_value(recFlag, valueBindings)} =>
-       let mapBinding = binding =>
-         if (hasAttrOnBinding(binding)) {
-           let fnName = getFnName(binding);
-           let fileName = filenameFromLoc(pstr_loc);
-           let fullModuleName =
-             makeModuleName(fileName, nestedModules^, fnName);
-
-           let emptyLoc = Location.in_file(fileName);
-           let modifiedBinding = binding => {
-             let expression = binding.pvb_expr;
-             let wrapExpressionWithBinding = (expressionFn, expression) => {
-               ...filterAttrOnBinding(binding),
-               pvb_expr: expressionFn(expression),
-             };
-
-             /* TODO: there is a long-tail of unsupported features inside of blocks - Pexp_letmodule , Pexp_letexception , Pexp_ifthenelse */
-             let rec spelunkForFunExpression = expression =>
-               switch (expression) {
-               /* let make = (~prop) => ... */
-               | {pexp_desc: Pexp_fun(_)} => (
-                   (
-                     expressionDesc => {
-                       ...expression,
-                       pexp_desc: expressionDesc,
-                     }
-                   ),
-                   expression,
-                 )
-               /* let make = {let foo = bar in (~prop) => ...} */
-               | {pexp_desc: Pexp_let(recursive, vbs, returnExpression)} =>
-                 /* here's where we spelunk! */
-                 let (wrapExpression, realReturnExpression) =
-                   spelunkForFunExpression(returnExpression);
-
-                 (
-                   (
-                     expressionDesc => {
-                       ...expression,
-                       pexp_desc:
-                         Pexp_let(
-                           recursive,
-                           vbs,
-                           wrapExpression(expressionDesc),
-                         ),
-                     }
-                   ),
-                   realReturnExpression,
-                 );
-               /* let make = React.forwardRef((~prop) => ...) */
-               | {
-                   pexp_desc:
-                     Pexp_apply(
-                       wrapperExpression,
-                       [(Nolabel, innerFunctionExpression)],
-                     ),
-                 } =>
-                 let (wrapExpression, realReturnExpression) =
-                   spelunkForFunExpression(innerFunctionExpression);
-
-                 (
-                   (
-                     expressionDesc => {
-                       ...expression,
-                       pexp_desc:
-                         Pexp_apply(
-                           wrapperExpression,
-                           [(nolabel, wrapExpression(expressionDesc))],
-                         ),
-                     }
-                   ),
-                   realReturnExpression,
-                 );
-               | {
-                   pexp_desc:
-                     Pexp_sequence(wrapperExpression, innerFunctionExpression),
-                 } =>
-                 let (wrapExpression, realReturnExpression) =
-                   spelunkForFunExpression(innerFunctionExpression);
-
-                 (
-                   (
-                     expressionDesc => {
-                       ...expression,
-                       pexp_desc:
-                         Pexp_sequence(
-                           wrapperExpression,
-                           wrapExpression(expressionDesc),
-                         ),
-                     }
-                   ),
-                   realReturnExpression,
-                 );
-               | _ =>
-                 raise(
-                   Invalid_argument(
-                     "react.component calls can only be on function definitions or component wrappers (forwardRef, memo).",
-                   ),
-                 )
-               };
-
-             let (wrapExpression, expression) =
-               spelunkForFunExpression(expression);
-
-             (wrapExpressionWithBinding(wrapExpression), expression);
-           };
-
-           let (bindingWrapper, expression) = modifiedBinding(binding);
-           let reactComponentAttribute =
-             try (Some(List.find(hasAttr, binding.pvb_attributes))) {
-             | Not_found => None
-             };
-
-           let (attr_loc, payload) =
-             switch (reactComponentAttribute) {
-             | Some((loc, payload)) => (loc.loc, Some(payload))
-             | None => (emptyLoc, None)
-             };
-
-           let props = getPropsAttr(payload);
-           /* do stuff here! */
-           let (innerFunctionExpression, namedArgList, forwardRef) =
-             recursivelyTransformNamedArgsForMake(mapper, expression, []);
-
-           let namedArgListWithKeyAndRef = [
-             (
-               optional("key"),
-               None,
-               Pat.var({txt: "key", loc: emptyLoc}),
-               "key",
-               emptyLoc,
-               Some(keyType(emptyLoc)),
-             ),
-             ...namedArgList,
-           ];
-
-           let namedArgListWithKeyAndRef =
-             switch (forwardRef) {
-             | Some(_) => [
-                 (
-                   optional("ref"),
-                   None,
-                   Pat.var({txt: "key", loc: emptyLoc}),
-                   "ref",
-                   emptyLoc,
-                   Some(refType(emptyLoc)),
-                 ),
-                 ...namedArgListWithKeyAndRef,
-               ]
-             | None => namedArgListWithKeyAndRef
-             };
-
-           let namedTypeList = List.fold_left(argToType, [], namedArgList);
-           let makePropsLet =
-             makePropsDecl(
-               fnName,
-               attr_loc,
-               namedArgListWithKeyAndRef,
-               namedTypeList,
-             );
-
-           let makeLet =
-               (
-                 innerExpression,
-                 (label, default, pattern, _alias, loc, _type),
-               ) => {
-             let labelString =
-               switch (label) {
-               | label when isOptional(label) || isLabelled(label) =>
-                 getLabel(label)
-               | _ => raise(Invalid_argument("This should never happen"))
-               };
-
-             let expression =
-               /* We need to wrap it with Js_of_ocaml ppx so the ##. operator can be processed correctly */
-               Ppx_js.mapper.expr(
-                 default_mapper,
-                 Exp.apply(
-                   ~loc,
-                   Exp.ident(~loc, {txt: Lident("##."), loc}),
-                   [
-                     (
-                       nolabel,
-                       Exp.ident(~loc, {txt: Lident(props.propsName), loc}),
-                     ),
-                     (
-                       nolabel,
-                       Exp.ident(~loc, {txt: Lident(labelString), loc}),
-                     ),
-                   ],
-                 ),
-               );
-
-             let expression =
-               switch (default) {
-               | Some(default) =>
-                 Exp.match(
-                   expression,
-                   [
-                     Exp.case(
-                       Pat.construct(
-                         {loc, txt: Lident("Some")},
-                         Some(Pat.var(~loc, {txt: labelString, loc})),
-                       ),
-                       Exp.ident(~loc, {txt: Lident(labelString), loc}),
-                     ),
-                     Exp.case(
-                       Pat.construct({loc, txt: Lident("None")}, None),
-                       default,
-                     ),
-                   ],
-                 )
-               | None => expression
-               };
-
-             let letExpression = Vb.mk(pattern, expression);
-             Exp.let_(~loc, Nonrecursive, [letExpression], innerExpression);
-           };
-
-           let innerExpression =
-             List.fold_left(
-               makeLet,
-               Exp.mk(innerFunctionExpression),
-               namedArgList,
-             );
-
-           let innerExpressionWithRef =
-             switch (forwardRef) {
-             | Some(txt) => {
-                 ...innerExpression,
-                 pexp_desc:
-                   Pexp_fun(
-                     nolabel,
-                     None,
-                     {
-                       ppat_desc: Ppat_var({txt, loc: emptyLoc}),
-                       ppat_loc: emptyLoc,
-                       ppat_attributes: [],
-                     },
-                     innerExpression,
-                   ),
-               }
-             | None => innerExpression
-             };
-
-           let fullExpression =
-             Pexp_fun(
-               nolabel,
-               None,
-               {
-                 ppat_desc:
-                   Ppat_constraint(
-                     makePropsName(~loc=emptyLoc, props.propsName),
-                     makePropsType(~loc=emptyLoc, namedTypeList),
-                   ),
-                 ppat_loc: emptyLoc,
-                 ppat_attributes: [],
-               },
-               innerExpressionWithRef,
-             );
-
-           let fullExpression =
-             switch (fullModuleName) {
-             | "" => fullExpression
-             | txt =>
-               Pexp_let(
-                 Nonrecursive,
-                 [
-                   Vb.mk(
-                     ~loc=emptyLoc,
-                     Pat.var(~loc=emptyLoc, {loc: emptyLoc, txt}),
-                     Exp.mk(~loc=emptyLoc, fullExpression),
-                   ),
-                 ],
-                 Exp.ident(~loc=emptyLoc, {loc: emptyLoc, txt: Lident(txt)}),
-               )
-             };
-
-           let newBinding = bindingWrapper(fullExpression);
-           (Some(makePropsLet), newBinding);
-         } else {
-           (None, binding);
-         };
-
-       let structuresAndBinding = List.map(mapBinding, valueBindings);
-       let otherStructures = ((extern, binding), (externs, bindings)) => {
-         let externs =
-           switch (extern) {
-           | Some(extern) => [extern, ...externs]
-           | None => externs
-           };
-
-         (externs, [binding, ...bindings]);
-       };
-
-       let (externs, bindings) =
-         List.fold_right(otherStructures, structuresAndBinding, ([], []));
-
-       externs
-       @ [
-         {pstr_loc, pstr_desc: Pstr_value(recFlag, bindings)},
-         ...returnStructures,
-       ];
-     | structure => [structure, ...returnStructures]
-     };
-
-   let reactComponentTransform = (mapper, structures) =>
-     List.fold_right(transformComponentDefinition(mapper), structures, []);
 
    let transformComponentSignature = (_mapper, signature, returnSignatures) =>
      switch (signature) {
@@ -1138,12 +711,388 @@ type componentConfig = {propsName: string};
  };
  */
 
-let childrenListToArray = (~loc, ~attrs=?, children) => {
+/*
+ let transformComponentDefinition = (mapper, structure, returnStructures) =>
+   switch (structure) {
+   /* external */
+   | {
+       pstr_loc,
+       pstr_desc:
+         Pstr_primitive(
+           {pval_name: {txt: fnName}, pval_attributes, pval_type} as value_description,
+         ),
+     } as pstr =>
+     switch (List.filter(hasAttr, pval_attributes)) {
+     | [] => [structure, ...returnStructures]
+     | [_] =>
+       let rec getPropTypes = (types, {ptyp_loc, ptyp_desc} as fullType) =>
+         switch (ptyp_desc) {
+         | Ptyp_arrow(name, type_, {ptyp_desc: Ptyp_arrow(_)} as rest)
+             when isLabelled(name) || isOptional(name) =>
+           getPropTypes([(name, ptyp_loc, type_), ...types], rest)
+         | Ptyp_arrow(Nolabel, _type, rest) => getPropTypes(types, rest)
+         | Ptyp_arrow(name, type_, returnValue)
+             when isLabelled(name) || isOptional(name) => (
+             returnValue,
+             [(name, returnValue.ptyp_loc, type_), ...types],
+           )
+         | _ => (fullType, types)
+         };
+
+       let (innerType, propTypes) = getPropTypes([], pval_type);
+       let namedTypeList = List.fold_left(argToConcreteType, [], propTypes);
+       let pluckLabelAndLoc = ((label, loc, type_)) => (
+         label,
+         None /* default */,
+         loc,
+         Some(type_),
+       );
+
+       let retPropsType = makePropsType(~loc=pstr_loc, namedTypeList);
+       let externalPropsDecl =
+         makePropsItem(
+           fnName,
+           pstr_loc,
+           [
+             (optional("key"), None, pstr_loc, Some(keyType(pstr_loc))),
+             ...List.map(pluckLabelAndLoc, propTypes),
+           ],
+           retPropsType,
+         );
+
+       /* can't be an arrow because it will defensively uncurry */
+       let newExternalType =
+         Ptyp_constr(
+           {loc: pstr_loc, txt: Ldot(Lident("React"), "componentLike")},
+           [retPropsType, innerType],
+         );
+
+       let newStructure = {
+         ...pstr,
+         pstr_desc:
+           Pstr_primitive({
+             ...value_description,
+             pval_type: {
+               ...pval_type,
+               ptyp_desc: newExternalType,
+             },
+             pval_attributes: List.filter(otherAttrsPure, pval_attributes),
+           }),
+       };
+
+       [externalPropsDecl, newStructure, ...returnStructures];
+     | _ =>
+       raise(
+         Invalid_argument(
+           "Only one react.component call can exist on a component at one time",
+         ),
+       )
+     }
+ */
+
+/* Build a string representation of a module name with segments separated by $ */
+let makeModuleName = (fileName, nestedModules, fnName) => {
+  let fullModuleName =
+    switch (fileName, nestedModules, fnName) {
+    /* TODO: is this even reachable? It seems like the fileName always exists */
+    | ("", nestedModules, "make") => nestedModules
+    | ("", nestedModules, fnName) => List.rev([fnName, ...nestedModules])
+    | (fileName, nestedModules, "make") => [
+        fileName,
+        ...List.rev(nestedModules),
+      ]
+    | (fileName, nestedModules, fnName) => [
+        fileName,
+        ...List.rev([fnName, ...nestedModules]),
+      ]
+    };
+
+  let fullModuleName = String.concat("$", fullModuleName);
+  fullModuleName;
+};
+
+/* Finds the name of the variable the binding is assigned to, otherwise raises Invalid_argument */
+let getFnName = binding =>
+  switch (binding) {
+  | {pvb_pat: {ppat_desc: Ppat_var({txt})}} => txt
+  | _ =>
+    raise(Invalid_argument("react.component calls cannot be destructured."))
+  };
+
+/* Lookup the filename from the location information on the AST node and turn it into a valid module identifier */
+let filenameFromLoc = (pstr_loc: Location.t) => {
+  let fileName =
+    switch (pstr_loc.loc_start.pos_fname) {
+    | "" => Ocaml_common.Location.input_name^
+    | fileName => fileName
+    };
+
+  let fileName =
+    try (Filename.chop_extension(Filename.basename(fileName))) {
+    | Invalid_argument(_) => fileName
+    };
+
+  let fileName = String.capitalize_ascii(fileName);
+  fileName;
+};
+
+/*
+ let mapBinding = (loc, binding) => {
+   let fnName = getFnName(binding);
+   let fileName = filenameFromLoc(loc);
+   let fullModuleName = makeModuleName(fileName, nestedModules^, fnName);
+
+   let emptyLoc = Location.in_file(fileName);
+   let modifiedBinding = binding => {
+     let expression = binding.pvb_expr;
+     let wrapExpressionWithBinding = (expressionFn, expression) => {
+       ...filterAttrOnBinding(binding),
+       pvb_expr: expressionFn(expression),
+     };
+
+     /* TODO: there is a long-tail of unsupported features inside of blocks - Pexp_letmodule , Pexp_letexception , Pexp_ifthenelse */
+     let rec spelunkForFunExpression = expression =>
+       switch (expression) {
+       /* let make = (~prop) => ... */
+       | {pexp_desc: Pexp_fun(_)} => (
+           (expressionDesc => {...expression, pexp_desc: expressionDesc}),
+           expression,
+         )
+       /* let make = {let foo = bar in (~prop) => ...} */
+       | {pexp_desc: Pexp_let(recursive, vbs, returnExpression)} =>
+         /* here's where we spelunk! */
+         let (wrapExpression, realReturnExpression) =
+           spelunkForFunExpression(returnExpression);
+
+         (
+           (
+             expressionDesc => {
+               ...expression,
+               pexp_desc:
+                 Pexp_let(recursive, vbs, wrapExpression(expressionDesc)),
+             }
+           ),
+           realReturnExpression,
+         );
+       /* let make = React.forwardRef((~prop) => ...) */
+       | {
+           pexp_desc:
+             Pexp_apply(
+               wrapperExpression,
+               [(Nolabel, innerFunctionExpression)],
+             ),
+         } =>
+         let (wrapExpression, realReturnExpression) =
+           spelunkForFunExpression(innerFunctionExpression);
+
+         (
+           (
+             expressionDesc => {
+               ...expression,
+               pexp_desc:
+                 Pexp_apply(
+                   wrapperExpression,
+                   [(nolabel, wrapExpression(expressionDesc))],
+                 ),
+             }
+           ),
+           realReturnExpression,
+         );
+       | {
+           pexp_desc: Pexp_sequence(wrapperExpression, innerFunctionExpression),
+         } =>
+         let (wrapExpression, realReturnExpression) =
+           spelunkForFunExpression(innerFunctionExpression);
+
+         (
+           (
+             expressionDesc => {
+               ...expression,
+               pexp_desc:
+                 Pexp_sequence(
+                   wrapperExpression,
+                   wrapExpression(expressionDesc),
+                 ),
+             }
+           ),
+           realReturnExpression,
+         );
+       | _ =>
+         raise(
+           Invalid_argument(
+             "react.component calls can only be on function definitions or component wrappers (forwardRef, memo).",
+           ),
+         )
+       };
+
+     let (wrapExpression, expression) = spelunkForFunExpression(expression);
+
+     (wrapExpressionWithBinding(wrapExpression), expression);
+   };
+
+   let (bindingWrapper, expression) = modifiedBinding(binding);
+   let reactComponentAttribute =
+     try (Some(List.find(hasAttr, binding.pvb_attributes))) {
+     | Not_found => None
+     };
+
+   let (attr_loc, payload) =
+     switch (reactComponentAttribute) {
+     | Some((loc, payload)) => (loc.loc, Some(payload))
+     | None => (emptyLoc, None)
+     };
+
+   let props = getPropsAttr(payload);
+   /* do stuff here! */
+   let (innerFunctionExpression, namedArgList, forwardRef) =
+     recursivelyTransformNamedArgsForMake(mapper, expression, []);
+
+   let namedArgListWithKeyAndRef = [
+     (
+       optional("key"),
+       None,
+       Pat.var({txt: "key", loc: emptyLoc}),
+       "key",
+       emptyLoc,
+       Some(keyType(emptyLoc)),
+     ),
+     ...namedArgList,
+   ];
+
+   let namedArgListWithKeyAndRef =
+     switch (forwardRef) {
+     | Some(_) => [
+         (
+           optional("ref"),
+           None,
+           Pat.var({txt: "key", loc: emptyLoc}),
+           "ref",
+           emptyLoc,
+           Some(refType(emptyLoc)),
+         ),
+         ...namedArgListWithKeyAndRef,
+       ]
+     | None => namedArgListWithKeyAndRef
+     };
+
+   let namedTypeList = List.fold_left(argToType, [], namedArgList);
+   let makePropsLet =
+     makePropsDecl(fnName, attr_loc, namedArgListWithKeyAndRef, namedTypeList);
+
+   let makeLet =
+       (innerExpression, (label, default, pattern, _alias, loc, _type)) => {
+     let labelString =
+       switch (label) {
+       | label when isOptional(label) || isLabelled(label) => getLabel(label)
+       | _ => raise(Invalid_argument("This should never happen"))
+       };
+
+     let expression =
+       /* We need to wrap it with Js_of_ocaml ppx so the ##. operator can be processed correctly */
+       Ppx_js.mapper.expr(
+         default_mapper,
+         Exp.apply(
+           ~loc,
+           Exp.ident(~loc, {txt: Lident("##."), loc}),
+           [
+             (nolabel, Exp.ident(~loc, {txt: Lident(props.propsName), loc})),
+             (nolabel, Exp.ident(~loc, {txt: Lident(labelString), loc})),
+           ],
+         ),
+       );
+
+     let expression =
+       switch (default) {
+       | Some(default) =>
+         Exp.match(
+           expression,
+           [
+             Exp.case(
+               Pat.construct(
+                 {loc, txt: Lident("Some")},
+                 Some(Pat.var(~loc, {txt: labelString, loc})),
+               ),
+               Exp.ident(~loc, {txt: Lident(labelString), loc}),
+             ),
+             Exp.case(
+               Pat.construct({loc, txt: Lident("None")}, None),
+               default,
+             ),
+           ],
+         )
+       | None => expression
+       };
+
+     let letExpression = Vb.mk(pattern, expression);
+     Exp.let_(~loc, Nonrecursive, [letExpression], innerExpression);
+   };
+
+   let innerExpression =
+     List.fold_left(makeLet, Exp.mk(innerFunctionExpression), namedArgList);
+
+   let innerExpressionWithRef =
+     switch (forwardRef) {
+     | Some(txt) => {
+         ...innerExpression,
+         pexp_desc:
+           Pexp_fun(
+             nolabel,
+             None,
+             {
+               ppat_desc: Ppat_var({txt, loc: emptyLoc}),
+               ppat_loc: emptyLoc,
+               ppat_attributes: [],
+             },
+             innerExpression,
+           ),
+       }
+     | None => innerExpression
+     };
+
+   let fullExpression =
+     Pexp_fun(
+       nolabel,
+       None,
+       {
+         ppat_desc:
+           Ppat_constraint(
+             makePropsName(~loc=emptyLoc, props.propsName),
+             makePropsType(~loc=emptyLoc, namedTypeList),
+           ),
+         ppat_loc: emptyLoc,
+         ppat_attributes: [],
+       },
+       innerExpressionWithRef,
+     );
+
+   let fullExpression =
+     switch (fullModuleName) {
+     | "" => fullExpression
+     | txt =>
+       Pexp_let(
+         Nonrecursive,
+         [
+           Vb.mk(
+             ~loc=emptyLoc,
+             Pat.var(~loc=emptyLoc, {loc: emptyLoc, txt}),
+             Exp.mk(~loc=emptyLoc, fullExpression),
+           ),
+         ],
+         Exp.ident(~loc=emptyLoc, {loc: emptyLoc, txt: Lident(txt)}),
+       )
+     };
+
+   let newBinding = bindingWrapper(fullExpression);
+   (Some(makePropsLet), newBinding);
+ };
+ */
+
+let childrenListToArray = (~loc, children) => {
   let rec processChildren = (children, accum) =>
     /* Not in the sense of converting a list to an array; convert the AST
        representation of a list to the AST representation of an array */
     switch (children) {
-    | [%expr []] => List.rev(accum) |> Exp.array(~attrs?, ~loc)
+    | [%expr []] => List.rev(accum) |> Exp.array(~loc)
     | [%expr [[%e? child], ...[%e? acc]]] =>
       processChildren(acc, [child, ...accum])
     | _notAList => children
@@ -1185,7 +1134,7 @@ let extractChildren = (~removeLastPositionUnit=false, ~loc, propsAndChildren) =>
   (childrenExpr, rest);
 };
 
-let transformUppercaseCall = (modulePath, loc, attrs, callArguments) => {
+let transformUppercaseCall = (modulePath, loc, callArguments) => {
   let (children, argsWithLabels) =
     extractChildren(~loc, ~removeLastPositionUnit=true, callArguments);
 
@@ -1240,7 +1189,7 @@ let transformUppercaseCall = (modulePath, loc, attrs, callArguments) => {
     };
 
   let props =
-    Exp.apply(~attrs, ~loc, Exp.ident(~loc, {loc, txt: propsIdent}), args);
+    Exp.apply(~loc, Exp.ident(~loc, {loc, txt: propsIdent}), args);
 
   /* handle key, ref, children */
   /* React.createElement(Component.make, props, ...children) */
@@ -1248,14 +1197,12 @@ let transformUppercaseCall = (modulePath, loc, attrs, callArguments) => {
   | None =>
     Exp.apply(
       ~loc,
-      ~attrs,
       [%expr React.createElement],
       [(Nolabel, Exp.ident(~loc, {txt: ident, loc})), (Nolabel, props)],
     )
   | Some(children) =>
     Exp.apply(
       ~loc,
-      ~attrs,
       [%expr React.createElementVariadic],
       [
         (Nolabel, Exp.ident(~loc, {txt: ident, loc})),
@@ -1266,7 +1213,7 @@ let transformUppercaseCall = (modulePath, loc, attrs, callArguments) => {
   };
 };
 
-let transformLowercaseCall = (loc, attrs, callArguments, id) => {
+let transformLowercaseCall = (loc, callArguments, id) => {
   let (children, nonChildrenProps) = extractChildren(~loc, callArguments);
   let componentNameExpr = constantString(~loc, id);
   let childrenExpr = childrenListToArray(~loc, children);
@@ -1306,8 +1253,7 @@ let transformLowercaseCall = (loc, attrs, callArguments, id) => {
     };
 
   Exp.apply(
-    ~loc, /* throw away the [@JSX] attribute and keep the others, if any */
-    ~attrs,
+    ~loc,
     /* ReactDOM.createElement */
     Exp.ident(
       ~loc,
@@ -1317,7 +1263,7 @@ let transformLowercaseCall = (loc, attrs, callArguments, id) => {
   );
 };
 
-let transformJsxCall = (callExpression, callArguments, attrs) => {
+let transformJsxCall = (callExpression, callArguments) => {
   switch (callExpression) {
   | [%expr createElement] =>
     raise(
@@ -1330,8 +1276,9 @@ let transformJsxCall = (callExpression, callArguments, attrs) => {
       pexp_desc:
         Pexp_ident({loc, txt: Ldot(modulePath, "createElement" | "make")}),
     }
-  /* This is just included because of the tests. We can't feed Reason-syntax code to the pp.expected tests.
-     So we feed OCaml code. But the generated Foo.make.createElement in OCaml code is parsed as Pexp_field */
+  /* This is just included because of the tests. We can't use Reason-syntax code: https://github.com/ocaml-ppx/ocaml-migrate-parsetree/issues/74
+     So we use OCaml code. But the generated code from <Foo.make /> creates Foo.make.createElement in OCaml code,
+     which is parsed as Pexp_field */
   | {
       pexp_desc:
         Pexp_field(
@@ -1339,12 +1286,12 @@ let transformJsxCall = (callExpression, callArguments, attrs) => {
           {txt: Lident("createElement")},
         ),
     } =>
-    transformUppercaseCall(modulePath, loc, attrs, callArguments)
+    transformUppercaseCall(modulePath, loc, callArguments)
   /* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) */
   /* turn that into
      ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [|bla|]) */
   | {pexp_desc: Pexp_ident({loc, txt: Lident(id)})} =>
-    transformLowercaseCall(loc, attrs, callArguments, id)
+    transformLowercaseCall(loc, callArguments, id)
   | {pexp_desc: Pexp_ident({txt: Ldot(_, anythingNotCreateElementOrMake)})} =>
     raise(
       Invalid_argument(
@@ -1369,68 +1316,51 @@ let transformJsxCall = (callExpression, callArguments, attrs) => {
   };
 };
 
-let reactCompAttr = context =>
-  Attribute.declare(
-    "react.component",
-    context,
-    Ppxlib.Ast_pattern.__,
-    ignore,
-  );
-let reactCompVbAttr = reactCompAttr(Attribute.Context.value_binding);
-
-let reactCompExternalAttr =
-  reactCompAttr(Attribute.Context.value_description);
-
-let jsxAttr =
-  Attribute.declare(
-    "JSX",
-    Attribute.Context.expression,
-    Ppxlib.Ast_pattern.__,
-    ignore,
-  );
-
-let mapExprs = {
-  as _self;
-  inherit class Ast_traverse.map as super;
-  pub! value_binding = vb => {
-    let str = super#value_binding(vb);
-    switch (Attribute.consume(reactCompVbAttr, str)) {
-    | Some((v, _)) =>
-      let loc = v.pvb_loc;
-      let attrs = v.pvb_attributes;
-      Vb.mk(~loc, ~attrs /*, ~docs, ~text?? */, v.pvb_pat, [%expr 2]);
-    | None => str
-    };
+let consumeAttribute = (attrTxt, expr) => {
+  let (foundAttrs, otherAttrs) =
+    List.partition(
+      ((attribute, _)) => attribute.txt == attrTxt,
+      expr.pexp_attributes,
+    );
+  switch (foundAttrs) {
+  | [] => None
+  | _ => Some({...expr, pexp_attributes: otherAttrs})
   };
-  pub! expression = expr => {
-    let expr = super#expression(expr);
-    switch (Attribute.consume(jsxAttr, expr)) {
-    | Some((e, _)) =>
-      let loc = e.pexp_loc;
-      let nonJSXAttributes = e.pexp_attributes;
+};
+
+let jsxMapper = () => {
+  let expr = (mapper, expr) =>
+    switch (expr |> consumeAttribute("JSX")) {
+    | Some({pexp_loc: loc, pexp_attributes: nonJsxAttributes} as e) =>
       switch (e) {
       /* Is it a function application with the @JSX attribute? e.g. <Hello /> or <div /> */
-      | {
-          pexp_desc: Pexp_apply(callExpression, callArguments),
-          pexp_attributes: _,
-        } =>
-        transformJsxCall(callExpression, callArguments, nonJSXAttributes)
+      | {pexp_desc: Pexp_apply(callExpression, callArguments), _} =>
+        let callExpression = mapper.expr(mapper, callExpression);
+        let callArguments =
+          List.map(
+            ((s, e)) => (s, mapper.expr(mapper, e)),
+            callArguments,
+          );
+        let newExpr = transformJsxCall(callExpression, callArguments);
+        mapper.expr(mapper, {...newExpr, pexp_attributes: nonJsxAttributes});
       /* Is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo] */
-      | [%expr [[%e? _v], ...[%e? _acc]]] as children =>
-        %expr
-        ReactDOM.createFragment(
-          [%e childrenListToArray(~attrs=nonJSXAttributes, ~loc, children)],
-        )
+      | [%expr [[%e? _child], ...[%e? _moreChildren]]] as children =>
+        let children = mapper.expr(mapper, children);
+        let newExpr = [%expr
+          ReactDOM.createFragment([%e childrenListToArray(~loc, children)])
+        ];
+        mapper.expr(mapper, {...newExpr, pexp_attributes: nonJsxAttributes});
       | _ => e
-      };
-    | None => expr
+      }
+    | None => default_mapper.expr(mapper, expr)
     };
-  }
+  {...default_mapper, expr};
 };
 
 let () =
-  Ppxlib.Driver.register_transformation(
-    "rroo_jsoo_ppx",
-    ~impl=mapExprs#structure,
-    ~intf=mapExprs#signature,
+  Driver.register(
+    ~name="rroo_jsoo_ppx",
+    Migrate_parsetree.Versions.ocaml_406,
+    (_config, _cookies) =>
+    jsxMapper()
   );
