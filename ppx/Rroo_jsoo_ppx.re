@@ -714,12 +714,12 @@ let filenameFromLoc = (pstr_loc: Location.t) => {
   fileName;
 };
 
-let childrenListToArray = (~loc, children) => {
+let childrenListToArray = children => {
   let rec processChildren = (children, accum) =>
     /* Not in the sense of converting a list to an array; convert the AST
        representation of a list to the AST representation of an array */
     switch (children) {
-    | [%expr []] => List.rev(accum) |> Exp.array(~loc)
+    | [%expr []] => List.rev(accum) |> Exp.array(~loc=children.pexp_loc)
     | [%expr [[%e? child], ...[%e? acc]]] =>
       processChildren(acc, [child, ...accum])
     | _notAList => children
@@ -727,7 +727,8 @@ let childrenListToArray = (~loc, children) => {
   processChildren(children, []);
 };
 
-let extractChildren = (~removeLastPositionUnit=false, ~loc, propsAndChildren) => {
+let extractChildren =
+    (~callerLoc, ~removeLastPositionUnit=false, propsAndChildren) => {
   let rec allButLast_ = (lst, acc) =>
     switch (lst) {
     | [] => []
@@ -747,8 +748,9 @@ let extractChildren = (~removeLastPositionUnit=false, ~loc, propsAndChildren) =>
     switch (children) {
     | [] =>
       /* No children provided? Add a placeholder list */
+      let loc = {...callerLoc, Location.loc_ghost: true};
       %expr
-      []
+      [];
     | [(_childrenLabel, childrenExpr)] => childrenExpr
     | _ =>
       raise(
@@ -761,9 +763,10 @@ let extractChildren = (~removeLastPositionUnit=false, ~loc, propsAndChildren) =>
   (childrenExpr, rest);
 };
 
-let transformUppercaseCall = (modulePath, loc, callArguments) => {
+let transformUppercaseCall = (~callerLoc, modulePath, callArguments) => {
+  let gloc = {...callerLoc, Location.loc_ghost: true};
   let (children, argsWithLabels) =
-    extractChildren(~loc, ~removeLastPositionUnit=true, callArguments);
+    extractChildren(~callerLoc, ~removeLastPositionUnit=true, callArguments);
 
   let argsForMake = argsWithLabels;
 
@@ -775,11 +778,13 @@ let transformUppercaseCall = (modulePath, loc, callArguments) => {
     | [%expr [[%e? child]]] => Some(child)
     | [%expr [[%e? _child], ...[%e? _acc]]] =>
       /* this is a hack to support react components that introspect into their children */
-      childrenArg := Some(childrenListToArray(~loc, children));
+      childrenArg := Some(childrenListToArray(children));
+      let loc = gloc;
       Some([%expr React.null]);
     | [%expr [%e? notListChildren]] => Some(notListChildren)
     };
-  let args =
+  let args = {
+    let loc = gloc;
     argsForMake
     @ {
       switch (processedChildren) {
@@ -788,6 +793,7 @@ let transformUppercaseCall = (modulePath, loc, callArguments) => {
       };
     }
     @ [(Nolabel, [%expr ()])];
+  };
 
   let isCap = str => {
     let first = String.sub(str, 0, 1);
@@ -815,11 +821,14 @@ let transformUppercaseCall = (modulePath, loc, callArguments) => {
       )
     };
 
-  let props =
+  let props = {
+    let loc = gloc;
     Exp.apply(~loc, Exp.ident(~loc, {loc, txt: propsIdent}), args);
+  };
 
   /* handle key, ref, children */
   /* React.createElement(Component.make, props, ...children) */
+  let loc = callerLoc; // This is really the only expression that should have proper loc
   switch (childrenArg^) {
   | None =>
     Exp.apply(
@@ -840,10 +849,12 @@ let transformUppercaseCall = (modulePath, loc, callArguments) => {
   };
 };
 
-let transformLowercaseCall = (loc, callArguments, id) => {
-  let (children, nonChildrenProps) = extractChildren(~loc, callArguments);
-  let componentNameExpr = constantString(~loc, id);
-  let childrenExpr = childrenListToArray(~loc, children);
+let transformLowercaseCall = (~callerLoc, callArguments, id) => {
+  let gloc = {...callerLoc, Location.loc_ghost: true};
+  let (children, nonChildrenProps) =
+    extractChildren(~callerLoc, callArguments);
+  let componentNameExpr = Exp.constant(Pconst_string(id, None));
+  let childrenExpr = childrenListToArray(children);
   let createElementCall =
     switch (children) {
     /* [@JSX] div(~children=[a]), coming from <div> a </div> */
@@ -867,8 +878,8 @@ let transformLowercaseCall = (loc, callArguments, id) => {
         (Nolabel, childrenExpr),
       ]
     | nonEmptyProps =>
-      let propsCall =
-        Exp.apply(~loc, [%expr ReactDOM.domProps], nonEmptyProps);
+      let loc = gloc;
+      let propsCall = Exp.apply([%expr ReactDOM.domProps], nonEmptyProps);
       [
         /* "div" */
         (Nolabel, componentNameExpr),
@@ -880,11 +891,11 @@ let transformLowercaseCall = (loc, callArguments, id) => {
     };
 
   Exp.apply(
-    ~loc,
+    ~loc=callerLoc,
     /* ReactDOM.createElement */
     Exp.ident(
-      ~loc,
-      {loc, txt: Ldot(Lident("ReactDOM"), createElementCall)},
+      ~loc=callerLoc,
+      {loc: callerLoc, txt: Ldot(Lident("ReactDOM"), createElementCall)},
     ),
     args,
   );
@@ -901,7 +912,7 @@ let transformJsxCall = (callExpression, callArguments) => {
   /* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) */
   | {
       pexp_desc:
-        Pexp_ident({loc, txt: Ldot(modulePath, "createElement" | "make")}),
+        Pexp_ident({txt: Ldot(modulePath, "createElement" | "make")}),
     }
   /* This is just included because of the tests. We can't use Reason-syntax code: https://github.com/ocaml-ppx/ocaml-migrate-parsetree/issues/74
      So we use OCaml code. But the generated code from <Foo.make /> creates Foo.make.createElement in OCaml code,
@@ -909,16 +920,24 @@ let transformJsxCall = (callExpression, callArguments) => {
   | {
       pexp_desc:
         Pexp_field(
-          {pexp_desc: Pexp_ident({txt: modulePath}), pexp_loc: loc},
+          {pexp_desc: Pexp_ident({txt: modulePath})},
           {txt: Lident("createElement")},
         ),
     } =>
-    transformUppercaseCall(modulePath, loc, callArguments)
+    transformUppercaseCall(
+      ~callerLoc=callExpression.pexp_loc,
+      modulePath,
+      callArguments,
+    )
   /* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) */
   /* turn that into
      ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [|bla|]) */
-  | {pexp_desc: Pexp_ident({loc, txt: Lident(id)})} =>
-    transformLowercaseCall(loc, callArguments, id)
+  | {pexp_desc: Pexp_ident({txt: Lident(id)})} =>
+    transformLowercaseCall(
+      ~callerLoc=callExpression.pexp_loc,
+      callArguments,
+      id,
+    )
   | {pexp_desc: Pexp_ident({txt: Ldot(_, anythingNotCreateElementOrMake)})} =>
     raise(
       Invalid_argument(
@@ -1337,11 +1356,11 @@ let jsxMapper = () => {
 
   let expr = (mapper, expr) =>
     switch (expr |> consumeAttribute("JSX")) {
-    | Some({pexp_loc: loc, pexp_attributes: nonJsxAttributes} as e) =>
+    | Some({pexp_loc: callerLoc, pexp_attributes: nonJsxAttributes} as e) =>
       switch (e) {
       /* Is it a function application with the @JSX attribute? e.g. <Hello /> or <div /> */
-      | {pexp_desc: Pexp_apply(callExpression, callArguments), _} =>
-        let callExpression = mapper.expr(mapper, callExpression);
+      | {pexp_desc: Pexp_apply(cexp, callArguments)} =>
+        let callExpression = mapper.expr(mapper, cexp);
         let callArguments =
           List.map(
             ((s, e)) => (s, mapper.expr(mapper, e)),
@@ -1352,8 +1371,9 @@ let jsxMapper = () => {
       /* Is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo] */
       | [%expr [[%e? _child], ...[%e? _moreChildren]]] as children =>
         let children = mapper.expr(mapper, children);
+        let loc = callerLoc;
         let newExpr = [%expr
-          ReactDOM.createFragment([%e childrenListToArray(~loc, children)])
+          ReactDOM.createFragment([%e childrenListToArray(children)])
         ];
         mapper.expr(mapper, {...newExpr, pexp_attributes: nonJsxAttributes});
       | _ => e
