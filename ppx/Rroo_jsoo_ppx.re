@@ -186,11 +186,8 @@ let rec makeArgsForMakePropsType = (list, args) =>
     let coreType =
       switch (label, interiorType, default) {
       /* ~foo=1 */
-      | (label, None, Some(_)) => {
-          ptyp_desc: Ptyp_var(safeTypeFromValue(label)),
-          ptyp_loc: loc,
-          ptyp_attributes: [],
-        }
+      | (label, None, Some(_)) =>
+        Typ.mk(~loc, Ptyp_var(safeTypeFromValue(label)))
       /* ~foo: int=1 */
       | (_label, Some(type_), Some(_)) => type_
       /* ~foo: option(int)=? */
@@ -215,17 +212,11 @@ let rec makeArgsForMakePropsType = (list, args) =>
       /* ~foo: int=? - note this isnt valid. but we want to get a type error */
       | (label, Some(type_), _) when isOptional(label) => type_
       /* ~foo=? */
-      | (label, None, _) when isOptional(label) => {
-          ptyp_desc: Ptyp_var(safeTypeFromValue(label)),
-          ptyp_loc: loc,
-          ptyp_attributes: [],
-        }
+      | (label, None, _) when isOptional(label) =>
+        Typ.mk(~loc, Ptyp_var(safeTypeFromValue(label)))
       /* ~foo */
-      | (label, None, _) => {
-          ptyp_desc: Ptyp_var(safeTypeFromValue(label)),
-          ptyp_loc: loc,
-          ptyp_attributes: [],
-        }
+      | (label, None, _) =>
+        Typ.mk(~loc, Ptyp_var(safeTypeFromValue(label)))
       | (_label, Some(type_), _) => type_
       };
     makeArgsForMakePropsType(tl, Typ.arrow(~loc, label, coreType, args));
@@ -233,12 +224,7 @@ let rec makeArgsForMakePropsType = (list, args) =>
   };
 
 let makeObjectField = (loc, (str, _attrs, propType)) => {
-  let type_ =
-    Typ.constr(
-      ~loc,
-      {txt: Ldot(Ldot(Lident("Js_of_ocaml"), "Js"), "readonly_prop"), loc},
-      [propType],
-    );
+  let type_ = [%type: Js_of_ocaml.Js.readonly_prop([%t propType])];
   /* intentionally not using attrs - they probably don't work on object fields. use on *Props instead */
   Otag({loc, txt: str}, [], {...type_, ptyp_attributes: []});
 };
@@ -274,37 +260,22 @@ let rec makeFunsForMakePropsBody = (list, args) =>
 /* AST for the creation of a JavaScript object using Js_of_ocaml.Js.obj */
 let makeJsObj = (~loc, namedArgListWithKeyAndRef) => {
   /* Creates the ("key", inject(key)), ("name", inject(name)) tuples */
-  let labelToTuple = label =>
-    Exp.tuple(
-      ~loc,
-      [
-        constantString(~loc, getLabel(label)),
-        Exp.apply(
-          ~loc,
-          Exp.ident(~loc, {txt: Lident("inject"), loc}),
-          [
-            (
-              Nolabel,
-              Exp.ident(~loc, {txt: Lident(getLabel(label)), loc}),
-            ),
-          ],
+  let labelToTuple = label => [%expr
+    (
+      [%e constantString(~loc, getLabel(label))],
+      inject([%e Exp.ident(~loc, {txt: Lident(getLabel(label)), loc})]),
+    )
+  ];
+  %expr
+  obj(
+    [%e
+      Exp.array(
+        ~loc,
+        List.map(
+          ((label, _, _, _)) => labelToTuple(label),
+          namedArgListWithKeyAndRef,
         ),
-      ],
-    );
-  Exp.apply(
-    ~loc,
-    Exp.ident(~loc, {txt: Lident("obj"), loc}),
-    [
-      (
-        Nolabel,
-        Exp.array(
-          ~loc,
-          List.map(
-            ((label, _, _, _)) => labelToTuple(label),
-            namedArgListWithKeyAndRef,
-          ),
-        ),
-      ),
+      )
     ],
   );
 };
@@ -315,67 +286,47 @@ let makePropsValueBinding =
   let core_type =
     makeArgsForMakePropsType(
       namedArgListWithKeyAndRef,
-      Typ.arrow(
-        Nolabel,
-        {
-          ptyp_desc: Ptyp_constr({txt: Lident("unit"), loc}, []),
-          ptyp_loc: loc,
-          ptyp_attributes: [],
-        },
-        propsType,
-      ),
+      [%type: unit => [%t propsType]],
     );
 
   let propsName = fnName ++ "Props";
-  {
-    pvb_pat: {
-      ppat_desc:
-        Ppat_constraint(
-          makePropsName(~loc, propsName),
-          {
-            /* Not sure why, but in the type definition of the props Ptyp_poly is needed */
-            ptyp_desc: Ptyp_poly([], core_type),
-            ptyp_loc: loc,
-            ptyp_attributes: [],
-          },
+  Vb.mk(
+    ~loc,
+    Pat.mk(
+      ~loc,
+      Ppat_constraint(
+        makePropsName(~loc, propsName),
+        {
+          /* Not sure why, but in the type definition of the props Ptyp_poly is needed */
+          ptyp_desc: Ptyp_poly([], core_type),
+          ptyp_loc: loc,
+          ptyp_attributes: [],
+        },
+      ),
+    ),
+    Exp.mk(
+      ~loc,
+      Pexp_constraint(
+        makeFunsForMakePropsBody(
+          namedArgListWithKeyAndRef,
+          [%expr
+            _ => {
+              open Js_of_ocaml.Js.Unsafe;
+              %e
+              makeJsObj(~loc, namedArgListWithKeyAndRef);
+            }
+          ],
         ),
-      ppat_loc: loc,
-      ppat_attributes: [],
-    },
-    pvb_expr: {
-      pexp_desc:
-        Pexp_constraint(
-          makeFunsForMakePropsBody(
-            namedArgListWithKeyAndRef,
-            Exp.fun_(
-              Nolabel,
-              None,
-              {ppat_desc: Ppat_any, ppat_loc: loc, ppat_attributes: []},
-              Exp.open_(
-                ~loc,
-                Fresh,
-                {
-                  txt: Ldot(Ldot(Lident("Js_of_ocaml"), "Js"), "Unsafe"),
-                  loc,
-                },
-                makeJsObj(~loc, namedArgListWithKeyAndRef),
-              ),
-            ),
-          ),
-          core_type,
-        ),
-      pexp_loc: loc,
-      pexp_attributes: [],
-    },
-    pvb_loc: loc,
-    pvb_attributes: [],
-  };
+        core_type,
+      ),
+    ),
+  );
 };
 
 /* Build an AST node representing the `let makeProps` structure item */
-let makePropsItem = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
-  pstr_loc: loc,
-  pstr_desc:
+let makePropsItem = (fnName, loc, namedArgListWithKeyAndRef, propsType) =>
+  Str.mk(
+    ~loc,
     Pstr_value(
       Nonrecursive,
       [
@@ -387,7 +338,7 @@ let makePropsItem = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
         ),
       ],
     ),
-};
+  );
 
 /* Build an AST node representing a "closed" Js.t object representing a component's props */
 let makePropsType = (~loc, namedTypeList) =>
