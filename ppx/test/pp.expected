@@ -276,7 +276,9 @@ let upperWithChildren foo bar =
   React.createElementVariadic Upper.make
     (Upper.makeProps ~children:React.null ()) [|foo;bar|]
 let lower = ReactDOM.createDOMElementVariadic "lower" [||]
-let lowerWithChild foo = ReactDOM.createDOMElementVariadic "lower" [|foo|]
+let lowerWithChildAndProps foo =
+  ReactDOM.createDOMElementVariadic "lower"
+    ~props:(ReactDOM.domProps ~a:1 ~b:"1" ()) [|foo|]
 let lowerWithChildren foo bar =
   ReactDOM.createDOMElementVariadic "lower" [|foo;bar|]
 let nestedElement =

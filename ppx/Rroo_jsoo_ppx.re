@@ -56,15 +56,6 @@ let getLabel = str =>
 
 let optionIdent = Lident("option");
 
-let argIsKeyRef =
-  fun
-  | (Labelled("key" | "ref"), _)
-  | (Optional("key" | "ref"), _) => true
-  | _ => false;
-
-let constantString = (~loc, str) =>
-  Exp.constant(~loc, Pconst_string(str, None));
-
 let safeTypeFromValue = valueStr => {
   let valueStr = getLabel(valueStr);
   switch (String.sub(valueStr, 0, 1)) {
@@ -136,10 +127,7 @@ let getPropsAttr = payload => {
     List.fold_left(getPropsNameValue, defaultProps, recordFields)
   | Some(
       PStr([
-        {
-          pstr_desc:
-            Pstr_eval({pexp_desc: Pexp_ident({txt: Lident("props")})}, _),
-        },
+        [%stri props],
         ..._rest,
       ]),
     ) => {
@@ -230,11 +218,8 @@ let makeObjectField = (loc, (str, _attrs, propType)) => {
 };
 
 /* Build an AST node for the props name when converted to a Js.t inside the function signature  */
-let makePropsName = (~loc, name) => {
-  ppat_desc: Ppat_var({txt: name, loc}),
-  ppat_loc: loc,
-  ppat_attributes: [],
-};
+let makePropsName = (~loc, name) =>
+  Pat.mk(~loc, Ppat_var({txt: name, loc}));
 
 /* Build an AST node for the makeProps function body */
 let rec makeFunsForMakePropsBody = (list, args) =>
@@ -262,7 +247,7 @@ let makeJsObj = (~loc, namedArgListWithKeyAndRef) => {
   /* Creates the ("key", inject(key)), ("name", inject(name)) tuples */
   let labelToTuple = label => [%expr
     (
-      [%e constantString(~loc, getLabel(label))],
+      [%e Exp.constant(~loc, Pconst_string(getLabel(label), None))],
       inject([%e Exp.ident(~loc, {txt: Lident(getLabel(label)), loc})]),
     )
   ];
@@ -449,11 +434,7 @@ let argToType = (types, (name, default, _noLabelName, _alias, loc, type_)) =>
       (
         getLabel(name),
         [],
-        {
-          ptyp_desc: Ptyp_constr({loc, txt: optionIdent}, [type_]),
-          ptyp_loc: loc,
-          ptyp_attributes: [],
-        },
+        Typ.mk(~loc, Ptyp_constr({loc, txt: optionIdent}, [type_])),
       ),
       ...types,
     ]
@@ -462,21 +443,13 @@ let argToType = (types, (name, default, _noLabelName, _alias, loc, type_)) =>
       (
         getLabel(name),
         [],
-        {
-          ptyp_desc:
-            Ptyp_constr(
-              {loc, txt: optionIdent},
-              [
-                {
-                  ptyp_desc: Ptyp_var(safeTypeFromValue(name)),
-                  ptyp_loc: loc,
-                  ptyp_attributes: [],
-                },
-              ],
-            ),
-          ptyp_loc: loc,
-          ptyp_attributes: [],
-        },
+        Typ.mk(
+          ~loc,
+          Ptyp_constr(
+            {loc, txt: optionIdent},
+            [Typ.mk(~loc, Ptyp_var(safeTypeFromValue(name)))],
+          ),
+        ),
       ),
       ...types,
     ]
@@ -484,11 +457,7 @@ let argToType = (types, (name, default, _noLabelName, _alias, loc, type_)) =>
       (
         getLabel(name),
         [],
-        {
-          ptyp_desc: Ptyp_var(safeTypeFromValue(name)),
-          ptyp_loc: loc,
-          ptyp_attributes: [],
-        },
+        Typ.mk(~loc, Ptyp_var(safeTypeFromValue(name))),
       ),
       ...types,
     ]
@@ -524,6 +493,7 @@ let makePropsValue = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
 
 /* Build an AST node for the signature of the `external` definition */
 let makePropsExternalSig = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
+  // TODO: replace with Sig.mk like it's done in makePropsItem
   psig_loc: loc,
   psig_desc:
     Psig_value(
@@ -652,7 +622,7 @@ let getFnName = binding =>
 let filenameFromLoc = (pstr_loc: Location.t) => {
   let fileName =
     switch (pstr_loc.loc_start.pos_fname) {
-    | "" => Ocaml_common.Location.input_name^
+    | "" => Location.input_name^
     | fileName => fileName
     };
 
