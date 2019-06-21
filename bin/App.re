@@ -11,6 +11,8 @@ let main =
     reason
     <h1> {"Refs" |> React.string} </h1>
     <Refs />
+    <h1> {"Interface files" |> React.string} </h1>
+    <Interface title="Hey"> React.null </Interface>
   </div>;
 
 ReactDOM.renderToElementWithId(main, "app");

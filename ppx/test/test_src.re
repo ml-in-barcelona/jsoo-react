@@ -7,6 +7,23 @@
   To regenerate test.ml from this file, run `esy test:regen`.
  */
 
+// Interfaces
+
+module type Foo = {
+  [@react.component]
+  let make:
+    (
+      ~title: string=?,
+      ~defaultTitle: string=?,
+      ~meta: array(metaField)=?,
+      ~htmlAttributes: array(htmlAttribute)=?,
+      ~children: React.element
+    ) =>
+    React.element;
+};
+
+// Components
+
 [@react.component]
 let make = (~name="") => {
   <>
@@ -72,7 +89,7 @@ let upperWithChildren = (foo, bar) => <Upper> foo bar </Upper>;
 
 let lower = <lower />;
 
-let lowerWithChild = foo => <lower> foo </lower>;
+let lowerWithChildAndProps = foo => <lower a=1 b="1"> foo </lower>;
 
 let lowerWithChildren = (foo, bar) => <lower> foo bar </lower>;
 

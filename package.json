@@ -31,8 +31,9 @@
     "@opam/js_of_ocaml": "*",
     "@opam/js_of_ocaml-ppx": "*",
     "@opam/js_of_ocaml-lwt": "*",
+    "@opam/ppxlib": "*",
     "@esy-ocaml/reason": "*",
-    "ppx_pipe_first": "sodaplayer/PipeFirst#10f35c4",
+    "ppx_pipe_first": "IwanKaramazow/PipeFirst#c22e4d5",
     "refmterr": "*",
     "ocaml": "~4.6.0"
   },

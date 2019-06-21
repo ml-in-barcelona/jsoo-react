@@ -1,3 +1,41 @@
+module type Foo  =
+  sig
+    val makeProps :
+      ?title:string ->
+        ?defaultTitle:string ->
+          ?meta:metaField array ->
+            ?htmlAttributes:htmlAttribute array ->
+              children:React.element ->
+                ?key:string ->
+                  unit ->
+                    <
+                      title: string Js_of_ocaml.Js.readonly_prop  ;defaultTitle: 
+                                                                    string
+                                                                    Js_of_ocaml.Js.readonly_prop
+                                                                     ;
+                      meta: metaField array Js_of_ocaml.Js.readonly_prop  ;
+                      htmlAttributes: htmlAttribute array
+                                        Js_of_ocaml.Js.readonly_prop  ;
+                      children: React.element Js_of_ocaml.Js.readonly_prop  
+                      >  Js_of_ocaml.Js.t
+    val make :
+      (<
+         title: string Js_of_ocaml.Js.readonly_prop  ;defaultTitle: string
+                                                                    Js_of_ocaml.Js.readonly_prop
+                                                         ;meta: metaField
+                                                                  array
+                                                                  Js_of_ocaml.Js.readonly_prop
+                                                             ;htmlAttributes: 
+                                                                htmlAttribute
+                                                                  array
+                                                                  Js_of_ocaml.Js.readonly_prop
+                                                                 ;children: 
+                                                                    React.element
+                                                                    Js_of_ocaml.Js.readonly_prop
+                                                                      > 
+         Js_of_ocaml.Js.t,
+        React.element) React.componentLike
+  end
 let makeProps
   : ?name:'name ->
       ?key:string ->
@@ -23,7 +61,7 @@ let make =
               (Props : < .. >  Js_of_ocaml.Js.t)
               (fun ((x)[@merlin.loc ]) -> ((x#name)[@merlin.loc ]))
       with
-      | Some name -> name
+      | ((Some (name))[@explicit_arity ]) -> name
       | None -> "" in
     ReactDOM.createFragment
       [|(ReactDOM.createDOMElementVariadic "div"
@@ -276,7 +314,9 @@ let upperWithChildren foo bar =
   React.createElementVariadic Upper.make
     (Upper.makeProps ~children:React.null ()) [|foo;bar|]
 let lower = ReactDOM.createDOMElementVariadic "lower" [||]
-let lowerWithChild foo = ReactDOM.createDOMElementVariadic "lower" [|foo|]
+let lowerWithChildAndProps foo =
+  ReactDOM.createDOMElementVariadic "lower"
+    ~props:(ReactDOM.domProps ~a:1 ~b:"1" ()) [|foo|]
 let lowerWithChildren foo bar =
   ReactDOM.createDOMElementVariadic "lower" [|foo;bar|]
 let nestedElement =

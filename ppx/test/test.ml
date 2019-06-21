@@ -1,3 +1,12 @@
+module type Foo  =
+  sig
+    val make :
+      ?title:string ->
+        ?defaultTitle:string ->
+          ?meta:metaField array ->
+            ?htmlAttributes:htmlAttribute array ->
+              children:React.element -> React.element[@@react.component ]
+  end
 let make ?(name= "")  =
   (([((div ~children:[React.string ("Hello " ^ name)] ())
     [@JSX ]);
@@ -50,7 +59,8 @@ let upperWithChild foo = ((Upper.createElement ~children:[foo] ())[@JSX ])
 let upperWithChildren foo bar =
   ((Upper.createElement ~children:[foo; bar] ())[@JSX ])
 let lower = ((lower ~children:[] ())[@JSX ])
-let lowerWithChild foo = ((lower ~children:[foo] ())[@JSX ])
+let lowerWithChildAndProps foo = ((lower ~a:1 ~b:"1" ~children:[foo] ())
+  [@JSX ])
 let lowerWithChildren foo bar = ((lower ~children:[foo; bar] ())[@JSX ])
 let nestedElement = ((Foo.Bar.createElement ~a:1 ~b:"1" ~children:[] ())
   [@JSX ])
