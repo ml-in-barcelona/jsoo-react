@@ -1,3 +1,12 @@
+module type Foo  =
+  sig
+    val make :
+      ?title:string ->
+        ?defaultTitle:string ->
+          ?meta:metaField array ->
+            ?htmlAttributes:htmlAttribute array ->
+              children:React.element -> React.element[@@react.component ]
+  end
 let make ?(name= "")  =
   (([((div ~children:[React.string ("Hello " ^ name)] ())
     [@JSX ]);

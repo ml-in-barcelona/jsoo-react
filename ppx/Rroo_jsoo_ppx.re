@@ -133,14 +133,7 @@ let getPropsAttr = payload => {
       ]),
     ) =>
     List.fold_left(getPropsNameValue, defaultProps, recordFields)
-  | Some(
-      PStr([
-        [%stri props],
-        ..._rest,
-      ]),
-    ) => {
-      propsName: "props",
-    }
+  | Some(PStr([[%stri props], ..._rest])) => {propsName: "props"}
   | Some(PStr([{pstr_desc: Pstr_eval(_, _)}, ..._rest])) =>
     raise(
       Invalid_argument(
@@ -241,8 +234,6 @@ let makePropsValue = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
   let propsName = fnName ++ "Props";
   Val.mk(
     ~loc,
-    ~attrs=[({txt: "bs.obj", loc}, PStr([]))],
-    ~prim=[""],
     {txt: propsName, loc},
     makeArgsForMakePropsType(
       namedArgListWithKeyAndRef,
@@ -307,15 +298,14 @@ let makeJsObj = (~loc, namedArgListWithKeyAndRef) => {
   );
 };
 
-/* Build an AST node for the signature of the `external` definition */
-let makePropsExternalSig = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
-  // TODO: replace with Sig.mk like it's done in makePropsItem
-  psig_loc: loc,
-  psig_desc:
+/* Build an AST node for the signature of the `makeProps` definition */
+let makePropsSig = (fnName, loc, namedArgListWithKeyAndRef, propsType) =>
+  Sig.mk(
+    ~loc,
     Psig_value(
       makePropsValue(fnName, loc, namedArgListWithKeyAndRef, propsType),
     ),
-};
+  );
 
 let makeObjectField = (loc, (str, _attrs, propType)) => {
   let type_ = [%type: Js_of_ocaml.Js.readonly_prop([%t propType])];
@@ -520,93 +510,90 @@ let argToType = (types, (name, default, _noLabelName, _alias, loc, type_)) =>
   | _ => types
   };
 
-/*
-   let transformComponentSignature = (_mapper, signature, returnSignatures) =>
-     switch (signature) {
-     | {
-         psig_loc,
-         psig_desc:
-           Psig_value(
-             {pval_name: {txt: fnName}, pval_attributes, pval_type} as psig_desc,
-           ),
-       } as psig =>
-       switch (List.filter(hasAttr, pval_attributes)) {
-       | [] => [signature, ...returnSignatures]
-       | [_] =>
-         let rec getPropTypes = (types, {ptyp_loc, ptyp_desc} as fullType) =>
-           switch (ptyp_desc) {
-           | Ptyp_arrow(name, type_, {ptyp_desc: Ptyp_arrow(_)} as rest)
-               when isOptional(name) || isLabelled(name) =>
-             getPropTypes([(name, ptyp_loc, type_), ...types], rest)
-           | Ptyp_arrow(Nolabel, _type, rest) => getPropTypes(types, rest)
-           | Ptyp_arrow(name, type_, returnValue)
-               when isOptional(name) || isLabelled(name) => (
-               returnValue,
-               [(name, returnValue.ptyp_loc, type_), ...types],
-             )
-           | _ => (fullType, types)
-           };
+let transformComponentSignature = (_mapper, signature, returnSignatures) =>
+  switch (signature) {
+  | {
+      psig_loc,
+      psig_desc:
+        Psig_value(
+          {pval_name: {txt: fnName}, pval_attributes, pval_type} as psig_desc,
+        ),
+    } as psig =>
+    switch (List.filter(hasAttr, pval_attributes)) {
+    | [] => [signature, ...returnSignatures]
+    | [_] =>
+      let rec getPropTypes = (types, {ptyp_loc, ptyp_desc} as fullType) =>
+        switch (ptyp_desc) {
+        | Ptyp_arrow(name, type_, {ptyp_desc: Ptyp_arrow(_)} as rest)
+            when isOptional(name) || isLabelled(name) =>
+          getPropTypes([(name, ptyp_loc, type_), ...types], rest)
+        | Ptyp_arrow(Nolabel, _type, rest) => getPropTypes(types, rest)
+        | Ptyp_arrow(name, type_, returnValue)
+            when isOptional(name) || isLabelled(name) => (
+            returnValue,
+            [(name, returnValue.ptyp_loc, type_), ...types],
+          )
+        | _ => (fullType, types)
+        };
 
-         let (innerType, propTypes) = getPropTypes([], pval_type);
-         let namedTypeList = List.fold_left(argToConcreteType, [], propTypes);
-         let pluckLabelAndLoc = ((label, loc, type_)) => (
-           label,
-           None,
-           loc,
-           Some(type_),
-         );
+      let (innerType, propTypes) = getPropTypes([], pval_type);
+      let namedTypeList = List.fold_left(argToConcreteType, [], propTypes);
+      let pluckLabelAndLoc = ((label, loc, type_)) => (
+        label,
+        None,
+        loc,
+        Some(type_),
+      );
 
-         let retPropsType = makePropsType(~loc=psig_loc, namedTypeList);
-         let externalPropsDecl =
-           makePropsExternalSig(
-             fnName,
-             psig_loc,
-             [
-               (optional("key"), None, psig_loc, Some(keyType(psig_loc))),
-               ...List.map(pluckLabelAndLoc, propTypes),
-             ],
-             retPropsType,
-           );
+      let retPropsType = makePropsType(~loc=psig_loc, namedTypeList);
+      let makePropsDecl =
+        makePropsSig(
+          fnName,
+          psig_loc,
+          [
+            (Optional("key"), None, psig_loc, Some(keyType(psig_loc))),
+            ...List.map(pluckLabelAndLoc, propTypes),
+          ],
+          retPropsType,
+        );
 
-         /* can't be an arrow because it will defensively uncurry */
-         let newExternalType =
-           Ptyp_constr(
-             {loc: psig_loc, txt: Ldot(Lident("React"), "componentLike")},
-             [retPropsType, innerType],
-           );
+      /* can't be an arrow because it will defensively uncurry */
+      let newMakeType =
+        Ptyp_constr(
+          {loc: psig_loc, txt: Ldot(Lident("React"), "componentLike")},
+          [retPropsType, innerType],
+        );
 
-         let newStructure = {
-           ...psig,
-           psig_desc:
-             Psig_value({
-               ...psig_desc,
-               pval_type: {
-                 ...pval_type,
-                 ptyp_desc: newExternalType,
-               },
-               pval_attributes: List.filter(otherAttrsPure, pval_attributes),
-             }),
-         };
+      let newStructure = {
+        ...psig,
+        psig_desc:
+          Psig_value({
+            ...psig_desc,
+            pval_type: {
+              ...pval_type,
+              ptyp_desc: newMakeType,
+            },
+            pval_attributes: List.filter(otherAttrsPure, pval_attributes),
+          }),
+      };
 
-         [externalPropsDecl, newStructure, ...returnSignatures];
-       | _ =>
-         raise(
-           Invalid_argument(
-             "Only one react.component call can exist on a component at one time",
-           ),
-         )
-       }
-     | signature => [signature, ...returnSignatures]
-     };
+      [makePropsDecl, newStructure, ...returnSignatures];
+    | _ =>
+      raise(
+        Invalid_argument(
+          "Only one react.component call can exist on a component at one time",
+        ),
+      )
+    }
+  | signature => [signature, ...returnSignatures]
+  };
 
-   let reactComponentSignatureTransform = (mapper, signatures) =>
-     List.fold_right(transformComponentSignature(mapper), signatures, []);
+let reactComponentSignatureTransform = (mapper, signatures) =>
+  List.fold_right(transformComponentSignature(mapper), signatures, []);
 
-   let signature = (mapper, signature) =>
-     default_mapper.signature(mapper) @@
-     reactComponentSignatureTransform(mapper, signature);
-
- */
+let signature = (mapper, signature) =>
+  default_mapper.signature(mapper) @@
+  reactComponentSignatureTransform(mapper, signature);
 
 /* Build a string representation of a module name with segments separated by $ */
 let makeModuleName = (fileName, nestedModules, fnName) => {
@@ -1288,6 +1275,10 @@ let jsxMapper = () => {
     | None => default_mapper.expr(mapper, expr)
     };
 
+  let signature = (mapper, signature) =>
+    default_mapper.signature(mapper) @@
+    reactComponentSignatureTransform(mapper, signature);
+
   let structure = (mapper, structures) =>
     default_mapper.structure(mapper) @@
     reactComponentTransform(mapper, structures);
@@ -1299,7 +1290,7 @@ let jsxMapper = () => {
     mapped;
   };
 
-  {...default_mapper, structure, expr, module_binding};
+  {...default_mapper, structure, expr, signature, module_binding};
 };
 
 let () =
