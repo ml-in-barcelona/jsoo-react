@@ -1,3 +1,41 @@
+module type Foo  =
+  sig
+    val makeProps :
+      ?title:string ->
+        ?defaultTitle:string ->
+          ?meta:metaField array ->
+            ?htmlAttributes:htmlAttribute array ->
+              children:React.element ->
+                ?key:string ->
+                  unit ->
+                    <
+                      title: string Js_of_ocaml.Js.readonly_prop  ;defaultTitle: 
+                                                                    string
+                                                                    Js_of_ocaml.Js.readonly_prop
+                                                                     ;
+                      meta: metaField array Js_of_ocaml.Js.readonly_prop  ;
+                      htmlAttributes: htmlAttribute array
+                                        Js_of_ocaml.Js.readonly_prop  ;
+                      children: React.element Js_of_ocaml.Js.readonly_prop  
+                      >  Js_of_ocaml.Js.t
+    val make :
+      (<
+         title: string Js_of_ocaml.Js.readonly_prop  ;defaultTitle: string
+                                                                    Js_of_ocaml.Js.readonly_prop
+                                                         ;meta: metaField
+                                                                  array
+                                                                  Js_of_ocaml.Js.readonly_prop
+                                                             ;htmlAttributes: 
+                                                                htmlAttribute
+                                                                  array
+                                                                  Js_of_ocaml.Js.readonly_prop
+                                                                 ;children: 
+                                                                    React.element
+                                                                    Js_of_ocaml.Js.readonly_prop
+                                                                      > 
+         Js_of_ocaml.Js.t,
+        React.element) React.componentLike
+  end
 let makeProps
   : ?name:'name ->
       ?key:string ->

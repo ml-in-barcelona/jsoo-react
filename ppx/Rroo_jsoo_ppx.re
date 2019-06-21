@@ -169,6 +169,27 @@ let filenameFromLoc = (pstr_loc: Location.t) => {
   fileName;
 };
 
+/* Build a string representation of a module name with segments separated by $ */
+let makeModuleName = (fileName, nestedModules, fnName) => {
+  let fullModuleName =
+    switch (fileName, nestedModules, fnName) {
+    /* TODO: is this even reachable? It seems like the fileName always exists */
+    | ("", nestedModules, "make") => nestedModules
+    | ("", nestedModules, fnName) => List.rev([fnName, ...nestedModules])
+    | (fileName, nestedModules, "make") => [
+        fileName,
+        ...List.rev(nestedModules),
+      ]
+    | (fileName, nestedModules, fnName) => [
+        fileName,
+        ...List.rev([fnName, ...nestedModules]),
+      ]
+    };
+
+  let fullModuleName = String.concat("$", fullModuleName);
+  fullModuleName;
+};
+
 let argToConcreteType = (types, (name, _loc, type_)) =>
   switch (name) {
   | name when isLabelled(name) || isOptional(name) => [
@@ -229,6 +250,27 @@ let rec makeArgsForMakePropsType = (list, args) =>
   | [] => args
   };
 
+/* Build an AST node for the makeProps function body */
+let rec makeFunsForMakePropsBody = (list, args) =>
+  switch (list) {
+  | [(label, _default, loc, _interiorType), ...tl] =>
+    makeFunsForMakePropsBody(
+      tl,
+      Exp.fun_(
+        ~loc,
+        label,
+        None,
+        {
+          ppat_desc: Ppat_var({txt: getLabel(label), loc}),
+          ppat_loc: loc,
+          ppat_attributes: [],
+        },
+        args,
+      ),
+    )
+  | [] => args
+  };
+
 /* Build an AST node for the makeProps value binding */
 let makePropsValue = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
   let propsName = fnName ++ "Props";
@@ -254,27 +296,6 @@ let makePropsValue = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
 let makePropsName = (~loc, name) =>
   Pat.mk(~loc, Ppat_var({txt: name, loc}));
 
-/* Build an AST node for the makeProps function body */
-let rec makeFunsForMakePropsBody = (list, args) =>
-  switch (list) {
-  | [(label, _default, loc, _interiorType), ...tl] =>
-    makeFunsForMakePropsBody(
-      tl,
-      Exp.fun_(
-        ~loc,
-        label,
-        None,
-        {
-          ppat_desc: Ppat_var({txt: getLabel(label), loc}),
-          ppat_loc: loc,
-          ppat_attributes: [],
-        },
-        args,
-      ),
-    )
-  | [] => args
-  };
-
 /* AST for the creation of a JavaScript object using Js_of_ocaml.Js.obj */
 let makeJsObj = (~loc, namedArgListWithKeyAndRef) => {
   /* Creates the ("key", inject(key)), ("name", inject(name)) tuples */
@@ -296,21 +317,6 @@ let makeJsObj = (~loc, namedArgListWithKeyAndRef) => {
       )
     ],
   );
-};
-
-/* Build an AST node for the signature of the `makeProps` definition */
-let makePropsSig = (fnName, loc, namedArgListWithKeyAndRef, propsType) =>
-  Sig.mk(
-    ~loc,
-    Psig_value(
-      makePropsValue(fnName, loc, namedArgListWithKeyAndRef, propsType),
-    ),
-  );
-
-let makeObjectField = (loc, (str, _attrs, propType)) => {
-  let type_ = [%type: Js_of_ocaml.Js.readonly_prop([%t propType])];
-  /* intentionally not using attrs - they probably don't work on object fields. use on *Props instead */
-  Otag({loc, txt: str}, [], {...type_, ptyp_attributes: []});
 };
 
 /* Build an AST node for the makeProps value binding */
@@ -372,6 +378,21 @@ let makePropsItem = (fnName, loc, namedArgListWithKeyAndRef, propsType) =>
       ],
     ),
   );
+
+/* Build an AST node for the signature of the `makeProps` definition */
+let makePropsSig = (fnName, loc, namedArgListWithKeyAndRef, propsType) =>
+  Sig.mk(
+    ~loc,
+    Psig_value(
+      makePropsValue(fnName, loc, namedArgListWithKeyAndRef, propsType),
+    ),
+  );
+
+let makeObjectField = (loc, (str, _attrs, propType)) => {
+  let type_ = [%type: Js_of_ocaml.Js.readonly_prop([%t propType])];
+  /* intentionally not using attrs - they probably don't work on object fields. use on *Props instead */
+  Otag({loc, txt: str}, [], {...type_, ptyp_attributes: []});
+};
 
 /* Build an AST node representing a "closed" Js.t object representing a component's props */
 let makePropsType = (~loc, namedTypeList) =>
@@ -594,27 +615,6 @@ let reactComponentSignatureTransform = (mapper, signatures) =>
 let signature = (mapper, signature) =>
   default_mapper.signature(mapper) @@
   reactComponentSignatureTransform(mapper, signature);
-
-/* Build a string representation of a module name with segments separated by $ */
-let makeModuleName = (fileName, nestedModules, fnName) => {
-  let fullModuleName =
-    switch (fileName, nestedModules, fnName) {
-    /* TODO: is this even reachable? It seems like the fileName always exists */
-    | ("", nestedModules, "make") => nestedModules
-    | ("", nestedModules, fnName) => List.rev([fnName, ...nestedModules])
-    | (fileName, nestedModules, "make") => [
-        fileName,
-        ...List.rev(nestedModules),
-      ]
-    | (fileName, nestedModules, fnName) => [
-        fileName,
-        ...List.rev([fnName, ...nestedModules]),
-      ]
-    };
-
-  let fullModuleName = String.concat("$", fullModuleName);
-  fullModuleName;
-};
 
 let childrenListToArray = children => {
   let rec processChildren = (children, accum) =>
@@ -1248,6 +1248,14 @@ let jsxMapper = () => {
   let reactComponentTransform = (mapper, structures) =>
     List.fold_right(transformComponentDefinition(mapper), structures, []);
 
+  let signature = (mapper, signature) =>
+    default_mapper.signature(mapper) @@
+    reactComponentSignatureTransform(mapper, signature);
+
+  let structure = (mapper, structures) =>
+    default_mapper.structure(mapper) @@
+    reactComponentTransform(mapper, structures);
+
   let expr = (mapper, expr) =>
     switch (expr |> consumeAttribute("JSX")) {
     | Some({pexp_loc: callerLoc, pexp_attributes: nonJsxAttributes} as e) =>
@@ -1274,14 +1282,6 @@ let jsxMapper = () => {
       }
     | None => default_mapper.expr(mapper, expr)
     };
-
-  let signature = (mapper, signature) =>
-    default_mapper.signature(mapper) @@
-    reactComponentSignatureTransform(mapper, signature);
-
-  let structure = (mapper, structures) =>
-    default_mapper.structure(mapper) @@
-    reactComponentTransform(mapper, structures);
 
   let module_binding = (mapper, module_binding) => {
     let _ = nestedModules := [module_binding.pmb_name.txt, ...nestedModules^];
