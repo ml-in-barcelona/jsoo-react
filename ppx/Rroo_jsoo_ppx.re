@@ -96,6 +96,14 @@ let filterAttrOnBinding = binding => {
   pvb_attributes: List.filter(otherAttrsPure, binding.pvb_attributes),
 };
 
+/* Finds the name of the variable the binding is assigned to, otherwise raises Invalid_argument */
+let getFnName = binding =>
+  switch (binding) {
+  | {pvb_pat: {ppat_desc: Ppat_var({txt})}} => txt
+  | _ =>
+    raise(Invalid_argument("react.component calls cannot be destructured."))
+  };
+
 /* Lookup the value of `props` otherwise raise Invalid_argument error */
 let getPropsNameValue = (_acc, (loc, exp)) =>
   switch (loc, exp) {
@@ -150,6 +158,23 @@ let pluckLabelDefaultLocType = ((label, default, _, _, loc, type_)) => (
   loc,
   type_,
 );
+
+/* Lookup the filename from the location information on the AST node and turn it into a valid module identifier */
+let filenameFromLoc = (pstr_loc: Location.t) => {
+  let fileName =
+    switch (pstr_loc.loc_start.pos_fname) {
+    | "" => Location.input_name^
+    | fileName => fileName
+    };
+
+  let fileName =
+    try (Filename.chop_extension(Filename.basename(fileName))) {
+    | Invalid_argument(_) => fileName
+    };
+
+  let fileName = String.capitalize_ascii(fileName);
+  fileName;
+};
 
 let argToConcreteType = (types, (name, _loc, type_)) =>
   switch (name) {
@@ -211,10 +236,27 @@ let rec makeArgsForMakePropsType = (list, args) =>
   | [] => args
   };
 
-let makeObjectField = (loc, (str, _attrs, propType)) => {
-  let type_ = [%type: Js_of_ocaml.Js.readonly_prop([%t propType])];
-  /* intentionally not using attrs - they probably don't work on object fields. use on *Props instead */
-  Otag({loc, txt: str}, [], {...type_, ptyp_attributes: []});
+/* Build an AST node for the makeProps value binding */
+let makePropsValue = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
+  let propsName = fnName ++ "Props";
+  Val.mk(
+    ~loc,
+    ~attrs=[({txt: "bs.obj", loc}, PStr([]))],
+    ~prim=[""],
+    {txt: propsName, loc},
+    makeArgsForMakePropsType(
+      namedArgListWithKeyAndRef,
+      Typ.arrow(
+        Nolabel,
+        {
+          ptyp_desc: Ptyp_constr({txt: Lident("unit"), loc}, []),
+          ptyp_loc: loc,
+          ptyp_attributes: [],
+        },
+        propsType,
+      ),
+    ),
+  );
 };
 
 /* Build an AST node for the props name when converted to a Js.t inside the function signature  */
@@ -263,6 +305,22 @@ let makeJsObj = (~loc, namedArgListWithKeyAndRef) => {
       )
     ],
   );
+};
+
+/* Build an AST node for the signature of the `external` definition */
+let makePropsExternalSig = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
+  // TODO: replace with Sig.mk like it's done in makePropsItem
+  psig_loc: loc,
+  psig_desc:
+    Psig_value(
+      makePropsValue(fnName, loc, namedArgListWithKeyAndRef, propsType),
+    ),
+};
+
+let makeObjectField = (loc, (str, _attrs, propType)) => {
+  let type_ = [%type: Js_of_ocaml.Js.readonly_prop([%t propType])];
+  /* intentionally not using attrs - they probably don't work on object fields. use on *Props instead */
+  Otag({loc, txt: str}, [], {...type_, ptyp_attributes: []});
 };
 
 /* Build an AST node for the makeProps value binding */
@@ -332,15 +390,13 @@ let makePropsType = (~loc, namedTypeList) =>
     Ptyp_constr(
       {txt: Ldot(Ldot(Lident("Js_of_ocaml"), "Js"), "t"), loc},
       [
-        {
-          ptyp_desc:
-            Ptyp_object(
-              List.map(makeObjectField(loc), namedTypeList),
-              Closed,
-            ),
-          ptyp_loc: loc,
-          ptyp_attributes: [],
-        },
+        Typ.mk(
+          ~loc,
+          Ptyp_object(
+            List.map(makeObjectField(loc), namedTypeList),
+            Closed,
+          ),
+        ),
       ],
     ),
   );
@@ -464,43 +520,6 @@ let argToType = (types, (name, default, _noLabelName, _alias, loc, type_)) =>
   | _ => types
   };
 
-/* Build an AST node for the makeProps value binding */
-let makePropsValue = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
-  let propsName = fnName ++ "Props";
-  {
-    pval_name: {
-      txt: propsName,
-      loc,
-    },
-    pval_type:
-      makeArgsForMakePropsType(
-        namedArgListWithKeyAndRef,
-        Typ.arrow(
-          Nolabel,
-          {
-            ptyp_desc: Ptyp_constr({txt: Lident("unit"), loc}, []),
-            ptyp_loc: loc,
-            ptyp_attributes: [],
-          },
-          propsType,
-        ),
-      ),
-    pval_prim: [""],
-    pval_attributes: [({txt: "bs.obj", loc}, PStr([]))],
-    pval_loc: loc,
-  };
-};
-
-/* Build an AST node for the signature of the `external` definition */
-let makePropsExternalSig = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
-  // TODO: replace with Sig.mk like it's done in makePropsItem
-  psig_loc: loc,
-  psig_desc:
-    Psig_value(
-      makePropsValue(fnName, loc, namedArgListWithKeyAndRef, propsType),
-    ),
-};
-
 /*
    let transformComponentSignature = (_mapper, signature, returnSignatures) =>
      switch (signature) {
@@ -608,31 +627,6 @@ let makeModuleName = (fileName, nestedModules, fnName) => {
 
   let fullModuleName = String.concat("$", fullModuleName);
   fullModuleName;
-};
-
-/* Finds the name of the variable the binding is assigned to, otherwise raises Invalid_argument */
-let getFnName = binding =>
-  switch (binding) {
-  | {pvb_pat: {ppat_desc: Ppat_var({txt})}} => txt
-  | _ =>
-    raise(Invalid_argument("react.component calls cannot be destructured."))
-  };
-
-/* Lookup the filename from the location information on the AST node and turn it into a valid module identifier */
-let filenameFromLoc = (pstr_loc: Location.t) => {
-  let fileName =
-    switch (pstr_loc.loc_start.pos_fname) {
-    | "" => Location.input_name^
-    | fileName => fileName
-    };
-
-  let fileName =
-    try (Filename.chop_extension(Filename.basename(fileName))) {
-    | Invalid_argument(_) => fileName
-    };
-
-  let fileName = String.capitalize_ascii(fileName);
-  fileName;
 };
 
 let childrenListToArray = children => {
@@ -1088,7 +1082,7 @@ let jsxMapper = () => {
             | Not_found => None
             };
 
-          let (attr_loc, payload) =
+          let (attrLoc, payload) =
             switch (reactComponentAttribute) {
             | Some((loc, payload)) => (loc.loc, Some(payload))
             | None => (emptyLoc, None)
@@ -1131,7 +1125,7 @@ let jsxMapper = () => {
           let makePropsLet =
             makePropsDecl(
               fnName,
-              attr_loc,
+              attrLoc,
               namedArgListWithKeyAndRef,
               namedTypeList,
             );
@@ -1163,22 +1157,14 @@ let jsxMapper = () => {
             let expression =
               switch (default) {
               | Some(default) =>
-                Exp.match(
-                  expression,
-                  [
-                    Exp.case(
-                      Pat.construct(
-                        {loc, txt: Lident("Some")},
-                        Some(Pat.var(~loc, {txt: labelString, loc})),
-                      ),
-                      Exp.ident(~loc, {txt: Lident(labelString), loc}),
-                    ),
-                    Exp.case(
-                      Pat.construct({loc, txt: Lident("None")}, None),
-                      default,
-                    ),
-                  ],
-                )
+                switch%expr ([%e expression]) {
+                | Some([%p Pat.var(~loc, {txt: labelString, loc})]) =>
+                  %e
+                  Exp.ident(~loc, {txt: Lident(labelString), loc})
+                | None =>
+                  %e
+                  default
+                }
               | None => expression
               };
 

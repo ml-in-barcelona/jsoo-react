@@ -23,7 +23,7 @@ let make =
               (Props : < .. >  Js_of_ocaml.Js.t)
               (fun ((x)[@merlin.loc ]) -> ((x#name)[@merlin.loc ]))
       with
-      | Some name -> name
+      | ((Some (name))[@explicit_arity ]) -> name
       | None -> "" in
     ReactDOM.createFragment
       [|(ReactDOM.createDOMElementVariadic "div"
