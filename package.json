@@ -34,17 +34,11 @@
     "@opam/ppxlib": "*",
     "@esy-ocaml/reason": "*",
     "ppx_pipe_first": "IwanKaramazow/PipeFirst#c22e4d5",
-    "refmterr": "*",
-    "ocaml": "~4.6.0"
-  },
-  "resolutions": {
-    "@esy-ocaml/esy-installer": "0.0.1",
-    "@opam/menhir": "20171013",
-    "@opam/re": "1.8.0"
+    "ocaml": "~4.7.1"
   },
   "devDependencies": {
-    "@esy-ocaml/merlin": "*",
-    "ocaml": "~4.6.0",
+    "refmterr": "*",
+    "ocaml": "~4.7.1",
     "@opam/ocamlformat": "*"
   }
 }

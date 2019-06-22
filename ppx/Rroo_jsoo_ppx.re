@@ -1296,7 +1296,7 @@ let jsxMapper = () => {
 let () =
   Driver.register(
     ~name="rroo_jsoo_ppx",
-    Migrate_parsetree.Versions.ocaml_406,
+    Migrate_parsetree.Versions.ocaml_407,
     (_config, _cookies) =>
     jsxMapper()
   );
