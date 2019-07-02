@@ -1,6 +1,8 @@
 (library
  (name React)
+ (public_name react)
  (wrapped false)
+ (modes byte)
  (js_of_ocaml
   (javascript_files node_modules/react/umd/react.development.js
     node_modules/react-dom/umd/react-dom.development.js InteropUtils.js

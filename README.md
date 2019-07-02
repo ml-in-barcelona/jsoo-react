@@ -26,21 +26,21 @@ The rest of the bindings are to be implemented yet.
 
 See [`interop.md`](./interop.md).
 
-## Installation
+## Running the example
 
 ```bash
 git clone https://github.com/jchavarri/rroo/
 cd lib && yarn # gets react and react-dom
-cd ..
+cd ../example
 esy
 ```
 
-Open `bin/index.html` in your browser.
+Open `example/index.html` in your browser.
 
 
-### Production bundle
+### Watch mode
 
-Run `esy build:prod`
+Run `esy build:watch` from the `example` folder.
 
 ### Ppx
 

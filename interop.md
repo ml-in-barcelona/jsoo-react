@@ -18,7 +18,7 @@ The approach is:
   - Which external function it provides, e.g. `// Provides: useReducer`
   - Which other JavaScript functions or values it requires, e.g. `// Requires: React, caml_js_wrap_callback`
 3. Apply conversions in the JS implementation as needed (see table below)
-4. If required, add a new component with an example of usage of the new function in the `/bin` folder.
+4. If required, add a new component with an example of usage of the new function in the `/example` folder.
 
 #### Examples
 
