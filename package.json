@@ -4,18 +4,7 @@
   "description": "Like ReasonReact, but for js_of_ocaml",
   "license": "MIT",
   "esy": {
-    "build": "refmterr dune build ./bin/App.bc.js",
-    "NOTE": "Optional release Section. Customizes result of `esy release`",
-    "release": {
-      "releasedBinaries": [
-        "Hello.exe"
-      ],
-      "deleteFromBinaryRelease": [
-        "*esy_ocaml_*",
-        "*refmterr-*",
-        "ocaml-*"
-      ]
-    }
+    "build": "refmterr dune build"
   },
   "scripts": {
     "build:watch": "refmterr dune build ./bin/App.bc.js -w",
@@ -27,15 +16,14 @@
     "test:regen": "sh -c \"refmterr refmt ./ppx/test/test_src.re -p ml > ./ppx/test/test.ml\""
   },
   "dependencies": {
+    "@esy-ocaml/reason": "*",
     "@opam/dune": "*",
     "@opam/js_of_ocaml": "*",
     "@opam/js_of_ocaml-ppx": "*",
     "@opam/js_of_ocaml-lwt": "*",
     "@opam/ppxlib": "*",
-    "@esy-ocaml/reason": "*",
-    "ppx_pipe_first": "IwanKaramazow/PipeFirst#c22e4d5",
-    "refmterr": "*",
-    "ocaml": "~4.6.0"
+    "ocaml": "~4.6.0",
+    "ppx_pipe_first": "IwanKaramazow/PipeFirst#c22e4d5"
   },
   "resolutions": {
     "@esy-ocaml/esy-installer": "0.0.1",
@@ -44,7 +32,8 @@
   },
   "devDependencies": {
     "@esy-ocaml/merlin": "*",
+    "@opam/ocamlformat": "*",
     "ocaml": "~4.6.0",
-    "@opam/ocamlformat": "*"
+    "refmterr": "*"
   }
 }

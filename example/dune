@@ -1,6 +1,5 @@
 (executable
   (name App)
-  (public_name App.bc.js)
-  (libraries react)
-  (preprocess (pps rroo_jsoo_ppx js_of_ocaml-ppx))
+  (libraries js_of_ocaml-lwt react)
+  (preprocess (pps rroo_jsoo_ppx js_of_ocaml-ppx ppx_pipe_first))
 )
