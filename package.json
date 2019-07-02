@@ -7,8 +7,6 @@
     "build": "refmterr dune build"
   },
   "scripts": {
-    "build:watch": "refmterr dune build ./bin/App.bc.js -w",
-    "build:prod": "refmterr dune build --profile=prod ./bin/App.bc.js",
     "fmt": "refmterr dune build @fmt --auto-promote",
     "clean": "refmterr dune clean",
     "test": "refmterr dune runtest",

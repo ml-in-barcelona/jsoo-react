@@ -8,6 +8,8 @@
     ]
   },
   "scripts": {
+    "build:watch": "refmterr dune build -p App ./App.bc.js -w",
+    "build:prod": "refmterr dune build --profile=prod -p App",
     "fmt": "dune build @fmt --auto-promote",
     "clean": "dune clean",
     "test": "dune runtest --no-buffer"
