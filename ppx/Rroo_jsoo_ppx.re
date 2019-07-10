@@ -1145,9 +1145,15 @@ let jsxMapper = () => {
               switch (default) {
               | Some(default) =>
                 switch%expr ([%e expression]) {
-                | Some([%p Pat.var(~loc, {txt: "$value", loc})]) =>
+                | Some([%p Pat.var({txt: labelString, loc})]) =>
                   %e
-                  Exp.ident(~loc, {txt: Lident("$value"), loc})
+                  Exp.ident({
+                    txt: Lident(labelString),
+                    loc: {
+                      ...loc,
+                      Location.loc_ghost: true,
+                    },
+                  })
                 | None =>
                   %e
                   default
