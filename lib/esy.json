@@ -1,0 +1,19 @@
+{
+  "name": "jsoo-react-esy",
+  "version": "0.0.1",
+  "description": "Js_of_ocaml bindings to React JavaScript library",
+  "license": "MIT",
+  "esy": {
+    "build": "refmterr dune build"
+  },
+  "dependencies": {
+    "@opam/dune": "*",
+    "@opam/gen_js_api": "LexiFi/gen_js_api:gen_js_api.opam#0743a4a",
+    "ocaml": "~4.8.0",
+    "@esy-ocaml/reason": "*",
+    "refmterr": "*"
+  },
+  "devDependencies": {
+    "ocaml": "~4.8.0"
+  }
+}

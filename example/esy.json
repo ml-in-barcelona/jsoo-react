@@ -3,9 +3,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "esy": {
-    "build": [
-      "refmterr dune build -p App ./App.bc.js"
-    ]
+    "build": ["refmterr dune build -p App ./App.bc.js"]
   },
   "scripts": {
     "build:watch": "refmterr dune build -p App ./App.bc.js -w",
@@ -15,16 +13,18 @@
     "test": "dune runtest --no-buffer"
   },
   "dependencies": {
-    "rroo_jsoo_ppx": "*",
-    "react": "*",
-    "@opam/js_of_ocaml-compiler": "^3.3.0",
-    "@opam/js_of_ocaml-ppx": "^3.3.0"
+    "@esy-ocaml/reason": "*",
+    "@opam/dune": "*",
+    "@opam/js_of_ocaml": "~3.4.0",
+    "@opam/js_of_ocaml-ppx": "~3.4.0",
+    "ocaml": "~4.8.0",
+    "refmterr": "*",
+    "jsoo-react-ppx-esy": "^0.0.1",
+    "jsoo-react-esy": "^0.0.1"
   },
-  "devDependencies": {
-    "refmterr": "^3.1.10"
-  },
+  "devDependencies": { "ocaml": "~4.8.0" },
   "resolutions": {
-    "rroo_jsoo_ppx": "link-dev:..",
-    "react": "link-dev:.."
+    "jsoo-react-ppx-esy": "link-dev:../ppx",
+    "jsoo-react-esy": "link-dev:../lib"
   }
 }

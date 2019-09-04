@@ -1,0 +1,29 @@
+{
+  "name": "jsoo-react-ppx-esy",
+  "version": "0.0.1",
+  "description": "React ppx for js_of_ocaml",
+  "license": "MIT",
+  "esy": {
+    "build": "refmterr dune build"
+  },
+  "scripts": {
+    "fmt": "refmterr dune build @fmt --auto-promote",
+    "clean": "refmterr dune clean",
+    "test": "refmterr dune runtest",
+    "test:promote": "refmterr dune runtest --auto-promote",
+    "test:regen": "sh -c \"refmterr refmt ./ppx/test/test_src.re -p ml > ./ppx/test/test.ml\""
+  },
+  "dependencies": {
+    "@esy-ocaml/reason": "*",
+    "@opam/dune": "*",
+    "@opam/js_of_ocaml": "*",
+    "@opam/js_of_ocaml-ppx": "*",
+    "@opam/ppxlib": "*",
+    "ocaml": "~4.8.0",
+    "refmterr": "*"
+  },
+  "devDependencies": {
+    "@opam/ocamlformat": "*",
+    "ocaml": "~4.8.0"
+  }
+}
