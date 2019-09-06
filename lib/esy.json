@@ -6,6 +6,9 @@
   "esy": {
     "build": "refmterr dune build"
   },
+  "scripts": {
+    "fmt": "dune build @fmt --auto-promote"
+  },
   "dependencies": {
     "@opam/dune": "*",
     "@opam/gen_js_api": "LexiFi/gen_js_api:gen_js_api.opam#0743a4a",
@@ -14,6 +17,7 @@
     "refmterr": "*"
   },
   "devDependencies": {
-    "ocaml": "~4.8.0"
+    "ocaml": "~4.8.0",
+    "@opam/ocamlformat": "*"
   }
 }

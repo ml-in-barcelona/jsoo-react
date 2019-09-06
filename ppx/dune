@@ -1,6 +1,6 @@
 (library
  (name rroo_jsoo_ppx)
- (public_name rroo_jsoo_ppx)
+ (public_name jsoo-react-ppx)
  (libraries ppxlib js_of_ocaml-ppx)
  (preprocess
   (pps ppxlib.metaquot))
