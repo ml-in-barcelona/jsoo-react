@@ -1,9 +1,13 @@
-module Js = Js_of_ocaml.Js;
-module Dom = Js_of_ocaml.Dom;
+(* module Js = Js_of_ocaml.Js;
+module Dom = Js_of_ocaml.Dom; *)
 
-type synthetic('a);
+module Mouse : sig
+  type t = private Ojs.t
+  val t_of_js: Ojs.t -> t
+  val t_to_js: t -> Ojs.t
+end
 
-module MakeEventWithType = (Type: {type t;}) => {
+(* module MakeEventWithType = (Type: {type t;}) => {
   [@bs.get] external bubbles: Type.t => bool = "";
   [@bs.get] external cancelable: Type.t => bool = "";
   [@bs.get] external currentTarget: Type.t => Js.t({..}) = ""; /* Should return Dom.eventTarget */
@@ -99,9 +103,7 @@ module Form = {
   });
 };
 
-module Mouse = {
-  type tag;
-  type t = synthetic(tag);
+module Mouse =
   include MakeEventWithType({
     type nonrec t = t;
   });
@@ -118,7 +120,7 @@ module Mouse = {
   [@bs.get] external relatedTarget: t => Js.t({..}) = ""; /* Should return Dom.eventTarget */
   [@bs.get] external screenX: t => int = "";
   [@bs.get] external screenY: t => int = "";
-  [@bs.get] external shiftKey: t => bool = "";
+  [@bs.get] external shiftKey: t => bool = ""; 
 };
 
 module Selection = {
@@ -206,3 +208,4 @@ module Transition = {
   [@bs.get] external pseudoElement: t => string = "";
   [@bs.get] external elapsedTime: t => float = "";
 };
+*)

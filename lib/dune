@@ -15,9 +15,14 @@
 
 (rule
   (targets ReactDOM.ml)
-  (deps ReactDOM.rei)
+  (deps ReactDOM.mli)
   (action 
-    (progn
-      (with-stdout-to ReactDOM.ml.tmp (run %{bin:refmt} --parse=re -i true --print=ml %{deps}))
-      (run %{bin:gen_js_api} -o %{targets} ReactDOM.ml.tmp)
-    )))
+    (run %{bin:gen_js_api} -o %{targets} %{deps})
+  ))
+
+(rule
+  (targets ReactEvent.ml)
+  (deps ReactEvent.mli)
+  (action 
+    (run %{bin:gen_js_api} -o %{targets} %{deps})
+  ))

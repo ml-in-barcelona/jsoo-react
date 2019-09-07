@@ -1,4 +1,7 @@
 type element = private Ojs.t
+val element_of_js: Ojs.t -> element
+val element_to_js: element -> Ojs.t
+
 val null : element
 [@@js.custom
   let null = Ojs.null
@@ -8,10 +11,17 @@ val string : string -> element[@@js.cast ]
 val array : element array -> element[@@js.cast ]
 
 [@@@js.stop]
-type 'props component = 'props -> element
+type ('props, 'return) componentLike = 'props -> 'return
 [@@@js.start]
 [@@@js.implem
-  type 'props component = 'props -> element
+  type ('props, 'return) componentLike = 'props -> 'return
+]
+
+[@@@js.stop]
+type 'props component = ('props, element) componentLike
+[@@@js.start]
+[@@@js.implem
+  type 'props component = ('props, element) componentLike
 ]
 
 val createElement : 'props component -> 'props -> element
@@ -23,6 +33,50 @@ val createElement : 'props component -> 'props -> element
   external unsafe_cast_props: 'a -> 'b = "%identity"
   let createElement x y = createElement_internal (unsafe_cast_comp x) (unsafe_cast_props y)
 ]
+
+val useEffect1 : (unit -> (unit -> unit) option) -> 'a array -> unit
+[@@js.custom
+  val useEffect1Internal : (unit -> (unit -> unit) option) -> Ojs.t array -> unit [@@js.global "__LIB__react.useEffect"]
+  external unsafe_cast: 'a array -> 'b array = "%identity"
+  let useEffect1 effect dep = useEffect1Internal effect (unsafe_cast dep)
+]
+
+
+val useState: (unit -> 'state) -> ('state * (('state -> 'state) -> unit))
+[@@js.custom
+  val useStateInternal : (unit -> Ojs.t) -> (Ojs.t * ((Ojs.t -> Ojs.t) -> unit)) [@@js.global "__LIB__react.useState"]
+  let useState = Obj.magic useStateInternal (* TODO: Is there a way to avoid magic? *)
+]
+
+val useReducer: ('state -> 'action -> 'state) -> 'state -> ('state * ('action -> unit))
+[@@js.custom
+  val useReducerInternal : (Ojs.t -> Ojs.t -> Ojs.t) -> Ojs.t -> (Ojs.t * (Ojs.t -> unit)) [@@js.global "__LIB__react.useReducer"]
+  let useReducer = Obj.magic useReducerInternal (* TODO: Is there a way to avoid magic? *)
+]
+
+module Ref : sig
+  [@@@js.stop]
+  type 'value t
+  [@@@js.start]
+  [@@@js.implem
+    type 'value t
+  ]    
+
+  val current: 'value t -> 'value
+  [@@js.custom
+    val currentInternal : Ojs.t -> Ojs.t  [@@js.get "current"]
+    let current = Obj.magic currentInternal (* TODO: Is there a way to avoid magic? *)
+  ]
+  val setCurrent: 'value t -> 'value -> unit
+  [@@js.custom
+    type r = Ojs.t
+    let r_of_js = Ojs.t_of_js
+    let r_to_js = Ojs.t_to_js
+    val setCurrentInternal : r -> Ojs.t -> unit  [@@js.set "current"]
+    let setCurrent = Obj.magic setCurrentInternal (* TODO: Is there a way to avoid magic? *)
+  ]
+end
+
 (* val createElement : 'props component -> 'props -> element[@@js.global
                                                            "__LIB__react"
                                                              ] *)
@@ -34,12 +88,7 @@ val createElement : 'props component -> 'props -> element
 [@@js.global (("__LIB__react")[@reason.raw_literal "__LIB__react"])] *)
 
 
-(*module Ref = {
-   type t('value);
-
-   external current: t('value) => 'value = "Ref_current";
-   external setCurrent: (t('value), 'value) => unit = "Ref_setCurrent";
- };
+(*
 
  external createRef: unit => Ref.t(option('a)) = "createRef";
 
@@ -143,9 +192,6 @@ module Array: {
     l^;
   };
 };]
-
-[@js.global "__LIB__react"] [@js.cast] 
-let useEffect1: (unit => option(unit => unit), Array.t('a) ) => unit;
 
 [@js.custom let useEffect0 = cb => useEffect1(cb, [||]);]
 let useEffect0: (unit => option(unit => unit)) => unit;*)

@@ -5,14 +5,13 @@ let make = (~count) => {
     () => {
       open Lwt;
       open Lwt_js;
-      sleep(1.)
-      ->bind(() => {
+      bind(sleep(1.), () => {
           print_endline(
             "count changed 1 sec ago! Value is: " ++ string_of_int(count),
           );
           return();
         })
-      ->ignore;
+      |>ignore;
       Some(
         () =>
           print_endline(
@@ -23,10 +22,10 @@ let make = (~count) => {
     [|count|],
   );
 
-  React.useLayoutEffect(() => {
-    print_endline("useLayoutEffect: component updated");
-    None;
-  });
+  // React.useLayoutEffect(() => {
+  //   print_endline("useLayoutEffect: component updated");
+  //   None;
+  // });
 
   <div>
     {"UseEffect: printing delayed counts on the console since 2019 :)"
