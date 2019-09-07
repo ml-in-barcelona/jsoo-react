@@ -16,8 +16,8 @@
   "dependencies": {
     "@esy-ocaml/reason": "*",
     "@opam/dune": "*",
-    "@opam/js_of_ocaml": "*",
-    "@opam/js_of_ocaml-ppx": "*",
+    "@opam/js_of_ocaml": "~3.4.0",
+    "@opam/js_of_ocaml-ppx": "~3.4.0",
     "@opam/ppxlib": "*",
     "ocaml": "~4.8.0",
     "refmterr": "*"

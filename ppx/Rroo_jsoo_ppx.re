@@ -81,10 +81,14 @@ type children('a) =
 type componentConfig = {propsName: string};
 
 /* Helper method to look up the [@react.component] attribute */
-let hasAttr = ((loc, _)) => loc.txt == "react.component";
+let hasAttr = ({
+    attr_name
+  }) => attr_name.txt == "react.component";
 
 /* Helper method to filter out any attribute that isn't [@react.component] */
-let otherAttrsPure = ((loc, _)) => loc.txt != "react.component";
+let otherAttrsPure = ({
+    attr_name
+  }) => attr_name.txt != "react.component";
 
 /* Iterate over the attributes and try to find the [@react.component] attribute */
 let hasAttrOnBinding = ({pvb_attributes}) =>
@@ -264,6 +268,7 @@ let rec makeFunsForMakePropsBody = (list, args) =>
           ppat_desc: Ppat_var({txt: getLabel(label), loc}),
           ppat_loc: loc,
           ppat_attributes: [],
+          ppat_loc_stack: []
         },
         args,
       ),
@@ -285,6 +290,7 @@ let makePropsValue = (fnName, loc, namedArgListWithKeyAndRef, propsType) => {
           ptyp_desc: Ptyp_constr({txt: Lident("unit"), loc}, []),
           ptyp_loc: loc,
           ptyp_attributes: [],
+          ptyp_loc_stack: []
         },
         propsType,
       ),
@@ -340,6 +346,7 @@ let makePropsValueBinding =
           ptyp_desc: Ptyp_poly([], core_type),
           ptyp_loc: loc,
           ptyp_attributes: [],
+          ptyp_loc_stack: []
         },
       ),
     ),
@@ -391,7 +398,11 @@ let makePropsSig = (fnName, loc, namedArgListWithKeyAndRef, propsType) =>
 let makeObjectField = (loc, (str, _attrs, propType)) => {
   let type_ = [%type: Js_of_ocaml.Js.readonly_prop([%t propType])];
   /* intentionally not using attrs - they probably don't work on object fields. use on *Props instead */
-  Otag({loc, txt: str}, [], {...type_, ptyp_attributes: []});
+  {
+  pof_desc : Otag({loc, txt: str}, {...type_, ptyp_attributes: []}),
+  pof_loc : loc,
+  pof_attributes : [],
+};
 };
 
 /* Build an AST node representing a "closed" Js.t object representing a component's props */
@@ -867,7 +878,7 @@ let transformJsxCall = (callExpression, callArguments) => {
 let consumeAttribute = (attrTxt, expr) => {
   let (foundAttrs, otherAttrs) =
     List.partition(
-      ((attribute, _)) => attribute.txt == attrTxt,
+      ({attr_name}) => attr_name.txt == attrTxt,
       expr.pexp_attributes,
     );
   switch (foundAttrs) {
@@ -1071,7 +1082,7 @@ let jsxMapper = () => {
 
           let (attrLoc, payload) =
             switch (reactComponentAttribute) {
-            | Some((loc, payload)) => (loc.loc, Some(payload))
+            | Some({attr_loc, attr_payload}) => (attr_loc, Some(attr_payload))
             | None => (emptyLoc, None)
             };
 
@@ -1302,7 +1313,7 @@ let jsxMapper = () => {
 let () =
   Driver.register(
     ~name="jsoo-react-ppx",
-    Migrate_parsetree.Versions.ocaml_406,
+    Migrate_parsetree.Versions.ocaml_408,
     (_config, _cookies) =>
     jsxMapper()
   );

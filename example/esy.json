@@ -25,6 +25,8 @@
   "devDependencies": { "ocaml": "~4.8.0" },
   "resolutions": {
     "jsoo-react-ppx-esy": "link-dev:../ppx",
-    "jsoo-react-esy": "link-dev:../lib"
+    "jsoo-react-esy": "link-dev:../lib",
+    "@opam/js_of_ocaml": "ocsigen/js_of_ocaml:js_of_ocaml.opam#0bf16c4",
+    "@opam/js_of_ocaml-ppx": "ocsigen/js_of_ocaml-ppx:js_of_ocaml.opam#0bf16c4"
   }
 }
