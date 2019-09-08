@@ -7,15 +7,15 @@
 /*
    The transform:
    transform `[@JSX] div(~props1=a, ~props2=b, ~children=[foo, bar], ())` into
-   `ReactDOM.createDOMElementVariadic("div", ReactDOM.domProps(~props1=1, ~props2=b), [|foo, bar|])`.
+   `ReactDOM.createDOMElementVariadic("div", ReactDOM.domProps(~props1=1, ~props2=b), [foo, bar])`.
    transform the upper-cased case
    `[@JSX] Foo.createElement(~key=a, ~ref=b, ~foo=bar, ~children=[], ())` into
    `React.createElement(Foo.make, Foo.makeProps(~key=a, ~ref=b, ~foo=bar, ()))`
    transform the upper-cased case
    `[@JSX] Foo.createElement(~foo=bar, ~children=[foo, bar], ())` into
-   `React.createElementVariadic(Foo.make, Foo.makeProps(~foo=bar, ~children=React.null, ()), [|foo, bar|])`
+   `React.createElementVariadic(Foo.make, Foo.makeProps(~foo=bar, ~children=React.null, ()), [foo, bar])`
    transform `[@JSX] [foo]` into
-   `React.createElementVariadic(React.fragment, React.fragmentProps, [|foo|])`
+   `React.createElementVariadic(React.fragment, React.fragmentProps, [foo])`
  */
 
 open Migrate_parsetree;
@@ -770,10 +770,14 @@ let transformLowercaseCall = (~callerLoc, callArguments, id) => {
 
   let args =
     switch (nonChildrenProps) {
-    | [_justTheUnitArgumentAtEnd] => [
+    | [_justTheUnitArgumentAtEnd] => 
+      let loc = gloc;
+      [
         /* "div" */
         (Nolabel, componentNameExpr),
-        /* [|moreCreateElementCallsHere|] */
+        /* ReactDOM.domProps(()) */
+        (Labelled("props"), [%expr ReactDOM.domProps(())]),
+        /* [moreCreateElementCallsHere] */
         (Nolabel, children),
       ]
     | nonEmptyProps =>
@@ -782,9 +786,9 @@ let transformLowercaseCall = (~callerLoc, callArguments, id) => {
       [
         /* "div" */
         (Nolabel, componentNameExpr),
-        /* ReactDOM.props(~className=blabla, ~foo=bar, ()) */
+        /* ReactDOM.domProps(~className=blabla, ~foo=bar, ()) */
         (Labelled("props"), propsCall),
-        /* [|moreCreateElementCallsHere|] */
+        /* [moreCreateElementCallsHere] */
         (Nolabel, children),
       ];
     };
@@ -830,7 +834,7 @@ let transformJsxCall = (callExpression, callArguments) => {
     )
   /* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) */
   /* turn that into
-     ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [|bla|]) */
+     ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [bla]) */
   | {pexp_desc: Pexp_ident({txt: Lident(id), _}), _} =>
     transformLowercaseCall(
       ~callerLoc=callExpression.pexp_loc,

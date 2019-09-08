@@ -46,7 +46,7 @@ module Ref : sig
   ]
 end
 
-type domProps = private Ojs.t
+type domProps
 
 val domProps :
   ?key:string ->
@@ -61,7 +61,7 @@ val domProps :
 
 val createDOMElementVariadic :
   string ->
-  ?props: domProps ->
+  props: domProps ->
   (React.element list [@js.variadic]) -> React.element
   [@@js.global "__LIB__react.createElement"]
 

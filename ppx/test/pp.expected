@@ -63,16 +63,12 @@ let make =
       with
       | ((Some (name))[@explicit_arity ]) -> name
       | None -> "" in
-    ReactDOM.createFragment
-      [|(ReactDOM.createDOMElementVariadic "div"
-           [|(React.string ("Hello " ^ name))|]);(React.createElement
-                                                    Hello.make
-                                                    (Hello.makeProps ~one:"1"
-                                                       ~children:(React.string
-                                                                    (
-                                                                    "Hello "
-                                                                    ^ name))
-                                                       ()))|] in
+    React.createElementVariadic React.fragment React.fragmentProps
+      [ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
+         [React.string ("Hello " ^ name)];
+      React.createElement Hello.make
+        (Hello.makeProps ~one:"1" ~children:(React.string ("Hello " ^ name))
+           ())] in
   Test
 let makeProps
   : a:'a ->
@@ -115,7 +111,7 @@ let make =
         (Props : < .. >  Js_of_ocaml.Js.t)
         (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
     print_endline "This function should be named `Test`";
-    ReactDOM.createDOMElementVariadic "div" [||] in
+    ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ()) [] in
   Test
 module External =
   struct
@@ -189,7 +185,8 @@ module Bar =
             (Props : < .. >  Js_of_ocaml.Js.t)
             (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
         print_endline "This function should be named `Test$Bar`";
-        ReactDOM.createDOMElementVariadic "div" [||] in
+        ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
+          [] in
       Test$Bar
     let componentProps
       : a:'a ->
@@ -233,7 +230,8 @@ module Bar =
             (Props : < .. >  Js_of_ocaml.Js.t)
             (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
         print_endline "This function should be named `Test$Bar$component`";
-        ReactDOM.createDOMElementVariadic "div" [||] in
+        ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
+          [] in
       Test$Bar$component
   end
 module type X_int  = sig val x : int end
@@ -282,7 +280,8 @@ module Func(M:X_int) =
             (Props : < .. >  Js_of_ocaml.Js.t)
             (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
         print_endline "This function should be named `Test$Func`" M.x;
-        ReactDOM.createDOMElementVariadic "div" [||] in
+        ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
+          [] in
       Test$Func
   end
 module ForwardRef =
@@ -300,25 +299,33 @@ module ForwardRef =
         (let Test$ForwardRef (Props : <  >  Js_of_ocaml.Js.t) theRef =
            ReactDOM.createDOMElementVariadic "div"
              ~props:(ReactDOM.domProps ~ref:theRef ())
-             [|("ForwardRef" |. React.string)|] in
+             ["ForwardRef" |. React.string] in
          Test$ForwardRef)
   end
-let fragment foo = ((ReactDOM.createFragment [|foo|])[@bla ])
-let polyChildrenFragment foo bar = ReactDOM.createFragment [|foo;bar|]
+let fragment foo =
+  ((React.createElementVariadic React.fragment React.fragmentProps ((
+      [foo])[@bla ]))
+  [@bla ])
+let polyChildrenFragment foo bar =
+  React.createElementVariadic React.fragment React.fragmentProps [foo; bar]
 let nestedFragment foo bar baz =
-  ReactDOM.createFragment [|foo;(ReactDOM.createFragment [|bar;baz|])|]
+  React.createElementVariadic React.fragment React.fragmentProps
+    [foo;
+    React.createElementVariadic React.fragment React.fragmentProps [bar; baz]]
 let upper = React.createElement Upper.make (Upper.makeProps ())
 let upperWithChild foo =
   React.createElement Upper.make (Upper.makeProps ~children:foo ())
 let upperWithChildren foo bar =
   React.createElementVariadic Upper.make
-    (Upper.makeProps ~children:React.null ()) [|foo;bar|]
-let lower = ReactDOM.createDOMElementVariadic "lower" [||]
+    (Upper.makeProps ~children:React.null ()) [foo; bar]
+let lower =
+  ReactDOM.createDOMElementVariadic "lower" ~props:(ReactDOM.domProps ()) []
 let lowerWithChildAndProps foo =
   ReactDOM.createDOMElementVariadic "lower"
-    ~props:(ReactDOM.domProps ~a:1 ~b:"1" ()) [|foo|]
+    ~props:(ReactDOM.domProps ~a:1 ~b:"1" ()) [foo]
 let lowerWithChildren foo bar =
-  ReactDOM.createDOMElementVariadic "lower" [|foo;bar|]
+  ReactDOM.createDOMElementVariadic "lower" ~props:(ReactDOM.domProps ())
+    [foo; bar]
 let nestedElement =
   React.createElement Foo.Bar.make (Foo.Bar.makeProps ~a:1 ~b:"1" ())
 let nestedElementCustomName =

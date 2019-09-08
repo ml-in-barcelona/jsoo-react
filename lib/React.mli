@@ -107,7 +107,8 @@ val fragmentProps : fragmentProps
 ]
 val fragment : fragmentProps component
 [@@js.custom
-  val fragment : (Ojs.t -> element) [@@js.global "__LIB__react.Fragment"]
+  val fragmentInternal : Ojs.t [@@js.global "__LIB__react.Fragment"]
+  let fragment = Obj.magic fragmentInternal
 ]
 
 (* val createElement : 'props component -> 'props -> element[@@js.global
