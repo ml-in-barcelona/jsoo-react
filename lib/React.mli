@@ -100,15 +100,11 @@ end
 
 (* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
  Although Reason parser doesn't support it so that's a requirement before adding it here *)
-type fragmentProps = private Ojs.t
-val fragmentProps : fragmentProps
+val createFragment : (element list) -> element
 [@@js.custom
-  let fragmentProps = Ojs.null
-]
-val fragment : fragmentProps component
-[@@js.custom
+  val createFragmentInternal : (Ojs.t) -> Ojs.t -> (element list) -> element [@@js.global "__LIB__react.createElement"]
   val fragmentInternal : Ojs.t [@@js.global "__LIB__react.Fragment"]
-  let fragment = Obj.magic fragmentInternal
+  let createFragment l = createFragmentInternal fragmentInternal Ojs.null l
 ]
 
 (* val createElement : 'props component -> 'props -> element[@@js.global

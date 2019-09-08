@@ -36,14 +36,8 @@ module Ref : sig
   type currentDomRef = domElement option React.Ref.t
   type callbackDomRef = domElement option -> unit
   
-  val domRef : currentDomRef -> domRef
-  [@@js.custom
-    external domRef : currentDomRef -> domRef = "%identity"
-  ]
-  val callbackDomRef : callbackDomRef -> domRef
-  [@@js.custom
-    external callbackDomRef : callbackDomRef -> domRef = "%identity"
-  ]
+  val domRef : currentDomRef -> domRef [@@js.cast ]
+  val callbackDomRef : callbackDomRef -> domRef [@@js.cast ]
 end
 
 type domProps
@@ -67,7 +61,7 @@ val createDOMElementVariadic :
 
 val forwardRef : ('props -> domRef option -> React.element) -> 'props React.component
 [@@js.custom
-  val forwardRefInternal : (Ojs.t -> domRef option -> React.element) -> Ojs.t -> React.element [@@js.global "__LIB__reactDOM.forwardRef"]
+  val forwardRefInternal : (Ojs.t -> domRef option -> React.element) -> Ojs.t -> React.element [@@js.global "__LIB__react.forwardRef"]
   let forwardRef = Obj.magic forwardRefInternal (* TODO: Is there a way to avoid magic? *)
 ]
 

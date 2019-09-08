@@ -9,6 +9,7 @@
   "scripts": {
     "fmt": "dune build @fmt --auto-promote"
   },
+  "author": "Javier Chávarri",
   "dependencies": {
     "@opam/dune": "*",
     "@opam/gen_js_api": "LexiFi/gen_js_api:gen_js_api.opam#0743a4a",
