@@ -1,12 +1,50 @@
-type domRef
 
-(* module Ref : sig
+[@@@js.stop]
+type domElement = Js_of_ocaml.Dom_html.element
+val domElement_to_js : domElement -> Ojs.t
+val domElement_of_js : Ojs.t -> domElement
+[@@@js.start]
+[@@@js.implem
+  type domElement = Js_of_ocaml.Dom_html.element
+  external domElement_to_js : domElement -> Ojs.t = "%identity"
+  external domElement_of_js : Ojs.t -> domElement = "%identity"
+]
+
+val render : React.element -> domElement -> unit [@@js.global "__LIB__reactDOM.render"]
+
+val renderToElementWithId : React.element -> string -> unit
+[@@js.custom
+
+val getElementById: string -> domElement option [@@js.global "document.getElementById"]
+
+let renderToElementWithId reactElement id =
+  match getElementById id with
+  | None  ->
+      raise
+        (Invalid_argument
+            ("ReactDOM.renderToElementWithId : no element of id " ^
+            id ^
+            " found in the HTML.")
+        )
+  | Some element -> render reactElement element
+]
+
+type domRef = private Ojs.t
+
+module Ref : sig
   type t = domRef
-  type currentDomRef = Dom_html.element option React.Ref.t
-  type callbackDomRef = Dom_html.element option -> unit
-  external domRef : currentDomRef -> domRef = "%identity"
-  external callbackDomRef : callbackDomRef -> domRef = "%identity"
-end *)
+  type currentDomRef = domElement option React.Ref.t
+  type callbackDomRef = domElement option -> unit
+  
+  val domRef : currentDomRef -> domRef
+  [@@js.custom
+    external domRef : currentDomRef -> domRef = "%identity"
+  ]
+  val callbackDomRef : callbackDomRef -> domRef
+  [@@js.custom
+    external callbackDomRef : callbackDomRef -> domRef = "%identity"
+  ]
+end
 
 type domProps = private Ojs.t
 
@@ -21,9 +59,11 @@ val domProps :
   unit -> domProps
   [@@js.builder]
 
-val createDOMElementVariadic : string -> ?props: domProps -> (React.element list [@js.variadic]) -> React.element [@@js.global
-                                                           "__LIB__reactDOM.createElement"
-                                                             ]
+val createDOMElementVariadic :
+  string ->
+  ?props: domProps ->
+  (React.element list [@js.variadic]) -> React.element
+  [@@js.global "__LIB__react.createElement"]
 
 val forwardRef : ('props -> domRef option -> React.element) -> 'props React.component
 [@@js.custom
@@ -31,22 +71,3 @@ val forwardRef : ('props -> domRef option -> React.element) -> 'props React.comp
   let forwardRef = Obj.magic forwardRefInternal (* TODO: Is there a way to avoid magic? *)
 ]
 
-(* 
-// module Js = Js_of_ocaml.Js;
-// module Dom_html = Js_of_ocaml.Dom_html;
-
-// external render: (React.element, Js.t(Dom_html.element)) => unit = "render";
-
-// let renderToElementWithId = (reactElement, id) =>
-//   render(reactElement, Dom_html.getElementById_exn(id));
-
-
-// external createDOMElementVariadic:
-//   (string, ~props: domProps=?, array(React.element)) => React.element =
-//   "createDOMElementVariadic";
-
-// // TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
-// // Although Reason parser doesn't support it so that's a requirement before adding it here
-// external createFragment: array(React.element) => React.element =
-//   "createFragment";
-*)

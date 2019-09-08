@@ -1,6 +1,5 @@
 (executable
   (name App)
-  (public_name App.bc.js)
   (libraries js_of_ocaml-lwt jsoo-react-esy)
   (preprocess (pps jsoo-react-ppx js_of_ocaml-ppx))
 )

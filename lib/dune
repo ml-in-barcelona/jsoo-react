@@ -3,7 +3,7 @@
   (public_name jsoo-react-esy)
   (wrapped false)
   (js_of_ocaml (javascript_files ReactJs.js ReactDOMJs.js))
-  (libraries gen_js_api)
+  (libraries js_of_ocaml gen_js_api)
 )
 
 (rule

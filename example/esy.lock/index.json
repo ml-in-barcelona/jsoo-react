@@ -1,5 +1,5 @@
 {
-  "checksum": "2c0d37d992c54a08410159f77e912d45",
+  "checksum": "83d7f05fcdd3871985b29c047af1f98c",
   "root": "app@link-dev:./esy.json",
   "node": {
     "refmterr@3.2.2@d41d8cd9": {
@@ -61,6 +61,7 @@
       "overrides": [],
       "dependencies": [
         "refmterr@3.2.2@d41d8cd9", "ocaml@4.8.1000@d41d8cd9",
+        "@opam/js_of_ocaml@github:ocsigen/js_of_ocaml:js_of_ocaml.opam#0bf16c4@d41d8cd9",
         "@opam/gen_js_api@github:LexiFi/gen_js_api:gen_js_api.opam#0743a4a@d41d8cd9",
         "@opam/dune@opam:1.11.3@9894df55", "@esy-ocaml/reason@3.5.0@d41d8cd9"
       ],

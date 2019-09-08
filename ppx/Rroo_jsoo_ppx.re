@@ -15,7 +15,7 @@
    `[@JSX] Foo.createElement(~foo=bar, ~children=[foo, bar], ())` into
    `React.createElementVariadic(Foo.make, Foo.makeProps(~foo=bar, ~children=React.null, ()), [|foo, bar|])`
    transform `[@JSX] [foo]` into
-   `ReactDOM.createFragment([|foo|])`
+   `React.createElementVariadic(React.fragment, React.fragmentProps, [|foo|])`
  */
 
 open Migrate_parsetree;
@@ -1283,7 +1283,7 @@ let jsxMapper = () => {
         let children = mapper.expr(mapper, children);
         let loc = callerLoc;
         let newExpr = [%expr
-          ReactDOM.createFragment([%e children])
+          React.createElementVariadic(React.fragment, React.fragmentProps, [%e children])
         ];
         mapper.expr(mapper, {...newExpr, pexp_attributes: nonJsxAttributes});
       | _ => e

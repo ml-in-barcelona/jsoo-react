@@ -1,6 +1,13 @@
-type element = private Ojs.t
-val element_of_js: Ojs.t -> element
-val element_to_js: element -> Ojs.t
+[@@@js.stop]
+type element
+val element_to_js : element -> Ojs.t
+val element_of_js : Ojs.t -> element
+[@@@js.start]
+[@@@js.implem
+  type element = Ojs.t
+  external element_to_js : element -> Ojs.t = "%identity"
+  external element_of_js : Ojs.t -> element = "%identity"
+]
 
 val null : element
 [@@js.custom
@@ -22,16 +29,21 @@ type 'props component = ('props, element) componentLike
 [@@@js.start]
 [@@@js.implem
   type 'props component = ('props, element) componentLike
+  external unsafeCastComp: ('a component) -> 'b = "%identity"
+  external unsafeCastProps: 'a -> 'b = "%identity"
 ]
 
 val createElement : 'props component -> 'props -> element
 [@@js.custom
-  val createElement_internal : (Ojs.t -> element) -> Ojs.t -> element [@@js.global
-                                                           "__LIB__react.createElement"
-                                                             ]
-  external unsafe_cast_comp: ('a component) -> 'b = "%identity"
-  external unsafe_cast_props: 'a -> 'b = "%identity"
-  let createElement x y = createElement_internal (unsafe_cast_comp x) (unsafe_cast_props y)
+  val createElementInternal : (Ojs.t -> element) -> Ojs.t -> element [@@js.global "__LIB__react.createElement"]
+  let createElement x y = createElementInternal (unsafeCastComp x) (unsafeCastProps y)
+]
+
+val createElementVariadic :
+  'props component -> 'props -> (element list) -> element
+[@@js.custom
+  val createElementVariadicInternal : (Ojs.t -> element) -> Ojs.t -> (element list [@js.variadic]) -> element [@@js.global "__LIB__react.createElement"]
+  let createElementVariadic x y = createElementVariadicInternal (unsafeCastComp x) (unsafeCastProps y)
 ]
 
 val useEffect1 : (unit -> (unit -> unit) option) -> 'a array -> unit
@@ -56,10 +68,19 @@ val useReducer: ('state -> 'action -> 'state) -> 'state -> ('state * ('action ->
 
 module Ref : sig
   [@@@js.stop]
-  type 'value t
+  type 'value t = private Ojs.t
+  val t_of_js: (Ojs.t -> 'a) -> Ojs.t -> 'a t
+  val t_to_js: ('a -> Ojs.t) -> 'a t -> Ojs.t
   [@@@js.start]
   [@@@js.implem
-    type 'value t
+    include ([%js] : sig
+      type untyped = private Ojs.t
+      val untyped_of_js: Ojs.t -> untyped
+      val untyped_to_js: untyped -> Ojs.t
+    end)
+    type 'value t = untyped
+    let t_of_js _ x = untyped_of_js x
+    let t_to_js _ x = untyped_to_js x
   ]    
 
   val current: 'value t -> 'value
@@ -77,16 +98,24 @@ module Ref : sig
   ]
 end
 
+(* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
+ Although Reason parser doesn't support it so that's a requirement before adding it here *)
+type fragmentProps = private Ojs.t
+val fragmentProps : fragmentProps
+[@@js.custom
+  let fragmentProps = Ojs.null
+]
+val fragment : fragmentProps component
+[@@js.custom
+  val fragment : (Ojs.t -> element) [@@js.global "__LIB__react.Fragment"]
+]
+
 (* val createElement : 'props component -> 'props -> element[@@js.global
                                                            "__LIB__react"
                                                              ] *)
 (* val cloneElement : 'props component -> 'props -> element[@@js.global
                                                           (("__LIB__react")
                                                             )] *)
-(* val createElementVariadic :
-  'props component -> 'props -> ((element array)[@js.variadic ]) -> element
-[@@js.global (("__LIB__react")[@reason.raw_literal "__LIB__react"])] *)
-
 
 (*
 

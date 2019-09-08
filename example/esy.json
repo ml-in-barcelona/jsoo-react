@@ -3,11 +3,11 @@
   "version": "0.0.1",
   "license": "MIT",
   "esy": {
-    "build": ["refmterr dune build -p App ./App.bc.js"]
+    "build": ["refmterr dune build ./src/App.bc.js"]
   },
   "scripts": {
-    "build:watch": "refmterr dune build -p App ./App.bc.js -w",
-    "build:prod": "refmterr dune build --profile=prod -p App",
+    "build:watch": "refmterr dune build ./src/App.bc.js -w",
+    "build:prod": "refmterr dune build --profile=prod ./src/App.bc.js",
     "fmt": "dune build @fmt --auto-promote",
     "clean": "dune clean",
     "test": "dune runtest --no-buffer"
