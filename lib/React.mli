@@ -35,14 +35,18 @@ type 'props component = ('props, element) componentLike
 
 val createElement : 'props component -> 'props -> element
 [@@js.custom
-  val createElementInternal : (Ojs.t -> element) -> Ojs.t -> element [@@js.global "__LIB__react.createElement"]
+  (* Important: we don't want to use an arrow type to represent components (i.e. (Ojs.t -> element)) as the component function
+  would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
+  val createElementInternal : Ojs.t -> Ojs.t -> element [@@js.global "__LIB__react.createElement"]
   let createElement x y = createElementInternal (unsafeCastComp x) (unsafeCastProps y)
 ]
 
 val createElementVariadic :
   'props component -> 'props -> (element list) -> element
 [@@js.custom
-  val createElementVariadicInternal : (Ojs.t -> element) -> Ojs.t -> (element list [@js.variadic]) -> element [@@js.global "__LIB__react.createElement"]
+  (* Important: we don't want to use an arrow type to represent components (i.e. (Ojs.t -> element)) as the component function
+  would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
+  val createElementVariadicInternal : Ojs.t -> Ojs.t -> (element list [@js.variadic]) -> element [@@js.global "__LIB__react.createElement"]
   let createElementVariadic x y = createElementVariadicInternal (unsafeCastComp x) (unsafeCastProps y)
 ]
 
