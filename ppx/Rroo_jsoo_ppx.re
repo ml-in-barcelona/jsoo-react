@@ -225,7 +225,8 @@ let rec makeArgsForMakePropsType = (list, args) =>
       | (
           label,
           Some({
-            ptyp_desc: Ptyp_constr({txt: Lident("option"), _}, [type_]), _
+            ptyp_desc: Ptyp_constr({txt: Lident("option"), _}, [type_]),
+            _,
           }),
           _,
         )
@@ -236,7 +237,8 @@ let rec makeArgsForMakePropsType = (list, args) =>
               Ptyp_constr(
                 {txt: Ldot(Lident("*predef*"), "option"), _},
                 [type_],
-              ), _
+              ),
+            _,
           }),
           _,
         )
@@ -305,12 +307,38 @@ let makePropsName = (~loc, name) =>
 /* AST for the creation of a JavaScript object using Js_of_ocaml.Js.obj */
 let makeJsObj = (~loc, namedArgListWithKeyAndRef) => {
   /* Creates the ("key", inject(key)), ("name", inject(name)) tuples */
-  let labelToTuple = label => [%expr
-    (
-      [%e Exp.constant(~loc, Pconst_string(getLabel(label), None))],
-      inject([%e Exp.ident(~loc, {txt: Lident(getLabel(label)), loc})]),
-    )
-  ];
+  let labelToTuple = label => {
+    let l = getLabel(label);
+    let id = Exp.ident(~loc, {txt: Lident(l), loc});
+    let expr =
+      l == "key"
+        ? [%expr
+          (
+            [%e Exp.constant(~loc, Pconst_string(l, None))],
+            inject(
+              Option.map(Js_of_ocaml.Js.string, [%e id])
+              |> Js_of_ocaml.Js.Opt.option,
+            ),
+          )
+        ]
+        : [%expr
+          (
+            [%e Exp.constant(~loc, Pconst_string(l, None))],
+            inject([%e id]),
+          )
+        ];
+    isOptional(label)
+      ? [%expr
+        Option.map(
+          _ => {
+            %e
+            expr
+          },
+          [%e id],
+        )
+      ]
+      : [%expr Some([%e expr])];
+  };
   %expr
   obj(
     [%e
@@ -321,7 +349,10 @@ let makeJsObj = (~loc, namedArgListWithKeyAndRef) => {
           namedArgListWithKeyAndRef,
         ),
       )
-    ],
+    ]
+    |> Array.to_list
+    |> List.filter_map(x => x)
+    |> Array.of_list,
   );
 };
 
@@ -492,7 +523,10 @@ let rec recursivelyTransformNamedArgsForMake = (mapper, expr, list) => {
 let argToType = (types, (name, default, _noLabelName, _alias, loc, type_)) =>
   switch (type_, name, default) {
   | (
-      Some({ptyp_desc: Ptyp_constr({txt: Lident("option"), _}, [type_]), _}),
+      Some({
+        ptyp_desc: Ptyp_constr({txt: Lident("option"), _}, [type_]),
+        _,
+      }),
       name,
       _,
     )
@@ -770,16 +804,16 @@ let transformLowercaseCall = (~callerLoc, callArguments, id) => {
 
   let args =
     switch (nonChildrenProps) {
-    | [_justTheUnitArgumentAtEnd] => 
+    | [_justTheUnitArgumentAtEnd] =>
       let loc = gloc;
       [
         /* "div" */
         (Nolabel, componentNameExpr),
         /* ReactDOM.domProps(()) */
-        (Labelled("props"), [%expr ReactDOM.domProps(())]),
+        (Labelled("props"), [%expr ReactDOM.domProps()]),
         /* [moreCreateElementCallsHere] */
         (Nolabel, children),
-      ]
+      ];
     | nonEmptyProps =>
       let loc = gloc;
       let propsCall = Exp.apply([%expr ReactDOM.domProps], nonEmptyProps);
@@ -815,7 +849,8 @@ let transformJsxCall = (callExpression, callArguments) => {
   /* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) */
   | {
       pexp_desc:
-        Pexp_ident({txt: Ldot(modulePath, "createElement" | "make"), _}), _
+        Pexp_ident({txt: Ldot(modulePath, "createElement" | "make"), _}),
+      _,
     }
   /* This is just included because of the tests. We can't use Reason-syntax code: https://github.com/ocaml-ppx/ocaml-migrate-parsetree/issues/74
      So we use OCaml code. But the generated code from <Foo.make /> creates Foo.make.createElement in OCaml code,
@@ -825,7 +860,8 @@ let transformJsxCall = (callExpression, callArguments) => {
         Pexp_field(
           {pexp_desc: Pexp_ident({txt: modulePath, _}), _},
           {txt: Lident("createElement"), _},
-        ), _
+        ),
+      _,
     } =>
     transformUppercaseCall(
       ~callerLoc=callExpression.pexp_loc,
@@ -841,7 +877,11 @@ let transformJsxCall = (callExpression, callArguments) => {
       callArguments,
       id,
     )
-  | {pexp_desc: Pexp_ident({txt: Ldot(_, anythingNotCreateElementOrMake), _}), _} =>
+  | {
+      pexp_desc:
+        Pexp_ident({txt: Ldot(_, anythingNotCreateElementOrMake), _}),
+      _,
+    } =>
     raise(
       Invalid_argument(
         "JSX: the JSX attribute should be attached to a `YourModuleName.createElement` or `YourModuleName.make` call. We saw `"
@@ -1012,7 +1052,8 @@ let jsxMapper = () => {
                     Pexp_apply(
                       wrapperExpression,
                       [(Nolabel, innerFunctionExpression)],
-                    ), _
+                    ),
+                  _,
                 } =>
                 let (wrapExpression, realReturnExpression) =
                   spelunkForFunExpression(innerFunctionExpression);
@@ -1032,7 +1073,8 @@ let jsxMapper = () => {
                 );
               | {
                   pexp_desc:
-                    Pexp_sequence(wrapperExpression, innerFunctionExpression), _
+                    Pexp_sequence(wrapperExpression, innerFunctionExpression),
+                  _,
                 } =>
                 let (wrapExpression, realReturnExpression) =
                   spelunkForFunExpression(innerFunctionExpression);
@@ -1286,9 +1328,7 @@ let jsxMapper = () => {
       | [%expr [[%e? _child], ...[%e? _moreChildren]]] as children =>
         let children = mapper.expr(mapper, children);
         let loc = callerLoc;
-        let newExpr = [%expr
-          React.createFragment([%e children])
-        ];
+        let newExpr = [%expr React.createFragment([%e children])];
         mapper.expr(mapper, {...newExpr, pexp_attributes: nonJsxAttributes});
       | _ => e
       }

@@ -1,7 +1,7 @@
-let caml = <GreetingOCaml key="bar" name="Hanna" />;
+let caml = <GreetingOCaml name="Hanna" />;
 
-let div = <div key="foo" />;
-let reason = <GreetingReason name="Bill"> <> div <div /> </> </GreetingReason>;
+let div = <div key="first" />;
+let reason = <GreetingReason name="Bill"> <> div <div key="second"/> </> </GreetingReason>;
 
 let main =
   <div>
@@ -11,8 +11,8 @@ let main =
     reason
     <h1> {"Refs" |> React.string} </h1>
     <Refs />
-    <h1> {"Interface files" |> React.string} </h1>
-    <Interface title="Hey"> React.null </Interface>
+    <h1 key="h1"> {"Interface files" |> React.string} </h1>
+    <Interface key="inter" title="Hey"> React.null </Interface>
   </div>;
 
 ReactDOM.renderToElementWithId(main, "app");
