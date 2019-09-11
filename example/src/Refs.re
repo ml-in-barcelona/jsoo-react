@@ -3,10 +3,8 @@ let log = a => Js_of_ocaml.Firebug.console##log(a);
 module FancyLink = {
   [@react.component]
   let make =
-    ReactDOM.forwardRef(ref =>
-      <a ?ref href="https://github.com/jchavarri/rroo/" className="FancyLink">
-        {"rroo GitHub repo" |> React.string}
-      </a>
+    ReactDOM.forwardRef((~href, ~repo, ref) =>
+      <a ?ref href className="FancyLink"> {repo |> React.string} </a>
     );
 };
 
@@ -23,6 +21,12 @@ let make = () => {
     <button onClick={_ => setShow(s => !s)}>
       {"Toggle fancy link" |> React.string}
     </button>
-    {show ? <FancyLink ref /> : React.null}
+    {show
+       ? <FancyLink
+           href="https://github.com/jchavarri/rroo/"
+           repo="rroo GitHub repo"
+           ref
+         />
+       : React.null}
   </>;
 };

@@ -5,13 +5,16 @@ let make = (~count) => {
     () => {
       open Lwt;
       open Lwt_js;
-      bind(sleep(1.), () => {
+      bind(
+        sleep(1.),
+        () => {
           print_endline(
             "count changed 1 sec ago! Value is: " ++ string_of_int(count),
           );
           return();
-        })
-      |>ignore;
+        },
+      )
+      |> ignore;
       Some(
         () =>
           print_endline(

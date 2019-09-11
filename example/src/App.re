@@ -1,7 +1,10 @@
 let caml = <GreetingOCaml name="Hanna" />;
 
 let div = <div key="first" />;
-let reason = <GreetingReason name="Bill"> <> div <div key="second"/> </> </GreetingReason>;
+let reason =
+  <GreetingReason name="Bill">
+    <> div <div key="second" /> </>
+  </GreetingReason>;
 
 let main =
   <div>

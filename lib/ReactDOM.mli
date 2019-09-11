@@ -61,7 +61,9 @@ val createDOMElementVariadic :
 
 val forwardRef : ('props -> domRef option -> React.element) -> 'props React.component
 [@@js.custom
-  val forwardRefInternal : (Ojs.t -> domRef option -> React.element) -> Ojs.t -> React.element [@@js.global "__LIB__react.forwardRef"]
+  (* Important: we don't want to use an arrow type to represent components (i.e. (Ojs.t -> element)) as the component function
+  would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
+  val forwardRefInternal : Ojs.t -> Ojs.t [@@js.global "__LIB__react.forwardRef"]
   let forwardRef = Obj.magic forwardRefInternal (* TODO: Is there a way to avoid magic? *)
 ]
 
