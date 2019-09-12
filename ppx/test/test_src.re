@@ -71,7 +71,7 @@ module ForwardRef = {
   [@react.component]
   let make =
     React.forwardRef(theRef =>
-      <div ref=theRef> "ForwardRef"->React.string </div>
+      <div ref=theRef> {React.string("ForwardRef")} </div>
     );
 };
 

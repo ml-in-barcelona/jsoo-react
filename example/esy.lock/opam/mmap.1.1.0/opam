@@ -10,8 +10,8 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
 ]
 depends: [
-  "ocaml" {>= "4.02.3"}
-  "dune" {build & >= "1.6"}
+  "ocaml"
+  "dune" {>= "1.6"}
 ]
 synopsis: "File mapping functionality"
 description: """

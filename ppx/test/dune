@@ -1,6 +1,6 @@
 (executable
  (name main)
- (libraries rroo_jsoo_ppx))
+ (libraries jsoo-react-ppx))
 
 (rule
  (targets pp.result)

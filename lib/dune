@@ -1,12 +1,28 @@
 (library
- (name React)
- (public_name react)
- (wrapped false)
- (modes byte)
- (js_of_ocaml
-  (javascript_files node_modules/react/umd/react.development.js
-    node_modules/react-dom/umd/react-dom.development.js InteropUtils.js
-    React.js ReactDOM.js))
- (c_names ReactDOM React)
- (preprocess
-  (pps js_of_ocaml-ppx)))
+  (name React)
+  (public_name jsoo-react-esy)
+  (wrapped false)
+  (js_of_ocaml (javascript_files ReactJs.js ReactDOMJs.js))
+  (libraries js_of_ocaml gen_js_api)
+)
+
+(rule
+  (targets React.ml)
+  (deps React.mli)
+  (action 
+    (run %{bin:gen_js_api} -o %{targets} %{deps})
+  ))
+
+(rule
+  (targets ReactDOM.ml)
+  (deps ReactDOM.mli)
+  (action 
+    (run %{bin:gen_js_api} -o %{targets} %{deps})
+  ))
+
+(rule
+  (targets ReactEvent.ml)
+  (deps ReactEvent.mli)
+  (action 
+    (run %{bin:gen_js_api} -o %{targets} %{deps})
+  ))

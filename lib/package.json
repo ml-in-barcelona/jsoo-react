@@ -1,12 +1,25 @@
 {
-  "scripts": {
-    "lint": "eslint *.js"
+  "name": "jsoo-react",
+  "version": "0.0.2",
+  "description": "Js_of_ocaml bindings to React JavaScript library",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jchavarri/rroo"
   },
+  "keywords": [
+    "ocaml",
+    "reasonml",
+    "js_of_ocaml",
+    "react"
+  ],
+  "author": "Javier Chávarri",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jchavarri/rroo/issues"
+  },
+  "homepage": "https://github.com/jchavarri/rroo",
   "dependencies": {
     "react": ">=16.8.1",
     "react-dom": ">=16.8.1"
-  },
-  "devDependencies": {
-    "eslint": "^5.16.0"
   }
 }
