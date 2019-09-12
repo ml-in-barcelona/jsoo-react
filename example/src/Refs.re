@@ -18,12 +18,13 @@ let make = () => {
       log(ref);
     });
   <>
-    <button onClick={_ => setShow(s => !s)}>
+    <button key="toggle" onClick={_ => setShow(s => !s)}>
       {"Toggle fancy link" |> React.string}
     </button>
     {show
        ? <FancyLink
            href="https://github.com/jchavarri/rroo/"
+           key="fancy-link"
            repo="rroo GitHub repo"
            ref
          />
