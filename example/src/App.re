@@ -7,7 +7,7 @@ let reason =
   </GreetingReason>;
 
 let main =
-  <div>
+  <div className="medium-container">
     <h1 className="hello"> {"OCaml component" |> React.string} </h1>
     caml
     <h1> {"Reason component" |> React.string} </h1>
@@ -15,7 +15,7 @@ let main =
     <h1> {"Refs" |> React.string} </h1>
     <Refs />
     <h1 key="h1"> {"Interface files" |> React.string} </h1>
-    <Interface key="inter" title="Hey"> React.null </Interface>
+    <Interface key="inter" title="Hi from a component with an interface file"> React.null </Interface>
   </div>;
 
 ReactDOM.renderToElementWithId(main, "app");

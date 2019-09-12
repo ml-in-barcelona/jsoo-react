@@ -1259,17 +1259,41 @@ let jsxMapper = () => {
             switch (fullModuleName) {
             | "" => fullExpression
             | txt =>
+              let loc = emptyLoc;
               Pexp_let(
                 Nonrecursive,
                 [
                   Vb.mk(
-                    ~loc=emptyLoc,
-                    Pat.var(~loc=emptyLoc, {loc: emptyLoc, txt}),
-                    Exp.mk(~loc=emptyLoc, fullExpression),
+                    ~loc,
+                    Pat.var(~loc, {loc, txt}),
+                    Exp.mk(~loc, fullExpression),
                   ),
                 ],
-                Exp.ident(~loc=emptyLoc, {loc: emptyLoc, txt: Lident(txt)}),
-              )
+                Exp.let_(
+                  ~loc,
+                  Nonrecursive,
+                  [
+                    Vb.mk(
+                      ~loc,
+                      Pat.var(~loc, {loc, txt: "_"}),
+                      Ppx_js.mapper.expr(
+                        default_mapper,
+                        [%expr
+                          Js_of_ocaml.Js.Unsafe.set(
+                            [%e Exp.ident({txt: Lident(txt), loc})],
+                            "displayName",
+                            Js_of_ocaml.Js.string([%e Exp.constant(~loc, Pconst_string(txt, None))]),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                  Exp.ident(
+                    ~loc=emptyLoc,
+                    {loc: emptyLoc, txt: Lident(txt)},
+                  ),
+                ),
+              );
             };
 
           let newBinding = bindingWrapper(fullExpression);

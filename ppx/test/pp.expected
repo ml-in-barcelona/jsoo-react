@@ -83,6 +83,9 @@ let make =
       React.createElement Hello.make
         (Hello.makeProps ~one:"1" ~children:(React.string ("Hello " ^ name))
            ())] in
+  let _ =
+    Js_of_ocaml.Js.Unsafe.set Test "displayName"
+      (Js_of_ocaml.Js.string "Test") in
   Test
 let makeProps
   : a:'a ->
@@ -137,6 +140,9 @@ let make =
         (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
     print_endline "This function should be named `Test`";
     ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ()) [] in
+  let _ =
+    Js_of_ocaml.Js.Unsafe.set Test "displayName"
+      (Js_of_ocaml.Js.string "Test") in
   Test
 module External =
   struct
@@ -232,6 +238,9 @@ module Bar =
         print_endline "This function should be named `Test$Bar`";
         ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
           [] in
+      let _ =
+        Js_of_ocaml.Js.Unsafe.set Test$Bar "displayName"
+          (Js_of_ocaml.Js.string "Test$Bar") in
       Test$Bar
     let componentProps
       : a:'a ->
@@ -287,6 +296,9 @@ module Bar =
         print_endline "This function should be named `Test$Bar$component`";
         ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
           [] in
+      let _ =
+        Js_of_ocaml.Js.Unsafe.set Test$Bar$component "displayName"
+          (Js_of_ocaml.Js.string "Test$Bar$component") in
       Test$Bar$component
   end
 module type X_int  = sig val x : int end
@@ -347,6 +359,9 @@ module Func(M:X_int) =
         print_endline "This function should be named `Test$Func`" M.x;
         ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
           [] in
+      let _ =
+        Js_of_ocaml.Js.Unsafe.set Test$Func "displayName"
+          (Js_of_ocaml.Js.string "Test$Func") in
       Test$Func
   end
 module ForwardRef =
@@ -375,6 +390,9 @@ module ForwardRef =
            ReactDOM.createDOMElementVariadic "div"
              ~props:(ReactDOM.domProps ~ref:theRef ())
              ["ForwardRef" |. React.string] in
+         let _ =
+           Js_of_ocaml.Js.Unsafe.set Test$ForwardRef "displayName"
+             (Js_of_ocaml.Js.string "Test$ForwardRef") in
          Test$ForwardRef)
   end
 let fragment foo = ((React.createFragment (([foo])[@bla ]))[@bla ])
