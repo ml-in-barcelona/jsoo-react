@@ -50,6 +50,7 @@ val domProps :
   ?className:string ->
   ?href:string ->
   ?onClick:(ReactEvent.Mouse.t -> unit) ->
+  ?target:string ->
   unit -> domProps
   [@@js.builder]
 
