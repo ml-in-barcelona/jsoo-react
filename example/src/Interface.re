@@ -1,13 +1,15 @@
+let s = React.string;
+
 [@react.component]
 let make = (~title, ~children) => {
   <div>
-    <span> {React.string(title)} </span>
+    <span> {title |> s} </span>
     children
-    <br/>
-    <br/>
+    <br />
+    <br />
     <blockquote>
-      <p> {"Keep it secret. Keep it safe." |> React.string} </p>
-      <cite> {"Gandalf the Gray" |> React.string} </cite>
+      <p> {"Keep it secret. Keep it safe." |> s} </p>
+      <cite> {"Gandalf the Gray" |> s} </cite>
     </blockquote>
   </div>;
 };

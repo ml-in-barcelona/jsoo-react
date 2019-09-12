@@ -1,6 +1,5 @@
 (executable
  (name App)
  (libraries js_of_ocaml-lwt jsoo-react-esy)
- (js_of_ocaml (flags (--pretty)))
  (preprocess
-  (pps jsoo-react-ppx js_of_ocaml-ppx)))
+  (pps ppx_blob jsoo-react-ppx js_of_ocaml-ppx)))
