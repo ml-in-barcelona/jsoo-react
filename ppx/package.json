@@ -1,6 +1,6 @@
 {
   "name": "jsoo-react-ppx-esy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "React ppx for js_of_ocaml",
   "license": "MIT",
   "esy": {
