@@ -1,4 +1,4 @@
-# rroo
+# jsoo-react
 
 Bindings to ReactJS for js_of_ocaml, including JSX ppx.
 
@@ -30,7 +30,7 @@ See [`interop.md`](./interop.md).
 ## Running the example
 
 ```bash
-git clone https://github.com/jchavarri/rroo/
+git clone https://github.com/jchavarri/jsoo-react/
 cd example
 esy
 yarn && yarn webpack

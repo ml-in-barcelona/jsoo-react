@@ -6,7 +6,7 @@ There are two approaches to interop with JavaScript code in Js_of_ocaml:
 2. Use OCaml `external` statements to define the types, and then do the transformations on the JavaScript side. External functions are the same way that OCaml offers to [interop with C code](https://caml.inria.fr/pub/docs/manual-ocaml/intfc.html) as well.
 3. Use `gen_js_api` and create interface files so that the tool generates all the mapping code for you :)
 
-The approach being used in `rroo` is the third, as it automates all the conversions needed and doesn't require to think about them
+The approach being used in `jsoo-react` is the third, as it automates all the conversions needed and doesn't require to think about them
 
 #### Adding a new binding to a React function
 
@@ -19,7 +19,7 @@ Some notes on how interop in BuckleScript and gen_js_api relate:
 | Feature                      | BuckleScript interop  | gen_js_api interface files               |
 | ---------------------------- | ----------------- | ---------------------------------------- |
 | Use JS data types            | `array`, `string` | No work needed, conversions will be added in generated code automatically            |
-| Require JS modules           | `[@bs.module]`    | Add `require("my-lib")` statement in `.js` file ([example](https://github.com/jchavarri/rroo/blob/3a69759eaf7a777b8b006422b829c8e0fdcc94cf/lib/ReactJs.js)), include it in Dune ([example](https://github.com/jchavarri/rroo/blob/3a69759eaf7a777b8b006422b829c8e0fdcc94cf/lib/dune#L5)) |
+| Require JS modules           | `[@bs.module]`    | Add `require("my-lib")` statement in `.js` file ([example](https://github.com/jchavarri/jsoo-react/blob/3a69759eaf7a777b8b006422b829c8e0fdcc94cf/lib/ReactJs.js)), include it in Dune ([example](https://github.com/jchavarri/jsoo-react/blob/3a69759eaf7a777b8b006422b829c8e0fdcc94cf/lib/dune#L5)) |
 | Bind to JS values            | `[@bs.val]`       | `[@js.global]`                           |
 | Variadic params              | `[@bs.splice]`    | `[@js.variadic]`                         |
 | Raw expressions              | `[%bs.raw]`       | `Js.Unsafe.js_expr();`                   |

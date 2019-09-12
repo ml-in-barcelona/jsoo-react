@@ -23,9 +23,9 @@ let make = () => {
     </button>
     {show
        ? <FancyLink
-           href="https://github.com/jchavarri/rroo/"
+           href="https://github.com/jchavarri/jsoo-react/"
            key="fancy-link"
-           repo="rroo GitHub repo"
+           repo="jsoo-react GitHub repo"
            ref
          />
        : React.null}
