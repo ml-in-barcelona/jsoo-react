@@ -1,5 +1,5 @@
 (library
- (name jsoo-react-ppx)
+ (name jsoo_react_ppx)
  (public_name jsoo-react-ppx)
  (libraries ppxlib js_of_ocaml-ppx)
  (preprocess
