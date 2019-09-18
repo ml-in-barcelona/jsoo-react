@@ -1,4 +1,6 @@
 [@react.component]
 let make = (~text) => {
-  <pre> <code> {text |> React.string} </code> </pre>;
+  <pre className="language-reason">
+    <code> {text |> React.string} </code>
+  </pre>;
 };

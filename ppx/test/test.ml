@@ -48,7 +48,7 @@ module ForwardRef =
     let make =
       React.forwardRef
         (fun theRef ->
-           ((div ~ref:theRef ~children:["ForwardRef" |. React.string] ())
+           ((div ~ref:theRef ~children:[React.string "ForwardRef"] ())
            [@JSX ]))[@@react.component ]
   end
 let fragment foo = (([foo])[@bla ][@JSX ])

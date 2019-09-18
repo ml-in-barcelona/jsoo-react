@@ -26,5 +26,13 @@ module.exports = {
     contentBase: outputDir,
     port: process.env.PORT || 8000,
     historyApiFallback: true
-  }
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
+  },
 };

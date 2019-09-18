@@ -389,7 +389,7 @@ module ForwardRef =
         (let Test$ForwardRef (Props : <  >  Js_of_ocaml.Js.t) theRef =
            ReactDOM.createDOMElementVariadic "div"
              ~props:(ReactDOM.domProps ~ref:theRef ())
-             ["ForwardRef" |. React.string] in
+             [React.string "ForwardRef"] in
          let _ =
            Js_of_ocaml.Js.Unsafe.set Test$ForwardRef "displayName"
              (Js_of_ocaml.Js.string "Test$ForwardRef") in

@@ -1,5 +1,16 @@
 (executable
  (name App)
  (libraries js_of_ocaml-lwt jsoo-react-esy)
+ (js_of_ocaml
+  (javascript_files static-requires.js))
  (preprocess
-  (pps ppx_blob jsoo-react-ppx js_of_ocaml-ppx)))
+  (pps ppx_deriving.enum ppx_deriving.show ppx_blob jsoo-react-ppx)))
+
+(alias
+ (name default)
+ (deps
+  (alias_rec install)
+  App.bc.js
+  static/primitive.css
+  static/prism.css
+  static/prism.js))

@@ -3,8 +3,10 @@ module Dom = Js_of_ocaml.Dom; *)
 
 module Mouse : sig
   type t = private Ojs.t
-  val t_of_js: Ojs.t -> t
-  val t_to_js: t -> Ojs.t
+
+  val t_of_js : Ojs.t -> t
+
+  val t_to_js : t -> Ojs.t
 end
 
 (* module MakeEventWithType = (Type: {type t;}) => {
@@ -208,4 +210,4 @@ module Transition = {
   [@bs.get] external pseudoElement: t => string = "";
   [@bs.get] external elapsedTime: t => float = "";
 };
-*)
+ *)
