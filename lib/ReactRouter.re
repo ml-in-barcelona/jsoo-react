@@ -1,4 +1,4 @@
-/* Adapted from reason-react: https://reasonml.github.io/reason-react/docs/en/router */
+// Adapted from reason-react: https://reasonml.github.io/reason-react/docs/en/router
 module Browser: {
   type history;
   
