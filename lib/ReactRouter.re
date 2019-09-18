@@ -1,54 +1,66 @@
 // Adapted from reason-react: https://reasonml.github.io/reason-react/docs/en/router
 module Browser: {
   type history;
-  
+
   type window;
   let window_to_js: window => Ojs.t;
 
   type location;
 
-  [@js.global "history"] let history: option(history);
+  [@js.global "history"]
+  let history: option(history);
 
-  [@js.global "window"] let window: option(window);
+  [@js.global "window"]
+  let window: option(window);
 
-  [@js.get] let location: window => location;
-  [@js.get] let pathname: location => string;
-  [@js.get] let hash: location => string;
-  [@js.get] let search: location => string;
+  [@js.get]
+  let location: window => location;
+  [@js.get]
+  let pathname: location => string;
+  [@js.get]
+  let hash: location => string;
+  [@js.get]
+  let search: location => string;
 
-  [@js.call] let pushState: (history, Ojs.t, string, ~href: string) => unit;
+  [@js.call]
+  let pushState: (history, Ojs.t, string, ~href: string) => unit;
 
-  [@js.call] let replaceState: (history, Ojs.t, string, ~href: string) => unit;
+  [@js.call]
+  let replaceState: (history, Ojs.t, string, ~href: string) => unit;
 } =
   [%js];
 
 module Event: {
-
   type t;
 
-  [@js.global "Event"] let event: t;
+  [@js.global "Event"]
+  let event: t;
 
-[@js.new "Event"] let makeEventIE11Compatible: string => t;
+  [@js.new "Event"]
+  let makeEventIE11Compatible: string => t;
 
-[@js.global "document.createEvent"]
-let createEventNonIEBrowsers: string => t;
+  [@js.global "document.createEvent"]
+  let createEventNonIEBrowsers: string => t;
 
-[@js.call "initEvent"] let initEventNonIEBrowsers: (t, string, bool, bool) => unit;
+  [@js.call "initEvent"]
+  let initEventNonIEBrowsers: (t, string, bool, bool) => unit;
 
-/* The cb is t => unit, but access is restricted for now */
-[@js.call]
-let addEventListener : (Browser.window, string, unit => unit) => unit;
+  /* The cb is t => unit, but access is restricted for now */
+  [@js.call]
+  let addEventListener: (Browser.window, string, unit => unit) => unit;
 
-[@js.call]
- let  removeEventListener: (Browser.window, string, unit => unit) => unit;
+  [@js.call]
+  let removeEventListener: (Browser.window, string, unit => unit) => unit;
 
-[@js.call]
-let dispatchEvent: (Browser.window, t) => unit;
+  [@js.call]
+  let dispatchEvent: (Browser.window, t) => unit;
 } =
   [%js];
 
 let safeMakeEvent = eventName =>
-  if (Js_of_ocaml.(Js.typeof(Js.Unsafe.inject(Event.event)) == Js.string("function"))) {
+  if (Js_of_ocaml.(
+        Js.typeof(Js.Unsafe.inject(Event.event)) == Js.string("function")
+      )) {
     Event.makeEventIE11Compatible(eventName);
   } else {
     let event = Event.createEventNonIEBrowsers("Event");
@@ -124,7 +136,7 @@ let replace = path =>
   switch (Browser.(history, window)) {
   | (None, _)
   | (_, None) => ()
-  | (Some((history)), Some((window))) =>
+  | (Some(history), Some(window)) =>
     Browser.replaceState(history, Ojs.null, "", ~href=path);
     Event.dispatchEvent(window, safeMakeEvent("popstate"));
   };
@@ -143,14 +155,14 @@ let urlNotEqual = (a, b) => {
     | ([_, ..._], []) => true
     | ([aHead, ...aRest], [bHead, ...bRest]) =>
       if (aHead !== bHead) {
-        true
+        true;
       } else {
-        listNotEqual(aRest, bRest)
+        listNotEqual(aRest, bRest);
       }
-    }
+    };
   };
-  a.hash !== b.hash || a.search !== b.search || listNotEqual(a.path, b.path)
-}
+  a.hash !== b.hash || a.search !== b.search || listNotEqual(a.path, b.path);
+};
 
 type watcherID = unit => unit;
 
@@ -160,7 +172,7 @@ let dangerouslyGetInitialUrl = url;
 let watchUrl = callback =>
   switch (Browser.window) {
   | None => (() => ())
-  | Some((window)) =>
+  | Some(window) =>
     let watcherID = () => callback(url());
     Event.addEventListener(window, "popstate", watcherID);
     watcherID;
@@ -168,8 +180,7 @@ let watchUrl = callback =>
 let unwatchUrl = watcherID =>
   switch (Browser.window) {
   | None => ()
-  | Some((window)) =>
-    Event.removeEventListener(window, "popstate", watcherID)
+  | Some(window) => Event.removeEventListener(window, "popstate", watcherID)
   };
 
 let useUrl = (~serverUrl=?, ()) => {
