@@ -16,8 +16,26 @@ let make = () => {
       <h1 className="title"> {"jsoo-react" |> s} </h1>
       <nav className="menu">
         <ul>
-          <li> <a href="#"> {"Home" |> s} </a> </li>
-          <li> <a href="#"> {"About" |> s} </a> </li>
+          <li>
+            <a
+              href="#"
+              onClick={event => {
+                ReactEvent.Mouse.preventDefault(event);
+                ReactRouter.push("home");
+              }}>
+              {"Home" |> s}
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              onClick={event => {
+                ReactEvent.Mouse.preventDefault(event);
+                ReactRouter.push("services");
+              }}>
+              {"About" |> s}
+            </a>
+          </li>
           <li> <a href="#"> {"Services" |> s} </a> </li>
           <li> <a href="#"> {"Pricing" |> s} </a> </li>
           <li> <a href="#"> {"Contact" |> s} </a> </li>

@@ -200,7 +200,7 @@ let useUrl = (~serverUrl=?, ()) => {
       * the initial state and the subscribe above
       */
     let newUrl = dangerouslyGetInitialUrl();
-    if (newUrl != url) {
+    if (urlNotEqual(newUrl, url)) {
       setUrl(_ => newUrl);
     };
 

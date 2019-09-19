@@ -19,9 +19,3 @@
  (deps ReactDOM.mli)
  (action
   (run %{bin:gen_js_api} -o %{targets} %{deps})))
-
-(rule
- (targets ReactEvent.ml)
- (deps ReactEvent.mli)
- (action
-  (run %{bin:gen_js_api} -o %{targets} %{deps})))
