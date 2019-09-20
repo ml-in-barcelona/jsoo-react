@@ -48,56 +48,67 @@ module Clipboard = {
   include CommonApi;
   include (
             [%js]: {
-              [@js.get] let clipboardData: t => Ojs.t; /* Should return Dom.dataTransfer */
-            })
+              [@js.get]
+              let clipboardData: t => Ojs.t; /* Should return Dom.dataTransfer */
+            }
+          );
 };
-
 
 module Composition = {
   include CommonApi;
   include (
             [%js]: {
-  [@js.get] let data: t => string
+              [@js.get]
+              let data: t => string;
             }
           );
 };
-
 
 module Keyboard = {
   include CommonApi;
   include (
             [%js]: {
-  [@js.get] let altKey: t => bool
-  [@js.get] let charCode: t => int
-  [@js.get] let ctrlKey: t => bool
-  [@js.call] let getModifierState: (t, string) => bool
-  [@js.get] let key: t => string
-  [@js.get] let keyCode: t => int
-  [@js.get] let locale: t => string
-  [@js.get] let location: t => int
-  [@js.get] let metaKey: t => bool
-  [@js.get] let repeat: t => bool
-  [@js.get] let shiftKey: t => bool
-  [@js.get] let which: t => int
+              [@js.get]
+              let altKey: t => bool;
+              [@js.get]
+              let charCode: t => int;
+              [@js.get]
+              let ctrlKey: t => bool;
+              [@js.call]
+              let getModifierState: (t, string) => bool;
+              [@js.get]
+              let key: t => string;
+              [@js.get]
+              let keyCode: t => int;
+              [@js.get]
+              let locale: t => string;
+              [@js.get]
+              let location: t => int;
+              [@js.get]
+              let metaKey: t => bool;
+              [@js.get]
+              let repeat: t => bool;
+              [@js.get]
+              let shiftKey: t => bool;
+              [@js.get]
+              let which: t => int;
             }
           );
 };
-
 
 module Focus = {
   include CommonApi;
   include (
             [%js]: {
-  [@js.get] let relatedTarget: t => option(Ojs.t) /* Should return Dom.eventTarget */
+              [@js.get]
+              let relatedTarget: t => option(Ojs.t); /* Should return Dom.eventTarget */
             }
           );
 };
 
-
 module Form = {
   include CommonApi;
 };
-
 
 module Mouse = {
   include CommonApi;
@@ -135,28 +146,30 @@ module Mouse = {
           );
 };
 
-
 module Selection = {
   include CommonApi;
-  include (
-            [%js]: {
-            }
-          );
 };
-
 
 module Touch = {
   include CommonApi;
   include (
             [%js]: {
-  [@js.get] let altKey: t => bool
-  [@js.get] let changedTouches: t => Ojs.t /* Should return Dom.touchList */
-  [@js.get] let ctrlKey: t => bool
-  [@js.call] let getModifierState: (t, string) => bool
-  [@js.get] let metaKey: t => bool
-  [@js.get] let shiftKey: t => bool
-  [@js.get] let targetTouches: t => Ojs.t /* Should return Dom.touchList */
-  [@js.get] let touches: t => Ojs.t /* Should return Dom.touchList */
+              [@js.get]
+              let altKey: t => bool;
+              [@js.get]
+              let changedTouches: t => Ojs.t; /* Should return Dom.touchList */
+              [@js.get]
+              let ctrlKey: t => bool;
+              [@js.call]
+              let getModifierState: (t, string) => bool;
+              [@js.get]
+              let metaKey: t => bool;
+              [@js.get]
+              let shiftKey: t => bool;
+              [@js.get]
+              let targetTouches: t => Ojs.t; /* Should return Dom.touchList */
+              [@js.get]
+              let touches: t => Ojs.t; /* Should return Dom.touchList */
             }
           );
 };
@@ -164,67 +177,66 @@ module Touch = {
 type window = Js_of_ocaml.Dom_html.window;
 
 module UI = {
-  external window_of_js:  Ojs.t => Js_of_ocaml.Dom_html.window = "%identity";
+  external window_of_js: Ojs.t => Js_of_ocaml.Dom_html.window = "%identity";
   include CommonApi;
   include (
             [%js]: {
-  [@js.get] let detail: t => int
-  [@js.get] let view: t => window /* Should return DOMAbstractView/WindowProxy */
+              [@js.get]
+              let detail: t => int;
+              [@js.get]
+              let view: t => window; /* Should return DOMAbstractView/WindowProxy */
             }
           );
 };
-
 
 module Wheel = {
   include CommonApi;
   include (
             [%js]: {
-  [@js.get] let deltaMode: t => int
-  [@js.get] let deltaX: t => float
-  [@js.get] let deltaY: t => float
-  [@js.get] let deltaZ: t => float
+              [@js.get]
+              let deltaMode: t => int;
+              [@js.get]
+              let deltaX: t => float;
+              [@js.get]
+              let deltaY: t => float;
+              [@js.get]
+              let deltaZ: t => float;
             }
           );
 };
-
 
 module Media = {
   include CommonApi;
-  include (
-            [%js]: {
-            }
-          );
 };
-
 
 module Image = {
   include CommonApi;
-  include (
-            [%js]: {
-            }
-          );
 };
-
 
 module Animation = {
   include CommonApi;
   include (
             [%js]: {
-  [@js.get] let animationName: t => string
-  [@js.get] let pseudoElement: t => string
-  [@js.get] let elapsedTime: t => float
+              [@js.get]
+              let animationName: t => string;
+              [@js.get]
+              let pseudoElement: t => string;
+              [@js.get]
+              let elapsedTime: t => float;
             }
           );
 };
-
 
 module Transition = {
   include CommonApi;
   include (
             [%js]: {
-  [@js.get] let propertyName: t => string
-  [@js.get] let pseudoElement: t => string
-  [@js.get] let elapsedTime: t => float
+              [@js.get]
+              let propertyName: t => string;
+              [@js.get]
+              let pseudoElement: t => string;
+              [@js.get]
+              let elapsedTime: t => float;
             }
           );
 };
