@@ -17,7 +17,6 @@
     "@opam/js_of_ocaml-lwt": "~3.4.0",
     "@opam/js_of_ocaml-ppx": "~3.4.0",
     "@opam/ppx_blob": "0.4.0",
-    "@opam/ppx_deriving": "4.4",
     "jsoo-react-esy": "^0.0.1",
     "jsoo-react-ppx-esy": "^0.0.1",
     "ocaml": "~4.8.0",

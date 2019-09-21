@@ -19,7 +19,7 @@ val null : element [@@js.custom let null = Ojs.null]
 
 val string : string -> element [@@js.cast]
 
-val array : element array -> element [@@js.cast]
+val list : element list -> element [@@js.cast]
 
 [@@@js.stop]
 
@@ -64,13 +64,18 @@ val createElementVariadic :
     let createElementVariadic x y =
       createElementVariadicInternal (unsafeCastComp x) (unsafeCastProps y)]
 
+val useEffect : (unit -> (unit -> unit) option) -> unit
+  [@@js.custom
+    val useEffect : (unit -> (unit -> unit) option) -> unit
+      [@@js.global "__LIB__react.useEffect"]]
+
 val useEffect0 : (unit -> (unit -> unit) option) -> unit
   [@@js.custom
-    val useEffect1Internal :
+    val useEffect0Internal :
       (unit -> (unit -> unit) option) -> Ojs.t array -> unit
       [@@js.global "__LIB__react.useEffect"]
 
-    let useEffect0 effect = useEffect1Internal effect [||]]
+    let useEffect0 effect = useEffect0Internal effect [||]]
 
 val useEffect1 : (unit -> (unit -> unit) option) -> 'a array -> unit
   [@@js.custom
@@ -106,7 +111,7 @@ val useReducer :
 module Ref : sig
   [@@@js.stop]
 
-  type 'value t = private Ojs.t
+  type 'value t
 
   val t_of_js : (Ojs.t -> 'a) -> Ojs.t -> 'a t
 
@@ -153,6 +158,15 @@ module Ref : sig
 
       (* TODO: Is there a way to avoid magic? *)]
 end
+
+val useRef : 'value -> 'value Ref.t
+  [@@js.custom
+    val useRefInternal : Ojs.t -> Ojs.t Ref.t
+      [@@js.global "__LIB__react.useRef"]
+
+    let useRef = Obj.magic useRefInternal
+
+    (* TODO: Is there a way to avoid magic? *)]
 
 (* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
  Although Reason parser doesn't support it so that's a requirement before adding it here *)
@@ -421,8 +435,6 @@ let useEffect0: (unit => option(unit => unit)) => unit;*)
    "useCallback";
 
  [@bs.module "react"] external useContext: Context.t('any) => 'any = "";
-
- external useRef: 'value => Ref.t('value) = "useRef";
 
  [@bs.module "react"]
  external useImperativeHandle0:

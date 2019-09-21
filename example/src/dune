@@ -2,9 +2,10 @@
  (name App)
  (libraries js_of_ocaml-lwt jsoo-react-esy)
  (js_of_ocaml
+  (flags (--pretty))
   (javascript_files static-requires.js))
  (preprocess
-  (pps ppx_deriving.enum ppx_deriving.show ppx_blob jsoo-react-ppx)))
+  (pps ppx_blob jsoo-react-ppx)))
 
 (alias
  (name default)

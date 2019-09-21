@@ -42,9 +42,18 @@ module Ref : sig
 
   type callbackDomRef = domElement option -> unit
 
-  val domRef : currentDomRef -> domRef [@@js.cast]
+  val domRef : currentDomRef -> domRef
+    [@@js.custom
+      let domRefInternal ref el =
+        React.Ref.setCurrent ref (Ojs.option_of_js Ojs.t_of_js el)
 
-  val callbackDomRef : callbackDomRef -> domRef [@@js.cast]
+      let domRef = Obj.magic domRefInternal
+
+      (* TODO: Is there a way to avoid magic? *)]
+
+  val callbackDomRef : callbackDomRef -> domRef
+    [@@js.custom
+      external callbackDomRef : callbackDomRef -> domRef = "%identity"]
 end
 
 type domProps
