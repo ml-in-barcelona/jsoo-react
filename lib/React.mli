@@ -64,23 +64,40 @@ val createElementVariadic :
     let createElementVariadic x y =
       createElementVariadicInternal (unsafeCastComp x) (unsafeCastProps y)]
 
-val useEffect : (unit -> (unit -> unit) option) -> unit
+[@@@js.stop]
+type 'a option_undefined = 'a option
+[@@@js.start]
+[@@@js.implem
+type 'a option_undefined = 'a option
+external equals: Ojs.t -> Ojs.t -> bool = "caml_js_equals"
+external pure_js_expr: string -> Ojs.t = "caml_pure_js_expr"
+let undefined = pure_js_expr "undefined"
+let option_undefined_of_js f x =
+  if equals x undefined then None
+  else Some (f x)
+
+let option_undefined_to_js f = function
+  | Some x -> f x
+  | None -> undefined
+]
+
+val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
-    val useEffect : (unit -> (unit -> unit) option) -> unit
+    val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
       [@@js.global "__LIB__react.useEffect"]]
 
-val useEffect0 : (unit -> (unit -> unit) option) -> unit
+val useEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
     val useEffect0Internal :
-      (unit -> (unit -> unit) option) -> Ojs.t array -> unit
+      (unit -> (unit -> unit) option_undefined) -> Ojs.t array -> unit
       [@@js.global "__LIB__react.useEffect"]
 
     let useEffect0 effect = useEffect0Internal effect [||]]
 
-val useEffect1 : (unit -> (unit -> unit) option) -> 'a array -> unit
+val useEffect1 : (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
   [@@js.custom
     val useEffect1Internal :
-      (unit -> (unit -> unit) option) -> Ojs.t array -> unit
+      (unit -> (unit -> unit) option_undefined) -> Ojs.t array -> unit
       [@@js.global "__LIB__react.useEffect"]
 
     external unsafe_cast : 'a array -> 'b array = "%identity"

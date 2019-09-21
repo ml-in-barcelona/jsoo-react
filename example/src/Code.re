@@ -6,7 +6,7 @@ let make = (~text) => {
     | Some(el) => Js_of_ocaml.Js.Unsafe.global##.Prism##highlightElement(el)
     | None => ()
     };
-    Some(() => ());
+    None;
   });
   <pre className="language-reason">
     <code ref={ReactDOM.Ref.domRef(codeRef)}> {text |> React.string} </code>
