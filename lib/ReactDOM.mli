@@ -268,25 +268,34 @@ val domProps :
        string
        (* "hard" or "soft" *)
        (* Clipboard events *)
-       (* -> ?onCopy: ReactEvent.Clipboard.t -> unit
-  -> ?onCut: ReactEvent.Clipboard.t -> unit
-  -> ?onPaste: ReactEvent.Clipboard.t -> unit *)
-       (* Composition events *)
-       (* -> ?onCompositionEnd: ReactEvent.Composition.t -> unit
-  -> ?onCompositionStart: ReactEvent.Composition.t -> unit
-  -> ?onCompositionUpdate: ReactEvent.Composition.t -> unit *)
-       (* Keyboard events *)
-       (* -> ?onKeyDown: ReactEvent.Keyboard.t -> unit
-  -> ?onKeyPress: ReactEvent.Keyboard.t -> unit
-  -> ?onKeyUp: ReactEvent.Keyboard.t -> unit *)
-       (* Focus events *)
-       (* -> ?onFocus: ReactEvent.Focus.t -> unit
-  -> ?onBlur: ReactEvent.Focus.t -> unit *)
-       (* Form events *)
-       (* -> ?onChange: ReactEvent.Form.t -> unit
-  -> ?onInput: ReactEvent.Form.t -> unit
-  -> ?onSubmit: ReactEvent.Form.t -> unit *)
-       (* Mouse events *)
+  -> ?onCopy:(ReactEvent.Clipboard.t
+  -> unit)
+  -> ?onCut:(ReactEvent.Clipboard.t
+  -> unit)
+  -> ?onPaste:(ReactEvent.Clipboard.t
+  -> unit) (* Composition events *)
+  -> ?onCompositionEnd:(ReactEvent.Composition.t
+  -> unit)
+  -> ?onCompositionStart:(ReactEvent.Composition.t
+  -> unit)
+  -> ?onCompositionUpdate:(ReactEvent.Composition.t
+  -> unit) (* Keyboard events *)
+  -> ?onKeyDown:(ReactEvent.Keyboard.t
+  -> unit)
+  -> ?onKeyPress:(ReactEvent.Keyboard.t
+  -> unit)
+  -> ?onKeyUp:(ReactEvent.Keyboard.t
+  -> unit) (* Focus events *)
+  -> ?onFocus:(ReactEvent.Focus.t
+  -> unit)
+  -> ?onBlur:(ReactEvent.Focus.t
+  -> unit) (* Form events *)
+  -> ?onChange:(ReactEvent.Form.t
+  -> unit)
+  -> ?onInput:(ReactEvent.Form.t
+  -> unit)
+  -> ?onSubmit:(ReactEvent.Form.t
+  -> unit) (* Mouse events *)
   -> ?onClick:(ReactEvent.Mouse.t -> unit)
   -> ?onContextMenu:(ReactEvent.Mouse.t -> unit)
   -> ?onDoubleClick:(ReactEvent.Mouse.t -> unit)
@@ -305,54 +314,55 @@ val domProps :
   -> ?onMouseOut:(ReactEvent.Mouse.t -> unit)
   -> ?onMouseOver:(ReactEvent.Mouse.t -> unit)
   -> ?onMouseUp:(ReactEvent.Mouse.t -> unit)
-  -> ?accentHeight:
-       (* Selection events *)
-       (* -> ?onSelect: ReactEvent.Selection.t -> unit *)
-       (* Touch events *)
-       (* -> ?onTouchCancel: ReactEvent.Touch.t -> unit
-  -> ?onTouchEnd: ReactEvent.Touch.t -> unit
-  -> ?onTouchMove: ReactEvent.Touch.t -> unit
-  -> ?onTouchStart: ReactEvent.Touch.t -> unit *)
-       (* UI events *)
-       (* -> ?onScroll: ReactEvent.UI.t -> unit *)
-       (* Wheel events *)
-       (* -> ?onWheel: ReactEvent.Wheel.t -> unit *)
-       (* Media events *)
-       (* -> ?onAbort: ReactEvent.Media.t -> unit
-  -> ?onCanPlay: ReactEvent.Media.t -> unit
-  -> ?onCanPlayThrough: ReactEvent.Media.t -> unit
-  -> ?onDurationChange: ReactEvent.Media.t -> unit
-  -> ?onEmptied: ReactEvent.Media.t -> unit
-  -> ?onEncrypetd: ReactEvent.Media.t -> unit
-  -> ?onEnded: ReactEvent.Media.t -> unit
-  -> ?onError: ReactEvent.Media.t -> unit
-  -> ?onLoadedData: ReactEvent.Media.t -> unit
-  -> ?onLoadedMetadata: ReactEvent.Media.t -> unit
-  -> ?onLoadStart: ReactEvent.Media.t -> unit
-  -> ?onPause: ReactEvent.Media.t -> unit
-  -> ?onPlay: ReactEvent.Media.t -> unit
-  -> ?onPlaying: ReactEvent.Media.t -> unit
-  -> ?onProgress: ReactEvent.Media.t -> unit
-  -> ?onRateChange: ReactEvent.Media.t -> unit
-  -> ?onSeeked: ReactEvent.Media.t -> unit
-  -> ?onSeeking: ReactEvent.Media.t -> unit
-  -> ?onStalled: ReactEvent.Media.t -> unit
-  -> ?onSuspend: ReactEvent.Media.t -> unit
-  -> ?onTimeUpdate: ReactEvent.Media.t -> unit
-  -> ?onVolumeChange: ReactEvent.Media.t -> unit
-  -> ?onWaiting: ReactEvent.Media.t -> unit *)
-       (* Image events *)
-       (* -> ?onLoad: ReactEvent.Image.t -> unit *)
-       (* duplicate *)
-       (* ?onError: ReactEvent.Image.t -> unit=?*)
-       (* Animation events *)
-       (* -> ?onAnimationStart: ReactEvent.Animation.t -> unit
-  -> ?onAnimationEnd: ReactEvent.Animation.t -> unit
-  -> ?onAnimationIteration: ReactEvent.Animation.t -> unit *)
-       (* Transition events *)
-       (* -> ?onTransitionEnd: ReactEvent.Transition.t -> unit *)
-       (* svg *)
-       string
+  -> ?onSelect:((* Selection events *)
+                ReactEvent.Selection.t -> unit)
+  -> ?onTouchCancel:((* Touch events *)
+                     ReactEvent.Touch.t -> unit)
+  -> ?onTouchEnd:(ReactEvent.Touch.t -> unit)
+  -> ?onTouchMove:(ReactEvent.Touch.t -> unit)
+  -> ?onTouchStart:(ReactEvent.Touch.t -> unit)
+  -> ?onScroll:((* UI events *)
+                ReactEvent.UI.t -> unit)
+  -> ?onWheel:((* Wheel events *)
+               ReactEvent.Wheel.t -> unit)
+  -> ?onAbort:((* Media events *)
+               ReactEvent.Media.t -> unit)
+  -> ?onCanPlay:(ReactEvent.Media.t -> unit)
+  -> ?onCanPlayThrough:(ReactEvent.Media.t -> unit)
+  -> ?onDurationChange:(ReactEvent.Media.t -> unit)
+  -> ?onEmptied:(ReactEvent.Media.t -> unit)
+  -> ?onEncrypetd:(ReactEvent.Media.t -> unit)
+  -> ?onEnded:(ReactEvent.Media.t -> unit)
+  -> ?onError:(ReactEvent.Media.t -> unit)
+  -> ?onLoadedData:(ReactEvent.Media.t -> unit)
+  -> ?onLoadedMetadata:(ReactEvent.Media.t -> unit)
+  -> ?onLoadStart:(ReactEvent.Media.t -> unit)
+  -> ?onPause:(ReactEvent.Media.t -> unit)
+  -> ?onPlay:(ReactEvent.Media.t -> unit)
+  -> ?onPlaying:(ReactEvent.Media.t -> unit)
+  -> ?onProgress:(ReactEvent.Media.t -> unit)
+  -> ?onRateChange:(ReactEvent.Media.t -> unit)
+  -> ?onSeeked:(ReactEvent.Media.t -> unit)
+  -> ?onSeeking:(ReactEvent.Media.t -> unit)
+  -> ?onStalled:(ReactEvent.Media.t -> unit)
+  -> ?onSuspend:(ReactEvent.Media.t -> unit)
+  -> ?onTimeUpdate:(ReactEvent.Media.t -> unit)
+  -> ?onVolumeChange:(ReactEvent.Media.t -> unit)
+  -> ?onWaiting:(ReactEvent.Media.t -> unit)
+  -> ?onLoad:((* Image events *)
+              ReactEvent.Image.t -> unit)
+  -> ?onAnimationStart:
+       (   (* duplicate *)
+           (* ?onError: ReactEvent.Image.t -> unit=?*)
+           (* Animation events *)
+           ReactEvent.Animation.t
+        -> unit)
+  -> ?onAnimationEnd:(ReactEvent.Animation.t -> unit)
+  -> ?onAnimationIteration:(ReactEvent.Animation.t -> unit)
+  -> ?onTransitionEnd:((* Transition events *)
+                       ReactEvent.Transition.t -> unit)
+  -> ?accentHeight:(* svg *)
+                   string
   -> ?accumulate:string
   -> ?additive:string
   -> ?alignmentBaseline:string

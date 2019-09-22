@@ -27,6 +27,8 @@ let toSyntheticEvent: synthetic('a) => Synthetic.t;
 module Clipboard: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
@@ -48,6 +50,8 @@ module Clipboard: {
 module Composition: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
@@ -69,6 +73,8 @@ module Composition: {
 module Keyboard: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
@@ -101,6 +107,8 @@ module Keyboard: {
 module Focus: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
@@ -122,6 +130,8 @@ module Focus: {
 module Form: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
@@ -179,6 +189,8 @@ module Mouse: {
 module Selection: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
@@ -199,6 +211,8 @@ module Selection: {
 module Touch: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
@@ -227,6 +241,8 @@ module Touch: {
 module UI: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
@@ -249,6 +265,8 @@ module UI: {
 module Wheel: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
@@ -273,6 +291,8 @@ module Wheel: {
 module Media: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
@@ -293,6 +313,8 @@ module Media: {
 module Image: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
@@ -313,6 +335,8 @@ module Image: {
 module Animation: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
@@ -336,6 +360,8 @@ module Animation: {
 module Transition: {
   type tag;
   type t = synthetic(tag);
+  let t_of_js: Ojs.t => t;
+  let t_to_js: t => Ojs.t;
   let bubbles: t => bool;
   let cancelable: t => bool;
   let currentTarget: t => Ojs.t;
