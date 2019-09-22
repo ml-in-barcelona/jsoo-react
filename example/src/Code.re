@@ -1,4 +1,14 @@
 [@react.component]
 let make = (~text) => {
-  <pre> <code> {text |> React.string} </code> </pre>;
+  let codeRef = React.useRef(None);
+  React.useEffect(() => {
+    switch (codeRef |> React.Ref.current) {
+    | Some(el) => Js_of_ocaml.Js.Unsafe.global##.Prism##highlightElement(el)
+    | None => ()
+    };
+    None;
+  });
+  <pre className="language-reason">
+    <code ref={ReactDOM.Ref.domRef(codeRef)}> {text |> React.string} </code>
+  </pre>;
 };

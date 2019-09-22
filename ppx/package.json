@@ -11,7 +11,7 @@
     "clean": "refmterr dune clean",
     "test": "refmterr dune runtest",
     "test:promote": "refmterr dune runtest --auto-promote",
-    "test:regen": "sh -c \"refmterr refmt ./ppx/test/test_src.re -p ml > ./ppx/test/test.ml\""
+    "test:regen": "sh -c \"refmterr refmt ./test/test_src.re -p ml > ./test/test.ml\""
   },
   "dependencies": {
     "@esy-ocaml/reason": "*",

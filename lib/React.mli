@@ -1,115 +1,203 @@
 [@@@js.stop]
+
 type element
+
 val element_to_js : element -> Ojs.t
+
 val element_of_js : Ojs.t -> element
+
 [@@@js.start]
+
 [@@@js.implem
-  type element = Ojs.t
-  external element_to_js : element -> Ojs.t = "%identity"
-  external element_of_js : Ojs.t -> element = "%identity"
-]
+type element = Ojs.t
 
-val null : element
-[@@js.custom
-  let null = Ojs.null
-]
+external element_to_js : element -> Ojs.t = "%identity"
 
-val string : string -> element[@@js.cast ]
-val array : element array -> element[@@js.cast ]
+external element_of_js : Ojs.t -> element = "%identity"]
+
+val null : element [@@js.custom let null = Ojs.null]
+
+val string : string -> element [@@js.cast]
+
+val list : element list -> element [@@js.cast]
 
 [@@@js.stop]
+
 type ('props, 'return) componentLike = 'props -> 'return
+
 [@@@js.start]
-[@@@js.implem
-  type ('props, 'return) componentLike = 'props -> 'return
-]
+
+[@@@js.implem type ('props, 'return) componentLike = 'props -> 'return]
 
 [@@@js.stop]
+
 type 'props component = ('props, element) componentLike
+
 [@@@js.start]
+
 [@@@js.implem
-  type 'props component = ('props, element) componentLike
-  external unsafeCastComp: ('a component) -> 'b = "%identity"
-  external unsafeCastProps: 'a -> 'b = "%identity"
-]
+type 'props component = ('props, element) componentLike
+
+external unsafeCastComp : 'a component -> 'b = "%identity"
+
+external unsafeCastProps : 'a -> 'b = "%identity"]
 
 val createElement : 'props component -> 'props -> element
-[@@js.custom
-  (* Important: we don't want to use an arrow type to represent components (i.e. (Ojs.t -> element)) as the component function
+  [@@js.custom
+    (* Important: we don't want to use an arrow type to represent components (i.e. (Ojs.t -> element)) as the component function
   would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
-  val createElementInternal : Ojs.t -> Ojs.t -> element [@@js.global "__LIB__react.createElement"]
-  let createElement x y = createElementInternal (unsafeCastComp x) (unsafeCastProps y)
-]
+    val createElementInternal : Ojs.t -> Ojs.t -> element
+      [@@js.global "__LIB__react.createElement"]
+
+    let createElement x y =
+      createElementInternal (unsafeCastComp x) (unsafeCastProps y)]
 
 val createElementVariadic :
-  'props component -> 'props -> (element list) -> element
-[@@js.custom
-  (* Important: we don't want to use an arrow type to represent components (i.e. (Ojs.t -> element)) as the component function
+  'props component -> 'props -> element list -> element
+  [@@js.custom
+    (* Important: we don't want to use an arrow type to represent components (i.e. (Ojs.t -> element)) as the component function
   would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
-  val createElementVariadicInternal : Ojs.t -> Ojs.t -> (element list [@js.variadic]) -> element [@@js.global "__LIB__react.createElement"]
-  let createElementVariadic x y = createElementVariadicInternal (unsafeCastComp x) (unsafeCastProps y)
-]
+    val createElementVariadicInternal :
+      Ojs.t -> Ojs.t -> (element list[@js.variadic]) -> element
+      [@@js.global "__LIB__react.createElement"]
 
-val useEffect1 : (unit -> (unit -> unit) option) -> 'a array -> unit
-[@@js.custom
-  val useEffect1Internal : (unit -> (unit -> unit) option) -> Ojs.t array -> unit [@@js.global "__LIB__react.useEffect"]
-  external unsafe_cast: 'a array -> 'b array = "%identity"
-  let useEffect1 effect dep = useEffect1Internal effect (unsafe_cast dep)
-]
+    let createElementVariadic x y =
+      createElementVariadicInternal (unsafeCastComp x) (unsafeCastProps y)]
 
+[@@@js.stop]
 
-val useState: (unit -> 'state) -> ('state * (('state -> 'state) -> unit))
-[@@js.custom
-  val useStateInternal : (unit -> Ojs.t) -> (Ojs.t * ((Ojs.t -> Ojs.t) -> unit)) [@@js.global "__LIB__react.useState"]
-  let useState = Obj.magic useStateInternal (* TODO: Is there a way to avoid magic? *)
-]
+type 'a option_undefined = 'a option
 
-val useReducer: ('state -> 'action -> 'state) -> 'state -> ('state * ('action -> unit))
-[@@js.custom
-  val useReducerInternal : (Ojs.t -> Ojs.t -> Ojs.t) -> Ojs.t -> (Ojs.t * (Ojs.t -> unit)) [@@js.global "__LIB__react.useReducer"]
-  let useReducer = Obj.magic useReducerInternal (* TODO: Is there a way to avoid magic? *)
-]
+[@@@js.start]
+
+[@@@js.implem
+type 'a option_undefined = 'a option
+
+external equals : Ojs.t -> Ojs.t -> bool = "caml_js_equals"
+
+external pure_js_expr : string -> Ojs.t = "caml_pure_js_expr"
+
+let undefined = pure_js_expr "undefined"
+
+let option_undefined_of_js f x =
+  if equals x undefined then None else Some (f x)
+
+let option_undefined_to_js f = function Some x -> f x | None -> undefined]
+
+val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
+  [@@js.custom
+    val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
+      [@@js.global "__LIB__react.useEffect"]]
+
+val useEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
+  [@@js.custom
+    val useEffect0Internal :
+      (unit -> (unit -> unit) option_undefined) -> Ojs.t array -> unit
+      [@@js.global "__LIB__react.useEffect"]
+
+    let useEffect0 effect = useEffect0Internal effect [||]]
+
+val useEffect1 : (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
+  [@@js.custom
+    val useEffect1Internal :
+      (unit -> (unit -> unit) option_undefined) -> Ojs.t array -> unit
+      [@@js.global "__LIB__react.useEffect"]
+
+    external unsafe_cast : 'a array -> 'b array = "%identity"
+
+    let useEffect1 effect dep = useEffect1Internal effect (unsafe_cast dep)]
+
+val useState : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
+  [@@js.custom
+    val useStateInternal :
+      (unit -> Ojs.t) -> Ojs.t * ((Ojs.t -> Ojs.t) -> unit)
+      [@@js.global "__LIB__react.useState"]
+
+    let useState = Obj.magic useStateInternal
+
+    (* TODO: Is there a way to avoid magic? *)]
+
+val useReducer :
+  ('state -> 'action -> 'state) -> 'state -> 'state * ('action -> unit)
+  [@@js.custom
+    val useReducerInternal :
+      (Ojs.t -> Ojs.t -> Ojs.t) -> Ojs.t -> Ojs.t * (Ojs.t -> unit)
+      [@@js.global "__LIB__react.useReducer"]
+
+    let useReducer = Obj.magic useReducerInternal
+
+    (* TODO: Is there a way to avoid magic? *)]
 
 module Ref : sig
   [@@@js.stop]
-  type 'value t = private Ojs.t
-  val t_of_js: (Ojs.t -> 'a) -> Ojs.t -> 'a t
-  val t_to_js: ('a -> Ojs.t) -> 'a t -> Ojs.t
-  [@@@js.start]
-  [@@@js.implem
-    include ([%js] : sig
-      type untyped = private Ojs.t
-      val untyped_of_js: Ojs.t -> untyped
-      val untyped_to_js: untyped -> Ojs.t
-    end)
-    type 'value t = untyped
-    let t_of_js _ x = untyped_of_js x
-    let t_to_js _ x = untyped_to_js x
-  ]    
 
-  val current: 'value t -> 'value
-  [@@js.custom
-    val currentInternal : Ojs.t -> Ojs.t  [@@js.get "current"]
-    let current = Obj.magic currentInternal (* TODO: Is there a way to avoid magic? *)
-  ]
-  val setCurrent: 'value t -> 'value -> unit
-  [@@js.custom
-    type r = Ojs.t
-    let r_of_js = Ojs.t_of_js
-    let r_to_js = Ojs.t_to_js
-    val setCurrentInternal : r -> Ojs.t -> unit  [@@js.set "current"]
-    let setCurrent = Obj.magic setCurrentInternal (* TODO: Is there a way to avoid magic? *)
-  ]
+  type 'value t
+
+  val t_of_js : (Ojs.t -> 'a) -> Ojs.t -> 'a t
+
+  val t_to_js : ('a -> Ojs.t) -> 'a t -> Ojs.t
+
+  [@@@js.start]
+
+  [@@@js.implem
+  include (
+    [%js] :
+      sig
+        type untyped = private Ojs.t
+
+        val untyped_of_js : Ojs.t -> untyped
+
+        val untyped_to_js : untyped -> Ojs.t
+      end )
+
+  type 'value t = untyped
+
+  let t_of_js _ x = untyped_of_js x
+
+  let t_to_js _ x = untyped_to_js x]
+
+  val current : 'value t -> 'value
+    [@@js.custom
+      val currentInternal : Ojs.t -> Ojs.t [@@js.get "current"]
+
+      let current = Obj.magic currentInternal
+
+      (* TODO: Is there a way to avoid magic? *)]
+
+  val setCurrent : 'value t -> 'value -> unit
+    [@@js.custom
+      type r = Ojs.t
+
+      let r_of_js = Ojs.t_of_js
+
+      let r_to_js = Ojs.t_to_js
+
+      val setCurrentInternal : r -> Ojs.t -> unit [@@js.set "current"]
+
+      let setCurrent = Obj.magic setCurrentInternal
+
+      (* TODO: Is there a way to avoid magic? *)]
 end
+
+val useRef : 'value -> 'value Ref.t
+  [@@js.custom
+    val useRefInternal : Ojs.t -> Ojs.t Ref.t
+      [@@js.global "__LIB__react.useRef"]
+
+    let useRef = Obj.magic useRefInternal
+
+    (* TODO: Is there a way to avoid magic? *)]
 
 (* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
  Although Reason parser doesn't support it so that's a requirement before adding it here *)
-val createFragment : (element list) -> element
-[@@js.custom
-  val createFragmentInternal : (Ojs.t) -> Ojs.t -> (element list) -> element [@@js.global "__LIB__react.createElement"]
-  val fragmentInternal : Ojs.t [@@js.global "__LIB__react.Fragment"]
-  let createFragment l = createFragmentInternal fragmentInternal Ojs.null l
-]
+val createFragment : element list -> element
+  [@@js.custom
+    val createFragmentInternal : Ojs.t -> Ojs.t -> element list -> element
+      [@@js.global "__LIB__react.createElement"]
+
+    val fragmentInternal : Ojs.t [@@js.global "__LIB__react.Fragment"]
+
+    let createFragment l = createFragmentInternal fragmentInternal Ojs.null l]
 
 (* val createElement : 'props component -> 'props -> element[@@js.global
                                                            "__LIB__react"
@@ -367,8 +455,6 @@ let useEffect0: (unit => option(unit => unit)) => unit;*)
    "useCallback";
 
  [@bs.module "react"] external useContext: Context.t('any) => 'any = "";
-
- external useRef: 'value => Ref.t('value) = "useRef";
 
  [@bs.module "react"]
  external useImperativeHandle0:
