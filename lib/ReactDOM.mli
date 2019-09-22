@@ -268,35 +268,27 @@ val domProps :
        string
        (* "hard" or "soft" *)
        (* Clipboard events *)
-  -> ?onCopy:(ReactEvent.Clipboard.t
-  -> unit)
-  -> ?onCut:(ReactEvent.Clipboard.t
-  -> unit)
-  -> ?onPaste:(ReactEvent.Clipboard.t
-  -> unit) (* Composition events *)
-  -> ?onCompositionEnd:(ReactEvent.Composition.t
-  -> unit)
-  -> ?onCompositionStart:(ReactEvent.Composition.t
-  -> unit)
-  -> ?onCompositionUpdate:(ReactEvent.Composition.t
-  -> unit) (* Keyboard events *)
-  -> ?onKeyDown:(ReactEvent.Keyboard.t
-  -> unit)
-  -> ?onKeyPress:(ReactEvent.Keyboard.t
-  -> unit)
-  -> ?onKeyUp:(ReactEvent.Keyboard.t
-  -> unit) (* Focus events *)
-  -> ?onFocus:(ReactEvent.Focus.t
-  -> unit)
-  -> ?onBlur:(ReactEvent.Focus.t
-  -> unit) (* Form events *)
-  -> ?onChange:(ReactEvent.Form.t
-  -> unit)
-  -> ?onInput:(ReactEvent.Form.t
-  -> unit)
-  -> ?onSubmit:(ReactEvent.Form.t
-  -> unit) (* Mouse events *)
-  -> ?onClick:(ReactEvent.Mouse.t -> unit)
+  -> ?onCopy:(ReactEvent.Clipboard.t -> unit)
+  -> ?onCut:(ReactEvent.Clipboard.t -> unit)
+  -> ?onPaste:(ReactEvent.Clipboard.t -> unit)
+  -> ?onCompositionEnd:
+       ((* Composition events *)
+        ReactEvent.Composition.t -> unit)
+  -> ?onCompositionStart:(ReactEvent.Composition.t -> unit)
+  -> ?onCompositionUpdate:(ReactEvent.Composition.t -> unit)
+  -> ?onKeyDown:((* Keyboard events *)
+                 ReactEvent.Keyboard.t -> unit)
+  -> ?onKeyPress:(ReactEvent.Keyboard.t -> unit)
+  -> ?onKeyUp:(ReactEvent.Keyboard.t -> unit)
+  -> ?onFocus:((* Focus events *)
+               ReactEvent.Focus.t -> unit)
+  -> ?onBlur:(ReactEvent.Focus.t -> unit)
+  -> ?onChange:((* Form events *)
+                ReactEvent.Form.t -> unit)
+  -> ?onInput:(ReactEvent.Form.t -> unit)
+  -> ?onSubmit:(ReactEvent.Form.t -> unit)
+  -> ?onClick:((* Mouse events *)
+               ReactEvent.Mouse.t -> unit)
   -> ?onContextMenu:(ReactEvent.Mouse.t -> unit)
   -> ?onDoubleClick:(ReactEvent.Mouse.t -> unit)
   -> ?onDrag:(ReactEvent.Mouse.t -> unit)
