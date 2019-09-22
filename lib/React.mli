@@ -65,21 +65,24 @@ val createElementVariadic :
       createElementVariadicInternal (unsafeCastComp x) (unsafeCastProps y)]
 
 [@@@js.stop]
+
 type 'a option_undefined = 'a option
+
 [@@@js.start]
+
 [@@@js.implem
 type 'a option_undefined = 'a option
-external equals: Ojs.t -> Ojs.t -> bool = "caml_js_equals"
-external pure_js_expr: string -> Ojs.t = "caml_pure_js_expr"
-let undefined = pure_js_expr "undefined"
-let option_undefined_of_js f x =
-  if equals x undefined then None
-  else Some (f x)
 
-let option_undefined_to_js f = function
-  | Some x -> f x
-  | None -> undefined
-]
+external equals : Ojs.t -> Ojs.t -> bool = "caml_js_equals"
+
+external pure_js_expr : string -> Ojs.t = "caml_pure_js_expr"
+
+let undefined = pure_js_expr "undefined"
+
+let option_undefined_of_js f x =
+  if equals x undefined then None else Some (f x)
+
+let option_undefined_to_js f = function Some x -> f x | None -> undefined]
 
 val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom

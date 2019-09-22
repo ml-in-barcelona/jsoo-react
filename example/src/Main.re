@@ -8,13 +8,25 @@ type example = {
 };
 
 let firstExample = {
-  path: "click",
-  title: "Click",
-  element: <Click />,
-  code: <Code text=[%blob "Click.re"] />,
+  path: "hello-world-ocaml",
+  title: "Hello World OCaml",
+  element: <HelloWorldOCaml />,
+  code: <Code text=[%blob "HelloWorldOCaml.ml"] />,
 };
 let examples = [
   firstExample,
+  {
+    path: "hello-world-reason",
+    title: "Hello World Reason",
+    element: <HelloWorldReason />,
+    code: <Code text=[%blob "HelloWorldReason.re"] />,
+  },
+  {
+    path: "events",
+    title: "Events",
+    element: <Events />,
+    code: <Code text=[%blob "Events.re"] />,
+  },
   {
     path: "greeting",
     title: "GreetingReason",
@@ -60,8 +72,9 @@ let make = () => {
            |> Option.value(~default=firstExample);
          <div>
            <h2> {example.title |> s} </h2>
+           <h4> {"Rendered component" |> s} </h4>
            {example.element}
-           <h3> {"Code" |> s} </h3>
+           <h4> {"Code" |> s} </h4>
            {example.code}
          </div>}
       </div>
