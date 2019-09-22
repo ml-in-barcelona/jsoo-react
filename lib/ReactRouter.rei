@@ -1,4 +1,4 @@
-/* Extracted from reason-react: https://reasonml.github.io/reason-react/docs/en/router */
+// Adapted from reason-react: https://reasonml.github.io/reason-react/docs/en/router
 
 /** update the url with the string path. Example: `push("/book/1")`, `push("/books#title")` */
 let push: string => unit;
