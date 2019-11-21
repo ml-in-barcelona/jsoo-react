@@ -31,7 +31,7 @@ See [`interop.md`](./interop.md).
 
 ```bash
 git clone https://github.com/jchavarri/jsoo-react/
-cd example
+cd ./jsoo-react/example
 esy
 yarn && yarn webpack
 ```
