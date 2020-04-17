@@ -13,7 +13,7 @@
   "dependencies": {
     "@opam/dune": "*",
     "@opam/gen_js_api": "LexiFi/gen_js_api:gen_js_api.opam#0743a4a",
-    "@opam/js_of_ocaml": "~3.4.0",
+    "@opam/js_of_ocaml": "*",
     "ocaml": "~4.8.0",
     "@esy-ocaml/reason": "*",
     "refmterr": "*"
@@ -21,5 +21,8 @@
   "devDependencies": {
     "ocaml": "~4.8.0",
     "@opam/ocamlformat": "*"
+  },
+  "resolutions": {
+    "@opam/js_of_ocaml": "jchavarri/js_of_ocaml:js_of_ocaml.opam#266720d"
   }
 }
