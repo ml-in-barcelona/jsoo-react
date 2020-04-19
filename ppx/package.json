@@ -16,8 +16,8 @@
   "dependencies": {
     "@esy-ocaml/reason": "*",
     "@opam/dune": "*",
-    "@opam/js_of_ocaml": "~3.4.0",
-    "@opam/js_of_ocaml-ppx": "~3.4.0",
+    "@opam/js_of_ocaml": "*",
+    "@opam/js_of_ocaml-ppx": "*",
     "@opam/ppxlib": "*",
     "ocaml": "~4.8.0",
     "refmterr": "*"
@@ -27,7 +27,7 @@
     "ocaml": "~4.8.0"
   },
   "resolutions": {
-    "@opam/js_of_ocaml": "ocsigen/js_of_ocaml:js_of_ocaml.opam#0bf16c4",
-    "@opam/js_of_ocaml-ppx": "ocsigen/js_of_ocaml:js_of_ocaml-ppx.opam#0bf16c4"
+    "@opam/js_of_ocaml": "jchavarri/js_of_ocaml:js_of_ocaml.opam#266720d",
+    "@opam/js_of_ocaml-ppx": "jchavarri/js_of_ocaml:js_of_ocaml-ppx.opam#266720d"
   }
 }

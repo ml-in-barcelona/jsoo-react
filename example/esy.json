@@ -12,22 +12,22 @@
   },
   "dependencies": {
     "@esy-ocaml/reason": "*",
-    "@opam/dune": "*",
-    "@opam/js_of_ocaml": "~3.4.0",
-    "@opam/js_of_ocaml-lwt": "~3.4.0",
-    "@opam/js_of_ocaml-ppx": "~3.4.0",
+    "@opam/dune": "~1.11.4",
+    "@opam/js_of_ocaml": "*",
+    "@opam/js_of_ocaml-lwt": "*",
+    "@opam/js_of_ocaml-ppx": "*",
     "@opam/ppx_blob": "0.4.0",
-    "jsoo-react-esy": "^0.0.1",
-    "jsoo-react-ppx-esy": "^0.0.1",
+    "jsoo-react-esy": "*",
+    "jsoo-react-ppx-esy": "*",
     "ocaml": "~4.8.0",
     "refmterr": "*"
   },
   "devDependencies": { "ocaml": "~4.8.0", "@opam/ocamlformat": "*" },
   "resolutions": {
-    "jsoo-react-ppx-esy": "link-dev:../ppx",
-    "jsoo-react-esy": "link-dev:../lib",
-    "@opam/js_of_ocaml": "ocsigen/js_of_ocaml:js_of_ocaml.opam#0bf16c4",
-    "@opam/js_of_ocaml-lwt": "ocsigen/js_of_ocaml:js_of_ocaml-lwt.opam#0bf16c4",
-    "@opam/js_of_ocaml-ppx": "ocsigen/js_of_ocaml:js_of_ocaml-ppx.opam#0bf16c4"
+    "jsoo-react-ppx-esy": "link:../ppx",
+    "jsoo-react-esy": "link:../lib",
+    "@opam/js_of_ocaml": "jchavarri/js_of_ocaml:js_of_ocaml.opam#266720d",
+    "@opam/js_of_ocaml-lwt": "jchavarri/js_of_ocaml:js_of_ocaml-lwt.opam#266720d",
+    "@opam/js_of_ocaml-ppx": "jchavarri/js_of_ocaml:js_of_ocaml-ppx.opam#266720d"
   }
 }
