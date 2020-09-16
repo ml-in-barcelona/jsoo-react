@@ -1181,10 +1181,18 @@ let jsxMapper = () => {
                 Exp.ident(~loc, {txt: Lident(props.propsName), loc});
               let labelStringId =
                 Exp.ident(~loc, {txt: Lident(labelString), loc});
-              Ppx_js.mapper.expr(
-                default_mapper,
-                [%expr [%e propsNameId]##.[%e labelStringId]],
-              );
+              let labelStringConst = Exp.constant(~loc, Pconst_string(txt, None));
+              let send = Exp.send(~loc, Exp.ident(~loc, {txt: Lident(labelString), loc}), {txt: Lident(labelString), loc});
+              // https://github.com/ocsigen/js_of_ocaml/blob/b1c807eaa40fa17b04c7d8e7e24306a03a46681d/ppx/ppx_js/lib_internal/ppx_js_internal.ml#L361-L373
+              [%expr
+                (
+                  (type res, type a0, a0: Js.t(a0), _: a0 => Js.gen_prop({.. get: res})) => (
+                    Js.Unsafe.get(a0, [%e labelStringConst]): res
+                  )
+                )(
+                  [%e propsNameId]: Js.t({..}), x =>
+                  [%e send]
+                );]
             };
 
             let expression =

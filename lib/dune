@@ -1,6 +1,6 @@
 (library
- (name React)
- (public_name jsoo-react-esy)
+ (name jsoo_react_lib)
+ (public_name jsoo-react.lib)
  (wrapped false)
  (preprocess
   (pps gen_js_api.ppx))
@@ -9,13 +9,13 @@
  (libraries js_of_ocaml gen_js_api))
 
 (rule
- (targets React.ml)
- (deps React.mli)
+ (targets react.ml)
+ (deps react.mli)
  (action
   (run %{bin:gen_js_api} -o %{targets} %{deps})))
 
 (rule
- (targets ReactDOM.ml)
- (deps ReactDOM.mli)
+ (targets react_dom.ml)
+ (deps react_dom.mli)
  (action
   (run %{bin:gen_js_api} -o %{targets} %{deps})))
