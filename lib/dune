@@ -15,7 +15,7 @@
   (run %{bin:gen_js_api} -o %{targets} %{deps})))
 
 (rule
- (targets react_dom.ml)
- (deps react_dom.mli)
+ (targets reactDOM.ml)
+ (deps reactDOM.mli)
  (action
   (run %{bin:gen_js_api} -o %{targets} %{deps})))

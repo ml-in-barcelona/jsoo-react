@@ -1,6 +1,6 @@
 (executable
  (name main)
- (libraries jsoo-react-ppx))
+ (libraries ocaml-migrate-parsetree jsoo_react_ppx))
 
 (rule
  (targets pp.result)

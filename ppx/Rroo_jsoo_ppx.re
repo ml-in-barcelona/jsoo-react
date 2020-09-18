@@ -19,11 +19,12 @@
  */
 
 open Migrate_parsetree;
+open OCaml_410.Ast;
 open Asttypes;
-open Longident;
 open Ast_helper;
 open Parsetree;
 open Ast_mapper;
+open Longident;
 
 let rec find_opt = p =>
   fun
@@ -737,7 +738,7 @@ let transformUppercaseCall = (~callerLoc, modulePath, callArguments) => {
 
   let ident =
     switch (modulePath) {
-    | Lident(_) => Ldot(modulePath, "make")
+    | Longident.Lident(_) => Ldot(modulePath, "make")
     | Ldot(_modulePath, value) as fullPath when isCap(value) =>
       Ldot(fullPath, "make")
     | modulePath => modulePath
@@ -1179,18 +1180,16 @@ let jsxMapper = () => {
               /* We need to wrap it with Js_of_ocaml ppx so the ##. operator can be processed correctly */
               let propsNameId =
                 Exp.ident(~loc, {txt: Lident(props.propsName), loc});
-              let labelStringId =
-                Exp.ident(~loc, {txt: Lident(labelString), loc});
-              let labelStringConst = Exp.constant(~loc, Pconst_string(txt, None));
-              let send = Exp.send(~loc, Exp.ident(~loc, {txt: Lident(labelString), loc}), {txt: Lident(labelString), loc});
+              let labelStringConst = Exp.constant(~loc, Pconst_string(labelString, None));
+              let send = Exp.send(~loc, Exp.ident(~loc, {txt: Lident("x"), loc}), {txt: labelString, loc});
               // https://github.com/ocsigen/js_of_ocaml/blob/b1c807eaa40fa17b04c7d8e7e24306a03a46681d/ppx/ppx_js/lib_internal/ppx_js_internal.ml#L361-L373
               [%expr
                 (
-                  (type res, type a0, a0: Js.t(a0), _: a0 => Js.gen_prop({.. get: res})) => (
-                    Js.Unsafe.get(a0, [%e labelStringConst]): res
+                  (type res, type a0, a0: Js_of_ocaml.Js.t(a0), _: a0 => Js_of_ocaml.Js.gen_prop({.. get: res})) => (
+                    Js_of_ocaml.Js.Unsafe.get(a0, [%e labelStringConst]): res
                   )
                 )(
-                  [%e propsNameId]: Js.t({..}), x =>
+                  [%e propsNameId]: Js_of_ocaml.Js.t({..}), x =>
                   [%e send]
                 );]
             };
@@ -1284,16 +1283,13 @@ let jsxMapper = () => {
                     Vb.mk(
                       ~loc,
                       Pat.var(~loc, {loc, txt: "_"}),
-                      Ppx_js.mapper.expr(
-                        default_mapper,
-                        [%expr
+                      [%expr
                           Js_of_ocaml.Js.Unsafe.set(
                             [%e Exp.ident({txt: Lident(txt), loc})],
                             "displayName",
                             Js_of_ocaml.Js.string([%e Exp.constant(~loc, Pconst_string(txt, None))]),
                           )
                         ],
-                      ),
                     ),
                   ],
                   Exp.ident(
@@ -1368,7 +1364,10 @@ let jsxMapper = () => {
     };
 
   let module_binding = (mapper, module_binding) => {
-    let _ = nestedModules := [module_binding.pmb_name.txt, ...nestedModules^];
+    let _ = switch (module_binding.pmb_name.txt){
+      | None => () 
+      | Some(txt) => nestedModules := [txt, ...nestedModules^]
+    };
     let mapped = default_mapper.module_binding(mapper, module_binding);
     let _ = nestedModules := List.tl(nestedModules^);
     mapped;
@@ -1380,7 +1379,7 @@ let jsxMapper = () => {
 let () =
   Driver.register(
     ~name="jsoo-react-ppx",
-    Migrate_parsetree.Versions.ocaml_408,
+    Migrate_parsetree.Versions.ocaml_410,
     (_config, _cookies) =>
     jsxMapper()
   );

@@ -26,6 +26,7 @@
 
   (js_of_ocaml (and (>= 3.7.0) (< 3.8.0)))
   (gen_js_api (and (>= 1.0.6) (< 1.1.0)))
+  (ocaml-migrate-parsetree (and (>= 1.7.3) (< 2.0.0)))
 
   ;; Test dependencies
   (webtest :with-test)
@@ -34,4 +35,8 @@
 
   ;; Dev dependencies
   (ocamlformat :dev)
+
+  ;; Example dependencies
+  (ppx_blob :dev)
+  (js_of_ocaml-lwt :dev)
 ))

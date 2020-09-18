@@ -1,3 +1,29 @@
+module Component : sig
+  [@@@js.stop]
+
+  type 'a t
+
+  [@@@js.start]
+
+  [@@@js.implem
+  type 'a t
+
+  let t_to_js to_js tbl =
+    let obj = Ojs.empty_obj () in
+    let set k v = Ojs.set obj k (to_js v) in
+    Hashtbl.iter set tbl;
+    obj
+
+  let t_of_js of_js obj =
+    let tbl = Hashtbl.create 10 in
+    let set k =
+      let v = of_js (Ojs.get obj k) in
+      Hashtbl.add tbl k v
+    in
+    Ojs.iter_properties obj set;
+    tbl]
+end
+
 [@@@js.stop]
 
 type element

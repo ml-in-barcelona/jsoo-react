@@ -68,12 +68,13 @@ let make =
       < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
     =
     let name =
-      match fun (type res) -> fun (type t2) ->
-              fun (t2 : t2 Js_of_ocaml.Js.t) ->
-                fun (_ : t2 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get t2 "name" : res)
-              (Props : < .. >  Js_of_ocaml.Js.t)
-              (fun ((x)[@merlin.loc ]) -> ((x#name)[@merlin.loc ]))
+      match (fun (type res) ->
+               fun (type a0) ->
+                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                   fun
+                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                     -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res))
+              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)
       with
       | ((Some (name))[@explicit_arity ]) -> name
       | None -> "" in
@@ -125,19 +126,19 @@ let make =
         Js_of_ocaml.Js.t)
     =
     let a =
-      fun (type res) -> fun (type t1) ->
-        fun (t1 : t1 Js_of_ocaml.Js.t) ->
-          fun (_ : t1 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-            (Js_of_ocaml.Js.Unsafe.get t1 "a" : res)
-        (Props : < .. >  Js_of_ocaml.Js.t)
-        (fun ((x)[@merlin.loc ]) -> ((x#a)[@merlin.loc ])) in
+      (fun (type res) ->
+         fun (type a0) ->
+           fun (a0 : a0 Js_of_ocaml.Js.t) ->
+             fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
+               (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
+        (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a) in
     let b =
-      fun (type res) -> fun (type t0) ->
-        fun (t0 : t0 Js_of_ocaml.Js.t) ->
-          fun (_ : t0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-            (Js_of_ocaml.Js.Unsafe.get t0 "b" : res)
-        (Props : < .. >  Js_of_ocaml.Js.t)
-        (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
+      (fun (type res) ->
+         fun (type a0) ->
+           fun (a0 : a0 Js_of_ocaml.Js.t) ->
+             fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
+               (Js_of_ocaml.Js.Unsafe.get a0 "b" : res))
+        (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b) in
     print_endline "This function should be named `Test`";
     ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ()) [] in
   let _ =
@@ -222,19 +223,19 @@ module Bar =
             Js_of_ocaml.Js.t)
         =
         let a =
-          fun (type res) -> fun (type t6) ->
-            fun (t6 : t6 Js_of_ocaml.Js.t) ->
-              fun (_ : t6 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get t6 "a" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t)
-            (fun ((x)[@merlin.loc ]) -> ((x#a)[@merlin.loc ])) in
+          (fun (type res) ->
+             fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
+            (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a) in
         let b =
-          fun (type res) -> fun (type t5) ->
-            fun (t5 : t5 Js_of_ocaml.Js.t) ->
-              fun (_ : t5 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get t5 "b" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t)
-            (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
+          (fun (type res) ->
+             fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res))
+            (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b) in
         print_endline "This function should be named `Test$Bar`";
         ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
           [] in
@@ -280,19 +281,19 @@ module Bar =
             Js_of_ocaml.Js.t)
         =
         let a =
-          fun (type res) -> fun (type t4) ->
-            fun (t4 : t4 Js_of_ocaml.Js.t) ->
-              fun (_ : t4 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get t4 "a" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t)
-            (fun ((x)[@merlin.loc ]) -> ((x#a)[@merlin.loc ])) in
+          (fun (type res) ->
+             fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
+            (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a) in
         let b =
-          fun (type res) -> fun (type t3) ->
-            fun (t3 : t3 Js_of_ocaml.Js.t) ->
-              fun (_ : t3 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get t3 "b" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t)
-            (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
+          (fun (type res) ->
+             fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res))
+            (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b) in
         print_endline "This function should be named `Test$Bar$component`";
         ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
           [] in
@@ -343,19 +344,19 @@ module Func(M:X_int) =
             Js_of_ocaml.Js.t)
         =
         let a =
-          fun (type res) -> fun (type t8) ->
-            fun (t8 : t8 Js_of_ocaml.Js.t) ->
-              fun (_ : t8 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get t8 "a" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t)
-            (fun ((x)[@merlin.loc ]) -> ((x#a)[@merlin.loc ])) in
+          (fun (type res) ->
+             fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
+            (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a) in
         let b =
-          fun (type res) -> fun (type t7) ->
-            fun (t7 : t7 Js_of_ocaml.Js.t) ->
-              fun (_ : t7 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get t7 "b" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t)
-            (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
+          (fun (type res) ->
+             fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res))
+            (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b) in
         print_endline "This function should be named `Test$Func`" M.x;
         ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
           [] in

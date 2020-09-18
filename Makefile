@@ -2,7 +2,16 @@ project_name = jsoo-react
 
 opam_file = $(project_name).opam
 
-.PHONY: create-switch deps fmt init
+.PHONY: build test test-promote deps fmt init
+
+build:
+	dune build @@default
+
+test:
+	dune build @runtest
+
+test-promote:
+	dune build @runtest --auto-promote
 
 # Alias to update the opam file and install the needed deps
 deps: $(opam_file)
