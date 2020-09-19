@@ -44,8 +44,7 @@ will not work without server as it relies on history / client-side routing using
 ### Ppx
 
 - `make test` to run the test against the expected result.
-- `make test-regen` to regenerate OCaml file `test.ml` from Reason file `test_src.re` (ocaml-migrate-parsetree drivers don't support input files with Reason syntax).
-- `make test-promote` to make
+- `make test-promote` when you want to update the expected results.
 
 ## Acknowledgements
 
