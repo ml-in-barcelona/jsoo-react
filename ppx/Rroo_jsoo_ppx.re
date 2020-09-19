@@ -763,7 +763,7 @@ let transformUppercaseCall = (~callerLoc, modulePath, callArguments) => {
 
   /* handle key, ref, children */
   /* React.createElement(Component.make, props, ...children) */
-  let loc = callerLoc; // This is really the only expression that should have proper loc
+  let loc = callerLoc; /* This is really the only expression that should have proper loc */
   switch (childrenArg^) {
   | None =>
     Exp.apply(
@@ -1182,15 +1182,15 @@ let jsxMapper = () => {
                 Exp.ident(~loc, {txt: Lident(props.propsName), loc});
               let labelStringConst = Exp.constant(~loc, Pconst_string(labelString, None));
               let send = Exp.send(~loc, Exp.ident(~loc, {txt: Lident("x"), loc}), {txt: labelString, loc});
-              // https://github.com/ocsigen/js_of_ocaml/blob/b1c807eaa40fa17b04c7d8e7e24306a03a46681d/ppx/ppx_js/lib_internal/ppx_js_internal.ml#L361-L373
+              /* https://github.com/ocsigen/js_of_ocaml/blob/b1c807eaa40fa17b04c7d8e7e24306a03a46681d/ppx/ppx_js/lib_internal/ppx_js_internal.ml#L361-L373 */
               [%expr
                 (
                   (type res, type a0, a0: Js_of_ocaml.Js.t(a0), _: a0 => Js_of_ocaml.Js.gen_prop({.. get: res})) => (
                     Js_of_ocaml.Js.Unsafe.get(a0, [%e labelStringConst]): res
                   )
                 )(
-                  [%e propsNameId]: Js_of_ocaml.Js.t({..}), x =>
-                  [%e send]
+                  [%e propsNameId]: Js_of_ocaml.Js.t({..}),
+                  x => [%e send]
                 );]
             };
 

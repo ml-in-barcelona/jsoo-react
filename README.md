@@ -31,24 +31,21 @@ See [`interop.md`](./interop.md).
 
 ```bash
 git clone https://github.com/jchavarri/jsoo-react/
+cd ./jsoo-react
+make dev
+# in another tab / terminal session 
 cd ./jsoo-react/example
-esy
-yarn && yarn webpack
+yarn && yarn server
 ```
 
-After you see the webpack compilation succeed (the `yarn webpack` step), open up `example/build/index.html` (no server needed!). Then modify `App.re` file in `src` and refresh the page to see the changes.
-
-## Run example with server
-
-To run with the webpack development server run `yarn server` from the `example` folder and view in the browser at http://localhost:8000. Running in this environment provides hot reloading and support for routing; just edit and save the file and the browser will automatically refresh.
-
-To use a port other than 8000 set the `PORT` environment variable (`PORT=8080 yarn server`).
+After that, open up `localhost:8000`. Then modify `App.re` file in `src` and refresh the page to see the changes. The example
+will not work without server as it relies on history / client-side routing using `jsoo-react` router to navigate through the pages.
 
 ### Ppx
 
-- `esy test` to run the test against the expected result.
-- `esy test:regen` to regenerate OCaml file `test.ml` from Reason file `test_src.re` (ocaml-migrate-parsetree drivers don't support input files with Reason syntax).
-- `esy test:promote` to make
+- `make test` to run the test against the expected result.
+- `make test-regen` to regenerate OCaml file `test.ml` from Reason file `test_src.re` (ocaml-migrate-parsetree drivers don't support input files with Reason syntax).
+- `make test-promote` to make
 
 ## Acknowledgements
 

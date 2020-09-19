@@ -1,7 +1,7 @@
 (executables
  (names App)
- (modes byte)
- (libraries gen_js_api lwt js_of_ocaml js_of_ocaml-lwt js_of_ocaml-ppx jsoo_react_lib)
+ (modes js)
+ (libraries gen_js_api lwt js_of_ocaml-lwt jsoo_react_lib)
  (js_of_ocaml
   (javascript_files static-requires.js))
  (preprocess

@@ -5,8 +5,11 @@ const outputDir = path.join(__dirname, 'build/');
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  entry: './_esy/default/build/default/src/App.bc.js',
+  entry: '../_build/default/example/src/App.bc.js',
   mode: isProd ? 'production' : 'development',
+  resolve: {
+    modules: [path.resolve(__dirname, 'node_modules'), 'node_modules']
+  },
   output: {
     path: outputDir,
     filename: 'Index.js'

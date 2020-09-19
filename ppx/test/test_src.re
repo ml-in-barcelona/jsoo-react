@@ -4,7 +4,7 @@
   This is due to ocaml-migrate-parsetree drivers only allowing OCaml syntax.
   See related: https://github.com/ocaml-ppx/ocaml-migrate-parsetree/issues/74.
 
-  To regenerate test.ml from this file, run `esy test:regen`.
+  To regenerate test.ml from this file, run `make test-regen`.
  */
 
 // Interfaces

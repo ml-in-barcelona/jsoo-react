@@ -7,8 +7,14 @@ opam_file = $(project_name).opam
 build:
 	dune build @@default
 
+build-prod:
+	dune build --profile=prod @@default
+
 test:
 	dune build @runtest
+
+dev:
+	dune build -w @@default
 
 test-promote:
 	dune build @runtest --auto-promote
