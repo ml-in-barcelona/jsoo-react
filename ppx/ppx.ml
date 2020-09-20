@@ -9,18 +9,18 @@
 *)
 
 (*
-  v3:
-  transform `[@JSX] div(~props1=a, ~props2=b, ~children=[foo, bar], ())` into
-  `ReactDOMRe.createDOMElementVariadic("div", ReactDOMRe.domProps(~props1=1, ~props2=b), [|foo, bar|])`.
-  transform the upper-cased case
-  `[@JSX] Foo.createElement(~key=a, ~ref=b, ~foo=bar, ~children=[], ())` into
-  `React.createElement(Foo.make, Foo.makeProps(~key=a, ~ref=b, ~foo=bar, ()))`
-  transform the upper-cased case
-  `[@JSX] Foo.createElement(~foo=bar, ~children=[foo, bar], ())` into
-  `React.createElementVariadic(Foo.make, Foo.makeProps(~foo=bar, ~children=React.null, ()), [|foo, bar|])`
-  transform `[@JSX] [foo]` into
-  `ReactDOMRe.createElement(ReasonReact.fragment, [|foo|])`
-*)
+   The transform:
+   transform `[@JSX] div(~props1=a, ~props2=b, ~children=[foo, bar], ())` into
+   `ReactDOM.createDOMElementVariadic("div", ReactDOM.domProps(~props1=1, ~props2=b), [foo, bar])`.
+   transform the upper-cased case
+   `[@JSX] Foo.createElement(~key=a, ~ref=b, ~foo=bar, ~children=[], ())` into
+   `React.createElement(Foo.make, Foo.makeProps(~key=a, ~ref=b, ~foo=bar, ()))`
+   transform the upper-cased case
+   `[@JSX] Foo.createElement(~foo=bar, ~children=[foo, bar], ())` into
+   `React.createElementVariadic(Foo.make, Foo.makeProps(~foo=bar, ~children=React.null, ()), [foo, bar])`
+   transform `[@JSX] [foo]` into
+   `React.createFragment([foo])`
+ *)
 
 open Migrate_parsetree
 open OCaml_410.Ast
@@ -72,42 +72,22 @@ type 'a children = ListLiteral of 'a | Exact of 'a
 
 type componentConfig = {propsName: string}
 
-(* if children is a list, convert it to an array while mapping each element. If not, just map over it, as usual *)
-let transformChildrenIfListUpper ~loc ~mapper theList =
-  let rec transformChildren_ theList accum =
-    (* not in the sense of converting a list to an array; convert the AST
-       reprensentation of a list to the AST reprensentation of an array *)
-    match theList with
-    | {pexp_desc= Pexp_construct ({txt= Lident "[]"}, None)} -> (
-      match accum with
-      | [singleElement] ->
-          Exact singleElement
-      | accum ->
-          ListLiteral (List.rev accum |> Exp.array ~loc) )
-    | { pexp_desc=
-          Pexp_construct
-            ({txt= Lident "::"}, Some {pexp_desc= Pexp_tuple [v; acc]}) } ->
-        transformChildren_ acc (mapper.expr mapper v :: accum)
-    | notAList ->
-        Exact (mapper.expr mapper notAList)
-  in
-  transformChildren_ theList []
+(* unlike reason-react ppx, we don't transform to array *)
+let transformChildrenIfListUpper ~loc:_ ~mapper:_ theList =
+  (* unlike reason-react ppx, we don't transform to array as it'd be incompatible with
+     [@js.variadic] gen_js_api attribute, which requires argument to be a list *)
+  match theList with
+  | [%expr []] as emptyList ->
+      ListLiteral emptyList
+  | [%expr [[%e? singleElement]]] ->
+      Exact singleElement
+  | [%expr [%e? _v] :: [%e? _acc]] as list ->
+      ListLiteral list
+  | notAList ->
+      Exact notAList
 
-let transformChildrenIfList ~loc ~mapper theList =
-  let rec transformChildren_ theList accum =
-    (* not in the sense of converting a list to an array; convert the AST
-       reprensentation of a list to the AST reprensentation of an array *)
-    match theList with
-    | {pexp_desc= Pexp_construct ({txt= Lident "[]"}, None)} ->
-        List.rev accum |> Exp.array ~loc
-    | { pexp_desc=
-          Pexp_construct
-            ({txt= Lident "::"}, Some {pexp_desc= Pexp_tuple [v; acc]}) } ->
-        transformChildren_ acc (mapper.expr mapper v :: accum)
-    | notAList ->
-        mapper.expr mapper notAList
-  in
-  transformChildren_ theList []
+(* unlike reason-react ppx, we don't transform to array *)
+let transformChildrenIfList ~loc:_ ~mapper:_ theList = theList
 
 let extractChildren ?(removeLastPositionUnit = false) ~loc propsAndChildren =
   let rec allButLast_ lst acc =
@@ -255,79 +235,60 @@ let makeModuleName fileName nestedModules fnName =
 (*
   AST node builders
   These functions help us build AST nodes that are needed when transforming a [@react.component] into a
-  constructor and a props external
+  constructor and a `makeProps` function
 *)
 
-(* Build an AST node representing all named args for the `external` definition for a component's props *)
-let rec recursivelyMakeNamedArgsForExternal list args =
+(* Build an AST node representing all named args for the `makeProps` definition for a component's props *)
+let rec makeArgsForMakePropsType list args =
   match list with
   | (label, default, loc, interiorType) :: tl ->
-      recursivelyMakeNamedArgsForExternal tl
-        (Typ.arrow ~loc label
-           ( match (label, interiorType, default) with
-           (* ~foo=1 *)
-           | label, None, Some _ ->
-               { ptyp_desc= Ptyp_var (safeTypeFromValue label)
-               ; ptyp_loc= loc
-               ; ptyp_attributes= []
-               ; ptyp_loc_stack= [] }
-           (* ~foo: int=1 *)
-           | _label, Some type_, Some _ ->
-               type_
-           (* ~foo: option(int)=? *)
-           | ( label
-             , Some {ptyp_desc= Ptyp_constr ({txt= Lident "option"}, [type_])}
-             , _ )
-           | ( label
-             , Some
-                 { ptyp_desc=
-                     Ptyp_constr
-                       ({txt= Ldot (Lident "*predef*", "option")}, [type_]) }
-             , _ )
-           (* ~foo: int=? - note this isnt valid. but we want to get a type error *)
-           | label, Some type_, _
-             when isOptional label ->
-               type_
-           (* ~foo=? *)
-           | label, None, _ when isOptional label ->
-               { ptyp_desc= Ptyp_var (safeTypeFromValue label)
-               ; ptyp_loc= loc
-               ; ptyp_attributes= []
-               ; ptyp_loc_stack= [] }
-           (* ~foo *)
-           | label, None, _ ->
-               { ptyp_desc= Ptyp_var (safeTypeFromValue label)
-               ; ptyp_loc= loc
-               ; ptyp_attributes= []
-               ; ptyp_loc_stack= [] }
-           | _label, Some type_, _ ->
-               type_ )
-           args)
+      let coreType =
+        match (label, interiorType, default) with
+        (* ~foo=1 *)
+        | label, None, Some _ ->
+            Typ.mk ~loc (Ptyp_var (safeTypeFromValue label))
+        (* ~foo: int=1 *)
+        | _label, Some type_, Some _ ->
+            type_
+        (* ~foo: option(int)=? *)
+        | ( label
+          , Some {ptyp_desc= Ptyp_constr ({txt= Lident "option"; _}, [type_]); _}
+          , _ )
+        | ( label
+          , Some
+              { ptyp_desc=
+                  Ptyp_constr
+                    ({txt= Ldot (Lident "*predef*", "option"); _}, [type_])
+              ; _ }
+          , _ )
+        (* ~foo: int=? - note this isnt valid. but we want to get a type error *)
+        | label, Some type_, _
+          when isOptional label ->
+            type_
+        (* ~foo=? *)
+        | label, None, _ when isOptional label ->
+            Typ.mk ~loc (Ptyp_var (safeTypeFromValue label))
+        (* ~foo *)
+        | label, None, _ ->
+            Typ.mk ~loc (Ptyp_var (safeTypeFromValue label))
+        | _label, Some type_, _ ->
+            type_
+      in
+      makeArgsForMakePropsType tl (Typ.arrow ~loc label coreType args)
   | [] ->
       args
 
-(* Build an AST node for the [@bs.obj] representing props for a component *)
+(* Build an AST node for the Js object representing props for a component *)
 let makePropsValue fnName loc namedArgListWithKeyAndRef propsType =
   let propsName = fnName ^ "Props" in
-  { pval_name= {txt= propsName; loc}
-  ; pval_type=
-      recursivelyMakeNamedArgsForExternal namedArgListWithKeyAndRef
-        (Typ.arrow nolabel
-           { ptyp_desc= Ptyp_constr ({txt= Lident "unit"; loc}, [])
-           ; ptyp_loc= loc
-           ; ptyp_attributes= []
-           ; ptyp_loc_stack= [] }
-           propsType)
-  ; pval_prim= [""]
-  ; pval_attributes= [({txt= "bs.obj"; loc}, PStr [])]
-  ; pval_loc= loc }
-
-(* Build an AST node representing an `external` with the definition of the [@bs.obj] *)
-let makePropsExternal fnName loc namedArgListWithKeyAndRef propsType =
-  { pstr_loc= loc
-  ; pstr_desc=
-      Pstr_primitive
-        (makePropsValue fnName loc namedArgListWithKeyAndRef propsType) }
+  Val.mk ~loc {txt= propsName; loc}
+    (makeArgsForMakePropsType namedArgListWithKeyAndRef
+       (Typ.arrow Nolabel
+          { ptyp_desc= Ptyp_constr ({txt= Lident "unit"; loc}, [])
+          ; ptyp_loc= loc
+          ; ptyp_attributes= []
+          ; ptyp_loc_stack= [] }
+          propsType))
 
 (* Build an AST node for the signature of the `external` definition *)
 let makePropsExternalSig fnName loc namedArgListWithKeyAndRef propsType =
@@ -337,8 +298,7 @@ let makePropsExternalSig fnName loc namedArgListWithKeyAndRef propsType =
   }
 
 (* Build an AST node for the props name when converted to a Js.t inside the function signature  *)
-let makePropsName ~loc name =
-  {ppat_desc= Ppat_var {txt= name; loc}; ppat_loc= loc; ppat_attributes= []}
+let makePropsName ~loc name = Pat.mk ~loc (Ppat_var {txt= name; loc})
 
 let makeObjectField loc (str, _attrs, propType) =
   let type_ = [%type: [%t propType] Js_of_ocaml.Js.readonly_prop] in
@@ -355,9 +315,86 @@ let makePropsType ~loc namedTypeList =
              (Ptyp_object (List.map (makeObjectField loc) namedTypeList, Closed))
          ] ))
 
-(* Builds an AST node for the entire `external` definition of props *)
-let makeExternalDecl fnName loc namedArgListWithKeyAndRef namedTypeList =
-  makePropsExternal fnName loc
+let rec makeFunsForMakePropsBody list args =
+  match list with
+  | (label, _default, loc, _interiorType) :: tl ->
+      makeFunsForMakePropsBody tl
+        (Exp.fun_ ~loc label None
+           { ppat_desc= Ppat_var {txt= getLabel label; loc}
+           ; ppat_loc= loc
+           ; ppat_attributes= []
+           ; ppat_loc_stack= [] }
+           args)
+  | [] ->
+      args
+
+let makeJsObj ~loc namedArgListWithKeyAndRef =
+  let labelToTuple label =
+    let l = getLabel label in
+    let id = Exp.ident ~loc {txt= Lident l; loc} in
+    let expr =
+      match l = "key" with
+      | true ->
+          [%expr
+            [%e Exp.constant ~loc (Pconst_string (l, None))]
+            , inject
+                ( Option.map Js_of_ocaml.Js.string [%e id]
+                |> Js_of_ocaml.Js.Opt.option )]
+      | false ->
+          [%expr
+            [%e Exp.constant ~loc (Pconst_string (l, None))], inject [%e id]]
+    in
+    match isOptional label with
+    | true ->
+        [%expr Option.map (fun _ -> [%e expr]) [%e id]]
+    | false ->
+        [%expr Some [%e expr]]
+  in
+  [%expr
+    obj
+      ( [%e
+          Exp.array ~loc
+            (List.map
+               (fun (label, _, _, _) -> labelToTuple label)
+               namedArgListWithKeyAndRef)]
+      |> Array.to_list
+      |> List.filter_map (fun x -> x)
+      |> Array.of_list )]
+
+let makePropsValueBinding fnName loc namedArgListWithKeyAndRef propsType =
+  let core_type =
+    makeArgsForMakePropsType namedArgListWithKeyAndRef
+      [%type: unit -> [%t propsType]]
+  in
+  let propsName = fnName ^ "Props" in
+  Vb.mk ~loc
+    (Pat.mk ~loc
+       (Ppat_constraint
+          ( makePropsName ~loc propsName
+          , { ptyp_desc= Ptyp_poly ([], core_type)
+            ; ptyp_loc= loc
+            ; ptyp_attributes= []
+            ; ptyp_loc_stack= [] } )))
+    (Exp.mk ~loc
+       (Pexp_constraint
+          ( makeFunsForMakePropsBody namedArgListWithKeyAndRef
+              [%expr
+                fun _ ->
+                  let open Js_of_ocaml.Js.Unsafe in
+                  [%e makeJsObj ~loc namedArgListWithKeyAndRef]]
+          , core_type )))
+
+(* Returns a structure item for the `makeProps` function *)
+let makePropsItem fnName loc namedArgListWithKeyAndRef propsType =
+  Str.mk ~loc
+    (Pstr_value
+       ( Nonrecursive
+       , [makePropsValueBinding fnName loc namedArgListWithKeyAndRef propsType]
+       ))
+
+(* Builds an AST node for the entire `makeProps` function *)
+let makePropsDecl fnName loc namedArgListWithKeyAndRef namedTypeList =
+  makePropsItem fnName loc
     (List.map pluckLabelDefaultLocType namedArgListWithKeyAndRef)
     (makePropsType ~loc namedTypeList)
 
@@ -461,15 +498,14 @@ let jsxMapper () =
       | nonEmptyProps ->
           let propsCall =
             Exp.apply ~loc
-              (Exp.ident ~loc
-                 {loc; txt= Ldot (Lident "ReactDOMRe", "domProps")})
+              (Exp.ident ~loc {loc; txt= Ldot (Lident "ReactDOM", "domProps")})
               ( nonEmptyProps
               |> List.map (fun (label, expression) ->
                      (label, mapper.expr mapper expression)) )
           in
           [ (* "div" *)
             (nolabel, componentNameExpr)
-          ; (* ReactDOMRe.props(~className=blabla, ~foo=bar, ()) *)
+          ; (* ReactDOM.props(~className=blabla, ~foo=bar, ()) *)
             (labelled "props", propsCall)
           ; (* [|moreCreateElementCallsHere|] *)
             (nolabel, childrenExpr) ]
@@ -477,8 +513,8 @@ let jsxMapper () =
     Exp.apply
       ~loc (* throw away the [@JSX] attribute and keep the others, if any *)
       ~attrs
-      (* ReactDOMRe.createElement *)
-      (Exp.ident ~loc {loc; txt= Ldot (Lident "ReactDOMRe", createElementCall)})
+      (* ReactDOM.createElement *)
+      (Exp.ident ~loc {loc; txt= Ldot (Lident "ReactDOM", createElementCall)})
       args
   in
   let rec recursivelyTransformNamedArgsForMake mapper expr list =
@@ -650,8 +686,8 @@ let jsxMapper () =
           in
           let retPropsType = makePropsType ~loc:pstr_loc namedTypeList in
           let externalPropsDecl =
-            makePropsExternal fnName pstr_loc
-              ( (optional "key", None, pstr_loc, Some (keyType pstr_loc))
+            makePropsItem fnName pstr_loc
+              ( (Optional "key", None, pstr_loc, Some (keyType pstr_loc))
               :: List.map pluckLabelAndLoc propTypes )
               retPropsType
           in
@@ -896,18 +932,30 @@ let jsxMapper () =
                 | "" ->
                     Exp.ident ~loc {txt= Lident alias; loc}
                 | labelString ->
-                    Exp.apply ~loc
-                      (Exp.ident ~loc {txt= Lident "##"; loc})
-                      [ ( nolabel
-                        , Exp.ident ~loc {txt= Lident props.propsName; loc} )
-                      ; (nolabel, Exp.ident ~loc {txt= Lident labelString; loc})
-                      ] )
+                    let propsNameId =
+                      Exp.ident ~loc {txt= Lident props.propsName; loc}
+                    in
+                    let labelStringConst =
+                      Exp.constant ~loc (Pconst_string (labelString, None))
+                    in
+                    let send =
+                      Exp.send ~loc
+                        (Exp.ident ~loc {txt= Lident "x"; loc})
+                        {txt= labelString; loc}
+                    in
+                    (* https://github.com/ocsigen/js_of_ocaml/blob/b1c807eaa40fa17b04c7d8e7e24306a03a46681d/ppx/ppx_js/lib_internal/ppx_js_internal.ml#L322-L332 *)
+                    [%expr
+                      (fun (type res a0) (a0 : a0 Js_of_ocaml.Js.t)
+                           (_ : a0 -> < get: res ; .. > Js_of_ocaml.Js.gen_prop)
+                           : res ->
+                        Js_of_ocaml.Js.Unsafe.get a0 [%e labelStringConst])
+                        ([%e propsNameId] : < .. > Js_of_ocaml.Js.t)
+                        (fun x -> [%e send])] )
             in
             let namedTypeList = List.fold_left argToType [] namedArgList in
             let loc = emptyLoc in
-            let externalDecl =
-              makeExternalDecl fnName loc namedArgListWithKeyAndRef
-                namedTypeList
+            let makePropsLet =
+              makePropsDecl fnName loc namedArgListWithKeyAndRef namedTypeList
             in
             let innerExpressionArgs =
               List.map pluckArg namedArgListWithKeyAndRefForNew
@@ -953,7 +1001,7 @@ let jsxMapper () =
                       , makePropsType ~loc:emptyLoc namedTypeList )
                 ; ppat_loc= emptyLoc
                 ; ppat_attributes= []
-                ; ppat_loc_stack= []  }
+                ; ppat_loc_stack= [] }
                 innerExpressionWithRef
             in
             let fullExpression =
@@ -982,7 +1030,7 @@ let jsxMapper () =
                   ( [{binding with pvb_expr= expression; pvb_attributes= []}]
                   , Some (bindingWrapper fullExpression) )
             in
-            (Some externalDecl, bindings, newBinding)
+            (Some makePropsLet, bindings, newBinding)
           else (None, [binding], None)
         in
         let structuresAndBinding = List.map mapBinding valueBindings in
@@ -1103,7 +1151,7 @@ let jsxMapper () =
             raise (Invalid_argument "JSX: the JSX version must be  3") )
       (* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) *)
       (* turn that into
-         ReactDOMRe.createElement(~props=ReactDOMRe.props(~props1=foo, ~props2=bar, ()), [|bla|]) *)
+         ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [|bla|]) *)
       | {loc; txt= Lident id} -> (
         match !jsxVersion with
         | None | Some 3 ->
@@ -1186,9 +1234,9 @@ let jsxMapper () =
               ~loc
                 (* throw away the [@JSX] attribute and keep the others, if any *)
               ~attrs:nonJSXAttributes
-              (* ReactDOMRe.createElement *)
+              (* ReactDOM.createElement *)
               (Exp.ident ~loc
-                 {loc; txt= Ldot (Lident "ReactDOMRe", "createElement")})
+                 {loc; txt= Ldot (Lident "ReactDOM", "createElement")})
               args )
     (* Delegate to the default mapper, a deep identity traversal *)
     | e ->
@@ -1217,7 +1265,5 @@ let rewrite_signature (code : Parsetree.signature) : Parsetree.signature =
   mapper.signature mapper code
 
 let () =
-  Driver.register
-    ~name:"jsoo-react-ppx"
-    Migrate_parsetree.Versions.ocaml_410
-    (fun _config  -> fun _cookies  -> jsxMapper ())
+  Driver.register ~name:"jsoo-react-ppx" Migrate_parsetree.Versions.ocaml_410
+    (fun _config _cookies -> jsxMapper ())
