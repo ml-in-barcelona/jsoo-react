@@ -110,9 +110,8 @@ val domProps :
        ((* Drag-and-Drop Attributes *)
         (* -> ?ariaDropeffect: (copy|move|link|execute|popup|none [@js "aria-dropeffect"]) *)
         bool[@js "aria-grabbed"])
-  -> ?ariaActivedescendant:
-       ((* Relationship Attributes *)
-        string[@js "aria-activedescendant"])
+  -> ?ariaActivedescendant:((* Relationship Attributes *)
+                            string[@js "aria-activedescendant"])
   -> ?ariaColcount:(int[@js "aria-colcount"])
   -> ?ariaColindex:(int[@js "aria-colindex"])
   -> ?ariaColspan:(int[@js "aria-colspan"])
@@ -618,7 +617,7 @@ val domProps :
 
 val createDOMElementVariadic :
      string
-  -> props:domProps
+  -> ?props:domProps
   -> (React.element list[@js.variadic])
   -> React.element
   [@@js.global "__LIB__react.createElement"]
@@ -627,7 +626,7 @@ val forwardRef :
   ('props -> domRef option -> React.element) -> 'props React.component
   [@@js.custom
     (* Important: we don't want to use an arrow type to represent components (i.e. (Ojs.t -> element)) as the component function
-  would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
+       would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
     val forwardRefInternal : Ojs.t -> Ojs.t
       [@@js.global "__LIB__react.forwardRef"]
 
@@ -1042,18 +1041,18 @@ module Style : sig
 
   (* CSS2Properties: https://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSS2Properties *)
   (* let combine: (style, style) -> style =
-    (a, b) -> {
-      let a: Js.t({..}) = Obj.magic(a);
-      let b: Js.t({..}) = Obj.magic(b);
-      Js.Obj.assign(Js.Obj.assign(Js.Obj.empty(), a), b) |> Obj.magic;
-    };
-  let unsafeAddProp: (style, string string) -> style =
-    (style, property, value) -> {
-      let propStyle: style = {
-        let dict = Js.Dict.empty();
-        Js.Dict.set(dict, property, value);
-        Obj.magic(dict);
-      };
-      combine(style, propStyle);
-    }; *)
+       (a, b) -> {
+         let a: Js.t({..}) = Obj.magic(a);
+         let b: Js.t({..}) = Obj.magic(b);
+         Js.Obj.assign(Js.Obj.assign(Js.Obj.empty(), a), b) |> Obj.magic;
+       };
+     let unsafeAddProp: (style, string string) -> style =
+       (style, property, value) -> {
+         let propStyle: style = {
+           let dict = Js.Dict.empty();
+           Js.Dict.set(dict, property, value);
+           Obj.magic(dict);
+         };
+         combine(style, propStyle);
+       }; *)
 end

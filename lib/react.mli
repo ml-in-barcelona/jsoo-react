@@ -11,8 +11,7 @@ module Component : sig
   let t_to_js to_js tbl =
     let obj = Ojs.empty_obj () in
     let set k v = Ojs.set obj k (to_js v) in
-    Hashtbl.iter set tbl;
-    obj
+    Hashtbl.iter set tbl ; obj
 
   let t_of_js of_js obj =
     let tbl = Hashtbl.create 10 in
@@ -20,7 +19,7 @@ module Component : sig
       let v = of_js (Ojs.get obj k) in
       Hashtbl.add tbl k v
     in
-    Ojs.iter_properties obj set;
+    Ojs.iter_properties obj set ;
     tbl]
 end
 
@@ -71,7 +70,7 @@ external unsafeCastProps : 'a -> 'b = "%identity"]
 val createElement : 'props component -> 'props -> element
   [@@js.custom
     (* Important: we don't want to use an arrow type to represent components (i.e. (Ojs.t -> element)) as the component function
-  would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
+       would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
     val createElementInternal : Ojs.t -> Ojs.t -> element
       [@@js.global "__LIB__react.createElement"]
 
@@ -82,7 +81,7 @@ val createElementVariadic :
   'props component -> 'props -> element list -> element
   [@@js.custom
     (* Important: we don't want to use an arrow type to represent components (i.e. (Ojs.t -> element)) as the component function
-  would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
+       would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
     val createElementVariadicInternal :
       Ojs.t -> Ojs.t -> (element list[@js.variadic]) -> element
       [@@js.global "__LIB__react.createElement"]
@@ -105,8 +104,7 @@ external pure_js_expr : string -> Ojs.t = "caml_pure_js_expr"
 
 let undefined = pure_js_expr "undefined"
 
-let option_undefined_of_js f x =
-  if equals x undefined then None else Some (f x)
+let option_undefined_of_js f x = if equals x undefined then None else Some (f x)
 
 let option_undefined_to_js f = function Some x -> f x | None -> undefined]
 
@@ -135,8 +133,7 @@ val useEffect1 : (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
 
 val useState : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
   [@@js.custom
-    val useStateInternal :
-      (unit -> Ojs.t) -> Ojs.t * ((Ojs.t -> Ojs.t) -> unit)
+    val useStateInternal : (unit -> Ojs.t) -> Ojs.t * ((Ojs.t -> Ojs.t) -> unit)
       [@@js.global "__LIB__react.useState"]
 
     let useState = Obj.magic useStateInternal

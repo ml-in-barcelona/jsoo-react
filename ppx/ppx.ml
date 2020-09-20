@@ -1,11 +1,8 @@
 (*
   This is the file that handles turning Reason JSX' agnostic function call into
-  a ReasonReact-specific function call. Aka, this is a macro, using OCaml's ppx
+  a jsoo-react-specific function call. Aka, this is a macro, using OCaml's ppx
   facilities; https://whitequark.org/blog/2014/04/16/a-guide-to-extension-
   points-in-ocaml/
-  You wouldn't use this file directly; it's used by BuckleScript's
-  bsconfig.json. Specifically, there's a field called `react-jsx` inside the
-  field `reason`, which enables this ppx through some internal call in bsb
 *)
 
 (*
@@ -68,26 +65,56 @@ let keyType loc =
   Typ.constr ~loc {loc; txt= optionIdent}
     [Typ.constr ~loc {loc; txt= Lident "string"} []]
 
+let refType loc = [%type: ReactDOM.domRef]
+
 type 'a children = ListLiteral of 'a | Exact of 'a
 
 type componentConfig = {propsName: string}
 
-(* unlike reason-react ppx, we don't transform to array *)
-let transformChildrenIfListUpper ~loc:_ ~mapper:_ theList =
+let revAstList ~loc expr =
+  let rec revAstList_ acc = function
+    | [%expr []] ->
+        acc
+    | [%expr [%e? hd] :: [%e? tl]] ->
+        revAstList_ [%expr [%e hd] :: [%e acc]] tl
+    | expr ->
+        expr
+  in
+  revAstList_ [%expr []] expr
+
+(* unlike reason-react ppx, we don't transform to array, just apply mapper to children *)
+let transformChildrenIfListUpper ~loc ~mapper theList =
   (* unlike reason-react ppx, we don't transform to array as it'd be incompatible with
      [@js.variadic] gen_js_api attribute, which requires argument to be a list *)
-  match theList with
-  | [%expr []] as emptyList ->
-      ListLiteral emptyList
-  | [%expr [[%e? singleElement]]] ->
-      Exact singleElement
-  | [%expr [%e? _v] :: [%e? _acc]] as list ->
-      ListLiteral list
-  | notAList ->
-      Exact notAList
+  let rec transformChildren_ theList accum =
+    (* not in the sense of converting a list to an array; convert the AST
+       reprensentation of a list to the AST reprensentation of an array *)
+    match theList with
+    | [%expr []] -> (
+      match accum with
+      | [%expr [[%e? singleElement]]] ->
+          Exact singleElement
+      | accum ->
+          ListLiteral (revAstList ~loc accum) )
+    | [%expr [%e? v] :: [%e? acc]] ->
+        transformChildren_ acc [%expr [%e mapper.expr mapper v] :: [%e accum]]
+    | notAList ->
+        Exact (mapper.expr mapper notAList)
+  in
+  transformChildren_ theList [%expr []]
 
-(* unlike reason-react ppx, we don't transform to array *)
-let transformChildrenIfList ~loc:_ ~mapper:_ theList = theList
+(* unlike reason-react ppx, we don't transform to array, just apply mapper to children *)
+let transformChildrenIfList ~loc ~mapper theList =
+  let rec transformChildren_ theList accum =
+    match theList with
+    | [%expr []] ->
+        revAstList ~loc accum
+    | [%expr [%e? v] :: [%e? acc]] ->
+        transformChildren_ acc [%expr [%e mapper.expr mapper v] :: [%e accum]]
+    | notAList ->
+        mapper.expr mapper notAList
+  in
+  transformChildren_ theList [%expr []]
 
 let extractChildren ?(removeLastPositionUnit = false) ~loc propsAndChildren =
   let rec allButLast_ lst acc =
@@ -418,7 +445,7 @@ let jsxMapper () =
       @ ( match childrenExpr with
         | Exact children ->
             [(labelled "children", children)]
-        | ListLiteral {pexp_desc= Pexp_array list} when list = [] ->
+        | ListLiteral [%expr []] ->
             []
         | ListLiteral expression ->
             (* this is a hack to support react components that introspect into their children *)
@@ -552,7 +579,7 @@ let jsxMapper () =
                 Location.prerr_warning pattern.ppat_loc
                   (Preprocessor
                      (Printf.sprintf
-                        "ReasonReact: optional argument annotations must have \
+                        "jsoo-react: optional argument annotations must have \
                          explicit `option`. Did you mean `option(%s)=?`?"
                         currentType)) )
           | _ ->
@@ -592,7 +619,7 @@ let jsxMapper () =
         (list, Some txt)
     | Pexp_fun (Nolabel, _, pattern, _expression) ->
         Location.raise_errorf ~loc:pattern.ppat_loc
-          "ReasonReact: react.component refs only support plain arguments and \
+          "jsoo-react: react.component refs only support plain arguments and \
            type annotations."
     | _ ->
         (list, None)
@@ -821,7 +848,7 @@ let jsxMapper () =
                       ((fun a -> a), false, unerasableIgnoreExp expression)
                     else
                       Location.raise_errorf ~loc:pattern.ppat_loc
-                        "ReasonReact: props need to be labelled arguments.\n\
+                        "jsoo-react: props need to be labelled arguments.\n\
                         \  If you are working with refs be sure to wrap with \
                          React.forwardRef.\n\
                         \  If your component doesn't have any props use () or \
@@ -901,7 +928,7 @@ let jsxMapper () =
                   , Pat.var {txt= "key"; loc= emptyLoc}
                   , "ref"
                   , emptyLoc
-                  , None )
+                  , Some (refType emptyLoc) )
                   :: namedArgListWithKeyAndRef
               | None ->
                   namedArgListWithKeyAndRef
