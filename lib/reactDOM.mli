@@ -617,7 +617,9 @@ val domProps :
 
 val createDOMElementVariadic :
      string
-  -> ?props:domProps
+  -> props:
+       domProps
+       (* props has to be non-optional as otherwise gen_js_api will put an empty list and React will break *)
   -> (React.element list[@js.variadic])
   -> React.element
   [@@js.global "__LIB__react.createElement"]

@@ -22,7 +22,6 @@
   ;; General system dependencies
   (dune (and (>= 2) (< 3)))
   (ocaml (and (>= 4.10.0) (< 4.11.0)))
-  (reason (and (>= 3.6.0) (< 3.7.0)))
 
   (js_of_ocaml (and (>= 3.7.0) (< 3.8.0)))
   (gen_js_api (and (>= 1.0.6) (< 1.1.0)))
@@ -35,6 +34,7 @@
 
   ;; Dev dependencies
   (ocamlformat :dev)
+  (reason :dev)
 
   ;; Example dependencies
   (ppx_blob :dev)

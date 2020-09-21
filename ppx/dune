@@ -1,6 +1,7 @@
 (env
-  (dev
-    (flags (:standard -w -9))))
+ (dev
+  (flags
+   (:standard -w -9))))
 
 (library
  (name jsoo_react_ppx)

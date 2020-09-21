@@ -520,6 +520,8 @@ let jsxMapper () =
       | [_justTheUnitArgumentAtEnd] ->
           [ (* "div" *)
             (nolabel, componentNameExpr)
+          ; (* ReactDOM.props(~className=blabla, ~foo=bar, ()) *)
+            (labelled "props", [%expr ReactDOM.domProps ()])
           ; (* [|moreCreateElementCallsHere|] *)
             (nolabel, childrenExpr) ]
       | nonEmptyProps ->

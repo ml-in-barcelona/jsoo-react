@@ -86,6 +86,51 @@ let lowerWithChildAndProps = foo => <lower a=1 b="1"> foo </lower>;
 
 let lowerWithChildren = (foo, bar) => <lower> foo bar </lower>;
 
+let lowerWithChildrenComplex =
+  <div className="flex-container">
+    <div className="sidebar">
+      <h2 className="title"> {"jsoo-react" |> s} </h2>
+      <nav className="menu">
+        <ul>
+          {examples
+           |> List.map(e => {
+                <li key={e.path}>
+                  <a
+                    href={e.path}
+                    onClick={event => {
+                      ReactEvent.Mouse.preventDefault(event);
+                      ReactRouter.push(e.path);
+                    }}>
+                    {e.title |> s}
+                  </a>
+                </li>
+              })
+           |> React.list}
+        </ul>
+      </nav>
+    </div>
+  </div>;
+
+let lowerWithChildrenComplex2 =
+  <div className="content-wrapper">
+    <div className="content">
+      {let example =
+         examples
+         |> List.find_opt(e => {
+              e.path
+              == (List.nth_opt(url.path, 0) |> Option.value(~default=""))
+            })
+         |> Option.value(~default=firstExample);
+       <div>
+         <h2> {example.title |> s} </h2>
+         <h4> {"Rendered component" |> s} </h4>
+         {example.element}
+         <h4> {"Code" |> s} </h4>
+         {example.code}
+       </div>}
+    </div>
+  </div>;
+
 let nestedElement = <Foo.Bar a=1 b="1" />;
 
 // TODO: fix this test (are these components deprecated??)
