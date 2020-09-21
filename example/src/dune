@@ -1,16 +1,12 @@
-(executable
- (name App)
- (libraries js_of_ocaml-lwt jsoo-react-esy)
+(executables
+ (names App)
+ (modes js)
+ (libraries gen_js_api lwt js_of_ocaml-lwt jsoo_react_lib)
  (js_of_ocaml
   (javascript_files static-requires.js))
  (preprocess
-  (pps gen_js_api.ppx ppx_blob jsoo-react-ppx)))
+  (pps gen_js_api.ppx ppx_blob js_of_ocaml-ppx jsoo_react_ppx)))
 
 (alias
  (name default)
- (deps
-  (alias_rec install)
-  App.bc.js
-  static/primitive.css
-  static/prism.css
-  static/prism.js))
+ (deps App.js static/primitive.css static/prism.css static/prism.js))

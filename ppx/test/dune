@@ -1,6 +1,6 @@
 (executable
  (name main)
- (libraries jsoo-react-ppx))
+ (libraries reason ocaml-migrate-parsetree jsoo_react_ppx))
 
 (rule
  (targets pp.result)
@@ -8,7 +8,15 @@
  (action
   (run ./main.exe --impl %{deps} -o %{targets})))
 
-(alias
- (name runtest)
+(rule
+ (targets test.ml)
+ (deps input.re)
+ (action
+  (with-stdout-to
+   %{targets}
+   (run refmt --parse=re --print=ml %{deps}))))
+
+(rule
+ (alias runtest)
  (action
   (diff pp.expected pp.result)))

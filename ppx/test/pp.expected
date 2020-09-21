@@ -9,30 +9,34 @@ module type Foo  =
                 ?key:string ->
                   unit ->
                     <
-                      title: string Js_of_ocaml.Js.readonly_prop  ;defaultTitle: 
-                                                                    string
+                      title: string option Js_of_ocaml.Js.readonly_prop  ;
+                      defaultTitle: string option
+                                      Js_of_ocaml.Js.readonly_prop  ;
+                      meta: metaField array option
+                              Js_of_ocaml.Js.readonly_prop  ;htmlAttributes: 
+                                                               htmlAttribute
+                                                                 array option
+                                                                 Js_of_ocaml.Js.readonly_prop
+                                                                ;children: 
+                                                                   React.element
                                                                     Js_of_ocaml.Js.readonly_prop
-                                                                     ;
-                      meta: metaField array Js_of_ocaml.Js.readonly_prop  ;
-                      htmlAttributes: htmlAttribute array
-                                        Js_of_ocaml.Js.readonly_prop  ;
-                      children: React.element Js_of_ocaml.Js.readonly_prop  
-                      >  Js_of_ocaml.Js.t
+                                                                     > 
+                      Js_of_ocaml.Js.t
     val make :
       (<
-         title: string Js_of_ocaml.Js.readonly_prop  ;defaultTitle: string
+         title: string option Js_of_ocaml.Js.readonly_prop  ;defaultTitle: 
+                                                               string option
+                                                                 Js_of_ocaml.Js.readonly_prop
+                                                                ;meta: 
+                                                                   metaField
+                                                                    array
+                                                                    option
                                                                     Js_of_ocaml.Js.readonly_prop
-                                                         ;meta: metaField
-                                                                  array
-                                                                  Js_of_ocaml.Js.readonly_prop
-                                                             ;htmlAttributes: 
-                                                                htmlAttribute
-                                                                  array
-                                                                  Js_of_ocaml.Js.readonly_prop
-                                                                 ;children: 
-                                                                    React.element
+                                                                    ;
+         htmlAttributes: htmlAttribute array option
+                           Js_of_ocaml.Js.readonly_prop  ;children: React.element
                                                                     Js_of_ocaml.Js.readonly_prop
-                                                                      > 
+                                                              > 
          Js_of_ocaml.Js.t,
         React.element) React.componentLike
   end
@@ -63,29 +67,27 @@ let makeProps
                 |> (List.filter_map (fun x -> x)))
                |> Array.of_list)
 let make =
+  ((fun ?(name= "") ->
+      ReactDOM.createElement ReasonReact.fragment
+        [ReactDOM.createDOMElementVariadic "div"
+           ~props:(ReactDOM.domProps ()) [React.string ("Hello " ^ name)];
+        React.createElement Hello.make
+          (Hello.makeProps ~one:"1"
+             ~children:(React.string ("Hello " ^ name)) ())])
+  [@warning "-16"])
+let make =
   let Test
     (Props :
       < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
     =
-    let name =
-      match fun (type res) -> fun (type t2) ->
-              fun (t2 : t2 Js_of_ocaml.Js.t) ->
-                fun (_ : t2 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get t2 "name" : res)
-              (Props : < .. >  Js_of_ocaml.Js.t)
-              (fun ((x)[@merlin.loc ]) -> ((x#name)[@merlin.loc ]))
-      with
-      | ((Some (name))[@explicit_arity ]) -> name
-      | None -> "" in
-    React.createFragment
-      [ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
-         [React.string ("Hello " ^ name)];
-      React.createElement Hello.make
-        (Hello.makeProps ~one:"1" ~children:(React.string ("Hello " ^ name))
-           ())] in
-  let _ =
-    Js_of_ocaml.Js.Unsafe.set Test "displayName"
-      (Js_of_ocaml.Js.string "Test") in
+    make
+      ?name:((fun (type res) ->
+                fun (type a0) ->
+                  fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                    fun
+                      (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                      -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res))
+               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
   Test
 let makeProps
   : a:'a ->
@@ -109,12 +111,20 @@ let makeProps
                          ("key",
                            (inject
                               ((Option.map Js_of_ocaml.Js.string key) |>
-                                 Js_of_ocaml.Js.Opt.option)))) key);((
-                   Some (("b", (inject b))))
-                   [@explicit_arity ]);((Some (("a", (inject a))))
-                   [@explicit_arity ])|] |> Array.to_list)
+                                 Js_of_ocaml.Js.Opt.option)))) key);(
+                   Some ("b", (inject b)));(Some ("a", (inject a)))|] |>
+                   Array.to_list)
                   |> (List.filter_map (fun x -> x)))
                  |> Array.of_list)
+let make =
+  ((fun ~a ->
+      ((fun ~b ->
+          fun _ ->
+            print_endline "This function should be named `Test`";
+            ReactDOM.createDOMElementVariadic "div"
+              ~props:(ReactDOM.domProps ()) [])
+      [@warning "-16"]))
+  [@warning "-16"])
 let make =
   let Test
     (Props :
@@ -124,25 +134,19 @@ let make =
                                                  > 
         Js_of_ocaml.Js.t)
     =
-    let a =
-      fun (type res) -> fun (type t1) ->
-        fun (t1 : t1 Js_of_ocaml.Js.t) ->
-          fun (_ : t1 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-            (Js_of_ocaml.Js.Unsafe.get t1 "a" : res)
-        (Props : < .. >  Js_of_ocaml.Js.t)
-        (fun ((x)[@merlin.loc ]) -> ((x#a)[@merlin.loc ])) in
-    let b =
-      fun (type res) -> fun (type t0) ->
-        fun (t0 : t0 Js_of_ocaml.Js.t) ->
-          fun (_ : t0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-            (Js_of_ocaml.Js.Unsafe.get t0 "b" : res)
-        (Props : < .. >  Js_of_ocaml.Js.t)
-        (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
-    print_endline "This function should be named `Test`";
-    ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ()) [] in
-  let _ =
-    Js_of_ocaml.Js.Unsafe.set Test "displayName"
-      (Js_of_ocaml.Js.string "Test") in
+    make
+      ~b:((fun (type res) ->
+             fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res))
+            (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
+      ~a:((fun (type res) ->
+             fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
+            (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
   Test
 module External =
   struct
@@ -168,10 +172,9 @@ module External =
                              ("key",
                                (inject
                                   ((Option.map Js_of_ocaml.Js.string key) |>
-                                     Js_of_ocaml.Js.Opt.option)))) key);((
-                       Some (("b", (inject b))))
-                       [@explicit_arity ]);((Some (("a", (inject a))))
-                       [@explicit_arity ])|] |> Array.to_list)
+                                     Js_of_ocaml.Js.Opt.option)))) key);(
+                       Some ("b", (inject b)));(Some ("a", (inject a)))|] |>
+                       Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list)
     external component :
@@ -206,12 +209,20 @@ module Bar =
                              ("key",
                                (inject
                                   ((Option.map Js_of_ocaml.Js.string key) |>
-                                     Js_of_ocaml.Js.Opt.option)))) key);((
-                       Some (("b", (inject b))))
-                       [@explicit_arity ]);((Some (("a", (inject a))))
-                       [@explicit_arity ])|] |> Array.to_list)
+                                     Js_of_ocaml.Js.Opt.option)))) key);(
+                       Some ("b", (inject b)));(Some ("a", (inject a)))|] |>
+                       Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list)
+    let make =
+      ((fun ~a ->
+          ((fun ~b ->
+              fun _ ->
+                print_endline "This function should be named `Test$Bar`";
+                ReactDOM.createDOMElementVariadic "div"
+                  ~props:(ReactDOM.domProps ()) [])
+          [@warning "-16"]))
+      [@warning "-16"])
     let make =
       let Test$Bar
         (Props :
@@ -221,26 +232,23 @@ module Bar =
                                                      > 
             Js_of_ocaml.Js.t)
         =
-        let a =
-          fun (type res) -> fun (type t6) ->
-            fun (t6 : t6 Js_of_ocaml.Js.t) ->
-              fun (_ : t6 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get t6 "a" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t)
-            (fun ((x)[@merlin.loc ]) -> ((x#a)[@merlin.loc ])) in
-        let b =
-          fun (type res) -> fun (type t5) ->
-            fun (t5 : t5 Js_of_ocaml.Js.t) ->
-              fun (_ : t5 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get t5 "b" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t)
-            (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
-        print_endline "This function should be named `Test$Bar`";
-        ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
-          [] in
-      let _ =
-        Js_of_ocaml.Js.Unsafe.set Test$Bar "displayName"
-          (Js_of_ocaml.Js.string "Test$Bar") in
+        make
+          ~b:((fun (type res) ->
+                 fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res))
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
+          ~a:((fun (type res) ->
+                 fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
       Test$Bar
     let componentProps
       : a:'a ->
@@ -264,12 +272,21 @@ module Bar =
                              ("key",
                                (inject
                                   ((Option.map Js_of_ocaml.Js.string key) |>
-                                     Js_of_ocaml.Js.Opt.option)))) key);((
-                       Some (("b", (inject b))))
-                       [@explicit_arity ]);((Some (("a", (inject a))))
-                       [@explicit_arity ])|] |> Array.to_list)
+                                     Js_of_ocaml.Js.Opt.option)))) key);(
+                       Some ("b", (inject b)));(Some ("a", (inject a)))|] |>
+                       Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list)
+    let component =
+      ((fun ~a ->
+          ((fun ~b ->
+              fun _ ->
+                print_endline
+                  "This function should be named `Test$Bar$component`";
+                ReactDOM.createDOMElementVariadic "div"
+                  ~props:(ReactDOM.domProps ()) [])
+          [@warning "-16"]))
+      [@warning "-16"])
     let component =
       let Test$Bar$component
         (Props :
@@ -279,26 +296,23 @@ module Bar =
                                                      > 
             Js_of_ocaml.Js.t)
         =
-        let a =
-          fun (type res) -> fun (type t4) ->
-            fun (t4 : t4 Js_of_ocaml.Js.t) ->
-              fun (_ : t4 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get t4 "a" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t)
-            (fun ((x)[@merlin.loc ]) -> ((x#a)[@merlin.loc ])) in
-        let b =
-          fun (type res) -> fun (type t3) ->
-            fun (t3 : t3 Js_of_ocaml.Js.t) ->
-              fun (_ : t3 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get t3 "b" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t)
-            (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
-        print_endline "This function should be named `Test$Bar$component`";
-        ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
-          [] in
-      let _ =
-        Js_of_ocaml.Js.Unsafe.set Test$Bar$component "displayName"
-          (Js_of_ocaml.Js.string "Test$Bar$component") in
+        component
+          ~b:((fun (type res) ->
+                 fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res))
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
+          ~a:((fun (type res) ->
+                 fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
       Test$Bar$component
   end
 module type X_int  = sig val x : int end
@@ -327,12 +341,20 @@ module Func(M:X_int) =
                              ("key",
                                (inject
                                   ((Option.map Js_of_ocaml.Js.string key) |>
-                                     Js_of_ocaml.Js.Opt.option)))) key);((
-                       Some (("b", (inject b))))
-                       [@explicit_arity ]);((Some (("a", (inject a))))
-                       [@explicit_arity ])|] |> Array.to_list)
+                                     Js_of_ocaml.Js.Opt.option)))) key);(
+                       Some ("b", (inject b)));(Some ("a", (inject a)))|] |>
+                       Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list)
+    let make =
+      ((fun ~a ->
+          ((fun ~b ->
+              fun _ ->
+                print_endline "This function should be named `Test$Func`" M.x;
+                ReactDOM.createDOMElementVariadic "div"
+                  ~props:(ReactDOM.domProps ()) [])
+          [@warning "-16"]))
+      [@warning "-16"])
     let make =
       let Test$Func
         (Props :
@@ -342,26 +364,23 @@ module Func(M:X_int) =
                                                      > 
             Js_of_ocaml.Js.t)
         =
-        let a =
-          fun (type res) -> fun (type t8) ->
-            fun (t8 : t8 Js_of_ocaml.Js.t) ->
-              fun (_ : t8 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get t8 "a" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t)
-            (fun ((x)[@merlin.loc ]) -> ((x#a)[@merlin.loc ])) in
-        let b =
-          fun (type res) -> fun (type t7) ->
-            fun (t7 : t7 Js_of_ocaml.Js.t) ->
-              fun (_ : t7 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get t7 "b" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t)
-            (fun ((x)[@merlin.loc ]) -> ((x#b)[@merlin.loc ])) in
-        print_endline "This function should be named `Test$Func`" M.x;
-        ReactDOM.createDOMElementVariadic "div" ~props:(ReactDOM.domProps ())
-          [] in
-      let _ =
-        Js_of_ocaml.Js.Unsafe.set Test$Func "displayName"
-          (Js_of_ocaml.Js.string "Test$Func") in
+        make
+          ~b:((fun (type res) ->
+                 fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res))
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
+          ~a:((fun (type res) ->
+                 fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
       Test$Func
   end
 module ForwardRef =
@@ -385,21 +404,27 @@ module ForwardRef =
                     |> (List.filter_map (fun x -> x)))
                    |> Array.of_list)
     let make =
+      ((fun theRef ->
+          ReactDOM.createDOMElementVariadic "div"
+            ~props:(ReactDOM.domProps ~ref:theRef ())
+            [React.string "ForwardRef"])
+      [@warning "-16"])
+    let make =
       React.forwardRef
         (let Test$ForwardRef (Props : <  >  Js_of_ocaml.Js.t) theRef =
-           ReactDOM.createDOMElementVariadic "div"
-             ~props:(ReactDOM.domProps ~ref:theRef ())
-             [React.string "ForwardRef"] in
-         let _ =
-           Js_of_ocaml.Js.Unsafe.set Test$ForwardRef "displayName"
-             (Js_of_ocaml.Js.string "Test$ForwardRef") in
+           make theRef in
          Test$ForwardRef)
   end
-let fragment foo = ((React.createFragment (([foo])[@bla ]))[@bla ])
-let polyChildrenFragment foo bar = React.createFragment [foo; bar]
+let fragment foo = ((ReactDOM.createElement ReasonReact.fragment [foo])
+  [@bla ])
+let polyChildrenFragment foo bar =
+  ReactDOM.createElement ReasonReact.fragment [foo; bar]
 let nestedFragment foo bar baz =
-  React.createFragment [foo; React.createFragment [bar; baz]]
+  ReactDOM.createElement ReasonReact.fragment
+    [foo; ReactDOM.createElement ReasonReact.fragment [bar; baz]]
 let upper = React.createElement Upper.make (Upper.makeProps ())
+let upperWithProp =
+  React.createElement Upper.make (Upper.makeProps ~count ())
 let upperWithChild foo =
   React.createElement Upper.make (Upper.makeProps ~children:foo ())
 let upperWithChildren foo bar =
@@ -413,7 +438,53 @@ let lowerWithChildAndProps foo =
 let lowerWithChildren foo bar =
   ReactDOM.createDOMElementVariadic "lower" ~props:(ReactDOM.domProps ())
     [foo; bar]
+let lowerWithChildrenComplex =
+  ReactDOM.createDOMElementVariadic "div"
+    ~props:(ReactDOM.domProps ~className:"flex-container" ())
+    [ReactDOM.createDOMElementVariadic "div"
+       ~props:(ReactDOM.domProps ~className:"sidebar" ())
+       [ReactDOM.createDOMElementVariadic "h2"
+          ~props:(ReactDOM.domProps ~className:"title" ())
+          ["jsoo-react" |> s];
+       ReactDOM.createDOMElementVariadic "nav"
+         ~props:(ReactDOM.domProps ~className:"menu" ())
+         [ReactDOM.createDOMElementVariadic "ul"
+            ~props:(ReactDOM.domProps ())
+            [(examples |>
+                (List.map
+                   (fun e ->
+                      ReactDOM.createDOMElementVariadic "li"
+                        ~props:(ReactDOM.domProps ~key:(e.path) ())
+                        [ReactDOM.createDOMElementVariadic "a"
+                           ~props:(ReactDOM.domProps ~href:(e.path)
+                                     ~onClick:(fun event ->
+                                                 ReactEvent.Mouse.preventDefault
+                                                   event;
+                                                 ReactRouter.push e.path) ())
+                           [e.title |> s]])))
+               |> React.list]]]]
+let lowerWithChildrenComplex2 =
+  ReactDOM.createDOMElementVariadic "div"
+    ~props:(ReactDOM.domProps ~className:"content-wrapper" ())
+    [ReactDOM.createDOMElementVariadic "div"
+       ~props:(ReactDOM.domProps ~className:"content" ())
+       [(let example =
+           (examples |>
+              (List.find_opt
+                 (fun e ->
+                    e.path =
+                      ((List.nth_opt url.path 0) |>
+                         (Option.value ~default:"")))))
+             |> (Option.value ~default:firstExample) in
+         ReactDOM.createDOMElementVariadic "div"
+           ~props:(ReactDOM.domProps ())
+           [ReactDOM.createDOMElementVariadic "h2"
+              ~props:(ReactDOM.domProps ()) [example.title |> s];
+           ReactDOM.createDOMElementVariadic "h4"
+             ~props:(ReactDOM.domProps ()) ["Rendered component" |> s];
+           example.element;
+           ReactDOM.createDOMElementVariadic "h4"
+             ~props:(ReactDOM.domProps ()) ["Code" |> s];
+           example.code])]]
 let nestedElement =
   React.createElement Foo.Bar.make (Foo.Bar.makeProps ~a:1 ~b:"1" ())
-let nestedElementCustomName =
-  React.createElement Foo.component (Foo.componentProps ~a:1 ~b:"1" ())
