@@ -1,28 +1,3 @@
-module Component : sig
-  [@@@js.stop]
-
-  type 'a t
-
-  [@@@js.start]
-
-  [@@@js.implem
-  type 'a t
-
-  let t_to_js to_js tbl =
-    let obj = Ojs.empty_obj () in
-    let set k v = Ojs.set obj k (to_js v) in
-    Hashtbl.iter set tbl ; obj
-
-  let t_of_js of_js obj =
-    let tbl = Hashtbl.create 10 in
-    let set k =
-      let v = of_js (Ojs.get obj k) in
-      Hashtbl.add tbl k v
-    in
-    Ojs.iter_properties obj set ;
-    tbl]
-end
-
 [@@@js.stop]
 
 type element
@@ -109,9 +84,7 @@ let option_undefined_of_js f x = if equals x undefined then None else Some (f x)
 let option_undefined_to_js f = function Some x -> f x | None -> undefined]
 
 val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
-  [@@js.custom
-    val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
-      [@@js.global "__LIB__react.useEffect"]]
+  [@@js.global "__LIB__react.useEffect"]
 
 val useEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
