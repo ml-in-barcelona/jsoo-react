@@ -14,6 +14,7 @@ depends: [
   "ocaml-migrate-parsetree" {>= "1.7.3" & < "2.0.0"}
   "webtest" {with-test}
   "webtest-js" {with-test}
+  "js_of_ocaml-ppx" {with-test}
   "conf-npm" {with-test}
   "ocamlformat" {dev}
   "reason" {dev}
