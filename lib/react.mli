@@ -1,23 +1,16 @@
-[@@@js.stop]
-
-type element
-
-val element_to_js : element -> Ojs.t
+type element = private Ojs.t
 
 val element_of_js : Ojs.t -> element
 
-[@@@js.start]
-
-[@@@js.implem
-type element = Ojs.t
-
-external element_to_js : element -> Ojs.t = "%identity"
-
-external element_of_js : Ojs.t -> element = "%identity"]
+val element_to_js : element -> Ojs.t
 
 val null : element [@@js.custom let null = Ojs.null]
 
 val string : string -> element [@@js.cast]
+
+val int : int -> element [@@js.cast]
+
+val float : float -> element [@@js.cast]
 
 val list : element list -> element [@@js.cast]
 
@@ -88,21 +81,149 @@ val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
 
 val useEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
-    val useEffect0Internal :
+    val useEffectInternal :
       (unit -> (unit -> unit) option_undefined) -> Ojs.t array -> unit
       [@@js.global "__LIB__react.useEffect"]
 
-    let useEffect0 effect = useEffect0Internal effect [||]]
+    let useEffect0 effect = useEffectInternal effect [||]]
 
 val useEffect1 : (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
   [@@js.custom
-    val useEffect1Internal :
+    external unsafe_cast : 'a array -> Ojs.t array = "%identity"
+
+    let useEffect1 effect dep = useEffectInternal effect (unsafe_cast dep)]
+
+val useEffect2 : (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafe_cast : 'a * 'b -> Ojs.t array = "%identity"
+
+    let useEffect2 effect dep = useEffectInternal effect (unsafe_cast dep)]
+
+val useEffect3 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafe_cast : 'a * 'b * 'c -> Ojs.t array = "%identity"
+
+    let useEffect3 effect dep = useEffectInternal effect (unsafe_cast dep)]
+
+val useEffect4 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafe_cast : 'a * 'b * 'c * 'd -> Ojs.t array = "%identity"
+
+    let useEffect4 effect dep = useEffectInternal effect (unsafe_cast dep)]
+
+val useEffect5 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafe_cast : 'a * 'b * 'c * 'd * 'e -> Ojs.t array = "%identity"
+
+    let useEffect5 effect dep = useEffectInternal effect (unsafe_cast dep)]
+
+val useEffect6 :
+     (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c * 'd * 'e * 'f
+  -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafe_cast : 'a * 'b * 'c * 'd * 'e * 'f -> Ojs.t array
+      = "%identity"
+
+    let useEffect6 effect dep = useEffectInternal effect (unsafe_cast dep)]
+
+val useEffect7 :
+     (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
+  -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafe_cast : 'a * 'b * 'c * 'd * 'e * 'f * 'g -> Ojs.t array
+      = "%identity"
+
+    let useEffect7 effect dep = useEffectInternal effect (unsafe_cast dep)]
+
+val useLayoutEffect : (unit -> (unit -> unit) option_undefined) -> unit
+  [@@js.global "__LIB__react.useLayoutEffect"]
+
+val useLayoutEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
+  [@@js.custom
+    val useLayoutEffectInternal :
       (unit -> (unit -> unit) option_undefined) -> Ojs.t array -> unit
-      [@@js.global "__LIB__react.useEffect"]
+      [@@js.global "__LIB__react.useLayoutEffect"]
 
-    external unsafe_cast : 'a array -> 'b array = "%identity"
+    let useLayoutEffect0 effect = useLayoutEffectInternal effect [||]]
 
-    let useEffect1 effect dep = useEffect1Internal effect (unsafe_cast dep)]
+val useLayoutEffect1 :
+  (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
+  [@@js.custom
+    external unsafe_cast : 'a array -> Ojs.t array = "%identity"
+
+    let useLayoutEffect1 effect dep =
+      useLayoutEffectInternal effect (unsafe_cast dep)]
+
+val useLayoutEffect2 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafe_cast : 'a * 'b -> Ojs.t array = "%identity"
+
+    let useLayoutEffect2 effect dep =
+      useLayoutEffectInternal effect (unsafe_cast dep)]
+
+val useLayoutEffect3 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafe_cast : 'a * 'b * 'c -> Ojs.t array = "%identity"
+
+    let useLayoutEffect3 effect dep =
+      useLayoutEffectInternal effect (unsafe_cast dep)]
+
+val useLayoutEffect4 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafe_cast : 'a * 'b * 'c * 'd -> Ojs.t array = "%identity"
+
+    let useLayoutEffect4 effect dep =
+      useLayoutEffectInternal effect (unsafe_cast dep)]
+
+val useLayoutEffect5 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafe_cast : 'a * 'b * 'c * 'd * 'e -> Ojs.t array = "%identity"
+
+    let useLayoutEffect5 effect dep =
+      useLayoutEffectInternal effect (unsafe_cast dep)]
+
+val useLayoutEffect6 :
+     (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c * 'd * 'e * 'f
+  -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafe_cast : 'a * 'b * 'c * 'd * 'e * 'f -> Ojs.t array
+      = "%identity"
+
+    let useLayoutEffect6 effect dep =
+      useLayoutEffectInternal effect (unsafe_cast dep)]
+
+val useLayoutEffect7 :
+     (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
+  -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafe_cast : 'a * 'b * 'c * 'd * 'e * 'f * 'g -> Ojs.t array
+      = "%identity"
+
+    let useLayoutEffect7 effect dep =
+      useLayoutEffectInternal effect (unsafe_cast dep)]
 
 val useState : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
   [@@js.custom
@@ -209,7 +330,7 @@ val createFragment : element list -> element
  module Children = {
    external map: (element, element => element) => element = "Children_map";
    external forEach: (element, element => unit) => unit = "Children_forEach";
-   external count: element => int = "Children_fffcount";
+   external count: element => int = "Children_count";
    external only: element => element = "Children_only";
    external toArray: element => array(element) = "Children_toArray";
  };
@@ -285,83 +406,6 @@ let useState: (unit => 'state) => ('state, ('state => 'state) => unit);
 [@js.global "__LIB__react"] 
 let useReducer: (('state, 'action) => 'state, 'state) => ('state, 'action => unit);
 
-[@js.global "__LIB__react"] 
-let useEffect: (unit => option(unit => unit)) => unit;
-
-[@js.implem
-module Array: {
-  type t('a) = array('a);
-  let t_to_js: ('a => Ojs.t, t('a)) => Ojs.t;
-  let t_of_js: (Ojs.t => 'a, Ojs.t) => t('a);
-} = {
-  type t('a) = array('a);
-  let t_to_js = (ml2js, l) => {
-    let o = Ojs.empty_obj();
-    Array.iter(((k, v)) => Ojs.set(o, k, ml2js(v)), l);
-    o;
-  };
-  let t_of_js = (js2ml, o) => {
-    let l = ref([]);
-    Ojs.iter_properties(o, k => l := [(k, js2ml(Ojs.get(o, k))), ...l^]);
-    l^;
-  };
-};]
-
-[@js.custom let useEffect0 = cb => useEffect1(cb, [||]);]
-let useEffect0: (unit => option(unit => unit)) => unit;*)
-
-(*
- external useEffect2: (unit => option(unit => unit), ('a, 'b)) => unit =
-   "useEffect";
-
- external useEffect3: (unit => option(unit => unit), ('a, 'b, 'c)) => unit =
-   "useEffect";
-
- external useEffect4: (unit => option(unit => unit), ('a, 'b, 'c, 'd)) => unit =
-   "useEffect";
- external useEffect5:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e)) => unit =
-   "useEffect";
-
- external useEffect6:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f)) => unit =
-   "useEffect";
-
- external useEffect7:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f, 'g)) => unit =
-   "useEffect";
-
- external useLayoutEffect: (unit => option(unit => unit)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect0:
-   (unit => option(unit => unit), array(unit)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect1: (unit => option(unit => unit), array('a)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect2: (unit => option(unit => unit), ('a, 'b)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect3:
-   (unit => option(unit => unit), ('a, 'b, 'c)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect4:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd)) => unit =
-   "useLayoutEffect";
- external useLayoutEffect5:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect6:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect7:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f, 'g)) => unit =
-   "useLayoutEffect";
 
  [@bs.module "react"]
  external useReducerWithMapState:

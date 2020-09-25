@@ -8,12 +8,12 @@ val make : html:string -> t [@@js.new "__LIB__jsdom"]
 
 [@@@js.stop]
 
-type window = Js_of_ocaml.Dom_html.window
+type window = Js_of_ocaml.Dom_html.window Js_of_ocaml.Js.t
 
 [@@@js.start]
 
 [@@@js.implem
-type window = Js_of_ocaml.Dom_html.window
+type window = Js_of_ocaml.Dom_html.window Js_of_ocaml.Js.t
 
 external window_of_js : t -> window = "%identity"
 
