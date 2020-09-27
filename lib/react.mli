@@ -1,23 +1,16 @@
-[@@@js.stop]
-
-type element
-
-val element_to_js : element -> Ojs.t
+type element = private Ojs.t
 
 val element_of_js : Ojs.t -> element
 
-[@@@js.start]
-
-[@@@js.implem
-type element = Ojs.t
-
-external element_to_js : element -> Ojs.t = "%identity"
-
-external element_of_js : Ojs.t -> element = "%identity"]
+val element_to_js : element -> Ojs.t
 
 val null : element [@@js.custom let null = Ojs.null]
 
 val string : string -> element [@@js.cast]
+
+val int : int -> element [@@js.cast]
+
+val float : float -> element [@@js.cast]
 
 val list : element list -> element [@@js.cast]
 
@@ -75,9 +68,7 @@ type 'a option_undefined = 'a option
 
 external equals : Ojs.t -> Ojs.t -> bool = "caml_js_equals"
 
-external pure_js_expr : string -> Ojs.t = "caml_pure_js_expr"
-
-let undefined = pure_js_expr "undefined"
+let undefined = Ojs.variable "undefined"
 
 let option_undefined_of_js f x = if equals x undefined then None else Some (f x)
 
@@ -88,21 +79,251 @@ val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
 
 val useEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
-    val useEffect0Internal :
+    val useEffectInternal :
       (unit -> (unit -> unit) option_undefined) -> Ojs.t array -> unit
       [@@js.global "__LIB__react.useEffect"]
 
-    let useEffect0 effect = useEffect0Internal effect [||]]
+    let useEffect0 effect = useEffectInternal effect [||]]
 
 val useEffect1 : (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
   [@@js.custom
-    val useEffect1Internal :
+    external unsafe_cast_arr : 'a array -> Ojs.t array = "%identity"
+
+    let useEffect1 effect dep = useEffectInternal effect (unsafe_cast_arr dep)]
+
+val useEffect2 : (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafeCastTup2 : 'a * 'b -> Ojs.t array = "%identity"
+
+    let useEffect2 effect dep = useEffectInternal effect (unsafeCastTup2 dep)]
+
+val useEffect3 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafeCastTup3 : 'a * 'b * 'c -> Ojs.t array = "%identity"
+
+    let useEffect3 effect dep = useEffectInternal effect (unsafeCastTup3 dep)]
+
+val useEffect4 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafeCastTup4 : 'a * 'b * 'c * 'd -> Ojs.t array = "%identity"
+
+    let useEffect4 effect dep = useEffectInternal effect (unsafeCastTup4 dep)]
+
+val useEffect5 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafeCastTup5 : 'a * 'b * 'c * 'd * 'e -> Ojs.t array
+      = "%identity"
+
+    let useEffect5 effect dep = useEffectInternal effect (unsafeCastTup5 dep)]
+
+val useEffect6 :
+     (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c * 'd * 'e * 'f
+  -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafeCastTup6 : 'a * 'b * 'c * 'd * 'e * 'f -> Ojs.t array
+      = "%identity"
+
+    let useEffect6 effect dep = useEffectInternal effect (unsafeCastTup6 dep)]
+
+val useEffect7 :
+     (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
+  -> unit
+  [@@js.custom
+    (* relies on tuples and arrays having the same runtime representation *)
+    external unsafeCastTup7 : 'a * 'b * 'c * 'd * 'e * 'f * 'g -> Ojs.t array
+      = "%identity"
+
+    let useEffect7 effect dep = useEffectInternal effect (unsafeCastTup7 dep)]
+
+val useLayoutEffect : (unit -> (unit -> unit) option_undefined) -> unit
+  [@@js.global "__LIB__react.useLayoutEffect"]
+
+val useLayoutEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
+  [@@js.custom
+    val useLayoutEffectInternal :
       (unit -> (unit -> unit) option_undefined) -> Ojs.t array -> unit
-      [@@js.global "__LIB__react.useEffect"]
+      [@@js.global "__LIB__react.useLayoutEffect"]
 
-    external unsafe_cast : 'a array -> 'b array = "%identity"
+    let useLayoutEffect0 effect = useLayoutEffectInternal effect [||]]
 
-    let useEffect1 effect dep = useEffect1Internal effect (unsafe_cast dep)]
+val useLayoutEffect1 :
+  (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
+  [@@js.custom
+    let useLayoutEffect1 effect dep =
+      useLayoutEffectInternal effect (unsafe_cast_arr dep)]
+
+val useLayoutEffect2 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
+  [@@js.custom
+    let useLayoutEffect2 effect dep =
+      useLayoutEffectInternal effect (unsafeCastTup2 dep)]
+
+val useLayoutEffect3 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
+  [@@js.custom
+    let useLayoutEffect3 effect dep =
+      useLayoutEffectInternal effect (unsafeCastTup3 dep)]
+
+val useLayoutEffect4 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
+  [@@js.custom
+    let useLayoutEffect4 effect dep =
+      useLayoutEffectInternal effect (unsafeCastTup4 dep)]
+
+val useLayoutEffect5 :
+  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
+  [@@js.custom
+    let useLayoutEffect5 effect dep =
+      useLayoutEffectInternal effect (unsafeCastTup5 dep)]
+
+val useLayoutEffect6 :
+     (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c * 'd * 'e * 'f
+  -> unit
+  [@@js.custom
+    let useLayoutEffect6 effect dep =
+      useLayoutEffectInternal effect (unsafeCastTup6 dep)]
+
+val useLayoutEffect7 :
+     (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
+  -> unit
+  [@@js.custom
+    let useLayoutEffect7 effect dep =
+      useLayoutEffectInternal effect (unsafeCastTup7 dep)]
+
+val useCallback : ('input -> 'output) -> 'input -> 'output
+  [@@js.custom
+    val useCallbackInternal :
+         (Ojs.t -> Ojs.t)
+      -> Ojs.t array option_undefined
+         (* Important: we don't want to use an arrow type to represent returning callback (i.e. (Ojs.t -> Ojs.t)) as the callback
+            would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
+      -> Ojs.t
+      [@@js.global "__LIB__react.useCallback"]
+
+    external unsafe_cast_cb : ('input -> 'output) -> 'a = "%identity"
+
+    external unsafeCastResCb : Ojs.t -> 'a = "%identity"
+
+    let useCallback cb =
+      unsafeCastResCb (useCallbackInternal (unsafe_cast_cb cb) None)]
+
+val useCallback0 : ('input -> 'output) -> 'input -> 'output
+  [@@js.custom
+    let useCallback0 f =
+      unsafeCastResCb (useCallbackInternal (unsafe_cast_cb f) (Some [||]))]
+
+val useCallback1 : ('input -> 'output) -> 'a array -> 'input -> 'output
+  [@@js.custom
+    let useCallback1 f dep =
+      unsafeCastResCb
+        (useCallbackInternal (unsafe_cast_cb f) (Some (unsafe_cast_arr dep)))]
+
+val useCallback2 : ('input -> 'output) -> 'a * 'b -> 'input -> 'output
+  [@@js.custom
+    let useCallback2 f dep =
+      unsafeCastResCb
+        (useCallbackInternal (unsafe_cast_cb f) (Some (unsafeCastTup2 dep)))]
+
+val useCallback3 : ('input -> 'output) -> 'a * 'b * 'c -> 'input -> 'output
+  [@@js.custom
+    let useCallback3 f dep =
+      unsafeCastResCb
+        (useCallbackInternal (unsafe_cast_cb f) (Some (unsafeCastTup3 dep)))]
+
+val useCallback4 : ('input -> 'output) -> 'a * 'b * 'c * 'd -> 'input -> 'output
+  [@@js.custom
+    let useCallback4 f dep =
+      unsafeCastResCb
+        (useCallbackInternal (unsafe_cast_cb f) (Some (unsafeCastTup4 dep)))]
+
+val useCallback5 : ('input -> 'output) -> 'a * 'b * 'c * 'd * 'e -> 'input -> 'output
+  [@@js.custom
+    let useCallback5 f dep =
+      unsafeCastResCb
+        (useCallbackInternal (unsafe_cast_cb f) (Some (unsafeCastTup5 dep)))]
+
+val useCallback6 : ('input -> 'output) -> 'a * 'b * 'c * 'd * 'e * 'f -> 'input -> 'output
+  [@@js.custom
+    let useCallback6 f dep =
+      unsafeCastResCb
+        (useCallbackInternal (unsafe_cast_cb f) (Some (unsafeCastTup6 dep)))]
+
+val useCallback7 : ('input -> 'output) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> 'input -> 'output
+  [@@js.custom
+    let useCallback7 f dep =
+      unsafeCastResCb
+        (useCallbackInternal (unsafe_cast_cb f) (Some (unsafeCastTup7 dep)))]
+
+val useMemo : (unit -> 'value) -> 'value
+  [@@js.custom
+    val useMemoInternal :
+      (unit -> Ojs.t) -> Ojs.t array option_undefined -> Ojs.t
+      [@@js.global "__LIB__react.useMemo"]
+
+    external unsafe_cast_f : (unit -> 'value) -> 'a = "%identity"
+
+    external unsafe_cast_res : Ojs.t -> 'value = "%identity"
+
+    let useMemo f = unsafe_cast_res (useMemoInternal (unsafe_cast_f f) None)]
+
+val useMemo0 : (unit -> 'value) -> 'value
+  [@@js.custom
+    let useMemo0 f =
+      unsafe_cast_res (useMemoInternal (unsafe_cast_f f) (Some [||]))]
+
+val useMemo1 : (unit -> 'value) -> 'a array -> 'value
+  [@@js.custom
+    let useMemo1 f dep =
+      unsafe_cast_res
+        (useMemoInternal (unsafe_cast_f f) (Some (unsafe_cast_arr dep)))]
+
+val useMemo2 : (unit -> 'value) -> 'a * 'b -> 'value
+  [@@js.custom
+    let useMemo2 f dep =
+      unsafe_cast_res
+        (useMemoInternal (unsafe_cast_f f) (Some (unsafeCastTup2 dep)))]
+
+val useMemo3 : (unit -> 'value) -> 'a * 'b * 'c -> 'value
+  [@@js.custom
+    let useMemo3 f dep =
+      unsafe_cast_res
+        (useMemoInternal (unsafe_cast_f f) (Some (unsafeCastTup3 dep)))]
+
+val useMemo4 : (unit -> 'value) -> 'a * 'b * 'c * 'd -> 'value
+  [@@js.custom
+    let useMemo4 f dep =
+      unsafe_cast_res
+        (useMemoInternal (unsafe_cast_f f) (Some (unsafeCastTup4 dep)))]
+
+val useMemo5 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e -> 'value
+  [@@js.custom
+    let useMemo5 f dep =
+      unsafe_cast_res
+        (useMemoInternal (unsafe_cast_f f) (Some (unsafeCastTup5 dep)))]
+
+val useMemo6 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f -> 'value
+  [@@js.custom
+    let useMemo6 f dep =
+      unsafe_cast_res
+        (useMemoInternal (unsafe_cast_f f) (Some (unsafeCastTup6 dep)))]
+
+val useMemo7 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> 'value
+  [@@js.custom
+    let useMemo7 f dep =
+      unsafe_cast_res
+        (useMemoInternal (unsafe_cast_f f) (Some (unsafeCastTup7 dep)))]
 
 val useState : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
   [@@js.custom
@@ -209,7 +430,7 @@ val createFragment : element list -> element
  module Children = {
    external map: (element, element => element) => element = "Children_map";
    external forEach: (element, element => unit) => unit = "Children_forEach";
-   external count: element => int = "Children_fffcount";
+   external count: element => int = "Children_count";
    external only: element => element = "Children_only";
    external toArray: element => array(element) = "Children_toArray";
  };
@@ -285,83 +506,6 @@ let useState: (unit => 'state) => ('state, ('state => 'state) => unit);
 [@js.global "__LIB__react"] 
 let useReducer: (('state, 'action) => 'state, 'state) => ('state, 'action => unit);
 
-[@js.global "__LIB__react"] 
-let useEffect: (unit => option(unit => unit)) => unit;
-
-[@js.implem
-module Array: {
-  type t('a) = array('a);
-  let t_to_js: ('a => Ojs.t, t('a)) => Ojs.t;
-  let t_of_js: (Ojs.t => 'a, Ojs.t) => t('a);
-} = {
-  type t('a) = array('a);
-  let t_to_js = (ml2js, l) => {
-    let o = Ojs.empty_obj();
-    Array.iter(((k, v)) => Ojs.set(o, k, ml2js(v)), l);
-    o;
-  };
-  let t_of_js = (js2ml, o) => {
-    let l = ref([]);
-    Ojs.iter_properties(o, k => l := [(k, js2ml(Ojs.get(o, k))), ...l^]);
-    l^;
-  };
-};]
-
-[@js.custom let useEffect0 = cb => useEffect1(cb, [||]);]
-let useEffect0: (unit => option(unit => unit)) => unit;*)
-
-(*
- external useEffect2: (unit => option(unit => unit), ('a, 'b)) => unit =
-   "useEffect";
-
- external useEffect3: (unit => option(unit => unit), ('a, 'b, 'c)) => unit =
-   "useEffect";
-
- external useEffect4: (unit => option(unit => unit), ('a, 'b, 'c, 'd)) => unit =
-   "useEffect";
- external useEffect5:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e)) => unit =
-   "useEffect";
-
- external useEffect6:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f)) => unit =
-   "useEffect";
-
- external useEffect7:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f, 'g)) => unit =
-   "useEffect";
-
- external useLayoutEffect: (unit => option(unit => unit)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect0:
-   (unit => option(unit => unit), array(unit)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect1: (unit => option(unit => unit), array('a)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect2: (unit => option(unit => unit), ('a, 'b)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect3:
-   (unit => option(unit => unit), ('a, 'b, 'c)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect4:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd)) => unit =
-   "useLayoutEffect";
- external useLayoutEffect5:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect6:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f)) => unit =
-   "useLayoutEffect";
-
- external useLayoutEffect7:
-   (unit => option(unit => unit), ('a, 'b, 'c, 'd, 'e, 'f, 'g)) => unit =
-   "useLayoutEffect";
 
  [@bs.module "react"]
  external useReducerWithMapState:

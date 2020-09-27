@@ -30,6 +30,7 @@
   ;; Test dependencies
   (webtest :with-test)
   (webtest-js :with-test)
+  (js_of_ocaml-ppx :with-test)
   (conf-npm :with-test)
 
   ;; Dev dependencies
@@ -39,4 +40,5 @@
   ;; Example dependencies
   (ppx_blob :dev)
   (js_of_ocaml-lwt :dev)
+
 ))

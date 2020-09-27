@@ -1,6 +1,6 @@
 [@@@js.stop]
 
-type domElement = Js_of_ocaml.Dom_html.element
+type domElement = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t
 
 val domElement_to_js : domElement -> Ojs.t
 
@@ -9,11 +9,13 @@ val domElement_of_js : Ojs.t -> domElement
 [@@@js.start]
 
 [@@@js.implem
-type domElement = Js_of_ocaml.Dom_html.element
+type domElement = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t
 
 external domElement_to_js : domElement -> Ojs.t = "%identity"
 
 external domElement_of_js : Ojs.t -> domElement = "%identity"]
+
+val unmountComponentAtNode : domElement -> bool
 
 val render : React.element -> domElement -> unit
   [@@js.global "__LIB__reactDOM.render"]
