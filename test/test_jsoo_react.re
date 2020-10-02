@@ -15,7 +15,9 @@ let () = Js.Unsafe.global##.window := jsdom |> Jsdom.window;
 
 let debugContent = container =>
   print_endline(
-    Js.to_string(Js.Opt.get(container##.textContent, () => Js.string("missing"))),
+    Js.to_string(
+      Js.Opt.get(container##.textContent, () => Js.string("missing")),
+    ),
   );
 
 let withContainer = f => {
@@ -46,6 +48,34 @@ let testReact = () =>
     });
     assert_equal(c##.textContent, Js.Opt.return(Js.string("Hello world!")));
   });
+
+let testContext = () => {
+  module DummyContext = {
+    let context = React.createContext("foo");
+    module Provider = {
+      include React.Context;
+      let make = provider(context);
+    };
+    module Consumer = {
+      [@react.component]
+      let make = () => {
+        let value = React.useContext(context);
+        <div> {value |> React.string} </div>;
+      };
+    };
+  };
+  withContainer(c => {
+    act(() => {
+      ReactDOM.render(
+        <DummyContext.Provider value="bar">
+          <DummyContext.Consumer />
+        </DummyContext.Provider>,
+        Html.element(c),
+      )
+    });
+    assert_equal(c##.textContent, Js.Opt.return(Js.string("bar")));
+  });
+};
 
 let testUseEffect = () => {
   module UseEffect = {
@@ -136,8 +166,10 @@ let testUseCallback1 = () => {
   module UseCallback = {
     [@react.component]
     let make = (~a) => {
-      let ((count, str), setCountStr) = React.useState(() => (0, "init and"));
-      let f = React.useCallback1(input => {input ++ " " ++ a ++ " and"}, [|a|]);
+      let ((count, str), setCountStr) =
+        React.useState(() => (0, "init and"));
+      let f =
+        React.useCallback1(input => {input ++ " " ++ a ++ " and"}, [|a|]);
       React.useEffect1(
         () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
@@ -156,7 +188,6 @@ let testUseCallback1 = () => {
     act(() => {
       ReactDOM.render(<UseCallback a=fooString />, Html.element(c))
     });
-    debugContent(c);
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`count` is 1, `str` is init and foo and")),
@@ -164,18 +195,16 @@ let testUseCallback1 = () => {
     act(() => {
       ReactDOM.render(<UseCallback a=fooString />, Html.element(c))
     });
-    debugContent(c);
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`count` is 1, `str` is init and foo and")),
     );
-    act(() => {
-      ReactDOM.render(<UseCallback a="bar" />, Html.element(c))
-    });
-    debugContent(c);
+    act(() => {ReactDOM.render(<UseCallback a="bar" />, Html.element(c))});
     assert_equal(
       c##.textContent,
-      Js.Opt.return(Js.string("`count` is 2, `str` is init and foo and bar and")),
+      Js.Opt.return(
+        Js.string("`count` is 2, `str` is init and foo and bar and"),
+      ),
     );
   });
 };
@@ -207,7 +236,38 @@ let testUseMemo1 = () => {
   });
 };
 
+let testUseRef = () => {
+  module DummyComponentWithRefAndEffect = {
+    [@react.component]
+    let make = (~cb, ()) => {
+      let myRef = React.useRef(1);
+      React.useEffect0(() => {
+        React.Ref.(setCurrent(myRef, current(myRef) + 1));
+        cb(myRef);
+        None;
+      });
+      <div />;
+    };
+  };
+  withContainer(c => {
+    let myRef = ref(None);
+    let cb = reactRef => {
+      myRef := Some(reactRef);
+    };
+
+    act(() => {
+      ReactDOM.render(<DummyComponentWithRefAndEffect cb />, Html.element(c))
+    });
+    assert_equal(
+      myRef.contents |> Option.map(item => {item |> React.Ref.current}),
+      Some(2),
+    );
+  });
+};
+
 let basic = "basic" >::: ["testDom" >:: testDom, "testReact" >:: testReact];
+
+let context = "context" >::: ["testContext" >:: testContext];
 
 let useEffect =
   "useEffect"
@@ -221,6 +281,9 @@ let useCallback = "useCallback" >::: ["useCallback1" >:: testUseCallback1];
 
 let useMemo = "useMemo" >::: ["useMemo1" >:: testUseMemo1];
 
-let suite = "baseSuite" >::: [basic, useEffect, useCallback, useMemo];
+let useRef = "useRef" >::: ["useRef" >:: testUseRef];
+
+let suite =
+  "baseSuite" >::: [basic, context, useEffect, useCallback, useMemo, useRef];
 
 let () = Webtest_js.Runner.run(suite);

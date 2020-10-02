@@ -248,19 +248,22 @@ val useCallback4 : ('input -> 'output) -> 'a * 'b * 'c * 'd -> 'input -> 'output
       unsafeCastResCb
         (useCallbackInternal (unsafe_cast_cb f) (Some (unsafeCastTup4 dep)))]
 
-val useCallback5 : ('input -> 'output) -> 'a * 'b * 'c * 'd * 'e -> 'input -> 'output
+val useCallback5 :
+  ('input -> 'output) -> 'a * 'b * 'c * 'd * 'e -> 'input -> 'output
   [@@js.custom
     let useCallback5 f dep =
       unsafeCastResCb
         (useCallbackInternal (unsafe_cast_cb f) (Some (unsafeCastTup5 dep)))]
 
-val useCallback6 : ('input -> 'output) -> 'a * 'b * 'c * 'd * 'e * 'f -> 'input -> 'output
+val useCallback6 :
+  ('input -> 'output) -> 'a * 'b * 'c * 'd * 'e * 'f -> 'input -> 'output
   [@@js.custom
     let useCallback6 f dep =
       unsafeCastResCb
         (useCallbackInternal (unsafe_cast_cb f) (Some (unsafeCastTup6 dep)))]
 
-val useCallback7 : ('input -> 'output) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> 'input -> 'output
+val useCallback7 :
+  ('input -> 'output) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> 'input -> 'output
   [@@js.custom
     let useCallback7 f dep =
       unsafeCastResCb
@@ -416,9 +419,84 @@ val createFragment : element list -> element
 
     let createFragment l = createFragmentInternal fragmentInternal Ojs.null l]
 
-(* val createElement : 'props component -> 'props -> element[@@js.global
-                                                           "__LIB__react"
-                                                             ] *)
+module Context : sig
+  [@@@js.stop]
+
+  type 'props t
+
+  val t_of_js : (Ojs.t -> 'a) -> Ojs.t -> 'a t
+
+  val t_to_js : ('a -> Ojs.t) -> 'a t -> Ojs.t
+
+  [@@@js.start]
+
+  [@@@js.implem
+  include (
+    [%js] :
+      sig
+        type untyped = private Ojs.t
+
+        val untyped_of_js : Ojs.t -> untyped
+
+        val untyped_to_js : untyped -> Ojs.t
+      end )
+
+  type 'props t = untyped
+
+  let t_of_js _ x = untyped_of_js x
+
+  let t_to_js _ x = untyped_to_js x]
+
+  val makeProps :
+       value:'props
+    -> children:element
+    -> unit
+    -> < value: 'props ; children: element Js_of_ocaml.Js.readonly_prop >
+       Js_of_ocaml.Js.t
+    [@@js.custom
+      let makePropsInternal ~value ~children () =
+        let obj = Ojs.empty_obj () in
+        Ojs.set obj "value" value ;
+        Ojs.set obj "children" (element_to_js children) ;
+        obj
+
+      let makeProps = Obj.magic makePropsInternal
+
+      (* TODO: Is there a way to avoid magic? *)]
+
+  val provider :
+       'props t
+    -> < value: 'props ; children: element Js_of_ocaml.Js.readonly_prop >
+       Js_of_ocaml.Js.t
+       component
+    [@@js.custom
+      val providerInternal : Ojs.t -> Ojs.t [@@js.get "Provider"]
+
+      let provider = Obj.magic providerInternal
+
+      (* TODO: Is there a way to avoid magic? *)]
+end
+
+val createContext : 'a -> 'a Context.t
+  [@@js.custom
+    (* Important: we don't want to use an arrow type to represent components (i.e. (Ojs.t -> element)) as the component function
+       would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
+    val createContextInternal : Ojs.t -> Ojs.t
+      [@@js.global "__LIB__react.createContext"]
+
+    let createContext = Obj.magic createContextInternal
+
+    (* TODO: Is there a way to avoid magic? *)]
+
+val useContext : 'value Context.t -> 'value
+  [@@js.custom
+    val useContextInternal : Ojs.t Context.t -> Ojs.t
+      [@@js.global "__LIB__react.useContext"]
+
+    let useContext = Obj.magic useContextInternal
+
+    (* TODO: Is there a way to avoid magic? *)]
+
 (* val cloneElement : 'props component -> 'props -> element[@@js.global
                                                           (("__LIB__react")
                                                             )] *)
@@ -434,22 +512,6 @@ val createFragment : element list -> element
    external only: element => element = "Children_only";
    external toArray: element => array(element) = "Children_toArray";
  };
-
- module Context = {
-   type t('props);
-
-   [@bs.get]
-   external provider:
-     t('props) =>
-     component({
-       .
-       "value": 'props,
-       "children": element,
-     }) =
-     "Provider";
- };
-
- [@bs.module "react"] external createContext: 'a => Context.t('a) = "";
 
  [@bs.module "react"]
  external memo: component('props) => component('props) = "";
@@ -516,85 +578,6 @@ let useReducer: (('state, 'action) => 'state, 'state) => ('state, 'action => uni
    ) =>
    ('state, 'action => unit) =
    "useReducer";
-
- [@bs.module "react"]
- external useMemo: ([@bs.uncurry] (unit => 'any)) => 'any = "useMemo";
- [@bs.module "react"]
- external useMemo0:
-   ([@bs.uncurry] (unit => 'any), [@bs.as {json|[]|json}] _) => 'any =
-   "useMemo";
- [@bs.module "react"]
- external useMemo1: ([@bs.uncurry] (unit => 'any), array('a)) => 'any =
-   "useMemo";
- [@bs.module "react"]
- external useMemo2: ([@bs.uncurry] (unit => 'any), ('a, 'b)) => 'any =
-   "useMemo";
- [@bs.module "react"]
- external useMemo3: ([@bs.uncurry] (unit => 'any), ('a, 'b, 'c)) => 'any =
-   "useMemo";
- [@bs.module "react"]
- external useMemo4: ([@bs.uncurry] (unit => 'any), ('a, 'b, 'c, 'd)) => 'any =
-   "useMemo";
- [@bs.module "react"]
- external useMemo5:
-   ([@bs.uncurry] (unit => 'any), ('a, 'b, 'c, 'd, 'e)) => 'any =
-   "useMemo";
- [@bs.module "react"]
- external useMemo6:
-   ([@bs.uncurry] (unit => 'any), ('a, 'b, 'c, 'd, 'e, 'f)) => 'any =
-   "useMemo";
- [@bs.module "react"]
- external useMemo7:
-   ([@bs.uncurry] (unit => 'any), ('a, 'b, 'c, 'd, 'e, 'f, 'g)) => 'any =
-   "useMemo";
-
- /* This is used as return values  */
- type callback('input, 'output) = 'input => 'output;
-
- [@bs.module "react"]
- external useCallback:
-   ([@bs.uncurry] ('input => 'output)) => callback('input, 'output) =
-   "useCallback";
- [@bs.module "react"]
- external useCallback0:
-   ([@bs.uncurry] ('input => 'output), [@bs.as {json|[]|json}] _) =>
-   callback('input, 'output) =
-   "useCallback";
- [@bs.module "react"]
- external useCallback1:
-   ([@bs.uncurry] ('input => 'output), array('a)) => callback('input, 'output) =
-   "useCallback";
- [@bs.module "react"]
- external useCallback2:
-   ([@bs.uncurry] ('input => 'output), ('a, 'b)) => callback('input, 'output) =
-   "useCallback";
- [@bs.module "react"]
- external useCallback3:
-   ([@bs.uncurry] ('input => 'output), ('a, 'b, 'c)) =>
-   callback('input, 'output) =
-   "useCallback";
- [@bs.module "react"]
- external useCallback4:
-   ([@bs.uncurry] ('input => 'output), ('a, 'b, 'c, 'd)) =>
-   callback('input, 'output) =
-   "useCallback";
- [@bs.module "react"]
- external useCallback5:
-   ([@bs.uncurry] ('input => 'output), ('a, 'b, 'c, 'd, 'e)) =>
-   callback('input, 'output) =
-   "useCallback";
- [@bs.module "react"]
- external useCallback6:
-   ([@bs.uncurry] ('input => 'output), ('a, 'b, 'c, 'd, 'e, 'f)) =>
-   callback('input, 'output) =
-   "useCallback";
- [@bs.module "react"]
- external useCallback7:
-   ([@bs.uncurry] ('input => 'output), ('a, 'b, 'c, 'd, 'e, 'f, 'g)) =>
-   callback('input, 'output) =
-   "useCallback";
-
- [@bs.module "react"] external useContext: Context.t('any) => 'any = "";
 
  [@bs.module "react"]
  external useImperativeHandle0:

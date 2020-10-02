@@ -60,7 +60,7 @@ module Ref : sig
       external callbackDomRef : callbackDomRef -> domRef = "%identity"]
 end
 
-type domProps
+type domProps = private Ojs.t
 
 val domProps :
      ?key:string
