@@ -32,6 +32,8 @@ See [`interop.md`](./interop.md).
 ```bash
 git clone https://github.com/jchavarri/jsoo-react/
 cd ./jsoo-react
+make init
+eval $(opam env)
 make dev
 # in another tab / terminal session 
 cd ./jsoo-react/example
