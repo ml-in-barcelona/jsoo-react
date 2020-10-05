@@ -431,15 +431,12 @@ module Context : sig
   [@@@js.start]
 
   [@@@js.implem
-  include (
-    [%js] :
-      sig
-        type untyped = private Ojs.t
+  include [%js:
+  type untyped = private Ojs.t
 
-        val untyped_of_js : Ojs.t -> untyped
+  val untyped_of_js : Ojs.t -> untyped
 
-        val untyped_to_js : untyped -> Ojs.t
-      end )
+  val untyped_to_js : untyped -> Ojs.t]
 
   type 'props t = untyped
 

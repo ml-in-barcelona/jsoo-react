@@ -1,18 +1,13 @@
 // Adapted from reason-react: https://reasonml.github.io/reason-react/docs/en/router
-module Browser: {
+module Browser = [%js:
   type history;
-
   type window;
   let window_to_js: window => Ojs.t;
-
   type location;
-
   [@js.global "history"]
   let history: option(history);
-
   [@js.global "window"]
   let window: option(window);
-
   [@js.get]
   let location: window => location;
   [@js.get]
@@ -21,41 +16,30 @@ module Browser: {
   let hash: location => string;
   [@js.get]
   let search: location => string;
-
   [@js.call]
   let pushState: (history, Ojs.t, string, ~href: string) => unit;
-
   [@js.call]
-  let replaceState: (history, Ojs.t, string, ~href: string) => unit;
-} =
-  [%js];
+  let replaceState: (history, Ojs.t, string, ~href: string) => unit
+];
 
-module Event: {
+module Event = [%js:
   type t;
-
   [@js.global "Event"]
   let event: t;
-
   [@js.new "Event"]
   let makeEventIE11Compatible: string => t;
-
   [@js.global "document.createEvent"]
   let createEventNonIEBrowsers: string => t;
-
   [@js.call "initEvent"]
   let initEventNonIEBrowsers: (t, string, bool, bool) => unit;
-
   /* The cb is t => unit, but access is restricted for now */
   [@js.call]
   let addEventListener: (Browser.window, string, unit => unit) => unit;
-
   [@js.call]
   let removeEventListener: (Browser.window, string, unit => unit) => unit;
-
   [@js.call]
-  let dispatchEvent: (Browser.window, t) => unit;
-} =
-  [%js];
+  let dispatchEvent: (Browser.window, t) => unit
+];
 
 let safeMakeEvent = eventName =>
   if (Js_of_ocaml.(
