@@ -32,4 +32,4 @@ $(opam_file): dune-project
 
 init:
   # Create a local opam switch
-	opam switch create . 4.10.0 --deps-only --with-test
+	opam switch create . 4.10.0 --deps-only --with-test && opam pin add gen_js_api https://github.com/jchavarri/gen_js_api.git#typ_var

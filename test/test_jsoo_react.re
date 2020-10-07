@@ -209,6 +209,96 @@ let testUseCallback1 = () => {
   });
 };
 
+let testUseCallback4 = () => {
+  module UseCallback = {
+    [@react.component]
+    let make = (~a, ~b, ~d, ~e) => {
+      let ((count, str), setCountStr) = React.useState(() => (0, "init"));
+      let f =
+        React.useCallback4(
+          _input => {
+            Printf.sprintf(
+              "a: %s, b: %d, d: [%d], e: [|%d|]",
+              a,
+              b,
+              List.nth(d, 0),
+              e[0],
+            )
+          },
+          (a, b, d, e),
+        );
+      React.useEffect1(
+        () => {
+          setCountStr(((count, str)) => (count + 1, f(str)));
+          None;
+        },
+        [|f|],
+      );
+      <div>
+        {Printf.sprintf("`count` is %d, `str` is %s", count, str)
+         |> React.string}
+      </div>;
+    };
+  };
+  withContainer(c => {
+    let a = "foo"; /* strings in OCaml are boxed, and we want to keep same reference across renders */
+    let a2 = "bar"; /* strings in OCaml are boxed, and we want to keep same reference across renders */
+    let b = 2;
+    let d = [3];
+    let e = [|4|];
+    act(() => {ReactDOM.render(<UseCallback a b d e />, Html.element(c))});
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(
+        Js.string("`count` is 1, `str` is a: foo, b: 2, d: [3], e: [|4|]"),
+      ),
+    );
+    act(() => {ReactDOM.render(<UseCallback a b d e />, Html.element(c))});
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(
+        Js.string("`count` is 1, `str` is a: foo, b: 2, d: [3], e: [|4|]"),
+      ),
+    );
+    act(() => {
+      ReactDOM.render(<UseCallback a=a2 b d e />, Html.element(c))
+    });
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(
+        Js.string("`count` is 2, `str` is a: bar, b: 2, d: [3], e: [|4|]"),
+      ),
+    );
+    act(() => {
+      ReactDOM.render(<UseCallback a=a2 b d e />, Html.element(c))
+    });
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(
+        Js.string("`count` is 2, `str` is a: bar, b: 2, d: [3], e: [|4|]"),
+      ),
+    );
+    act(() => {
+      ReactDOM.render(<UseCallback a=a2 b=3 d e />, Html.element(c))
+    });
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(
+        Js.string("`count` is 3, `str` is a: bar, b: 3, d: [3], e: [|4|]"),
+      ),
+    );
+    act(() => {
+      ReactDOM.render(<UseCallback a=a2 b=3 d=[4] e />, Html.element(c))
+    });
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(
+        Js.string("`count` is 4, `str` is a: bar, b: 3, d: [4], e: [|4|]"),
+      ),
+    );
+  });
+};
+
 let testUseMemo1 = () => {
   module UseMemo = {
     [@react.component]
@@ -277,7 +367,12 @@ let useEffect =
     "testUseEffect3" >:: testUseEffect3,
   ];
 
-let useCallback = "useCallback" >::: ["useCallback1" >:: testUseCallback1];
+let useCallback =
+  "useCallback"
+  >::: [
+    "useCallback1" >:: testUseCallback1,
+    "useCallback4" >:: testUseCallback4,
+  ];
 
 let useMemo = "useMemo" >::: ["useMemo1" >:: testUseMemo1];
 
