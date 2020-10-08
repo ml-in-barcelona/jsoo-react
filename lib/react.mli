@@ -16,20 +16,56 @@ val list : element list -> element [@@js.cast]
 
 [@@@js.stop]
 
+type 'a option_undefined = 'a option
+
+type 'a js_nullable = 'a Js_of_ocaml.Js.Opt.t
+
+val js_nullable_of_js : (Ojs.t -> 'value) -> Ojs.t -> 'value js_nullable
+
+val js_nullable_to_js : ('value -> Ojs.t) -> 'value js_nullable -> Ojs.t
+
 type ('props, 'return) componentLike = 'props -> 'return
 
 type 'props component = ('props, element) componentLike
 
+type ('input, 'output) callback = 'input -> 'output
+
 [@@@js.start]
 
 [@@@js.implem
+type 'a option_undefined = 'a option
+
+type 'a js_nullable = 'a Js_of_ocaml.Js.Opt.t
+
+external equals : Ojs.t -> Ojs.t -> bool = "caml_js_equals"
+
+let undefined = Ojs.variable "undefined"
+
+let option_undefined_of_js f x = if equals x undefined then None else Some (f x)
+
+let option_undefined_to_js f = function Some x -> f x | None -> undefined
+
+external js_nullable_of_ojs : Ojs.t -> 'value js_nullable = "%identity"
+
+external js_nullable_to_js : 'value js_nullable -> Ojs.t = "%identity"
+
+let js_nullable_of_js _f x = js_nullable_of_ojs x
+
+let js_nullable_to_js _f x = js_nullable_to_js x
+
 type ('props, 'return) componentLike = 'props -> 'return
 
 type 'props component = ('props, element) componentLike
 
 let component_to_js cb = cb
 
-let component_of_js js = js]
+let component_of_js js = js
+
+type ('input, 'output) callback = 'input -> 'output
+
+let callback_to_js _ cb = cb
+
+let callback_of_js _ js = js]
 
 val createElement : 'props component -> 'props -> element
   [@@js.global "__LIB__react.createElement"]
@@ -38,22 +74,8 @@ val createElementVariadic :
   'props component -> 'props -> (element list[@js.variadic]) -> element
   [@@js.global "__LIB__react.createElement"]
 
-[@@@js.stop]
-
-type 'a option_undefined = 'a option
-
-[@@@js.start]
-
-[@@@js.implem
-type 'a option_undefined = 'a option
-
-external equals : Ojs.t -> Ojs.t -> bool = "caml_js_equals"
-
-let undefined = Ojs.variable "undefined"
-
-let option_undefined_of_js f x = if equals x undefined then None else Some (f x)
-
-let option_undefined_to_js f = function Some x -> f x | None -> undefined]
+val cloneElement : 'props component -> 'props -> element
+  [@@js.global "__LIB__react.cloneElement"]
 
 val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.global "__LIB__react.useEffect"]
@@ -139,19 +161,6 @@ val useLayoutEffect7 :
   -> unit
   [@@js.global "__LIB__react.useLayoutEffect"]
 
-[@@@js.stop]
-
-type ('input, 'output) callback = 'input -> 'output
-
-[@@@js.start]
-
-[@@@js.implem
-type ('input, 'output) callback = 'input -> 'output
-
-let callback_to_js _ cb = cb
-
-let callback_of_js _ js = js]
-
 val useCallback : ('input, 'output) callback -> ('input, 'output) callback
   [@@js.custom
     val useCallbackInternal :
@@ -204,19 +213,13 @@ val useCallback7 :
 val useMemo : (unit -> 'value) -> 'value
   [@@js.custom
     val useMemoInternal :
-      (unit -> Ojs.t) -> Ojs.t array option_undefined -> Ojs.t
+      (unit -> 'value) -> 'any array option_undefined -> 'value
       [@@js.global "__LIB__react.useMemo"]
 
-    external unsafe_cast_f : (unit -> 'value) -> 'a = "%identity"
-
-    external unsafe_cast_res : Ojs.t -> 'value = "%identity"
-
-    let useMemo f = unsafe_cast_res (useMemoInternal (unsafe_cast_f f) None)]
+    let useMemo f = useMemoInternal f None]
 
 val useMemo0 : (unit -> 'value) -> 'value
-  [@@js.custom
-    let useMemo0 f =
-      unsafe_cast_res (useMemoInternal (unsafe_cast_f f) (Some [||]))]
+  [@@js.custom let useMemo0 f = useMemoInternal f (Some [||])]
 
 val useMemo1 : (unit -> 'value) -> 'a array -> 'value
   [@@js.global "__LIB__react.useMemo"]
@@ -264,6 +267,9 @@ end
 
 val useRef : 'value -> 'value Ref.t [@@js.global "__LIB__react.useRef"]
 
+val createRef : unit -> 'a js_nullable Ref.t
+  [@@js.global "__LIB__react.createRef"]
+
 (* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
  Although Reason parser doesn't support it so that's a requirement before adding it here *)
 val createFragment : element list -> element
@@ -298,7 +304,8 @@ module Context : sig
       external of_ojs :
            Ojs.t
         -> < value: 'props ; children: element Js_of_ocaml.Js.readonly_prop >
-           Js_of_ocaml.Js.t component = "%identity"
+           Js_of_ocaml.Js.t
+           component = "%identity"
 
       val providerInternal : 'props t -> Ojs.t [@@js.get "Provider"]
 
@@ -311,14 +318,7 @@ val createContext : 'a -> 'a Context.t
 val useContext : 'value Context.t -> 'value
   [@@js.global "__LIB__react.useContext"]
 
-(* val cloneElement : 'props component -> 'props -> element[@@js.global
-                                                          (("__LIB__react")
-                                                            )] *)
-
 (*
-
- external createRef: unit => Ref.t(option('a)) = "createRef";
-
  module Children = {
    external map: (element, element => element) => element = "Children_map";
    external forEach: (element, element => unit) => unit = "Children_forEach";
