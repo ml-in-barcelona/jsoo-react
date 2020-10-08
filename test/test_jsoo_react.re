@@ -326,6 +326,13 @@ let testUseMemo1 = () => {
   });
 };
 
+let testCreateRef = () => {
+  let reactRef = React.createRef();
+  assert_equal(React.Ref.current(reactRef), Js_of_ocaml.Js.null);
+  React.Ref.setCurrent(reactRef, Js_of_ocaml.Js.Opt.return(1));
+  assert_equal(React.Ref.current(reactRef), Js_of_ocaml.Js.Opt.return(1));
+};
+
 let testUseRef = () => {
   module DummyComponentWithRefAndEffect = {
     [@react.component]
@@ -376,9 +383,10 @@ let useCallback =
 
 let useMemo = "useMemo" >::: ["useMemo1" >:: testUseMemo1];
 
-let useRef = "useRef" >::: ["useRef" >:: testUseRef];
+let refs =
+  "refs" >::: ["createRef" >:: testCreateRef, "useRef" >:: testUseRef];
 
 let suite =
-  "baseSuite" >::: [basic, context, useEffect, useCallback, useMemo, useRef];
+  "baseSuite" >::: [basic, context, useEffect, useCallback, useMemo, refs];
 
 let () = Webtest_js.Runner.run(suite);
