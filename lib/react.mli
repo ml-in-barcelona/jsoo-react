@@ -339,6 +339,35 @@ module Children : sig
     [@@js.global "__LIB__react.Children.toArray"]
 end
 
+module Fragment : sig
+  val makeProps :
+       children:element
+    -> ?key:Js_of_ocaml.Js.js_string Js_of_ocaml.Js.t
+    -> unit
+    -> < children: element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
+    [@@js.custom
+      let makeProps ~children ?key () =
+        match key with
+        | Some k ->
+            Js_of_ocaml.Js.Unsafe.(
+              obj [|("key", inject k); ("children", inject children)|])
+        | None ->
+            Js_of_ocaml.Js.Unsafe.(obj [|("children", inject children)|])]
+
+  val make :
+    < children: element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
+    component
+    [@@js.custom
+      external to_component :
+           Ojs.t
+        -> < children: element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
+           component = "%identity"
+
+      val makeInternal : Ojs.t [@@js.global "__LIB__react.Fragment"]
+
+      let make = to_component makeInternal]
+end
+
 (*
  [@bs.module "react"]
  external memo: component('props) => component('props) = "";
@@ -348,15 +377,6 @@ end
    (component('props), [@bs.uncurry] (('props, 'props) => bool)) =>
    component('props) =
    "memo";
-
- module Fragment = {
-   [@bs.obj]
-   external makeProps:
-     (~children: element, ~key: 'key=?, unit) => {. "children": element} =
-     "";
-   [@bs.module "react"]
-   external make: component({. "children": element}) = "Fragment";
- };
 
  module Suspense = {
    [@bs.obj]

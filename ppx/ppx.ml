@@ -1249,24 +1249,10 @@ let jsxMapper () =
         | [], _ ->
             default_mapper.expr mapper expression
         | _, nonJSXAttributes ->
-            let fragment =
-              Exp.ident ~loc {loc; txt= Ldot (Lident "ReasonReact", "fragment")}
-            in
-            let childrenExpr = transformChildrenIfList ~loc ~mapper listItems in
-            let args =
-              [ (* "div" *)
-                (nolabel, fragment)
-              ; (* [|moreCreateElementCallsHere|] *)
-                (nolabel, childrenExpr) ]
-            in
-            Exp.apply
-              ~loc
-                (* throw away the [@JSX] attribute and keep the others, if any *)
-              ~attrs:nonJSXAttributes
-              (* ReactDOM.createElement *)
-              (Exp.ident ~loc
-                 {loc; txt= Ldot (Lident "ReactDOM", "createElement")})
-              args )
+            let callExpression = [%expr React.Fragment.createElement] in
+            transformJsxCall mapper callExpression
+              [(Labelled "children", listItems)]
+              nonJSXAttributes )
     (* Delegate to the default mapper, a deep identity traversal *)
     | e ->
         default_mapper.expr mapper e

@@ -396,8 +396,42 @@ let testChildrenMapWithIndex = () => {
     });
     assert_equal(
       c##.innerHTML,
-      Js.string("<div><div data-index=\"0\">1</div><div data-index=\"1\">2</div><div data-index=\"2\">3</div></div>"),
+      Js.string(
+        "<div><div data-index=\"0\">1</div><div data-index=\"1\">2</div><div data-index=\"2\">3</div></div>",
+      ),
     );
+  });
+};
+
+let testFragmentModule = () => {
+  withContainer(c => {
+    act(() => {
+      ReactDOM.render(
+        <React.Fragment>
+          <td> {React.string("Hello")} </td>
+          <td> {React.string("World")} </td>
+        </React.Fragment>,
+        Html.element(c),
+      )
+    });
+    printInnerHTML(c);
+    assert_equal(c##.innerHTML, Js.string("<td>Hello</td><td>World</td>"));
+  });
+};
+
+let testFragmentSyntax = () => {
+  withContainer(c => {
+    act(() => {
+      ReactDOM.render(
+        <>
+          <td> {React.string("Hello")} </td>
+          <td> {React.string("World")} </td>
+        </>,
+        Html.element(c),
+      )
+    });
+    printInnerHTML(c);
+    assert_equal(c##.innerHTML, Js.string("<td>Hello</td><td>World</td>"));
   });
 };
 
@@ -427,8 +461,24 @@ let refs =
 
 let children = "children" >::: ["mapWithIndex" >:: testChildrenMapWithIndex];
 
+let fragments =
+  "fragments"
+  >::: [
+    "fragmentModule" >:: testFragmentModule,
+    "fragmentSyntax" >:: testFragmentSyntax,
+  ];
+
 let suite =
   "baseSuite"
-  >::: [basic, context, useEffect, useCallback, useMemo, refs, children];
+  >::: [
+    basic,
+    context,
+    useEffect,
+    useCallback,
+    useMemo,
+    refs,
+    children,
+    fragments,
+  ];
 
 let () = Webtest_js.Runner.run(suite);

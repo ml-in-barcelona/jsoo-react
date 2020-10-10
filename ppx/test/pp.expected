@@ -68,7 +68,8 @@ let makeProps
                |> Array.of_list)
 let make =
   ((fun ?(name= "") ->
-      ReactDOM.createElement ReasonReact.fragment
+      React.createElementVariadic React.Fragment.make
+        (React.Fragment.makeProps ~children:React.null ())
         [ReactDOM.createDOMElementVariadic "div"
            ~props:(ReactDOM.domProps ()) [React.string ("Hello " ^ name)];
         React.createElement Hello.make
@@ -415,13 +416,19 @@ module ForwardRef =
            make theRef in
          Test$ForwardRef)
   end
-let fragment foo = ((ReactDOM.createElement ReasonReact.fragment [foo])
+let fragment foo =
+  ((React.createElement React.Fragment.make
+      ((React.Fragment.makeProps ~children:foo ())[@bla ]))
   [@bla ])
 let polyChildrenFragment foo bar =
-  ReactDOM.createElement ReasonReact.fragment [foo; bar]
+  React.createElementVariadic React.Fragment.make
+    (React.Fragment.makeProps ~children:React.null ()) [foo; bar]
 let nestedFragment foo bar baz =
-  ReactDOM.createElement ReasonReact.fragment
-    [foo; ReactDOM.createElement ReasonReact.fragment [bar; baz]]
+  React.createElementVariadic React.Fragment.make
+    (React.Fragment.makeProps ~children:React.null ())
+    [foo;
+    React.createElementVariadic React.Fragment.make
+      (React.Fragment.makeProps ~children:React.null ()) [bar; baz]]
 let upper = React.createElement Upper.make (Upper.makeProps ())
 let upperWithProp =
   React.createElement Upper.make (Upper.makeProps ~count ())
