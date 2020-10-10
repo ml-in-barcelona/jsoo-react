@@ -13,12 +13,14 @@ let () = Js.Unsafe.global##.document := doc;
 
 let () = Js.Unsafe.global##.window := jsdom |> Jsdom.window;
 
-let debugContent = container =>
+let printTextContent = container =>
   print_endline(
     Js.to_string(
       Js.Opt.get(container##.textContent, () => Js.string("missing")),
     ),
   );
+let printInnerHTML = (container: Js.t(Html.divElement)) =>
+  print_endline(Js.to_string(container##.innerHTML));
 
 let withContainer = f => {
   let container = Html.createDiv(doc);
@@ -362,6 +364,43 @@ let testUseRef = () => {
   });
 };
 
+let testChildrenMapWithIndex = () => {
+  module DummyComponentThatMapsChildren = {
+    [@react.component]
+    let make = (~children, ()) => {
+      <div>
+        {React.Children.mapWithIndex(children, (element, index) => {
+           React.cloneElement(
+             element,
+             Js_of_ocaml.Js.Unsafe.(
+               obj([|
+                 ("key", inject(index)),
+                 ("data-index", inject(index)),
+               |])
+             ),
+           )
+         })}
+      </div>;
+    };
+  };
+  withContainer(c => {
+    act(() => {
+      ReactDOM.render(
+        <DummyComponentThatMapsChildren>
+          <div> {React.int(1)} </div>
+          <div> {React.int(2)} </div>
+          <div> {React.int(3)} </div>
+        </DummyComponentThatMapsChildren>,
+        Html.element(c),
+      )
+    });
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<div><div data-index=\"0\">1</div><div data-index=\"1\">2</div><div data-index=\"2\">3</div></div>"),
+    );
+  });
+};
+
 let basic = "basic" >::: ["testDom" >:: testDom, "testReact" >:: testReact];
 
 let context = "context" >::: ["testContext" >:: testContext];
@@ -386,7 +425,10 @@ let useMemo = "useMemo" >::: ["useMemo1" >:: testUseMemo1];
 let refs =
   "refs" >::: ["createRef" >:: testCreateRef, "useRef" >:: testUseRef];
 
+let children = "children" >::: ["mapWithIndex" >:: testChildrenMapWithIndex];
+
 let suite =
-  "baseSuite" >::: [basic, context, useEffect, useCallback, useMemo, refs];
+  "baseSuite"
+  >::: [basic, context, useEffect, useCallback, useMemo, refs, children];
 
 let () = Webtest_js.Runner.run(suite);

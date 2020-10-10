@@ -74,7 +74,7 @@ val createElementVariadic :
   'props component -> 'props -> (element list[@js.variadic]) -> element
   [@@js.global "__LIB__react.createElement"]
 
-val cloneElement : 'props component -> 'props -> element
+val cloneElement : element -> 'props -> element
   [@@js.global "__LIB__react.cloneElement"]
 
 val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
@@ -318,15 +318,28 @@ val createContext : 'a -> 'a Context.t
 val useContext : 'value Context.t -> 'value
   [@@js.global "__LIB__react.useContext"]
 
-(*
- module Children = {
-   external map: (element, element => element) => element = "Children_map";
-   external forEach: (element, element => unit) => unit = "Children_forEach";
-   external count: element => int = "Children_count";
-   external only: element => element = "Children_only";
-   external toArray: element => array(element) = "Children_toArray";
- };
+module Children : sig
+  val map : element -> (element -> element) -> element
+    [@@js.global "__LIB__react.Children.map"]
 
+  val mapWithIndex : element -> (element -> int -> element) -> element
+    [@@js.global "__LIB__react.Children.map"]
+
+  val forEach : element -> (element -> unit) -> unit
+    [@@js.global "__LIB__react.Children.forEach"]
+
+  val forEachWithIndex : element -> (element -> int -> unit) -> unit
+    [@@js.global "__LIB__react.Children.forEach"]
+
+  val count : element -> int [@@js.global "__LIB__react.Children.count"]
+
+  val only : element -> element [@@js.global "__LIB__react.Children.only"]
+
+  val toArray : element -> element array
+    [@@js.global "__LIB__react.Children.toArray"]
+end
+
+(*
  [@bs.module "react"]
  external memo: component('props) => component('props) = "";
 
