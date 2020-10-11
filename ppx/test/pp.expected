@@ -53,16 +53,8 @@ let makeProps
         let open Js_of_ocaml.Js.Unsafe in
           obj
             ((([|(Option.map
-                    (fun _ ->
-                       ("key",
-                         (inject
-                            ((Option.map Js_of_ocaml.Js.string key) |>
-                               Js_of_ocaml.Js.Opt.option)))) key);(Option.map
-                                                                    (fun _ ->
-                                                                    ("name",
-                                                                    (inject
-                                                                    name)))
-                                                                    name)|]
+                    (fun raw -> ("key", (inject (Js_of_ocaml.Js.string raw))))
+                    key);(Option.map (fun raw -> ("name", (inject raw))) name)|]
                  |> Array.to_list)
                 |> (List.filter_map (fun x -> x)))
                |> Array.of_list)
@@ -108,11 +100,8 @@ let makeProps
           let open Js_of_ocaml.Js.Unsafe in
             obj
               ((([|(Option.map
-                      (fun _ ->
-                         ("key",
-                           (inject
-                              ((Option.map Js_of_ocaml.Js.string key) |>
-                                 Js_of_ocaml.Js.Opt.option)))) key);(
+                      (fun raw ->
+                         ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
                    Some ("b", (inject b)));(Some ("a", (inject a)))|] |>
                    Array.to_list)
                   |> (List.filter_map (fun x -> x)))
@@ -169,13 +158,11 @@ module External =
               let open Js_of_ocaml.Js.Unsafe in
                 obj
                   ((([|(Option.map
-                          (fun _ ->
-                             ("key",
-                               (inject
-                                  ((Option.map Js_of_ocaml.Js.string key) |>
-                                     Js_of_ocaml.Js.Opt.option)))) key);(
-                       Some ("b", (inject b)));(Some ("a", (inject a)))|] |>
-                       Array.to_list)
+                          (fun raw ->
+                             ("key", (inject (Js_of_ocaml.Js.string raw))))
+                          key);(Some ("b", (inject b)));(Some
+                                                           ("a", (inject a)))|]
+                       |> Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list)
     external component :
@@ -206,13 +193,11 @@ module Bar =
               let open Js_of_ocaml.Js.Unsafe in
                 obj
                   ((([|(Option.map
-                          (fun _ ->
-                             ("key",
-                               (inject
-                                  ((Option.map Js_of_ocaml.Js.string key) |>
-                                     Js_of_ocaml.Js.Opt.option)))) key);(
-                       Some ("b", (inject b)));(Some ("a", (inject a)))|] |>
-                       Array.to_list)
+                          (fun raw ->
+                             ("key", (inject (Js_of_ocaml.Js.string raw))))
+                          key);(Some ("b", (inject b)));(Some
+                                                           ("a", (inject a)))|]
+                       |> Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list)
     let make =
@@ -269,13 +254,11 @@ module Bar =
               let open Js_of_ocaml.Js.Unsafe in
                 obj
                   ((([|(Option.map
-                          (fun _ ->
-                             ("key",
-                               (inject
-                                  ((Option.map Js_of_ocaml.Js.string key) |>
-                                     Js_of_ocaml.Js.Opt.option)))) key);(
-                       Some ("b", (inject b)));(Some ("a", (inject a)))|] |>
-                       Array.to_list)
+                          (fun raw ->
+                             ("key", (inject (Js_of_ocaml.Js.string raw))))
+                          key);(Some ("b", (inject b)));(Some
+                                                           ("a", (inject a)))|]
+                       |> Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list)
     let component =
@@ -338,13 +321,11 @@ module Func(M:X_int) =
               let open Js_of_ocaml.Js.Unsafe in
                 obj
                   ((([|(Option.map
-                          (fun _ ->
-                             ("key",
-                               (inject
-                                  ((Option.map Js_of_ocaml.Js.string key) |>
-                                     Js_of_ocaml.Js.Opt.option)))) key);(
-                       Some ("b", (inject b)));(Some ("a", (inject a)))|] |>
-                       Array.to_list)
+                          (fun raw ->
+                             ("key", (inject (Js_of_ocaml.Js.string raw))))
+                          key);(Some ("b", (inject b)));(Some
+                                                           ("a", (inject a)))|]
+                       |> Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list)
     let make =
@@ -394,20 +375,18 @@ module ForwardRef =
           fun _ ->
             let open Js_of_ocaml.Js.Unsafe in
               obj
-                ((([|(Option.map (fun _ -> ("ref", (inject ref))) ref);(
+                ((([|(Option.map (fun raw -> ("ref", (inject raw))) ref);(
                      Option.map
-                       (fun _ ->
-                          ("key",
-                            (inject
-                               ((Option.map Js_of_ocaml.Js.string key) |>
-                                  Js_of_ocaml.Js.Opt.option)))) key)|]
+                       (fun raw ->
+                          ("key", (inject (Js_of_ocaml.Js.string raw)))) key)|]
                      |> Array.to_list)
                     |> (List.filter_map (fun x -> x)))
                    |> Array.of_list)
     let make =
       ((fun theRef ->
           ReactDOM.createDOMElementVariadic "div"
-            ~props:(ReactDOM.domProps ~ref:theRef ())
+            ~props:(ReactDOM.domProps
+                      ~ref:(theRef |> Js_of_ocaml.Js.Opt.to_option) ())
             [React.string "ForwardRef"])
       [@warning "-16"])
     let make =
@@ -430,11 +409,8 @@ module Memo =
             let open Js_of_ocaml.Js.Unsafe in
               obj
                 ((([|(Option.map
-                        (fun _ ->
-                           ("key",
-                             (inject
-                                ((Option.map Js_of_ocaml.Js.string key) |>
-                                   Js_of_ocaml.Js.Opt.option)))) key);(
+                        (fun raw ->
+                           ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
                      Some ("a", (inject a)))|] |> Array.to_list)
                     |> (List.filter_map (fun x -> x)))
                    |> Array.of_list)
@@ -475,11 +451,8 @@ module MemoCustomCompareProps =
             let open Js_of_ocaml.Js.Unsafe in
               obj
                 ((([|(Option.map
-                        (fun _ ->
-                           ("key",
-                             (inject
-                                ((Option.map Js_of_ocaml.Js.string key) |>
-                                   Js_of_ocaml.Js.Opt.option)))) key);(
+                        (fun raw ->
+                           ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
                      Some ("a", (inject a)))|] |> Array.to_list)
                     |> (List.filter_map (fun x -> x)))
                    |> Array.of_list)

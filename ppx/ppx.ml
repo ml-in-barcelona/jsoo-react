@@ -359,23 +359,21 @@ let makeJsObj ~loc namedArgListWithKeyAndRef =
   let labelToTuple label =
     let l = getLabel label in
     let id = Exp.ident ~loc {txt= Lident l; loc} in
-    let expr =
+    let make_tuple raw =
       match l = "key" with
       | true ->
           [%expr
             [%e Exp.constant ~loc (Pconst_string (l, None))]
-            , inject
-                ( Option.map Js_of_ocaml.Js.string [%e id]
-                |> Js_of_ocaml.Js.Opt.option )]
+            , inject (Js_of_ocaml.Js.string [%e raw])]
       | false ->
           [%expr
-            [%e Exp.constant ~loc (Pconst_string (l, None))], inject [%e id]]
+            [%e Exp.constant ~loc (Pconst_string (l, None))], inject [%e raw]]
     in
     match isOptional label with
     | true ->
-        [%expr Option.map (fun _ -> [%e expr]) [%e id]]
+        [%expr Option.map (fun raw -> [%e make_tuple [%expr raw]]) [%e id]]
     | false ->
-        [%expr Some [%e expr]]
+        [%expr Some [%e make_tuple id]]
   in
   [%expr
     obj
@@ -778,8 +776,7 @@ let jsxMapper () =
                         ( _wrapperExpression
                         , ( [(Nolabel, innerFunctionExpression)]
                           | [ (Nolabel, innerFunctionExpression)
-                            ; (Nolabel, {pexp_desc= Pexp_fun _})
-                            ] ) ) } ->
+                            ; (Nolabel, {pexp_desc= Pexp_fun _}) ] ) ) } ->
                     spelunkForFunExpression innerFunctionExpression
                 | { pexp_desc=
                       Pexp_sequence (_wrapperExpression, innerFunctionExpression)
@@ -886,8 +883,8 @@ let jsxMapper () =
                       Pexp_apply
                         ( wrapperExpression
                         , [ (Nolabel, internalExpression)
-                          ; ( (Nolabel, {pexp_desc= Pexp_fun _})
-                            as compareProps ) ] ) } ->
+                          ; ((Nolabel, {pexp_desc= Pexp_fun _}) as compareProps)
+                          ] ) } ->
                     let () = hasApplication := true in
                     let _, hasUnit, exp =
                       spelunkForFunExpression internalExpression
@@ -947,7 +944,7 @@ let jsxMapper () =
               | Some _ ->
                   ( optional "ref"
                   , None
-                  , Pat.var {txt= "key"; loc= emptyLoc}
+                  , Pat.var {txt= "ref"; loc= emptyLoc}
                   , "ref"
                   , emptyLoc
                   , Some (refType emptyLoc) )

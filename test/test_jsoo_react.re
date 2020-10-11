@@ -51,6 +51,27 @@ let testReact = () =>
     assert_equal(c##.textContent, Js.Opt.return(Js.string("Hello world!")));
   });
 
+let testKeys = () =>
+  withContainer(c => {
+    act(() => {
+      ReactDOM.render(
+        <div>
+          {List.map(
+             str => <div key=str> {str |> React.string} </div>,
+             ["a", "b"],
+           )
+           |> React.list}
+        </div>,
+        Html.element(c),
+      )
+    });
+    printInnerHTML(c);
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<div><div>a</div><div>b</div></div>"),
+    );
+  });
+
 let testContext = () => {
   module DummyContext = {
     let context = React.createContext("foo");
@@ -539,6 +560,32 @@ let testCreateRef = () => {
   assert_equal(React.Ref.current(reactRef), Js_of_ocaml.Js.Opt.return(1));
 };
 
+let testForwardRef = () => {
+  module FancyButton = {
+    [@react.component]
+    let make =
+      ReactDOM.forwardRef((~children, theRef) => {
+        <button
+          ref=?{theRef |> Js_of_ocaml.Js.Opt.to_option}
+          className="FancyButton">
+          children
+        </button>
+      });
+  };
+
+  withContainer(c => {
+    let count = ref(0);
+    let buttonRef = ReactDOM.Ref.callbackDomRef(_ref => {count := count^ + 1});
+    act(() => {
+      ReactDOM.render(
+        <FancyButton ref=buttonRef> <div /> </FancyButton>,
+        Html.element(c),
+      )
+    });
+    assert_equal(count^, 1);
+  });
+};
+
 let testUseRef = () => {
   module DummyComponentWithRefAndEffect = {
     [@react.component]
@@ -643,7 +690,13 @@ let testFragmentSyntax = () => {
   });
 };
 
-let basic = "basic" >::: ["testDom" >:: testDom, "testReact" >:: testReact];
+let basic =
+  "basic"
+  >::: [
+    "testDom" >:: testDom,
+    "testReact" >:: testReact,
+    "testKey" >:: testKeys,
+  ];
 
 let context = "context" >::: ["testContext" >:: testContext];
 
@@ -677,7 +730,12 @@ let memoization =
   ];
 
 let refs =
-  "refs" >::: ["createRef" >:: testCreateRef, "useRef" >:: testUseRef];
+  "refs"
+  >::: [
+    "createRef" >:: testCreateRef,
+    "forwardRef" >:: testForwardRef,
+    "useRef" >:: testUseRef,
+  ];
 
 let children = "children" >::: ["mapWithIndex" >:: testChildrenMapWithIndex];
 

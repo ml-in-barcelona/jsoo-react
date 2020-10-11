@@ -62,7 +62,7 @@ module ForwardRef = {
   [@react.component]
   let make =
     React.forwardRef(theRef =>
-      <div ref=theRef> {React.string("ForwardRef")} </div>
+      <div ref={theRef |> Js_of_ocaml.Js.Opt.to_option}> {React.string("ForwardRef")} </div>
     );
 };
 

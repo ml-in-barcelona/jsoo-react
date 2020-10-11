@@ -28,6 +28,10 @@ type ('props, 'return) componentLike = 'props -> 'return
 
 type 'props component = ('props, element) componentLike
 
+val component_of_js : 'a -> 'a
+
+val component_to_js : 'a -> 'a
+
 type ('input, 'output) callback = 'input -> 'output
 
 [@@@js.start]
