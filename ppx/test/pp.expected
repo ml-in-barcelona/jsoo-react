@@ -416,6 +416,97 @@ module ForwardRef =
            make theRef in
          Test$ForwardRef)
   end
+module Memo =
+  struct
+    let makeProps
+      : a:'a ->
+          ?key:string ->
+            unit ->
+              < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t
+      =
+      fun ~a ->
+        fun ?key ->
+          fun _ ->
+            let open Js_of_ocaml.Js.Unsafe in
+              obj
+                ((([|(Option.map
+                        (fun _ ->
+                           ("key",
+                             (inject
+                                ((Option.map Js_of_ocaml.Js.string key) |>
+                                   Js_of_ocaml.Js.Opt.option)))) key);(
+                     Some ("a", (inject a)))|] |> Array.to_list)
+                    |> (List.filter_map (fun x -> x)))
+                   |> Array.of_list)
+    let make =
+      ((fun ~a ->
+          ReactDOM.createDOMElementVariadic "div"
+            ~props:(ReactDOM.domProps ())
+            [(Printf.sprintf "`a` is %s" a) |> React.string])
+      [@warning "-16"])
+    let make =
+      React.memo
+        (let Test$Memo
+           (Props :
+             < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+           =
+           make
+             ~a:((fun (type res) ->
+                    fun (type a0) ->
+                      fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                        fun
+                          (_ :
+                            a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                          -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
+                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) in
+         Test$Memo)
+  end
+module MemoCustomCompareProps =
+  struct
+    let makeProps
+      : a:'a ->
+          ?key:string ->
+            unit ->
+              < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t
+      =
+      fun ~a ->
+        fun ?key ->
+          fun _ ->
+            let open Js_of_ocaml.Js.Unsafe in
+              obj
+                ((([|(Option.map
+                        (fun _ ->
+                           ("key",
+                             (inject
+                                ((Option.map Js_of_ocaml.Js.string key) |>
+                                   Js_of_ocaml.Js.Opt.option)))) key);(
+                     Some ("a", (inject a)))|] |> Array.to_list)
+                    |> (List.filter_map (fun x -> x)))
+                   |> Array.of_list)
+    let make =
+      ((fun ~a ->
+          ReactDOM.createDOMElementVariadic "div"
+            ~props:(ReactDOM.domProps ())
+            [(Printf.sprintf "`a` is %d" a) |> React.string])
+      [@warning "-16"])
+    let make =
+      React.memoCustomCompareProps
+        (let Test$MemoCustomCompareProps
+           (Props :
+             < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+           =
+           make
+             ~a:((fun (type res) ->
+                    fun (type a0) ->
+                      fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                        fun
+                          (_ :
+                            a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                          -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
+                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) in
+         Test$MemoCustomCompareProps)
+        (fun prevPros -> fun nextProps -> false)
+  end
 let fragment foo =
   ((React.createElement React.Fragment.make
       ((React.Fragment.makeProps ~children:foo ())[@bla ]))
