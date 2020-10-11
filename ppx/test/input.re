@@ -66,6 +66,25 @@ module ForwardRef = {
     );
 };
 
+module Memo = {
+  [@react.component]
+  let make =
+    React.memo((~a) => {
+      <div> {Printf.sprintf("`a` is %s", a) |> React.string} </div>
+    });
+};
+
+module MemoCustomCompareProps = {
+  [@react.component]
+  let make =
+    React.memoCustomCompareProps(
+      (~a) => {
+        <div> {Printf.sprintf("`a` is %d", a) |> React.string} </div>
+      },
+      (prevPros, nextProps) => false,
+    );
+};
+
 let fragment = foo => [@bla] <> foo </>;
 
 let polyChildrenFragment = (foo, bar) => <> foo bar </>;

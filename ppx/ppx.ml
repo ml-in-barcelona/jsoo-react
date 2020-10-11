@@ -771,11 +771,15 @@ let jsxMapper () =
                 | {pexp_desc= Pexp_let (_recursive, _vbs, returnExpression)} ->
                     (* here's where we spelunk! *)
                     spelunkForFunExpression returnExpression
-                (* let make = React.forwardRef((~prop) => ...) *)
+                (* let make = React.forwardRef((~prop) => ...) or
+                   let make = React.memoCustomCompareProps((~prop) => ..., compareProps()) *)
                 | { pexp_desc=
                       Pexp_apply
                         ( _wrapperExpression
-                        , [(Nolabel, innerFunctionExpression)] ) } ->
+                        , ( [(Nolabel, innerFunctionExpression)]
+                          | [ (Nolabel, innerFunctionExpression)
+                            ; (Nolabel, {pexp_desc= Pexp_fun _})
+                            ] ) ) } ->
                     spelunkForFunExpression innerFunctionExpression
                 | { pexp_desc=
                       Pexp_sequence (_wrapperExpression, innerFunctionExpression)
@@ -875,6 +879,22 @@ let jsxMapper () =
                       spelunkForFunExpression internalExpression
                     in
                     ( (fun exp -> Exp.apply wrapperExpression [(nolabel, exp)])
+                    , hasUnit
+                    , exp )
+                (* let make = React.memoCustomCompareProps((~prop) => ..., (prevPros, nextProps) => true) *)
+                | { pexp_desc=
+                      Pexp_apply
+                        ( wrapperExpression
+                        , [ (Nolabel, internalExpression)
+                          ; ( (Nolabel, {pexp_desc= Pexp_fun _})
+                            as compareProps ) ] ) } ->
+                    let () = hasApplication := true in
+                    let _, hasUnit, exp =
+                      spelunkForFunExpression internalExpression
+                    in
+                    ( (fun exp ->
+                        Exp.apply wrapperExpression
+                          [(nolabel, exp); compareProps])
                     , hasUnit
                     , exp )
                 | { pexp_desc=

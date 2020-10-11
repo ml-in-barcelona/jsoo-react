@@ -368,15 +368,14 @@ module Fragment : sig
       let make = to_component makeInternal]
 end
 
-(*
- [@bs.module "react"]
- external memo: component('props) => component('props) = "";
+val memo : 'props component -> 'props component
+  [@@js.global "__LIB__react.memo"]
 
- [@bs.module "react"]
- external memoCustomCompareProps:
-   (component('props), [@bs.uncurry] (('props, 'props) => bool)) =>
-   component('props) =
-   "memo";
+val memoCustomCompareProps :
+  'props component -> ('props -> 'props -> bool) -> 'props component
+  [@@js.global "__LIB__react.memo"]
+
+(*
 
  module Suspense = {
    [@bs.obj]

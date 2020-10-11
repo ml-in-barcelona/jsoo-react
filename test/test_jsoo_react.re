@@ -328,6 +328,75 @@ let testUseMemo1 = () => {
   });
 };
 
+let testMemo = () => {
+  let numRenders = ref(0);
+  module Memoized = {
+    [@react.component]
+    let make =
+      React.memo((~a) => {
+        numRenders := numRenders^ + 1;
+        <div>
+          {Printf.sprintf("`a` is %s, `numRenders` is %d", a, numRenders^)
+           |> React.string}
+        </div>;
+      });
+  };
+  withContainer(c => {
+    let fooString = "foo"; /* strings in OCaml are boxed, and we want to keep same reference across renders */
+    act(() => {ReactDOM.render(<Memoized a=fooString />, Html.element(c))});
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(Js.string("`a` is foo, `numRenders` is 1")),
+    );
+    act(() => {ReactDOM.render(<Memoized a=fooString />, Html.element(c))});
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(Js.string("`a` is foo, `numRenders` is 1")),
+    );
+    act(() => {ReactDOM.render(<Memoized a="bar" />, Html.element(c))});
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(Js.string("`a` is bar, `numRenders` is 2")),
+    );
+  });
+};
+
+let testMemoCustomCompareProps = () => {
+  let numRenders = ref(0);
+  module Memoized = {
+    [@react.component]
+    let make =
+      React.memoCustomCompareProps(
+        (~a) => {
+          numRenders := numRenders^ + 1;
+          <div>
+            {Printf.sprintf("`a` is %s, `numRenders` is %d", a, numRenders^)
+             |> React.string}
+          </div>;
+        },
+        (_prevPros, _nextProps) => true,
+      );
+  };
+  withContainer(c => {
+    let fooString = "foo"; /* strings in OCaml are boxed, and we want to keep same reference across renders */
+    act(() => {ReactDOM.render(<Memoized a=fooString />, Html.element(c))});
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(Js.string("`a` is foo, `numRenders` is 1")),
+    );
+    act(() => {ReactDOM.render(<Memoized a=fooString />, Html.element(c))});
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(Js.string("`a` is foo, `numRenders` is 1")),
+    );
+    act(() => {ReactDOM.render(<Memoized a="bar" />, Html.element(c))});
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(Js.string("`a` is foo, `numRenders` is 1")),
+    );
+  });
+};
+
 let testCreateRef = () => {
   let reactRef = React.createRef();
   assert_equal(React.Ref.current(reactRef), Js_of_ocaml.Js.null);
@@ -408,14 +477,16 @@ let testFragmentModule = () => {
     act(() => {
       ReactDOM.render(
         <React.Fragment>
-          <td> {React.string("Hello")} </td>
-          <td> {React.string("World")} </td>
+          <div> {React.string("Hello")} </div>
+          <div> {React.string("World")} </div>
         </React.Fragment>,
         Html.element(c),
       )
     });
-    printInnerHTML(c);
-    assert_equal(c##.innerHTML, Js.string("<td>Hello</td><td>World</td>"));
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<div>Hello</div><div>World</div>"),
+    );
   });
 };
 
@@ -424,14 +495,16 @@ let testFragmentSyntax = () => {
     act(() => {
       ReactDOM.render(
         <>
-          <td> {React.string("Hello")} </td>
-          <td> {React.string("World")} </td>
+          <div> {React.string("Hello")} </div>
+          <div> {React.string("World")} </div>
         </>,
         Html.element(c),
       )
     });
-    printInnerHTML(c);
-    assert_equal(c##.innerHTML, Js.string("<td>Hello</td><td>World</td>"));
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<div>Hello</div><div>World</div>"),
+    );
   });
 };
 
@@ -454,7 +527,13 @@ let useCallback =
     "useCallback4" >:: testUseCallback4,
   ];
 
-let useMemo = "useMemo" >::: ["useMemo1" >:: testUseMemo1];
+let memoization =
+  "memo"
+  >::: [
+    "useMemo1" >:: testUseMemo1,
+    "memo" >:: testMemo,
+    "memoCustomCompareProps" >:: testMemoCustomCompareProps,
+  ];
 
 let refs =
   "refs" >::: ["createRef" >:: testCreateRef, "useRef" >:: testUseRef];
@@ -475,7 +554,7 @@ let suite =
     context,
     useEffect,
     useCallback,
-    useMemo,
+    memoization,
     refs,
     children,
     fragments,
