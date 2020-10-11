@@ -249,6 +249,13 @@ val useReducer :
   ('state -> 'action -> 'state) -> 'state -> 'state * ('action -> unit)
   [@@js.global "__LIB__react.useReducer"]
 
+val useReducerWithMapState :
+     ('state -> 'action -> 'state)
+  -> 'initialState
+  -> ('initialState -> 'state)
+  -> 'state * ('action -> unit)
+  [@@js.global "__LIB__react.useReducer"]
+
 module Ref : sig
   type 'value t
 
@@ -375,136 +382,4 @@ val memoCustomCompareProps :
   'props component -> ('props -> 'props -> bool) -> 'props component
   [@@js.global "__LIB__react.memo"]
 
-(*
-
- module Suspense = {
-   [@bs.obj]
-   external makeProps:
-     (
-       ~children: element=?,
-       ~fallback: element=?,
-       ~maxDuration: int=?,
-       ~key: 'key=?,
-       unit
-     ) =>
-     {
-       .
-       "children": option(element),
-       "fallback": option(element),
-       "maxDuration": option(int),
-     } =
-     "";
-   [@bs.module "react"]
-   external make:
-     component({
-       .
-       "children": option(element),
-       "fallback": option(element),
-       "maxDuration": option(int),
-     }) =
-     "Suspense";
- };
-*)
-
-(* HOOKS *)
-
-(* [@js.global "__LIB__react"] 
-let useState: (unit => 'state) => ('state, ('state => 'state) => unit);
-
-[@js.global "__LIB__react"] 
-let useReducer: (('state, 'action) => 'state, 'state) => ('state, 'action => unit);
-
-
- [@bs.module "react"]
- external useReducerWithMapState:
-   (
-     [@bs.uncurry] (('state, 'action) => 'state),
-     'initialState,
-     'initialState => 'state
-   ) =>
-   ('state, 'action => unit) =
-   "useReducer";
-
- [@bs.module "react"]
- external useImperativeHandle0:
-   (
-     Js.Nullable.t(Ref.t('value)),
-     [@bs.uncurry] (unit => 'value),
-     [@bs.as {json|[]|json}] _
-   ) =>
-   unit =
-   "useImperativeHandle";
-
- [@bs.module "react"]
- external useImperativeHandle1:
-   (
-     Js.Nullable.t(Ref.t('value)),
-     [@bs.uncurry] (unit => 'value),
-     array('a)
-   ) =>
-   unit =
-   "useImperativeHandle";
-
- [@bs.module "react"]
- external useImperativeHandle2:
-   (
-     Js.Nullable.t(Ref.t('value)),
-     [@bs.uncurry] (unit => 'value),
-     ('a, 'b)
-   ) =>
-   unit =
-   "useImperativeHandle";
-
- [@bs.module "react"]
- external useImperativeHandle3:
-   (
-     Js.Nullable.t(Ref.t('value)),
-     [@bs.uncurry] (unit => 'value),
-     ('a, 'b, 'c)
-   ) =>
-   unit =
-   "useImperativeHandle";
-
- [@bs.module "react"]
- external useImperativeHandle4:
-   (
-     Js.Nullable.t(Ref.t('value)),
-     [@bs.uncurry] (unit => 'value),
-     ('a, 'b, 'c, 'd)
-   ) =>
-   unit =
-   "useImperativeHandle";
-
- [@bs.module "react"]
- external useImperativeHandle5:
-   (
-     Js.Nullable.t(Ref.t('value)),
-     [@bs.uncurry] (unit => 'value),
-     ('a, 'b, 'c, 'd, 'e)
-   ) =>
-   unit =
-   "useImperativeHandle";
-
- [@bs.module "react"]
- external useImperativeHandle6:
-   (
-     Js.Nullable.t(Ref.t('value)),
-     [@bs.uncurry] (unit => 'value),
-     ('a, 'b, 'c, 'd, 'e, 'f)
-   ) =>
-   unit =
-   "useImperativeHandle";
-
- [@bs.module "react"]
- external useImperativeHandle7:
-   (
-     Js.Nullable.t(Ref.t('value)),
-     [@bs.uncurry] (unit => 'value),
-     ('a, 'b, 'c, 'd, 'e, 'f, 'g)
-   ) =>
-   unit =
-   "useImperativeHandle";
-
- [@bs.set]
- external setDisplayName: (component('props), string) => unit = "displayName";
-*)
+val setDisplayName : 'props component -> string -> unit [@@js.set "displayName"]

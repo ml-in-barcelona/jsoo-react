@@ -301,6 +301,141 @@ let testUseCallback4 = () => {
   });
 };
 
+let testUseReducer = () => {
+  module DummyReducerComponent = {
+    type action =
+      | Increment
+      | Decrement;
+    [@react.component]
+    let make = (~initialValue=0, ()) => {
+      let (state, send) =
+        React.useReducer(
+          (state, action) =>
+            switch (action) {
+            | Increment => state + 1
+            | Decrement => state - 1
+            },
+          initialValue,
+        );
+
+      <>
+        <div className="value"> {React.int(state)} </div>
+        <button onClick={_ => send(Increment)}>
+          {React.string("Increment")}
+        </button>
+        <button onClick={_ => send(Decrement)}>
+          {React.string("Decrement")}
+        </button>
+      </>;
+    };
+  };
+  withContainer(c => {
+    open ReactDOMTestUtils;
+    act(() => {ReactDOM.render(<DummyReducerComponent />, Html.element(c))});
+    assert_equal(
+      c##.innerHTML,
+      Js.string(
+        "<div class=\"value\">0</div><button>Increment</button><button>Decrement</button>",
+      ),
+    );
+    let button =
+      DOM.findBySelectorAndPartialTextContent(
+        unsafe_to_element(c),
+        "button",
+        "Increment",
+      );
+    act(() => {Simulate.click(button)});
+    assert_equal(
+      c##.innerHTML,
+      Js.string(
+        "<div class=\"value\">1</div><button>Increment</button><button>Decrement</button>",
+      ),
+    );
+    let button =
+      DOM.findBySelectorAndPartialTextContent(
+        unsafe_to_element(c),
+        "button",
+        "Decrement",
+      );
+    act(() => {Simulate.click(button)});
+    assert_equal(
+      c##.innerHTML,
+      Js.string(
+        "<div class=\"value\">0</div><button>Increment</button><button>Decrement</button>",
+      ),
+    );
+  });
+};
+
+let testUseReducerWithMapState = () => {
+  module DummyReducerWithMapStateComponent = {
+    type action =
+      | Increment
+      | Decrement;
+    [@react.component]
+    let make = (~initialValue=0, ()) => {
+      let (state, send) =
+        React.useReducerWithMapState(
+          (state, action) =>
+            switch (action) {
+            | Increment => state + 1
+            | Decrement => state - 1
+            },
+          initialValue,
+          initialValue => initialValue + 1,
+        );
+
+      <>
+        <div className="value"> {React.int(state)} </div>
+        <button onClick={_ => send(Increment)}>
+          {React.string("Increment")}
+        </button>
+        <button onClick={_ => send(Decrement)}>
+          {React.string("Decrement")}
+        </button>
+      </>;
+    };
+  };
+  withContainer(c => {
+    open ReactDOMTestUtils;
+    act(() => {
+      ReactDOM.render(<DummyReducerWithMapStateComponent />, Html.element(c))
+    });
+    assert_equal(
+      c##.innerHTML,
+      Js.string(
+        "<div class=\"value\">1</div><button>Increment</button><button>Decrement</button>",
+      ),
+    );
+    let button =
+      DOM.findBySelectorAndPartialTextContent(
+        unsafe_to_element(c),
+        "button",
+        "Increment",
+      );
+    act(() => {Simulate.click(button)});
+    assert_equal(
+      c##.innerHTML,
+      Js.string(
+        "<div class=\"value\">2</div><button>Increment</button><button>Decrement</button>",
+      ),
+    );
+    let button =
+      DOM.findBySelectorAndPartialTextContent(
+        unsafe_to_element(c),
+        "button",
+        "Decrement",
+      );
+    act(() => {Simulate.click(button)});
+    assert_equal(
+      c##.innerHTML,
+      Js.string(
+        "<div class=\"value\">1</div><button>Increment</button><button>Decrement</button>",
+      ),
+    );
+  });
+};
+
 let testUseMemo1 = () => {
   module UseMemo = {
     [@react.component]
@@ -515,9 +650,9 @@ let context = "context" >::: ["testContext" >:: testContext];
 let useEffect =
   "useEffect"
   >::: [
-    "testUseEffect" >:: testUseEffect,
-    "testUseEffect2" >:: testUseEffect2,
-    "testUseEffect3" >:: testUseEffect3,
+    "useEffect" >:: testUseEffect,
+    "useEffect2" >:: testUseEffect2,
+    "useEffect3" >:: testUseEffect3,
   ];
 
 let useCallback =
@@ -527,6 +662,12 @@ let useCallback =
     "useCallback4" >:: testUseCallback4,
   ];
 
+let useReducer =
+  "useReducer"
+  >::: [
+    "useReducer" >:: testUseReducer,
+    "useReducerWithMapState" >:: testUseReducerWithMapState,
+  ];
 let memoization =
   "memo"
   >::: [
@@ -554,6 +695,7 @@ let suite =
     context,
     useEffect,
     useCallback,
+    useReducer,
     memoization,
     refs,
     children,
