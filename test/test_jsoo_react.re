@@ -65,7 +65,6 @@ let testKeys = () =>
         Html.element(c),
       )
     });
-    printInnerHTML(c);
     assert_equal(
       c##.innerHTML,
       Js.string("<div><div>a</div><div>b</div></div>"),

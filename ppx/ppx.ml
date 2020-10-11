@@ -425,8 +425,7 @@ let makePropsDecl fnName loc namedArgListWithKeyAndRef namedTypeList =
 
 (* TODO: some line number might still be wrong *)
 let jsxMapper () =
-  let jsxVersion = ref None in
-  let transformUppercaseCall3 modulePath mapper loc attrs _ callArguments =
+  let transformUppercaseCall modulePath mapper loc attrs _ callArguments =
     let children, argsWithLabels =
       extractChildren ~loc ~removeLastPositionUnit:true callArguments
     in
@@ -495,7 +494,7 @@ let jsxMapper () =
           ; (nolabel, props)
           ; (nolabel, children) ]
   in
-  let transformLowercaseCall3 mapper loc attrs callArguments id =
+  let transformLowercaseCall mapper loc attrs callArguments id =
     let children, nonChildrenProps = extractChildren ~loc callArguments in
     let componentNameExpr = constantString ~loc id in
     let childrenExpr = transformChildrenIfList ~loc ~mapper children in
@@ -1188,22 +1187,14 @@ let jsxMapper () =
             (Invalid_argument
                "JSX: `createElement` should be preceeded by a module name.")
       (* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) *)
-      | {loc; txt= Ldot (modulePath, ("createElement" | "make"))} -> (
-        match !jsxVersion with
-        | None | Some 3 ->
-            transformUppercaseCall3 modulePath mapper loc attrs callExpression
-              callArguments
-        | Some _ ->
-            raise (Invalid_argument "JSX: the JSX version must be  3") )
+      | {loc; txt= Ldot (modulePath, ("createElement" | "make"))} ->
+          transformUppercaseCall modulePath mapper loc attrs callExpression
+            callArguments
       (* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) *)
       (* turn that into
          ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [|bla|]) *)
-      | {loc; txt= Lident id} -> (
-        match !jsxVersion with
-        | None | Some 3 ->
-            transformLowercaseCall3 mapper loc attrs callArguments id
-        | Some _ ->
-            raise (Invalid_argument "JSX: the JSX version must be 3") )
+      | {loc; txt= Lident id} ->
+          transformLowercaseCall mapper loc attrs callArguments id
       | {txt= Ldot (_, anythingNotCreateElementOrMake)} ->
           raise
             (Invalid_argument

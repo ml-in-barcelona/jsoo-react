@@ -2,7 +2,7 @@ project_name = jsoo-react
 
 opam_file = $(project_name).opam
 
-.PHONY: build test test-promote deps fmt init
+.PHONY: build build-prod dev test test-promote deps fmt init
 
 build:
 	dune build @@default
@@ -10,11 +10,11 @@ build:
 build-prod:
 	dune build --profile=prod @@default
 
-test:
-	dune build @runtest
-
 dev:
 	dune build -w @@default
+
+test:
+	dune build @runtest
 
 test-promote:
 	dune build @runtest --auto-promote
