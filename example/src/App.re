@@ -1,1 +1,0 @@
-ReactDOM.renderToElementWithId(<Main />, "app");
