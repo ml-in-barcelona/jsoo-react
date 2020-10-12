@@ -5,6 +5,7 @@ type example = {
   title: string,
   element: React.element,
   code: React.element,
+  showTitle: bool,
 };
 
 let firstExample = {
@@ -12,6 +13,7 @@ let firstExample = {
   title: "Hello World OCaml",
   element: <HelloWorldOCaml />,
   code: <Code text=[%blob "HelloWorldOCaml.ml"] />,
+  showTitle: true,
 };
 let examples = [
   firstExample,
@@ -20,24 +22,28 @@ let examples = [
     title: "Hello World Reason",
     element: <HelloWorldReason />,
     code: <Code text=[%blob "HelloWorldReason.re"] />,
+    showTitle: true,
   },
   {
     path: "events",
     title: "Events",
     element: <Events />,
     code: <Code text=[%blob "Events.re"] />,
+    showTitle: true,
   },
   {
     path: "greeting",
     title: "GreetingReason",
     element: <GreetingReason />,
     code: <Code text=[%blob "GreetingReason.re"] />,
+    showTitle: true,
   },
   {
     path: "refs",
     title: "Refs",
     element: <Refs />,
     code: <Code text=[%blob "Refs.re"] />,
+    showTitle: true,
   },
   {
     path: "interfaces",
@@ -49,6 +55,7 @@ let examples = [
         React.null
       </Interface>,
     code: <Code text=[%blob "Interface.rei"] />,
+    showTitle: false,
   },
   {
     path: "bindings",
@@ -62,6 +69,7 @@ let examples = [
         {"." |> s}
       </p>,
     code: <Code text=[%blob "Bindings.rei"] />,
+    showTitle: false,
   },
   {
     path: "ppxs",
@@ -99,6 +107,7 @@ let examples = [
         </p>
       </>,
     code: <Code text=[%blob "Code.re"] />,
+    showTitle: false,
   },
 ];
 
@@ -139,7 +148,8 @@ let make = () => {
            |> Option.value(~default=firstExample);
          <div>
            <h2> {example.title |> s} </h2>
-           <h4> {"Rendered component" |> s} </h4>
+           {example.showTitle
+              ? <h4> {"Rendered component" |> s} </h4> : React.null}
            {example.element}
            <h4> {"Code" |> s} </h4>
            {example.code}
