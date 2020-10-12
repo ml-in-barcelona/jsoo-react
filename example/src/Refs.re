@@ -1,10 +1,11 @@
-let log = a => Js_of_ocaml.Firebug.console##log(a);
+open Bindings;
+open Js_of_ocaml;
 
 module FancyLink = {
   [@react.component]
   let make =
     ReactDOM.forwardRef((~href, ~repo, ref) =>
-      <a ref=?{ref |> Js_of_ocaml.Js.Opt.to_option} href className="FancyLink">
+      <a ref=?{ref |> Js.Opt.to_option} href className="FancyLink">
         {repo |> React.string}
       </a>
     );
@@ -13,14 +14,17 @@ module FancyLink = {
 [@react.component]
 let make = () => {
   let (show, setShow) = React.useState(() => true);
-  // You can now get a ref directly to the DOM button:
+  /* You can now get a ref directly to the DOM button: */
   let ref =
     ReactDOM.Ref.callbackDomRef(ref => {
-      log(Js_of_ocaml.Js.string("Ref is:"));
-      log(ref);
+      Console.log(Js.string("Ref is:"));
+      Console.log(ref);
     });
   <>
-    <button key="toggle" onClick={_ => setShow(s => !s)}>
+    <button
+      key="toggle"
+      onClick={_ => setShow(s => !s)}
+      style={ReactDOM.Style.make(~marginRight="15px", ())}>
       {"Toggle fancy link" |> React.string}
     </button>
     {show
@@ -31,5 +35,8 @@ let make = () => {
            ref
          />
        : React.null}
+    <p>
+      {"Open the console to see the value of the ref changing." |> React.string}
+    </p>
   </>;
 };

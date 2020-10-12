@@ -1,10 +1,11 @@
+open Js_of_ocaml;
+
 [@react.component]
 let make = (~text) => {
-  let codeRef = React.useRef(Js_of_ocaml.Js.null);
+  let codeRef = React.useRef(Js.null);
   React.useEffect(() => {
-    switch (codeRef |> React.Ref.current |> Js_of_ocaml.Js.Opt.to_option) {
-    | Some(el) =>
-      Js_of_ocaml.Js.Unsafe.global##.Prism##highlightElement(el);
+    switch (codeRef |> React.Ref.current |> Js.Opt.to_option) {
+    | Some(el) => Js.Unsafe.global##.Prism##highlightElement(el)
     | None => ()
     };
     None;

@@ -16,6 +16,8 @@
 
 (rule
  (alias runtest)
- (deps test_jsoo_react.bc.js (source_tree node_modules))
+ (deps
+  test_jsoo_react.bc.js
+  (source_tree node_modules))
  (action
   (run node test_jsoo_react.bc.js)))

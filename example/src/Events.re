@@ -1,3 +1,5 @@
+open Bindings;
+
 type coords = {
   x: int,
   y: int,
@@ -41,6 +43,7 @@ let make = () => {
           let value = ReactEvent.Form.target(event) |> Window.value;
           setInputText(_ => value);
         }}
+        style={ReactDOM.Style.make(~marginRight="15px", ())}
         value=inputText
       />
       <button type_="submit"> {"submit dis" |> React.string} </button>
