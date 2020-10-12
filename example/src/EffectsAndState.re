@@ -1,3 +1,5 @@
+open Bindings;
+
 type action =
   | Increment
   | Decrement;
@@ -19,10 +21,10 @@ let make = (~name="Billy", ~children=?) => {
 
   <div>
     <UseEffect count />
-    <p> {"Hello from GreetingReason " ++ name |> React.string} </p>
+    <p> {"Hello from EffectsAndState component, " ++ name ++ "!" |> React.string} </p>
     <button
       onClick={_ => {
-        print_endline("Click!");
+        Console.log("Click!");
         setCount(c => c + 1);
       }}>
       {"Count: " ++ string_of_int(count) |> React.string}

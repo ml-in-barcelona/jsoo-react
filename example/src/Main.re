@@ -32,10 +32,16 @@ let examples = [
     showTitle: true,
   },
   {
-    path: "greeting",
-    title: "GreetingReason",
-    element: <GreetingReason />,
-    code: <Code text=[%blob "GreetingReason.re"] />,
+    path: "effects-and-state",
+    title: "Effects and state",
+    element: <EffectsAndState />,
+    code:
+      <>
+        <p> {"EffectsAndState component:" |> s} </p>
+        <Code text=[%blob "EffectsAndState.re"] />
+        <p> {"UseEffect component:" |> s} </p>
+        <Code text=[%blob "UseEffect.re"] />
+      </>,
     showTitle: true,
   },
   {
@@ -114,6 +120,7 @@ let examples = [
 [@react.component]
 let make = () => {
   let url = ReactRouter.useUrl();
+  Bindings.Console.log(url);
 
   <div className="flex-container">
     <div className="sidebar">
@@ -144,8 +151,10 @@ let make = () => {
            |> List.find_opt(e => {
                 e.path
                 == (
-                     List.nth_opt(url.path, List.length(url.path) - 1)
-                     |> Option.value(~default="")
+                     List.length(url.path) > 0
+                       ? List.nth_opt(url.path, List.length(url.path) - 1)
+                         |> Option.value(~default="")
+                       : ""
                    )
               })
            |> Option.value(~default=firstExample);

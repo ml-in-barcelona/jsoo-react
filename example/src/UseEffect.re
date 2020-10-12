@@ -1,3 +1,5 @@
+open Bindings;
+
 [@react.component]
 let make = (~count) => {
   open Js_of_ocaml_lwt;
@@ -8,7 +10,7 @@ let make = (~count) => {
       bind(
         sleep(1.),
         () => {
-          print_endline(
+          Console.log(
             "count changed 1 sec ago! Value is: " ++ string_of_int(count),
           );
           return();
@@ -17,7 +19,7 @@ let make = (~count) => {
       |> ignore;
       Some(
         () =>
-          print_endline(
+          Console.log(
             "Unmounting effect for value: " ++ string_of_int(count),
           ),
       );
@@ -26,7 +28,7 @@ let make = (~count) => {
   );
 
   React.useLayoutEffect(() => {
-    print_endline("useLayoutEffect: component updated");
+    Console.log("useLayoutEffect: component updated");
     None;
   });
 

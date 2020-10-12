@@ -65,8 +65,9 @@ let path = () =>
   | Some(w) =>
     switch (Browser.(w |> location |> pathname)) {
     | ""
-    | "/" => []
+    | "/" => print_endline("here"); []
     | raw =>
+      print_endline("raw");
       /* remove the preceeding /, which every pathname seems to have */
       let raw = sliceToEnd(raw);
 
