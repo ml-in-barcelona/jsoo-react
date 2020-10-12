@@ -120,7 +120,6 @@ let examples = [
 [@react.component]
 let make = () => {
   let url = ReactRouter.useUrl();
-  Bindings.Console.log(url);
 
   <div className="flex-container">
     <div className="sidebar">
