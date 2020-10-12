@@ -25,10 +25,10 @@ let make = (~count) => {
     [|count|],
   );
 
-  // React.useLayoutEffect(() => {
-  //   print_endline("useLayoutEffect: component updated");
-  //   None;
-  // });
+  React.useLayoutEffect(() => {
+    print_endline("useLayoutEffect: component updated");
+    None;
+  });
 
   <div>
     {"UseEffect: printing delayed counts on the console since 2019 :)"

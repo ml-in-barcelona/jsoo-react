@@ -33,6 +33,12 @@ let examples = [
     element: <GreetingReason />,
     code: <Code text=[%blob "GreetingReason.re"] />,
   },
+  {
+    path: "refs",
+    title: "Refs",
+    element: <Refs />,
+    code: <Code text=[%blob "Refs.re"] />,
+  },
 ];
 
 [@react.component]
@@ -80,10 +86,6 @@ let make = () => {
       </div>
     </div>
   </div>;
-  // <h1 className="hello"> {"OCaml component" |> s} </h1>
-  // <h1> {"Reason component" |> s} </h1>
-  // <h1> {"Refs" |> s} </h1>
-  // <Refs />
   // <h1 key="h1"> {"Interface files" |> s} </h1>
   // <Interface
   //   key="inter" title="Hi from a component with an interface file">

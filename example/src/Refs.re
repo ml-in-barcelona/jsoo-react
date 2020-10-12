@@ -4,7 +4,9 @@ module FancyLink = {
   [@react.component]
   let make =
     ReactDOM.forwardRef((~href, ~repo, ref) =>
-      <a ?ref href className="FancyLink"> {repo |> React.string} </a>
+      <a ref=?{ref |> Js_of_ocaml.Js.Opt.to_option} href className="FancyLink">
+        {repo |> React.string}
+      </a>
     );
 };
 
