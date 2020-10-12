@@ -143,7 +143,10 @@ let make = () => {
            examples
            |> List.find_opt(e => {
                 e.path
-                == (List.nth_opt(url.path, 0) |> Option.value(~default=""))
+                == (
+                     List.nth_opt(url.path, List.length(url.path) - 1)
+                     |> Option.value(~default="")
+                   )
               })
            |> Option.value(~default=firstExample);
          <div>
