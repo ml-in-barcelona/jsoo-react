@@ -1,6 +1,6 @@
 (executable
  (name test_jsoo_react)
- (libraries webtest webtest-js gen_js_api jsoo_react_lib jsoo_react_test
+ (libraries webtest webtest-js gen_js_api react jsoo_react_test
    js_of_ocaml)
  (preprocess
   (pps jsoo-react.ppx js_of_ocaml-ppx))

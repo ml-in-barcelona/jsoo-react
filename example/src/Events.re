@@ -8,7 +8,7 @@ type coords = {
 module Title = {
   [@react.component]
   let make = (~children) => {
-    <h5 style={ReactDOM.Style.make(~margin="15px 0 0", ())}> children </h5>;
+    <h5 style={React.Dom.Style.make(~margin="15px 0 0", ())}> children </h5>;
   };
 };
 
@@ -20,7 +20,7 @@ let make = () => {
     <h5> {"text input via \"onChange\"" |> React.string} </h5>
     <input
       onChange={event => {
-        let value = ReactEvent.Form.target(event) |> Window.value;
+        let value = React.Event.Form.target(event) |> Window.value;
         setInputText(_ => value);
       }}
       value=inputText
@@ -28,7 +28,7 @@ let make = () => {
     <h5> {"form submission via \"onSubmit\"" |> React.string} </h5>
     <form
       onSubmit={event => {
-        ReactEvent.Form.preventDefault(event);
+        React.Event.Form.preventDefault(event);
         switch (Window.get) {
         | None => ()
         | Some(w) =>
@@ -40,10 +40,10 @@ let make = () => {
       }}>
       <input
         onChange={event => {
-          let value = ReactEvent.Form.target(event) |> Window.value;
+          let value = React.Event.Form.target(event) |> Window.value;
           setInputText(_ => value);
         }}
-        style={ReactDOM.Style.make(~marginRight="15px", ())}
+        style={React.Dom.Style.make(~marginRight="15px", ())}
         value=inputText
       />
       <button type_="submit"> {"submit dis" |> React.string} </button>
@@ -53,7 +53,7 @@ let make = () => {
       <img
         src="https://cdn.glitch.com/ed95e263-69d5-4c3b-aed2-d85713f4aef9%2Fdoggo.jpeg?v=1563384185147"
         onMouseMove={event => {
-          let (x, y) = ReactEvent.Mouse.(screenX(event), screenY(event));
+          let (x, y) = React.Event.Mouse.(screenX(event), screenY(event));
           setCoords(_ => {{x, y}});
         }}
       />

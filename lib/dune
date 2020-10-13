@@ -1,21 +1,20 @@
 (library
- (name jsoo_react_lib)
+ (name react)
  (public_name jsoo-react.lib)
- (wrapped false)
  (preprocess
   (pps gen_js_api.ppx))
  (js_of_ocaml
-  (javascript_files ReactJs.js ReactDOMJs.js))
+  (javascript_files react.js react-dom.js))
  (libraries js_of_ocaml gen_js_api))
 
 (rule
- (targets react.ml)
- (deps react.mli)
+ (targets core.ml)
+ (deps core.mli)
  (action
   (run %{bin:gen_js_api} -o %{targets} %{deps})))
 
 (rule
- (targets reactDOM.ml)
- (deps reactDOM.mli)
+ (targets dom.ml)
+ (deps dom.mli)
  (action
   (run %{bin:gen_js_api} -o %{targets} %{deps})))

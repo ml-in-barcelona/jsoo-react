@@ -17,10 +17,10 @@ external domElement_of_js : Ojs.t -> domElement = "%identity"]
 
 val unmountComponentAtNode : domElement -> bool
 
-val render : React.element -> domElement -> unit
+val render : Core.element -> domElement -> unit
   [@@js.global "__LIB__reactDOM.render"]
 
-val renderToElementWithId : React.element -> string -> unit
+val renderToElementWithId : Core.element -> string -> unit
   [@@js.custom
     val getElementById : string -> domElement option
       [@@js.global "document.getElementById"]
@@ -42,9 +42,9 @@ type domRef = private Ojs.t
 module Ref : sig
   type t = domRef
 
-  type currentDomRef = domElement React.js_nullable React.Ref.t
+  type currentDomRef = domElement Core.js_nullable Core.Ref.t
 
-  type callbackDomRef = domElement React.js_nullable -> unit
+  type callbackDomRef = domElement Core.js_nullable -> unit
 
   [@@@js.stop]
 
@@ -269,91 +269,91 @@ val domProps :
        string
        (* "hard" or "soft" *)
        (* Clipboard events *)
-  -> ?onCopy:(ReactEvent.Clipboard.t -> unit)
-  -> ?onCut:(ReactEvent.Clipboard.t -> unit)
-  -> ?onPaste:(ReactEvent.Clipboard.t -> unit)
+  -> ?onCopy:(Event.Clipboard.t -> unit)
+  -> ?onCut:(Event.Clipboard.t -> unit)
+  -> ?onPaste:(Event.Clipboard.t -> unit)
   -> ?onCompositionEnd:
        ((* Composition events *)
-        ReactEvent.Composition.t -> unit)
-  -> ?onCompositionStart:(ReactEvent.Composition.t -> unit)
-  -> ?onCompositionUpdate:(ReactEvent.Composition.t -> unit)
+        Event.Composition.t -> unit)
+  -> ?onCompositionStart:(Event.Composition.t -> unit)
+  -> ?onCompositionUpdate:(Event.Composition.t -> unit)
   -> ?onKeyDown:((* Keyboard events *)
-                 ReactEvent.Keyboard.t -> unit)
-  -> ?onKeyPress:(ReactEvent.Keyboard.t -> unit)
-  -> ?onKeyUp:(ReactEvent.Keyboard.t -> unit)
+                 Event.Keyboard.t -> unit)
+  -> ?onKeyPress:(Event.Keyboard.t -> unit)
+  -> ?onKeyUp:(Event.Keyboard.t -> unit)
   -> ?onFocus:((* Focus events *)
-               ReactEvent.Focus.t -> unit)
-  -> ?onBlur:(ReactEvent.Focus.t -> unit)
+               Event.Focus.t -> unit)
+  -> ?onBlur:(Event.Focus.t -> unit)
   -> ?onChange:((* Form events *)
-                ReactEvent.Form.t -> unit)
-  -> ?onInput:(ReactEvent.Form.t -> unit)
-  -> ?onSubmit:(ReactEvent.Form.t -> unit)
+                Event.Form.t -> unit)
+  -> ?onInput:(Event.Form.t -> unit)
+  -> ?onSubmit:(Event.Form.t -> unit)
   -> ?onClick:((* Mouse events *)
-               ReactEvent.Mouse.t -> unit)
-  -> ?onContextMenu:(ReactEvent.Mouse.t -> unit)
-  -> ?onDoubleClick:(ReactEvent.Mouse.t -> unit)
-  -> ?onDrag:(ReactEvent.Mouse.t -> unit)
-  -> ?onDragEnd:(ReactEvent.Mouse.t -> unit)
-  -> ?onDragEnter:(ReactEvent.Mouse.t -> unit)
-  -> ?onDragExit:(ReactEvent.Mouse.t -> unit)
-  -> ?onDragLeave:(ReactEvent.Mouse.t -> unit)
-  -> ?onDragOver:(ReactEvent.Mouse.t -> unit)
-  -> ?onDragStart:(ReactEvent.Mouse.t -> unit)
-  -> ?onDrop:(ReactEvent.Mouse.t -> unit)
-  -> ?onMouseDown:(ReactEvent.Mouse.t -> unit)
-  -> ?onMouseEnter:(ReactEvent.Mouse.t -> unit)
-  -> ?onMouseLeave:(ReactEvent.Mouse.t -> unit)
-  -> ?onMouseMove:(ReactEvent.Mouse.t -> unit)
-  -> ?onMouseOut:(ReactEvent.Mouse.t -> unit)
-  -> ?onMouseOver:(ReactEvent.Mouse.t -> unit)
-  -> ?onMouseUp:(ReactEvent.Mouse.t -> unit)
+               Event.Mouse.t -> unit)
+  -> ?onContextMenu:(Event.Mouse.t -> unit)
+  -> ?onDoubleClick:(Event.Mouse.t -> unit)
+  -> ?onDrag:(Event.Mouse.t -> unit)
+  -> ?onDragEnd:(Event.Mouse.t -> unit)
+  -> ?onDragEnter:(Event.Mouse.t -> unit)
+  -> ?onDragExit:(Event.Mouse.t -> unit)
+  -> ?onDragLeave:(Event.Mouse.t -> unit)
+  -> ?onDragOver:(Event.Mouse.t -> unit)
+  -> ?onDragStart:(Event.Mouse.t -> unit)
+  -> ?onDrop:(Event.Mouse.t -> unit)
+  -> ?onMouseDown:(Event.Mouse.t -> unit)
+  -> ?onMouseEnter:(Event.Mouse.t -> unit)
+  -> ?onMouseLeave:(Event.Mouse.t -> unit)
+  -> ?onMouseMove:(Event.Mouse.t -> unit)
+  -> ?onMouseOut:(Event.Mouse.t -> unit)
+  -> ?onMouseOver:(Event.Mouse.t -> unit)
+  -> ?onMouseUp:(Event.Mouse.t -> unit)
   -> ?onSelect:((* Selection events *)
-                ReactEvent.Selection.t -> unit)
+                Event.Selection.t -> unit)
   -> ?onTouchCancel:((* Touch events *)
-                     ReactEvent.Touch.t -> unit)
-  -> ?onTouchEnd:(ReactEvent.Touch.t -> unit)
-  -> ?onTouchMove:(ReactEvent.Touch.t -> unit)
-  -> ?onTouchStart:(ReactEvent.Touch.t -> unit)
+                     Event.Touch.t -> unit)
+  -> ?onTouchEnd:(Event.Touch.t -> unit)
+  -> ?onTouchMove:(Event.Touch.t -> unit)
+  -> ?onTouchStart:(Event.Touch.t -> unit)
   -> ?onScroll:((* UI events *)
-                ReactEvent.UI.t -> unit)
+                Event.UI.t -> unit)
   -> ?onWheel:((* Wheel events *)
-               ReactEvent.Wheel.t -> unit)
+               Event.Wheel.t -> unit)
   -> ?onAbort:((* Media events *)
-               ReactEvent.Media.t -> unit)
-  -> ?onCanPlay:(ReactEvent.Media.t -> unit)
-  -> ?onCanPlayThrough:(ReactEvent.Media.t -> unit)
-  -> ?onDurationChange:(ReactEvent.Media.t -> unit)
-  -> ?onEmptied:(ReactEvent.Media.t -> unit)
-  -> ?onEncrypetd:(ReactEvent.Media.t -> unit)
-  -> ?onEnded:(ReactEvent.Media.t -> unit)
-  -> ?onError:(ReactEvent.Media.t -> unit)
-  -> ?onLoadedData:(ReactEvent.Media.t -> unit)
-  -> ?onLoadedMetadata:(ReactEvent.Media.t -> unit)
-  -> ?onLoadStart:(ReactEvent.Media.t -> unit)
-  -> ?onPause:(ReactEvent.Media.t -> unit)
-  -> ?onPlay:(ReactEvent.Media.t -> unit)
-  -> ?onPlaying:(ReactEvent.Media.t -> unit)
-  -> ?onProgress:(ReactEvent.Media.t -> unit)
-  -> ?onRateChange:(ReactEvent.Media.t -> unit)
-  -> ?onSeeked:(ReactEvent.Media.t -> unit)
-  -> ?onSeeking:(ReactEvent.Media.t -> unit)
-  -> ?onStalled:(ReactEvent.Media.t -> unit)
-  -> ?onSuspend:(ReactEvent.Media.t -> unit)
-  -> ?onTimeUpdate:(ReactEvent.Media.t -> unit)
-  -> ?onVolumeChange:(ReactEvent.Media.t -> unit)
-  -> ?onWaiting:(ReactEvent.Media.t -> unit)
+               Event.Media.t -> unit)
+  -> ?onCanPlay:(Event.Media.t -> unit)
+  -> ?onCanPlayThrough:(Event.Media.t -> unit)
+  -> ?onDurationChange:(Event.Media.t -> unit)
+  -> ?onEmptied:(Event.Media.t -> unit)
+  -> ?onEncrypetd:(Event.Media.t -> unit)
+  -> ?onEnded:(Event.Media.t -> unit)
+  -> ?onError:(Event.Media.t -> unit)
+  -> ?onLoadedData:(Event.Media.t -> unit)
+  -> ?onLoadedMetadata:(Event.Media.t -> unit)
+  -> ?onLoadStart:(Event.Media.t -> unit)
+  -> ?onPause:(Event.Media.t -> unit)
+  -> ?onPlay:(Event.Media.t -> unit)
+  -> ?onPlaying:(Event.Media.t -> unit)
+  -> ?onProgress:(Event.Media.t -> unit)
+  -> ?onRateChange:(Event.Media.t -> unit)
+  -> ?onSeeked:(Event.Media.t -> unit)
+  -> ?onSeeking:(Event.Media.t -> unit)
+  -> ?onStalled:(Event.Media.t -> unit)
+  -> ?onSuspend:(Event.Media.t -> unit)
+  -> ?onTimeUpdate:(Event.Media.t -> unit)
+  -> ?onVolumeChange:(Event.Media.t -> unit)
+  -> ?onWaiting:(Event.Media.t -> unit)
   -> ?onLoad:((* Image events *)
-              ReactEvent.Image.t -> unit)
+              Event.Image.t -> unit)
   -> ?onAnimationStart:
        (   (* duplicate *)
-           (* ?onError: ReactEvent.Image.t -> unit=?*)
+           (* ?onError: Event.Image.t -> unit=?*)
            (* Animation events *)
-           ReactEvent.Animation.t
+           Event.Animation.t
         -> unit)
-  -> ?onAnimationEnd:(ReactEvent.Animation.t -> unit)
-  -> ?onAnimationIteration:(ReactEvent.Animation.t -> unit)
+  -> ?onAnimationEnd:(Event.Animation.t -> unit)
+  -> ?onAnimationIteration:(Event.Animation.t -> unit)
   -> ?onTransitionEnd:((* Transition events *)
-                       ReactEvent.Transition.t -> unit)
+                       Event.Transition.t -> unit)
   -> ?accentHeight:(* svg *)
                    string
   -> ?accumulate:string
@@ -622,13 +622,13 @@ val createDOMElementVariadic :
   -> props:
        domProps
        (* props has to be non-optional as otherwise gen_js_api will put an empty list and React will break *)
-  -> (React.element list[@js.variadic])
-  -> React.element
+  -> (Core.element list[@js.variadic])
+  -> Core.element
   [@@js.global "__LIB__react.createElement"]
 
 val forwardRef :
-     ('props -> domRef React.js_nullable -> React.element)
-  -> 'props React.component
+     ('props -> domRef Core.js_nullable -> Core.element)
+  -> 'props Core.component
   [@@js.global "__LIB__react.forwardRef"]
 
 module Style : sig
