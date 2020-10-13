@@ -51,7 +51,9 @@ module Clipboard = struct
   include CommonApi
 
   include [%js:
-  val clipboardData : t -> Ojs.t [@@js.get]] (* Should return Dom.dataTransfer *)
+  val clipboardData : t -> Ojs.t [@@js.get]]
+
+  (* Should return Dom.dataTransfer *)
 end
 
 module Composition = struct
@@ -94,7 +96,9 @@ module Focus = struct
   include CommonApi
 
   include [%js:
-  val relatedTarget : t -> Ojs.t option [@@js.get]]  (* Should return Dom.eventTarget *)
+  val relatedTarget : t -> Ojs.t option [@@js.get]]
+
+  (* Should return Dom.eventTarget *)
 end
 
 module Form = struct
@@ -125,7 +129,9 @@ module Mouse = struct
 
   val pageY : t -> int [@@js.get]
 
-  val relatedTarget : t -> Ojs.t option [@@js.get]  (* Should return Dom.eventTarget *)
+  val relatedTarget : t -> Ojs.t option [@@js.get]
+
+  (* Should return Dom.eventTarget *)
 
   val screenX : t -> int [@@js.get]
 
@@ -154,9 +160,11 @@ module Touch = struct
 
   val shiftKey : t -> bool [@@js.get]
 
-  val targetTouches : t -> Ojs.t [@@js.get](* Should return Dom.touchList *)
+  val targetTouches : t -> Ojs.t [@@js.get] (* Should return Dom.touchList *)
 
-  val touches : t -> Ojs.t [@@js.get]] (* Should return Dom.touchList *)
+  val touches : t -> Ojs.t [@@js.get]]
+
+  (* Should return Dom.touchList *)
 end
 
 type window = Js_of_ocaml.Dom_html.window
@@ -169,7 +177,9 @@ module UI = struct
   include [%js:
   val detail : t -> int [@@js.get]
 
-  val view : t -> window [@@js.get]](* Should return DOMAbstractView/WindowProxy *)
+  val view : t -> window [@@js.get]]
+
+  (* Should return DOMAbstractView/WindowProxy *)
 end
 
 module Wheel = struct

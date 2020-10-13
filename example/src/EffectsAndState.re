@@ -21,7 +21,9 @@ let make = (~name="Billy", ~children=?) => {
 
   <div>
     <UseEffect count />
-    <p> {"Hello from EffectsAndState component, " ++ name ++ "!" |> React.string} </p>
+    <p>
+      {"Hello from EffectsAndState component, " ++ name ++ "!" |> React.string}
+    </p>
     <button
       onClick={_ => {
         Console.log("Click!");

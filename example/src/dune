@@ -8,13 +8,12 @@
   (pps gen_js_api.ppx ppx_blob js_of_ocaml-ppx jsoo_react_ppx)))
 
 (rule
-  (targets Bindings.ml)
-  (deps Bindings.rei)
-  (action 
-    (progn
-      (with-stdout-to Bindings.ml.tmp (run %{bin:refmt} --parse=re -i true --print=ml %{deps}))
-      (run %{bin:gen_js_api} -o %{targets} Bindings.ml.tmp)
-    )))
+ (targets Bindings.ml)
+ (deps Bindings.rei)
+ (action
+  (progn
+   (with-stdout-to Bindings.ml.tmp (run %{bin:refmt} --parse=re -i true --print=ml %{deps}))
+   (run %{bin:gen_js_api} -o %{targets} Bindings.ml.tmp))))
 
 (alias
  (name default)

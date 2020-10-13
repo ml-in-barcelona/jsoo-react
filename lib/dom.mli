@@ -272,9 +272,8 @@ val domProps :
   -> ?onCopy:(Event.Clipboard.t -> unit)
   -> ?onCut:(Event.Clipboard.t -> unit)
   -> ?onPaste:(Event.Clipboard.t -> unit)
-  -> ?onCompositionEnd:
-       ((* Composition events *)
-        Event.Composition.t -> unit)
+  -> ?onCompositionEnd:((* Composition events *)
+                        Event.Composition.t -> unit)
   -> ?onCompositionStart:(Event.Composition.t -> unit)
   -> ?onCompositionUpdate:(Event.Composition.t -> unit)
   -> ?onKeyDown:((* Keyboard events *)
@@ -627,8 +626,7 @@ val createDOMElementVariadic :
   [@@js.global "__LIB__react.createElement"]
 
 val forwardRef :
-     ('props -> domRef Core.js_nullable -> Core.element)
-  -> 'props Core.component
+  ('props -> domRef Core.js_nullable -> Core.element) -> 'props Core.component
   [@@js.global "__LIB__react.forwardRef"]
 
 module Style : sig

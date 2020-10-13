@@ -351,7 +351,9 @@ let testUseReducer = () => {
   };
   withContainer(c => {
     open ReactDOMTestUtils;
-    act(() => {React.Dom.render(<DummyReducerComponent />, Html.element(c))});
+    act(() => {
+      React.Dom.render(<DummyReducerComponent />, Html.element(c))
+    });
     assert_equal(
       c##.innerHTML,
       Js.string(
@@ -419,7 +421,10 @@ let testUseReducerWithMapState = () => {
   withContainer(c => {
     open ReactDOMTestUtils;
     act(() => {
-      React.Dom.render(<DummyReducerWithMapStateComponent />, Html.element(c))
+      React.Dom.render(
+        <DummyReducerWithMapStateComponent />,
+        Html.element(c),
+      )
     });
     assert_equal(
       c##.innerHTML,
@@ -574,7 +579,8 @@ let testForwardRef = () => {
 
   withContainer(c => {
     let count = ref(0);
-    let buttonRef = React.Dom.Ref.callbackDomRef(_ref => {count := count^ + 1});
+    let buttonRef =
+      React.Dom.Ref.callbackDomRef(_ref => {count := count^ + 1});
     act(() => {
       React.Dom.render(
         <FancyButton ref=buttonRef> <div /> </FancyButton>,
@@ -605,7 +611,10 @@ let testUseRef = () => {
     };
 
     act(() => {
-      React.Dom.render(<DummyComponentWithRefAndEffect cb />, Html.element(c))
+      React.Dom.render(
+        <DummyComponentWithRefAndEffect cb />,
+        Html.element(c),
+      )
     });
     assert_equal(
       myRef.contents |> Option.map(item => {item |> React.Ref.current}),
