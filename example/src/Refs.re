@@ -4,7 +4,7 @@ open Js_of_ocaml;
 module FancyLink = {
   [@react.component]
   let make =
-    ReactDOM.forwardRef((~href, ~repo, ref) =>
+    React.Dom.forwardRef((~href, ~repo, ref) =>
       <a ref=?{ref |> Js.Opt.to_option} href className="FancyLink">
         {repo |> React.string}
       </a>
@@ -16,7 +16,7 @@ let make = () => {
   let (show, setShow) = React.useState(() => true);
   /* You can now get a ref directly to the DOM button: */
   let ref =
-    ReactDOM.Ref.callbackDomRef(ref => {
+    React.Dom.Ref.callbackDomRef(ref => {
       Console.log(Js.string("Ref is:"));
       Console.log(ref);
     });
@@ -24,7 +24,7 @@ let make = () => {
     <button
       key="toggle"
       onClick={_ => setShow(s => !s)}
-      style={ReactDOM.Style.make(~marginRight="15px", ())}>
+      style={React.Dom.Style.make(~marginRight="15px", ())}>
       {"Toggle fancy link" |> React.string}
     </button>
     {show

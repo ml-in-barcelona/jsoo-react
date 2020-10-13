@@ -8,7 +8,7 @@
 (*
    The transform:
    transform `[@JSX] div(~props1=a, ~props2=b, ~children=[foo, bar], ())` into
-   `ReactDOM.createDOMElementVariadic("div", ReactDOM.domProps(~props1=1, ~props2=b), [foo, bar])`.
+   `React.Dom.createDOMElementVariadic("div", React.Dom.domProps(~props1=1, ~props2=b), [foo, bar])`.
    transform the upper-cased case
    `[@JSX] Foo.createElement(~key=a, ~ref=b, ~foo=bar, ~children=[], ())` into
    `React.createElement(Foo.make, Foo.makeProps(~key=a, ~ref=b, ~foo=bar, ()))`
@@ -65,7 +65,7 @@ let keyType loc =
   Typ.constr ~loc {loc; txt= optionIdent}
     [Typ.constr ~loc {loc; txt= Lident "string"} []]
 
-let refType loc = [%type: ReactDOM.domRef]
+let refType loc = [%type: React.Dom.domRef]
 
 type 'a children = ListLiteral of 'a | Exact of 'a
 
@@ -517,21 +517,22 @@ let jsxMapper () =
       | [_justTheUnitArgumentAtEnd] ->
           [ (* "div" *)
             (nolabel, componentNameExpr)
-          ; (* ReactDOM.props(~className=blabla, ~foo=bar, ()) *)
-            (labelled "props", [%expr ReactDOM.domProps ()])
+          ; (* React.Dom.props(~className=blabla, ~foo=bar, ()) *)
+            (labelled "props", [%expr React.Dom.domProps ()])
           ; (* [|moreCreateElementCallsHere|] *)
             (nolabel, childrenExpr) ]
       | nonEmptyProps ->
           let propsCall =
             Exp.apply ~loc
-              (Exp.ident ~loc {loc; txt= Ldot (Lident "ReactDOM", "domProps")})
+              (Exp.ident ~loc
+                 {loc; txt= Ldot (Ldot (Lident "React", "Dom"), "domProps")})
               ( nonEmptyProps
               |> List.map (fun (label, expression) ->
                      (label, mapper.expr mapper expression)) )
           in
           [ (* "div" *)
             (nolabel, componentNameExpr)
-          ; (* ReactDOM.props(~className=blabla, ~foo=bar, ()) *)
+          ; (* React.Dom.props(~className=blabla, ~foo=bar, ()) *)
             (labelled "props", propsCall)
           ; (* [|moreCreateElementCallsHere|] *)
             (nolabel, childrenExpr) ]
@@ -539,8 +540,9 @@ let jsxMapper () =
     Exp.apply
       ~loc (* throw away the [@JSX] attribute and keep the others, if any *)
       ~attrs
-      (* ReactDOM.createElement *)
-      (Exp.ident ~loc {loc; txt= Ldot (Lident "ReactDOM", createElementCall)})
+      (* React.Dom.createElement *)
+      (Exp.ident ~loc
+         {loc; txt= Ldot (Ldot (Lident "React", "Dom"), createElementCall)})
       args
   in
   let rec recursivelyTransformNamedArgsForMake mapper expr list =
@@ -1192,7 +1194,7 @@ let jsxMapper () =
             callArguments
       (* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) *)
       (* turn that into
-         ReactDOM.createElement(~props=ReactDOM.props(~props1=foo, ~props2=bar, ()), [|bla|]) *)
+         React.Dom.createElement(~props=React.Dom.props(~props1=foo, ~props2=bar, ()), [|bla|]) *)
       | {loc; txt= Lident id} ->
           transformLowercaseCall mapper loc attrs callArguments id
       | {txt= Ldot (_, anythingNotCreateElementOrMake)} ->
