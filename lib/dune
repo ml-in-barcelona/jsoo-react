@@ -3,8 +3,6 @@
  (public_name jsoo-react.lib)
  (preprocess
   (pps gen_js_api.ppx))
- (js_of_ocaml
-  (javascript_files react.js react-dom.js))
  (libraries js_of_ocaml gen_js_api))
 
 (rule
