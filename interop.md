@@ -1,16 +1,12 @@
 ## js_of_ocaml: Interop with JavaScript
 
-There are two approaches to interop with JavaScript code in Js_of_ocaml:
+There are three approaches to interop with JavaScript code in Js_of_ocaml:
 
 1. Use the functions available in the [`Js` module](http://ocsigen.org/js_of_ocaml/3.1.0/api/Js) in order to translate the data inside Reason/OCaml files, so it can be used from JavaScript.
 2. Use OCaml `external` statements to define the types, and then do the transformations on the JavaScript side. External functions are the same way that OCaml offers to [interop with C code](https://caml.inria.fr/pub/docs/manual-ocaml/intfc.html) as well.
 3. Use `gen_js_api` and create interface files so that the tool generates all the mapping code for you :)
 
 The approach being used in `jsoo-react` is the third, as it automates all the conversions needed and doesn't require to think about them
-
-#### Adding a new binding to a React function
-
-The main files are `lib/React.mli` and `lib/ReactDOM.mli`. They are both using OCaml syntax until Reason parser allows to declare nested attributes (see issue [#2445](https://github.com/facebook/reason/issues/2445)).
 
 ### gen_js_api: Comparison with BuckleScript
 

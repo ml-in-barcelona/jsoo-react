@@ -72,98 +72,98 @@ let callback_to_js _ cb = cb
 let callback_of_js _ js = js]
 
 val createElement : 'props component -> 'props -> element
-  [@@js.global "__LIB__react.createElement"]
+  [@@js.global "React.createElement"]
 
 val createElementVariadic :
   'props component -> 'props -> (element list[@js.variadic]) -> element
-  [@@js.global "__LIB__react.createElement"]
+  [@@js.global "React.createElement"]
 
 val cloneElement : element -> 'props -> element
-  [@@js.global "__LIB__react.cloneElement"]
+  [@@js.global "React.cloneElement"]
 
 val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
-  [@@js.global "__LIB__react.useEffect"]
+  [@@js.global "React.useEffect"]
 
 val useEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
     val useEffectInternal :
       (unit -> (unit -> unit) option_undefined) -> Ojs.t array -> unit
-      [@@js.global "__LIB__react.useEffect"]
+      [@@js.global "React.useEffect"]
 
     let useEffect0 effect = useEffectInternal effect [||]]
 
 val useEffect1 : (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
-  [@@js.global "__LIB__react.useEffect"]
+  [@@js.global "React.useEffect"]
 
 val useEffect2 : (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
-  [@@js.global "__LIB__react.useEffect"]
+  [@@js.global "React.useEffect"]
 
 val useEffect3 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
-  [@@js.global "__LIB__react.useEffect"]
+  [@@js.global "React.useEffect"]
 
 val useEffect4 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
-  [@@js.global "__LIB__react.useEffect"]
+  [@@js.global "React.useEffect"]
 
 val useEffect5 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
-  [@@js.global "__LIB__react.useEffect"]
+  [@@js.global "React.useEffect"]
 
 val useEffect6 :
      (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e * 'f
   -> unit
-  [@@js.global "__LIB__react.useEffect"]
+  [@@js.global "React.useEffect"]
 
 val useEffect7 :
      (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
   -> unit
-  [@@js.global "__LIB__react.useEffect"]
+  [@@js.global "React.useEffect"]
 
 val useLayoutEffect : (unit -> (unit -> unit) option_undefined) -> unit
-  [@@js.global "__LIB__react.useLayoutEffect"]
+  [@@js.global "React.useLayoutEffect"]
 
 val useLayoutEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
     val useLayoutEffectInternal :
       (unit -> (unit -> unit) option_undefined) -> Ojs.t array -> unit
-      [@@js.global "__LIB__react.useLayoutEffect"]
+      [@@js.global "React.useLayoutEffect"]
 
     let useLayoutEffect0 effect = useLayoutEffectInternal effect [||]]
 
 val useLayoutEffect1 :
   (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
-  [@@js.global "__LIB__react.useLayoutEffect"]
+  [@@js.global "React.useLayoutEffect"]
 
 val useLayoutEffect2 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
-  [@@js.global "__LIB__react.useLayoutEffect"]
+  [@@js.global "React.useLayoutEffect"]
 
 val useLayoutEffect3 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
-  [@@js.global "__LIB__react.useLayoutEffect"]
+  [@@js.global "React.useLayoutEffect"]
 
 val useLayoutEffect4 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
-  [@@js.global "__LIB__react.useLayoutEffect"]
+  [@@js.global "React.useLayoutEffect"]
 
 val useLayoutEffect5 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
-  [@@js.global "__LIB__react.useLayoutEffect"]
+  [@@js.global "React.useLayoutEffect"]
 
 val useLayoutEffect6 :
      (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e * 'f
   -> unit
-  [@@js.global "__LIB__react.useLayoutEffect"]
+  [@@js.global "React.useLayoutEffect"]
 
 val useLayoutEffect7 :
      (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
   -> unit
-  [@@js.global "__LIB__react.useLayoutEffect"]
+  [@@js.global "React.useLayoutEffect"]
 
 val useCallback : ('input, 'output) callback -> ('input, 'output) callback
   [@@js.custom
@@ -173,7 +173,7 @@ val useCallback : ('input, 'output) callback -> ('input, 'output) callback
          (* Important: we don't want to use an arrow type to represent returning callback (i.e. (Ojs.t -> Ojs.t)) as the callback
             would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
       -> ('input, 'output) callback
-      [@@js.global "__LIB__react.useCallback"]
+      [@@js.global "React.useCallback"]
 
     let useCallback cb = useCallbackInternal cb None]
 
@@ -182,43 +182,43 @@ val useCallback0 : ('input, 'output) callback -> ('input, 'output) callback
 
 val useCallback1 :
   ('input, 'output) callback -> 'a array -> ('input, 'output) callback
-  [@@js.global "__LIB__react.useCallback"]
+  [@@js.global "React.useCallback"]
 
 val useCallback2 :
   ('input, 'output) callback -> 'a * 'b -> ('input, 'output) callback
-  [@@js.global "__LIB__react.useCallback"]
+  [@@js.global "React.useCallback"]
 
 val useCallback3 :
   ('input, 'output) callback -> 'a * 'b * 'c -> ('input, 'output) callback
-  [@@js.global "__LIB__react.useCallback"]
+  [@@js.global "React.useCallback"]
 
 val useCallback4 :
   ('input, 'output) callback -> 'a * 'b * 'c * 'd -> ('input, 'output) callback
-  [@@js.global "__LIB__react.useCallback"]
+  [@@js.global "React.useCallback"]
 
 val useCallback5 :
      ('input, 'output) callback
   -> 'a * 'b * 'c * 'd * 'e
   -> ('input, 'output) callback
-  [@@js.global "__LIB__react.useCallback"]
+  [@@js.global "React.useCallback"]
 
 val useCallback6 :
      ('input, 'output) callback
   -> 'a * 'b * 'c * 'd * 'e * 'f
   -> ('input, 'output) callback
-  [@@js.global "__LIB__react.useCallback"]
+  [@@js.global "React.useCallback"]
 
 val useCallback7 :
      ('input, 'output) callback
   -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
   -> ('input, 'output) callback
-  [@@js.global "__LIB__react.useCallback"]
+  [@@js.global "React.useCallback"]
 
 val useMemo : (unit -> 'value) -> 'value
   [@@js.custom
     val useMemoInternal :
       (unit -> 'value) -> 'any array option_undefined -> 'value
-      [@@js.global "__LIB__react.useMemo"]
+      [@@js.global "React.useMemo"]
 
     let useMemo f = useMemoInternal f None]
 
@@ -226,39 +226,39 @@ val useMemo0 : (unit -> 'value) -> 'value
   [@@js.custom let useMemo0 f = useMemoInternal f (Some [||])]
 
 val useMemo1 : (unit -> 'value) -> 'a array -> 'value
-  [@@js.global "__LIB__react.useMemo"]
+  [@@js.global "React.useMemo"]
 
 val useMemo2 : (unit -> 'value) -> 'a * 'b -> 'value
-  [@@js.global "__LIB__react.useMemo"]
+  [@@js.global "React.useMemo"]
 
 val useMemo3 : (unit -> 'value) -> 'a * 'b * 'c -> 'value
-  [@@js.global "__LIB__react.useMemo"]
+  [@@js.global "React.useMemo"]
 
 val useMemo4 : (unit -> 'value) -> 'a * 'b * 'c * 'd -> 'value
-  [@@js.global "__LIB__react.useMemo"]
+  [@@js.global "React.useMemo"]
 
 val useMemo5 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e -> 'value
-  [@@js.global "__LIB__react.useMemo"]
+  [@@js.global "React.useMemo"]
 
 val useMemo6 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f -> 'value
-  [@@js.global "__LIB__react.useMemo"]
+  [@@js.global "React.useMemo"]
 
 val useMemo7 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> 'value
-  [@@js.global "__LIB__react.useMemo"]
+  [@@js.global "React.useMemo"]
 
 val useState : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
-  [@@js.global "__LIB__react.useState"]
+  [@@js.global "React.useState"]
 
 val useReducer :
   ('state -> 'action -> 'state) -> 'state -> 'state * ('action -> unit)
-  [@@js.global "__LIB__react.useReducer"]
+  [@@js.global "React.useReducer"]
 
 val useReducerWithMapState :
      ('state -> 'action -> 'state)
   -> 'initialState
   -> ('initialState -> 'state)
   -> 'state * ('action -> unit)
-  [@@js.global "__LIB__react.useReducer"]
+  [@@js.global "React.useReducer"]
 
 module Ref : sig
   type 'value t
@@ -276,19 +276,19 @@ module Ref : sig
   val setCurrent : 'value t -> 'value -> unit [@@js.set "current"]
 end
 
-val useRef : 'value -> 'value Ref.t [@@js.global "__LIB__react.useRef"]
+val useRef : 'value -> 'value Ref.t [@@js.global "React.useRef"]
 
 val createRef : unit -> 'a js_nullable Ref.t
-  [@@js.global "__LIB__react.createRef"]
+  [@@js.global "React.createRef"]
 
 (* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
  Although Reason parser doesn't support it so that's a requirement before adding it here *)
 val createFragment : element list -> element
   [@@js.custom
     val createFragmentInternal : Ojs.t -> Ojs.t -> element list -> element
-      [@@js.global "__LIB__react.createElement"]
+      [@@js.global "React.createElement"]
 
-    val fragmentInternal : Ojs.t [@@js.global "__LIB__react.Fragment"]
+    val fragmentInternal : Ojs.t [@@js.global "React.Fragment"]
 
     let createFragment l = createFragmentInternal fragmentInternal Ojs.null l]
 
@@ -324,30 +324,30 @@ module Context : sig
 end
 
 val createContext : 'a -> 'a Context.t
-  [@@js.global "__LIB__react.createContext"]
+  [@@js.global "React.createContext"]
 
 val useContext : 'value Context.t -> 'value
-  [@@js.global "__LIB__react.useContext"]
+  [@@js.global "React.useContext"]
 
 module Children : sig
   val map : element -> (element -> element) -> element
-    [@@js.global "__LIB__react.Children.map"]
+    [@@js.global "React.Children.map"]
 
   val mapWithIndex : element -> (element -> int -> element) -> element
-    [@@js.global "__LIB__react.Children.map"]
+    [@@js.global "React.Children.map"]
 
   val forEach : element -> (element -> unit) -> unit
-    [@@js.global "__LIB__react.Children.forEach"]
+    [@@js.global "React.Children.forEach"]
 
   val forEachWithIndex : element -> (element -> int -> unit) -> unit
-    [@@js.global "__LIB__react.Children.forEach"]
+    [@@js.global "React.Children.forEach"]
 
-  val count : element -> int [@@js.global "__LIB__react.Children.count"]
+  val count : element -> int [@@js.global "React.Children.count"]
 
-  val only : element -> element [@@js.global "__LIB__react.Children.only"]
+  val only : element -> element [@@js.global "React.Children.only"]
 
   val toArray : element -> element array
-    [@@js.global "__LIB__react.Children.toArray"]
+    [@@js.global "React.Children.toArray"]
 end
 
 module Fragment : sig
@@ -374,16 +374,16 @@ module Fragment : sig
         -> < children: element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
            component = "%identity"
 
-      val makeInternal : Ojs.t [@@js.global "__LIB__react.Fragment"]
+      val makeInternal : Ojs.t [@@js.global "React.Fragment"]
 
       let make = to_component makeInternal]
 end
 
 val memo : 'props component -> 'props component
-  [@@js.global "__LIB__react.memo"]
+  [@@js.global "React.memo"]
 
 val memoCustomCompareProps :
   'props component -> ('props -> 'props -> bool) -> 'props component
-  [@@js.global "__LIB__react.memo"]
+  [@@js.global "React.memo"]
 
 val setDisplayName : 'props component -> string -> unit [@@js.set "displayName"]

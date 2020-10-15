@@ -18,7 +18,7 @@ external domElement_of_js : Ojs.t -> domElement = "%identity"]
 val unmountComponentAtNode : domElement -> bool
 
 val render : Core.element -> domElement -> unit
-  [@@js.global "__LIB__reactDOM.render"]
+  [@@js.global "ReactDOM.render"]
 
 val renderToElementWithId : Core.element -> string -> unit
   [@@js.custom
@@ -623,11 +623,11 @@ val createDOMElementVariadic :
        (* props has to be non-optional as otherwise gen_js_api will put an empty list and React will break *)
   -> (Core.element list[@js.variadic])
   -> Core.element
-  [@@js.global "__LIB__react.createElement"]
+  [@@js.global "React.createElement"]
 
 val forwardRef :
   ('props -> domRef Core.js_nullable -> Core.element) -> 'props Core.component
-  [@@js.global "__LIB__react.forwardRef"]
+  [@@js.global "React.forwardRef"]
 
 module Style : sig
   type t = style
