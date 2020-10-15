@@ -30,6 +30,19 @@ val domProps_of_js: Ojs.t -> domProps
 val domProps_to_js: domProps -> Ojs.t
 
 val renderToElementWithId : Core.element -> string -> unit
+  [@@js.custom
+    val getElementById : string -> domElement option
+      [@@js.global "document.getElementById"]
+
+    let renderToElementWithId reactElement id =
+      match getElementById id with
+      | None ->
+          raise
+            (Invalid_argument
+               ( "ReactDOM.renderToElementWithId : no element of id " ^ id
+               ^ " found in the HTML." ))
+      | Some element ->
+          render reactElement element]
 
 module Ref : sig
   type t = domRef

@@ -1,3 +1,6 @@
+(** This module allows to use any functionality from the {{:https://reactjs.org/docs/react-dom.html}[reactdom]} module
+ *)
+
 type domElement = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t
 
 type style
@@ -15,6 +18,14 @@ val unmountComponentAtNode : domElement -> unit
 val render : Core.element -> domElement -> unit
 
 val renderToElementWithId : Core.element -> string -> unit
+(** [renderToElementWithId element container_id] (Reason syntax: [renderToElementWithId(element, containerId)]) tries to find
+     a container element in the DOM with [container_id] and renders a React element into it.
+
+     If the React element was previously rendered into container, this will perform an update on it and only mutate
+     the DOM as necessary to reflect the latest React element.
+
+     @raise Invalid_argument if [container_id] is not found in the DOM.
+*)
 
 val getElementById : string -> domElement option
 
