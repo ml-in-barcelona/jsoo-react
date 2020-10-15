@@ -41,12 +41,12 @@ For new projects, the best way to start is by using [Spin](https://github.com/tm
     (modes js)
     (libraries jsoo-react.lib)
     (preprocess
-      (pps js_of_ocaml-ppx)))
+      (pps jsoo-react.ppx)))
     ```
 
 3. Provision React.js library
 
-    `jsoo-react` does not make any assumptions about how you will load React.js in your application. There are 2 ways of doing so.
+    `jsoo-react` does not make any assumptions about how you will load React.js in your application. There are 2 ways of doing so:
 
     #### With Webpack (or any JavaScript bundler)
 
