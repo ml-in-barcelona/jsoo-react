@@ -46,27 +46,26 @@ opam pin add -y jsoo-react https://github.com/jchavarri/jsoo-react.git
 
 #### With Webpack (or any JavaScript bundler)
 
-If you want to use Webpack, Rollup, Parcel or any other JavaScript bundler, include the following two files in your application source folder:
+If you want to use Webpack, Rollup, Parcel or any other JavaScript bundler, include the following file in your application source folder:
 
-- `react.js`:
+- `react-requires.js`:
   ```js
   joo_global_object.React = require('react');
-  ```
-- `src/react-dom.js`:
-  ```js
-  joo_global_object.ReactDOM = require('react');
+  joo_global_object.ReactDOM = require('react-dom');
   ```
 
-Then add them to your application `dune` file so they can be linked:
+Then add it to your application `dune` file so it can be linked:
 
 ```
 (executables
  ...
  (js_of_ocaml
-  (javascript_files react.js react-dom.js)))
+  (javascript_files react-requires.js)))
 ```
 
-Note that at this moment, `jsoo-react` is compatible with React 16.
+To see an example of this approach, check the [example](example) folder.
+
+**Note that at this moment, `jsoo-react` is compatible with React 16.**
 
 #### With `<script>` tags
 
@@ -87,5 +86,6 @@ Take a look at our [Contributing Guide](CONTRIBUTING.md).
 
 Thanks to the authors and maintainers of ReasonReact, in particular [@rickyvetter](https://github.com/rickyvetter) for his work on the v3 of the JSX ppx.
 Thanks to the authors and maintainers of Js_of_ocaml, in particular [@hhugo](https://github.com/hhugo) who has been answering many many questions in GitHub threads.
+Thanks to the Lexifi team for creating gen_js_api.
 Thanks to [@tmattio](https://github.com/tmattio/) for creating Spin and the jsoo-react template :raised_hands:
 And thanks to the team behind React.js! What an amazing library :)
