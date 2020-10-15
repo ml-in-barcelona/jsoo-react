@@ -12,47 +12,50 @@ Bug reports and contributions are welcome!
 
 ### New project
 
-For new projects, the best way to start is by using [`spin`](https://github.com/tmattio/spin) with the [`spin-jsoo-react` template](https://github.com/tmattio/spin-jsoo-react/).
+For new projects, the best way to start is by using [Spin](https://github.com/tmattio/spin) with the [`spin-jsoo-react` template](https://github.com/tmattio/spin-jsoo-react/).
 
-Install spin [following the instructions](https://github.com/tmattio/spin#installation) and run:
+1. First, install Spin [following the instructions](https://github.com/tmattio/spin#installation).
 
-```bash
-spin new https://github.com/tmattio/spin-jsoo-react.git
-```
+2. Then run:
+
+  ```bash
+  spin new https://github.com/tmattio/spin-jsoo-react.git
+  ```
+
+  After that, check the newly created project readme to get started.
 
 ### Existing project
 
 1. Install the `jsoo-react` package and [gen_js_api](https://github.com/LexiFi/gen_js_api) dependency:
 
-```bash
-opam pin add -y gen_js_api https://github.com/jchavarri/gen_js_api.git#typ_var
-opam pin add -y jsoo-react https://github.com/jchavarri/jsoo-react.git
-```
+  ```bash
+  opam pin add -y gen_js_api https://github.com/jchavarri/gen_js_api.git#typ_var
+  opam pin add -y jsoo-react https://github.com/jchavarri/jsoo-react.git
+  ```
 
 2. Add `jsoo-react` library and ppx to [dune](https://dune.readthedocs.io/en/stable/) file of your executable JavaScript app:
 
-```
-(executables
- (names index)
- (modes js)
- (libraries jsoo-react.lib)
- (preprocess
-  (pps js_of_ocaml-ppx)))
-```
+  ```
+  (executables
+  (names index)
+  (modes js)
+  (libraries jsoo-react.lib)
+  (preprocess
+    (pps js_of_ocaml-ppx)))
+  ```
 
 3. Provision React.js library
 
-`jsoo-react` does not make any assumptions about how you will load React.js in your application. There are 2 ways of doing so.
+  `jsoo-react` does not make any assumptions about how you will load React.js in your application. There are 2 ways of doing so.
 
 #### With Webpack (or any JavaScript bundler)
 
-If you want to use Webpack, Rollup, Parcel or any other JavaScript bundler, include the following file in your application source folder:
+If you want to use Webpack, Rollup, Parcel or any other JavaScript bundler, include a file `react-requires.js` in your application source folder with the following content:
 
-- `react-requires.js`:
-  ```js
-  joo_global_object.React = require('react');
-  joo_global_object.ReactDOM = require('react-dom');
-  ```
+```js
+joo_global_object.React = require('react');
+joo_global_object.ReactDOM = require('react-dom');
+```
 
 Then add it to your application `dune` file so it can be linked:
 
@@ -65,7 +68,7 @@ Then add it to your application `dune` file so it can be linked:
 
 To see an example of this approach, check the [example](example) folder.
 
-**Note that at this moment, `jsoo-react` is compatible with React 16.**
+Note that at this moment, `jsoo-react` is compatible with **React 16**, so be sure to have the appropriate constraints in your `package.json`.
 
 #### With `<script>` tags
 
@@ -85,7 +88,10 @@ Take a look at our [Contributing Guide](CONTRIBUTING.md).
 ## Acknowledgements
 
 Thanks to the authors and maintainers of ReasonReact, in particular [@rickyvetter](https://github.com/rickyvetter) for his work on the v3 of the JSX ppx.
+
 Thanks to the authors and maintainers of Js_of_ocaml, in particular [@hhugo](https://github.com/hhugo) who has been answering many many questions in GitHub threads.
-Thanks to the Lexifi team for creating gen_js_api.
+
+Thanks to the Lexifi team for creating and maintaining [gen_js_api](https://github.com/LexiFi/gen_js_api).
+
 Thanks to [@tmattio](https://github.com/tmattio/) for creating Spin and the jsoo-react template :raised_hands:
 And thanks to the team behind React.js! What an amazing library :)
