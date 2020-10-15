@@ -11,7 +11,7 @@ build:
 build-prod:
 	dune build --profile=prod @@default
 
-dev:
+start:
 	dune build -w @@default
 
 test:

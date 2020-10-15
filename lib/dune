@@ -10,9 +10,3 @@
  (deps core.mli)
  (action
   (run %{bin:gen_js_api} -o %{targets} %{deps})))
-
-(rule
- (targets dom.ml)
- (deps dom.mli)
- (action
-  (run %{bin:gen_js_api} -o %{targets} %{deps})))

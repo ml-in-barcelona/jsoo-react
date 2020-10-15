@@ -1,22 +1,35 @@
 type domElement = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t
 
+external domElement_to_js : domElement -> Ojs.t = "%identity"
+
+external domElement_of_js : Ojs.t -> domElement = "%identity"
+
+include [%js:
+val unmountComponentAtNode : domElement -> unit
+  [@@js.global "ReactDOM.unmountComponentAtNode"]
+
+val render : Core.element -> domElement -> unit
+  [@@js.global "ReactDOM.render"]
+
+val getElementById : string -> domElement option
+  [@@js.global "document.getElementById"]
+
 type style
 
 type domRef
 
 type domProps
 
-val domElement_to_js : domElement -> Ojs.t
+val domRef_of_js: Ojs.t -> domRef
+val domRef_to_js:  domRef -> Ojs.t
 
-val domElement_of_js : Ojs.t -> domElement
+val style_of_js: Ojs.t -> style
+val style_to_js:  style -> Ojs.t
 
-val unmountComponentAtNode : domElement -> unit
-
-val render : Core.element -> domElement -> unit
+val domProps_of_js: Ojs.t -> domProps
+val domProps_to_js: domProps -> Ojs.t
 
 val renderToElementWithId : Core.element -> string -> unit
-
-val getElementById : string -> domElement option
 
 module Ref : sig
   type t = domRef
@@ -29,6 +42,7 @@ module Ref : sig
 
   val callbackDomRef : callbackDomRef -> domRef
 end
+]
 
 val domProps :
      ?key:string
@@ -37,64 +51,65 @@ val domProps :
        (* accessibility *)
        (* https://www.w3.org/TR/wai-aria-1.1/ *)
        (* https://accessibilityresources.org/<aria-tag> is a great resource for these *)
-       (* -> ?ariaCurrent: (page|step|location|date|time|true|false ) *)
-  -> ?ariaDetails:string
-  -> ?ariaDisabled:bool
-  -> ?ariaHidden:bool
+       (* -> ?ariaCurrent: (page|step|location|date|time|true|false [@js "aria-current"]) *)
+  -> ?ariaDetails:(string[@js "aria-details"])
+  -> ?ariaDisabled:(bool[@js "aria-disabled"])
+  -> ?ariaHidden:(bool[@js "aria-hidden"])
   -> ?ariaKeyshortcuts:
-       (* -> ?ariaInvalid: (grammar|false|spelling|true ) *)
-       string
-  -> ?ariaLabel:string
-  -> ?ariaRoledescription:string
+       ((* -> ?ariaInvalid: (grammar|false|spelling|true [@js "aria-invalid"]) *)
+        string[@js "aria-keyshortcuts"])
+  -> ?ariaLabel:(string[@js "aria-label"])
+  -> ?ariaRoledescription:(string[@js "aria-roledescription"])
   -> ?ariaExpanded:
-       (* Widget Attributes *)
-       (* -> ?ariaAutocomplete: (inline|list|both|none ) *)
-       (* -> ?ariaChecked: (true|false|mixed ) (* https://www.w3.org/TR/wai-aria-1.1/#valuetype_tristate *) *)
-       bool
+       ((* Widget Attributes *)
+        (* -> ?ariaAutocomplete: (inline|list|both|none [@js "aria-autocomplete"]) *)
+        (* -> ?ariaChecked: (true|false|mixed [@js "aria-checked"]) (* https://www.w3.org/TR/wai-aria-1.1/#valuetype_tristate *) *)
+        bool[@js "aria-expanded"])
   -> ?ariaLevel:
-       (* -> ?ariaHaspopup: (false|true|menu|listbox|tree|grid|dialog ) *)
-       int
-  -> ?ariaModal:bool
-  -> ?ariaMultiline:bool
-  -> ?ariaMultiselectable:bool
+       ((* -> ?ariaHaspopup: (false|true|menu|listbox|tree|grid|dialog [@js "aria-haspopup"]) *)
+        int[@js "aria-level"])
+  -> ?ariaModal:(bool[@js "aria-modal"])
+  -> ?ariaMultiline:(bool[@js "aria-multiline"])
+  -> ?ariaMultiselectable:(bool[@js "aria-multiselectable"])
   -> ?ariaPlaceholder:
-       (* -> ?ariaOrientation: (horizontal|vertical|undefined ) *)
-       string
+       ((* -> ?ariaOrientation: (horizontal|vertical|undefined [@js "aria-orientation"]) *)
+        string[@js "aria-placeholder"])
   -> ?ariaReadonly:
-       (* -> ?ariaPressed: (true|false|mixed ) (* https://www.w3.org/TR/wai-aria-1.1/#valuetype_tristate *) *)
-       bool
-  -> ?ariaRequired:bool
-  -> ?ariaSelected:bool
-  -> ?ariaSort:string
-  -> ?ariaValuemax:float
-  -> ?ariaValuemin:float
-  -> ?ariaValuenow:float
-  -> ?ariaValuetext:string
-  -> ?ariaAtomic:(* Live Region Attributes *)
-                 bool
-  -> ?ariaBusy:bool
-  -> ?ariaRelevant:(* -> ?ariaLive: (off|polite|assertive|rude ) *)
-                   string
+       ((* -> ?ariaPressed: (true|false|mixed [@js "aria-pressed"]) (* https://www.w3.org/TR/wai-aria-1.1/#valuetype_tristate *) *)
+        bool[@js "aria-readonly"])
+  -> ?ariaRequired:(bool[@js "aria-required"])
+  -> ?ariaSelected:(bool[@js "aria-selected"])
+  -> ?ariaSort:(string[@js "aria-sort"])
+  -> ?ariaValuemax:(float[@js "aria-valuemax"])
+  -> ?ariaValuemin:(float[@js "aria-valuemin"])
+  -> ?ariaValuenow:(float[@js "aria-valuenow"])
+  -> ?ariaValuetext:(string[@js "aria-valuetext"])
+  -> ?ariaAtomic:((* Live Region Attributes *)
+                  bool[@js "aria-atomic"])
+  -> ?ariaBusy:(bool[@js "aria-busy"])
+  -> ?ariaRelevant:
+       ((* -> ?ariaLive: (off|polite|assertive|rude [@js "aria-live"]) *)
+        string[@js "aria-relevant"])
   -> ?ariaGrabbed:
-       (* Drag-and-Drop Attributes *)
-       (* -> ?ariaDropeffect: (copy|move|link|execute|popup|none ) *)
-       bool
-  -> ?ariaActivedescendant:(* Relationship Attributes *)
-                           string
-  -> ?ariaColcount:int
-  -> ?ariaColindex:int
-  -> ?ariaColspan:int
-  -> ?ariaControls:string
-  -> ?ariaDescribedby:string
-  -> ?ariaErrormessage:string
-  -> ?ariaFlowto:string
-  -> ?ariaLabelledby:string
-  -> ?ariaOwns:string
-  -> ?ariaPosinset:int
-  -> ?ariaRowcount:int
-  -> ?ariaRowindex:int
-  -> ?ariaRowspan:int
-  -> ?ariaSetsize:int
+       ((* Drag-and-Drop Attributes *)
+        (* -> ?ariaDropeffect: (copy|move|link|execute|popup|none [@js "aria-dropeffect"]) *)
+        bool[@js "aria-grabbed"])
+  -> ?ariaActivedescendant:((* Relationship Attributes *)
+                            string[@js "aria-activedescendant"])
+  -> ?ariaColcount:(int[@js "aria-colcount"])
+  -> ?ariaColindex:(int[@js "aria-colindex"])
+  -> ?ariaColspan:(int[@js "aria-colspan"])
+  -> ?ariaControls:(string[@js "aria-controls"])
+  -> ?ariaDescribedby:(string[@js "aria-describedby"])
+  -> ?ariaErrormessage:(string[@js "aria-errormessage"])
+  -> ?ariaFlowto:(string[@js "aria-flowto"])
+  -> ?ariaLabelledby:(string[@js "aria-labelledby"])
+  -> ?ariaOwns:(string[@js "aria-owns"])
+  -> ?ariaPosinset:(int[@js "aria-posinset"])
+  -> ?ariaRowcount:(int[@js "aria-rowcount"])
+  -> ?ariaRowindex:(int[@js "aria-rowindex"])
+  -> ?ariaRowspan:(int[@js "aria-rowspan"])
+  -> ?ariaSetsize:(int[@js "aria-setsize"])
   -> ?defaultChecked:(* react textarea/input *)
                      bool
   -> ?defaultValue:string (* global html attributes *)
@@ -176,7 +191,7 @@ val domProps :
   -> ?maxLength:int
   -> ?media:string (* a valid media query *)
   -> ?mediaGroup:string
-  -> ?method_:string
+  -> ?method_:(string[@js "method"])
   -> ?min:(* "post" or "get" *)
           int
   -> ?minLength:int
@@ -185,7 +200,7 @@ val domProps :
   -> ?name:string
   -> ?nonce:string
   -> ?noValidate:bool
-  -> ?open_:bool
+  -> ?open_:(bool[@js "open"])
   -> ?optimum:(* use this one. Previous one is deprecated *)
               int
   -> ?pattern:string (* valid Js RegExp *)
@@ -223,7 +238,7 @@ val domProps :
   -> ?step:float
   -> ?summary:string (* deprecated *)
   -> ?target:string
-  -> ?type_:string
+  -> ?type_:(string[@js "type"])
   -> ?useMap:
        (* has a fixed but large-ish set of possible values *)
        (* use this one. Previous one is deprecated *)
@@ -338,7 +353,7 @@ val domProps :
   -> ?baseProfile:string
   -> ?baselineShift:string
   -> ?bbox:string
-  -> ?begin_:string
+  -> ?begin_:(string[@js "begin"])
   -> ?bias:(* use this one. Previous one is deprecated *)
            string
   -> ?by:string
@@ -371,7 +386,7 @@ val domProps :
   -> ?edgeMode:string
   -> ?elevation:string
   -> ?enableBackground:string
-  -> ?end_:string
+  -> ?end_:(string[@js "end"])
   -> ?exponent:(* use this one. Previous one is deprecated *)
                string
   -> ?externalResourcesRequired:string
@@ -408,7 +423,7 @@ val domProps :
   -> ?horizOriginX:string
   -> ?ideographic:string
   -> ?imageRendering:string
-  -> ?in_:string
+  -> ?in_:(string[@js "in"])
   -> ?in2:(* use this one. Previous one is deprecated *)
           string
   -> ?intercept:string
@@ -516,7 +531,7 @@ val domProps :
   -> ?textDecoration:string
   -> ?textLength:string
   -> ?textRendering:string
-  -> ?to_:string
+  -> ?to_:(string[@js "to"])
   -> ?transform:(* use this one. Previous one is deprecated *)
                 string
   -> ?u1:string
@@ -581,23 +596,22 @@ val domProps :
   -> ?suppressContentEditableWarning:bool
   -> unit
   -> domProps
-(** 
-dsfksldfj
-
-*)
+  [@@js.builder]
 
 val createDOMElementVariadic :
      string
   -> props:
        domProps
        (* props has to be non-optional as otherwise gen_js_api will put an empty list and React will break *)
-  -> Core.element list
+  -> (Core.element list[@js.variadic])
   -> Core.element
+  [@@js.global "React.createElement"]
 
 val forwardRef :
   ('props -> domRef Core.js_nullable -> Core.element) -> 'props Core.component
+  [@@js.global "React.forwardRef"]
 
-module Style : sig
+module Style = struct
   type t = style
 
   val make :
@@ -1000,6 +1014,7 @@ module Style : sig
           *)
     -> unit
     -> style
+    [@@js.builder]
 
   (* CSS2Properties: https://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSS2Properties *)
   (* let combine: (style, style) -> style =
