@@ -94,4 +94,5 @@ Thanks to the authors and maintainers of Js_of_ocaml, in particular [@hhugo](htt
 Thanks to the Lexifi team for creating and maintaining [gen_js_api](https://github.com/LexiFi/gen_js_api).
 
 Thanks to [@tmattio](https://github.com/tmattio/) for creating Spin and the jsoo-react template :raised_hands:
+
 And thanks to the team behind React.js! What an amazing library :)
