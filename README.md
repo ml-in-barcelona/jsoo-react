@@ -18,35 +18,35 @@ For new projects, the best way to start is by using [Spin](https://github.com/tm
 
 2. Then run:
 
-  ```bash
-  spin new https://github.com/tmattio/spin-jsoo-react.git
-  ```
+    ```bash
+    spin new https://github.com/tmattio/spin-jsoo-react.git
+    ```
 
-  After that, check the newly created project readme to get started.
+    After that, check the newly created project readme to get started.
 
 ### Existing project
 
 1. Install the `jsoo-react` package and [gen_js_api](https://github.com/LexiFi/gen_js_api) dependency:
 
-  ```bash
-  opam pin add -y gen_js_api https://github.com/jchavarri/gen_js_api.git#typ_var
-  opam pin add -y jsoo-react https://github.com/jchavarri/jsoo-react.git
-  ```
+    ```bash
+    opam pin add -y gen_js_api https://github.com/jchavarri/gen_js_api.git#typ_var
+    opam pin add -y jsoo-react https://github.com/jchavarri/jsoo-react.git
+    ```
 
 2. Add `jsoo-react` library and ppx to [dune](https://dune.readthedocs.io/en/stable/) file of your executable JavaScript app:
 
-  ```
-  (executables
-  (names index)
-  (modes js)
-  (libraries jsoo-react.lib)
-  (preprocess
-    (pps js_of_ocaml-ppx)))
-  ```
+    ```
+    (executables
+    (names index)
+    (modes js)
+    (libraries jsoo-react.lib)
+    (preprocess
+      (pps js_of_ocaml-ppx)))
+    ```
 
 3. Provision React.js library
 
-  `jsoo-react` does not make any assumptions about how you will load React.js in your application. There are 2 ways of doing so.
+    `jsoo-react` does not make any assumptions about how you will load React.js in your application. There are 2 ways of doing so.
 
 #### With Webpack (or any JavaScript bundler)
 
