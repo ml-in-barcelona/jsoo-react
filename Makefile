@@ -23,7 +23,7 @@ test-promote:
 # Alias to update the opam file and install the needed deps
 deps: $(opam_file)
 
-fmt:
+format:
 	dune build @fmt --auto-promote
 
 publish-example:
