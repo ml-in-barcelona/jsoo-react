@@ -6,33 +6,33 @@ current_hash = $(shell git rev-parse HEAD)
 .PHONY: build build-prod dev test test-promote deps fmt init publish-example
 
 build:
-	dune build @@default
+	opam exec -- dune build @@default
 
 build-prod:
-	dune build --profile=prod @@default
+	opam exec -- dune build --profile=prod @@default
 
 dev:
-	dune build -w @@default
+	opam exec -- dune build -w @@default
 
 test:
-	dune build @runtest
+	opam exec -- dune build @runtest
 
 test-promote:
-	dune build @runtest --auto-promote
+	opam exec -- dune build @runtest --auto-promote
 
 # Alias to update the opam file and install the needed deps
 deps: $(opam_file)
 
 format:
-	dune build @fmt --auto-promote
+	opam exec -- dune build @fmt --auto-promote
 
 publish-example:
-	git checkout master && dune build --profile=prod @@default && cd example && yarn webpack:production \
+	git checkout master && opam exec -- dune build --profile=prod @@default && cd example && yarn webpack:production \
 	&& cd - && git checkout gh-pages && cp example/build/* . && git commit -am "$(current_hash)"
 	
 # Update the package dependencies when new deps are added to dune-project
 $(opam_file): dune-project
-	dune build @install        # Update the $(project_name).opam file
+	opam exec -- dune build @install        # Update the $(project_name).opam file
 	opam install . --deps-only --with-test # Install the new dependencies
 
 init:
