@@ -11,9 +11,6 @@ val unmountComponentAtNode : domElement -> unit
 val render : Core.element -> domElement -> unit
   [@@js.global "ReactDOM.render"]
 
-val getElementById : string -> domElement option
-  [@@js.global "document.getElementById"]
-
 type style
 
 type domRef

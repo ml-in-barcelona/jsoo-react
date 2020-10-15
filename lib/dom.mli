@@ -27,8 +27,6 @@ val renderToElementWithId : Core.element -> string -> unit
      @raise Invalid_argument if [container_id] is not found in the DOM.
 *)
 
-val getElementById : string -> domElement option
-
 module Ref : sig
   type t = domRef
 
