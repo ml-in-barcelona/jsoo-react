@@ -21,10 +21,10 @@ git clone https://github.com/jchavarri/jsoo-react/
 cd ./jsoo-react
 make init
 eval $(opam env)
-make dev
+make start
 # in another tab / terminal session 
 cd ./jsoo-react/example
-yarn && yarn server
+yarn && yarn start
 ```
 
 After that, open up `localhost:8000`. Then modify `App.re` file in `src` and refresh the page to see the changes. The example

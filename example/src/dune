@@ -12,7 +12,9 @@
  (deps Bindings.rei)
  (action
   (progn
-   (with-stdout-to Bindings.ml.tmp (run %{bin:refmt} --parse=re -i true --print=ml %{deps}))
+   (with-stdout-to
+    Bindings.ml.tmp
+    (run %{bin:refmt} --parse=re -i true --print=ml %{deps}))
    (run %{bin:gen_js_api} -o %{targets} Bindings.ml.tmp))))
 
 (alias

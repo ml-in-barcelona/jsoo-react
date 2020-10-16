@@ -4,7 +4,7 @@
   "scripts": {
     "webpack": "webpack -w",
     "webpack:production": "webpack --mode=production",
-    "server": "webpack-dev-server",
+    "start": "webpack-dev-server",
     "analyze": "webpack --mode=production --profile --json > stats.json && webpack-bundle-analyzer stats.json"
   },
   "license": "MIT",
