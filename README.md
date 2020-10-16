@@ -1,5 +1,7 @@
 # jsoo-react
 
+[![Actions Status](https://github.com/jchavarri/jsoo-react/workflows/CI/badge.svg)](https://github.com/jchavarri/jsoo-react/actions)
+
 Bindings to [React](https://reactjs.org/) for [js_of_ocaml](ocsigen.org/js_of_ocaml/), including JSX ppx.
 
 Adapted from [ReasonReact](https://github.com/reasonml/reason-react/).
