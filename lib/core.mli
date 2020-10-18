@@ -278,8 +278,7 @@ end
 
 val useRef : 'value -> 'value Ref.t [@@js.global "React.useRef"]
 
-val createRef : unit -> 'a js_nullable Ref.t
-  [@@js.global "React.createRef"]
+val createRef : unit -> 'a js_nullable Ref.t [@@js.global "React.createRef"]
 
 (* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
  Although Reason parser doesn't support it so that's a requirement before adding it here *)
@@ -323,11 +322,9 @@ module Context : sig
       let provider c = of_ojs (providerInternal c)]
 end
 
-val createContext : 'a -> 'a Context.t
-  [@@js.global "React.createContext"]
+val createContext : 'a -> 'a Context.t [@@js.global "React.createContext"]
 
-val useContext : 'value Context.t -> 'value
-  [@@js.global "React.useContext"]
+val useContext : 'value Context.t -> 'value [@@js.global "React.useContext"]
 
 module Children : sig
   val map : element -> (element -> element) -> element
@@ -346,8 +343,7 @@ module Children : sig
 
   val only : element -> element [@@js.global "React.Children.only"]
 
-  val toArray : element -> element array
-    [@@js.global "React.Children.toArray"]
+  val toArray : element -> element array [@@js.global "React.Children.toArray"]
 end
 
 module Fragment : sig
@@ -379,8 +375,7 @@ module Fragment : sig
       let make = to_component makeInternal]
 end
 
-val memo : 'props component -> 'props component
-  [@@js.global "React.memo"]
+val memo : 'props component -> 'props component [@@js.global "React.memo"]
 
 val memoCustomCompareProps :
   'props component -> ('props -> 'props -> bool) -> 'props component
