@@ -1,0 +1,73 @@
+{0 [jsoo-react] for ReasonReact developers}
+
+This is a list of changes from ReasonReact, in the current version of [jsoo-react].
+
+{1 Non-zero-cost bindings}
+
+Due to the design of [js_of_ocaml] some of the basic types in OCaml get boxed or converted
+when compiled to JavaScript.
+
+[jsoo-react] wants to remain ergonomic, so some of the bindings contain conversion
+code between JavaScript representations and OCaml representations, to avoid having
+to convert from these types manually.
+
+{1 Children as list}
+
+This is more of an implementation detail, but the conversion from list to array
+that ReasonReact applies at compile time through the ppx is done at runtime in
+[jsoo-react]. This is done to be able to leverage [gen_js_api] variadic converters.
+
+{1 Beware of strings as effects dependencies}
+
+In OCaml —and thus in [js_of_ocaml]— strings are "boxed", which means they compile down
+to JavaScript objects with some extra properties like length of the string.
+
+This means that when one defines a string constant ["foo"], a new JavaScript object
+will be created.
+
+So if you use some string that is defined in a component render function as dependency
+of some [useEffect*], it will run at all times because the reference to ["foo"] gets
+recreated on every render.
+
+{1 JavaScript objects}
+
+The type of JavaScript objects in [js_of_ocaml] is
+
+- ['a Js_of_ocaml.Js.t] in OCaml syntax
+- [Js_of_ocaml.Js.t('a)] in Reason syntax
+
+{1 Property access}
+
+To access the properties of some JavaScript object you can use the infix operator [##.] provided by
+[js_of_ocaml].
+
+For example, instead of [foo##bar] like in BuckleScript / ReScript, one would do [foo##.bar].
+
+To use the ppx, add:
+
+{[
+ (preprocess
+  (pps js_of_ocaml-ppx))
+]}
+
+to your [dune] file.
+
+{1 Pipe last}
+
+A language difference rather than a library difference, but in OCaml there is no pipe first
+operator, so all piping is done using the pipe last [|>] operator.
+
+For more details about pipe first vs pipe last, check the article
+{{:https://www.javierchavarri.com/data-first-and-data-last-a-comparison/}Data first and data last: a comparison}.
+
+{1 Compiler version compatibility}
+
+[jsoo-react] is compatible with the versions that [js_of_ocaml] supports. As of the moment when these documents
+were written, this range goes from 4.02 to 4.11.
+
+[js_of_ocaml] adds support for newer versions of the OCaml compiler quite promptly.
+
+{1 Access to OCaml ecosystem}
+
+[jsoo-react] is compatible with almost every existing library in the OCaml ecosystem, as long as it doesn't
+rely on C code. This includes support for any OCaml ppx, like {{:https://github.com/ocaml-ppx/ppx_deriving}[ppx_deriving]}.

@@ -41,3 +41,11 @@ passed to elements as props (e.g. [div ~foo ~bar ()]) into a single JavaScript o
 as properties ([{foo: foo, bar: bar}]).
 
 To see more, go to the {{!page:ppx}ppx documentation page}.
+
+{1 Differences with ReasonReact}
+
+These bindings are heavily inspired by {{:https://reasonml.github.io/reason-react/}ReasonReact},
+at least in the current version. But there are some differences as well.
+
+If you are familiar with ReasonReact, make sure to check the {{!page:reasonreact}jsoo-react for ReasonReact developers} page,
+that goes through these differences in detail.
