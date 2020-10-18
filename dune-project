@@ -41,4 +41,6 @@
   (ppx_blob :dev)
   (js_of_ocaml-lwt :dev)
 
+  ;; Documentation
+  (odoc :with-doc)
 ))

@@ -8,7 +8,7 @@
 (*
    The transform:
    transform `[@JSX] div(~props1=a, ~props2=b, ~children=[foo, bar], ())` into
-   `React.Dom.createDOMElementVariadic("div", React.Dom.domProps(~props1=1, ~props2=b), [foo, bar])`.
+   `React.Dom.createElement("div", React.Dom.domProps(~props1=1, ~props2=b), [foo, bar])`.
    transform the upper-cased case
    `[@JSX] Foo.createElement(~key=a, ~ref=b, ~foo=bar, ~children=[], ())` into
    `React.createElement(Foo.make, Foo.makeProps(~key=a, ~ref=b, ~foo=bar, ()))`
@@ -504,7 +504,7 @@ let jsxMapper () =
       | { pexp_desc=
             ( Pexp_construct ({txt= Lident "::"}, Some {pexp_desc= Pexp_tuple _})
             | Pexp_construct ({txt= Lident "[]"}, None) ) } ->
-          "createDOMElementVariadic"
+          "createElement"
       (* [@JSX] div(~children= value), coming from <div> ...(value) </div> *)
       | _ ->
           raise

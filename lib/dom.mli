@@ -1,42 +1,90 @@
-(** This module allows to use any functionality from the {{:https://reactjs.org/docs/react-dom.html}[reactdom]} module
- *)
+(** Provides bindings to React.js
+     {{:https://reactjs.org/docs/react-dom.html}[react-dom]} package. *)
 
+(** The type for DOM elements, that React create, destroy and update. *)
 type domElement = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t
 
+(** The type for 
+     {{:https://reactjs.org/docs/dom-elements.html#style}style objects}. *)
 type style
 
+(** The type for values that store a reference to a DOM node.
+
+     DOM refs in React come in two forms:
+     {ul
+      {- The first one works like OCaml {{:https://ocaml.org/learn/tutorials/pointers.html}pointers},
+     which are objects with a single field [current] that gets mutated.
+     [React.Ref.t] is the ref with [current] value that mutates.
+     You create this kind of ref with the {{!React.useRef}[React.useRef]} hook.}
+      {- The other is a function that gets called whenever the ref value changes.}}
+
+     [jsoo-react] works with both.
+
+     React docs for {{:https://reactjs.org/docs/refs-and-the-dom.html}refs and the DOM}. *)
 type domRef
 
+(** The type for the props passed to a React DOM
+     {{:https://reactjs.org/docs/implementation-notes.html#mounting-host-elements}host element}. *)
 type domProps
 
-val domElement_to_js : domElement -> Ojs.t
+val unmountComponentAtNode : domElement -> bool
+(** OCaml syntax: [unmountComponentAtNode container].
 
-val domElement_of_js : Ojs.t -> domElement
+     Reason syntax: [unmountComponentAtNode(container)].
 
-val unmountComponentAtNode : domElement -> unit
+     Removes the mounted React component in [container] from the DOM and clean up its event handlers and state.
+     If no component was mounted in the container, calling this function does nothing.
+     Returns true if a component was unmounted and false if there was no component to unmount.
+
+     React docs for {{:https://reactjs.org/docs/react-dom.html#unmountcomponentatnode}[ReactDOM.unmountComponentAtNode]}
+*)
 
 val render : Core.element -> domElement -> unit
+(** OCaml syntax: [renderToElementWithId element container].
+     
+     Reason syntax: [renderToElementWithId(element, container)].
+
+     Renders a React [element] into the DOM in the supplied [container].
+
+     If the React [element] was previously rendered into container, this will perform an update on it and only mutate
+     the DOM as necessary to reflect the latest React element.
+
+     React docs for {{:https://reactjs.org/docs/react-dom.html#render}[ReactDOM.render]}
+*)
 
 val renderToElementWithId : Core.element -> string -> unit
-(** [renderToElementWithId element container_id] (Reason syntax: [renderToElementWithId(element, containerId)]) tries to find
-     a container element in the DOM with [container_id] and renders a React element into it.
+(** OCaml syntax: [renderToElementWithId element container_id].
+
+     Reason syntax: [renderToElementWithId(element, container_id)].
+
+     Tries to find a container element in the DOM with [container_id] and renders a React element into it.
 
      If the React element was previously rendered into container, this will perform an update on it and only mutate
      the DOM as necessary to reflect the latest React element.
 
-     @raise Invalid_argument if [container_id] is not found in the DOM.
+     React docs for {{:https://reactjs.org/docs/react-dom.html#render}[ReactDOM.render]}
+
+     @raise Invalid_argument If [container_id] is not found in the DOM.
 *)
 
+(** This module contains some utilities to deal with values of the type [domRef].
+*)
 module Ref : sig
+  (** The type for a value that will store a
+     {{:https://reactjs.org/docs/refs-and-the-dom.html}React reference} to a DOM node. *)
   type t = domRef
 
+  (** The type for a {{!domRef}[domRef]}, that was created with {{!React.useRef}[React.useRef]} function. *)
   type currentDomRef = domElement Core.js_nullable Core.Ref.t
 
+  (** The type for a {{!domRef}[domRef]}, that is implemented as a callback. *)
   type callbackDomRef = domElement Core.js_nullable -> unit
 
   val domRef : currentDomRef -> domRef
+  (** Converts a ref that was created with {{!React.useRef}[React.useRef]} to {{!domRef}[domRef]}. *)
 
   val callbackDomRef : callbackDomRef -> domRef
+  (** Converts a callback ref to {{!domRef}[domRef]}. *)
 end
 
 val domProps :
@@ -195,8 +243,7 @@ val domProps :
   -> ?nonce:string
   -> ?noValidate:bool
   -> ?open_:bool
-  -> ?optimum:(* use this one. Previous one is deprecated *)
-              int
+  -> ?optimum:int
   -> ?pattern:string (* valid Js RegExp *)
   -> ?placeholder:string
   -> ?poster:string (* uri *)
@@ -233,10 +280,8 @@ val domProps :
   -> ?summary:string (* deprecated *)
   -> ?target:string
   -> ?type_:string
-  -> ?useMap:
-       (* has a fixed but large-ish set of possible values *)
-       (* use this one. Previous one is deprecated *)
-       string
+  -> ?useMap:(* has a fixed but large-ish set of possible values *)
+             string
   -> ?value:string
   -> ?width:
        string
@@ -348,8 +393,7 @@ val domProps :
   -> ?baselineShift:string
   -> ?bbox:string
   -> ?begin_:string
-  -> ?bias:(* use this one. Previous one is deprecated *)
-           string
+  -> ?bias:string
   -> ?by:string
   -> ?calcMode:string
   -> ?capHeight:string
@@ -381,8 +425,7 @@ val domProps :
   -> ?elevation:string
   -> ?enableBackground:string
   -> ?end_:string
-  -> ?exponent:(* use this one. Previous one is deprecated *)
-               string
+  -> ?exponent:string
   -> ?externalResourcesRequired:string
   -> ?fill:string
   -> ?fillOpacity:string
@@ -418,8 +461,7 @@ val domProps :
   -> ?ideographic:string
   -> ?imageRendering:string
   -> ?in_:string
-  -> ?in2:(* use this one. Previous one is deprecated *)
-          string
+  -> ?in2:string
   -> ?intercept:string
   -> ?k:string
   -> ?k1:string
@@ -526,8 +568,7 @@ val domProps :
   -> ?textLength:string
   -> ?textRendering:string
   -> ?to_:string
-  -> ?transform:(* use this one. Previous one is deprecated *)
-                string
+  -> ?transform:string
   -> ?u1:string
   -> ?u2:string
   -> ?underlinePosition:string
@@ -590,23 +631,45 @@ val domProps :
   -> ?suppressContentEditableWarning:bool
   -> unit
   -> domProps
-(** 
-dsfksldfj
+(** Builder function to create a JavaScript object of type {{!domProps}[domProps]}. *)
 
-*)
-
-val createDOMElementVariadic :
+val createElement :
      string
   -> props:
        domProps
        (* props has to be non-optional as otherwise gen_js_api will put an empty list and React will break *)
   -> Core.element list
   -> Core.element
+(** OCaml syntax: [createElement element_type ~props children].
+
+     Reason syntax: [createElement(element_type, ~props, children)].
+
+     Creates a DOM host element with type [element_type] (e.g. ["div"], ["span"]) with props [props]
+     and children [children].
+
+     Note this function leverages the variadic version of [children] that is allowed by React.js.
+
+     React docs for {{:https://reactjs.org/docs/react-api.html#createelement}[React.createElement]}
+*)
 
 val forwardRef :
   ('props -> domRef Core.js_nullable -> Core.element) -> 'props Core.component
+(** OCaml syntax: [forwardRef (fun ~foo ~bar ref -> element].
 
+     Reason syntax: [forwardRef((~foo, ~bar, ref) => element)].
+
+     Accepts a component [make] function as an argument, that takes [ref] as the last parameter.
+
+     As all component [make] functions, the function passed to [forwardRef] should return a React element.
+
+     React docs for {{:https://reactjs.org/docs/react-api.html#reactforwardref}[React.forwardRef]}
+*)
+
+(** This module provides utilities to work with React.js
+     {{:https://reactjs.org/docs/dom-elements.html#style}[style]} attribute. *)
 module Style : sig
+  (** The type for 
+     {{:https://reactjs.org/docs/dom-elements.html#style}style objects}. *)
   type t = style
 
   val make :
@@ -1009,6 +1072,7 @@ module Style : sig
           *)
     -> unit
     -> style
+  (** (** Builder function to create a JavaScript object of type {{!style}[style]}. *) *)
 
   (* CSS2Properties: https://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSS2Properties *)
   (* let combine: (style, style) -> style =

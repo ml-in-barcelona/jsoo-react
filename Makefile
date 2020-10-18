@@ -3,7 +3,7 @@ project_name = jsoo-react
 opam_file = $(project_name).opam
 current_hash = $(shell git rev-parse HEAD)
 
-.PHONY: build build-prod dev test test-promote deps fmt init publish-example
+.PHONY: build build-prod start test test-promote doc deps fmt init publish-example
 
 build:
 	opam exec -- dune build @@default
@@ -19,6 +19,9 @@ test:
 
 test-promote:
 	opam exec -- dune build @runtest --auto-promote
+
+doc:
+	opam exec -- dune build @doc
 
 # Alias to update the opam file and install the needed deps
 deps: $(opam_file)

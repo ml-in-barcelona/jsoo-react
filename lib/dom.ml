@@ -5,7 +5,7 @@ external domElement_to_js : domElement -> Ojs.t = "%identity"
 external domElement_of_js : Ojs.t -> domElement = "%identity"
 
 include [%js:
-val unmountComponentAtNode : domElement -> unit
+val unmountComponentAtNode : domElement -> bool
   [@@js.global "ReactDOM.unmountComponentAtNode"]
 
 val render : Core.element -> domElement -> unit
@@ -608,7 +608,7 @@ val domProps :
   -> domProps
   [@@js.builder]
 
-val createDOMElementVariadic :
+val createElement :
      string
   -> props:
        domProps

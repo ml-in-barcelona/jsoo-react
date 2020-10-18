@@ -1,0 +1,43 @@
+{0 [jsoo-react]}
+
+{1 Introduction}
+
+This package includes the bindings to the JavaScript library {{:https://reactjs.org}React.js}
+for the [js_of_ocaml] compiler, including JSX ppx.
+
+Inspired by {{:https://reasonml.github.io/reason-react/}ReasonReact}.
+
+{2 Hello world}
+
+Creating a component in OCaml syntax:
+
+{[ 
+  let make () =
+    (div ~children:[React.string "Hello world"] () [@JSX])
+    [@@react.component]
+]}
+
+And in Reason syntax:
+
+{[ 
+  [@react.component]
+  let make = () => {
+    <div> {"Hello World" |> React.string} </div>;
+  };
+]}
+
+{1 Library [jsoo-react.lib]}
+
+This library provides access to the bindings of the JavaScript packages [react]
+and [react-dom].
+
+To read the detailed documentation of the bindings API, see the docs for the entry 
+point module {!React}.
+
+{1 Pre-processing extension [jsoo-react.ppx]}
+
+This ppx main purpose is to auto-generate code to transform the individually labelled arguments
+passed to elements as props (e.g. [div ~foo ~bar ()]) into a single JavaScript object that contains the values
+as properties ([{foo: foo, bar: bar}]).
+
+To see more, go to the {{!page:ppx}ppx documentation page}.

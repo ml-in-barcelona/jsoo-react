@@ -1,0 +1,15 @@
+{0 Pre-processing extension}
+
+This ppx main purpose is to auto-generate code to convert from individual labelled arguments
+passed to a component [make] function to the JavaScript objects that will be passed to
+React [createElement] function.
+
+Let's see a couple of examples, for elements and components.
+
+{1 Pre-processing elements}
+
+todo
+
+{1 Pre-processing components}
+
+todo

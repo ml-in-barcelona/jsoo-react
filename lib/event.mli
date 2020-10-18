@@ -1,4 +1,5 @@
-(* Adapted from reason-react ReactEvent.re, commit 0f73a307type 'a synthetic *)
+(** Provides bindings to {{:https://reactjs.org/docs/handling-events.html}React.js events} related functions. *)
+
 type 'a synthetic
 
 module Synthetic : sig

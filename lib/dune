@@ -11,3 +11,5 @@
  (deps core.mli)
  (action
   (run %{bin:gen_js_api} -o %{targets} %{deps})))
+
+(documentation)
