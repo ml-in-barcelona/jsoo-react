@@ -15,7 +15,8 @@ to convert from these types manually.
 
 This is more of an implementation detail, but the conversion from list to array
 that ReasonReact applies at compile time through the ppx is done at runtime in
-[jsoo-react]. This is done to be able to leverage [gen_js_api] variadic converters.
+[jsoo-react]. This allows to leverage [gen_js_api] {{:https://github.com/LexiFi/gen_js_api/blob/495c9eea51e4e50f7f53442f1196a5463dc841d3/TYPES.md#arrow-types}variadic functions for arrow
+types}.
 
 {1 Beware of strings as effects dependencies}
 
@@ -25,8 +26,8 @@ to JavaScript objects with some extra properties like length of the string.
 This means that when one defines a string constant ["foo"], a new JavaScript object
 will be created.
 
-So if you use some string that is defined in a component render function as dependency
-of some [useEffect*], it will run at all times because the reference to ["foo"] gets
+So if you use some string that is defined inside a component render function as dependency
+of a call to [useEffect*], it will run at all times because the reference to ["foo"] gets
 recreated on every render.
 
 {1 JavaScript objects}
@@ -36,14 +37,14 @@ The type of JavaScript objects in [js_of_ocaml] is
 - ['a Js_of_ocaml.Js.t] in OCaml syntax
 - [Js_of_ocaml.Js.t('a)] in Reason syntax
 
-{1 Property access}
+{2 Access JavaScript objects properties}
 
 To access the properties of some JavaScript object you can use the infix operator [##.] provided by
 [js_of_ocaml].
 
 For example, instead of [foo##bar] like in BuckleScript / ReScript, one would do [foo##.bar].
 
-To use the ppx, add:
+To use the ppx [js_of_ocaml] that allows to use this infix operator, add:
 
 {[
  (preprocess
@@ -59,6 +60,60 @@ operator, so all piping is done using the pipe last [|>] operator.
 
 For more details about pipe first vs pipe last, check the article
 {{:https://www.javierchavarri.com/data-first-and-data-last-a-comparison/}Data first and data last: a comparison}.
+
+{1 Wrapped library}
+
+Unlike ReasonReact, that exposes all its modules without namespacing, [jsoo-react] is
+a wrapped library, that exposes one single module {!React}. This module then
+includes itself the more specific modules like {{!React.Dom}Dom} or {{!React.Event}Event}.
+
+These are the differences between the libraries modules:
+
+{%html: 
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, th code {
+  font-weight: bold;
+}
+
+td, th {
+  border: 1px solid #f6f8fa;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #f6f8fa;
+}
+</style>
+<table>
+  <tr>
+    <th>ReasonReact</th>
+    <th><code>jsoo-react</code></th>
+  </tr>
+  <tr>
+    <td><code>React.function</code></td>
+    <td>(same)</td>
+  </tr>
+  <tr>
+    <td><code>ReactDOM</code></td>
+    <td><code>React.Dom</code></td>
+  </tr>
+  <tr>
+    <td><code>ReactEvent</code></td>
+    <td><code>React.Event</code></td>
+  </tr>
+  <tr>
+    <td><code>ReactRouter</code></td>
+    <td><code>React.Router</code></td>
+  </tr>
+</table>
+ %}
 
 {1 Compiler version compatibility}
 

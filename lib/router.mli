@@ -23,7 +23,7 @@ val replace : string -> unit
 
     Examples in Reason syntax: [replace("/book/1")], [replace("/books#title")]. *)
 
-(** The type of the subscription listener id that is created with {!watchUrl}. *)
+(** The type of the listener id that is created with {!watchUrl} and can be passed as input to {!unwatchUrl}. *)
 type watcherID
 
 type url =

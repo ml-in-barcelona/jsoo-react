@@ -170,7 +170,7 @@ val useLayoutEffect7 :
   -> unit
   [@@js.global "React.useLayoutEffect"]
 
-val useCallback : ('input, 'output) callback -> ('input, 'output) callback
+val useCallback0 : ('input, 'output) callback -> ('input, 'output) callback
   [@@js.custom
     val useCallbackInternal :
          ('input, 'output) callback
@@ -180,10 +180,7 @@ val useCallback : ('input, 'output) callback -> ('input, 'output) callback
       -> ('input, 'output) callback
       [@@js.global "React.useCallback"]
 
-    let useCallback cb = useCallbackInternal cb None]
-
-val useCallback0 : ('input, 'output) callback -> ('input, 'output) callback
-  [@@js.custom let useCallback0 f = useCallbackInternal f (Some [||])]
+    let useCallback0 f = useCallbackInternal f (Some [||])]
 
 val useCallback1 :
   ('input, 'output) callback -> 'a array -> ('input, 'output) callback
@@ -219,16 +216,13 @@ val useCallback7 :
   -> ('input, 'output) callback
   [@@js.global "React.useCallback"]
 
-val useMemo : (unit -> 'value) -> 'value
+val useMemo0 : (unit -> 'value) -> 'value
   [@@js.custom
     val useMemoInternal :
       (unit -> 'value) -> 'any array option_undefined -> 'value
       [@@js.global "React.useMemo"]
 
-    let useMemo f = useMemoInternal f None]
-
-val useMemo0 : (unit -> 'value) -> 'value
-  [@@js.custom let useMemo0 f = useMemoInternal f (Some [||])]
+    let useMemo0 f = useMemoInternal f (Some [||])]
 
 val useMemo1 : (unit -> 'value) -> 'a array -> 'value
   [@@js.global "React.useMemo"]
