@@ -6,10 +6,4 @@
   (pps gen_js_api.ppx))
  (libraries js_of_ocaml gen_js_api))
 
-(rule
- (targets core.ml)
- (deps core.mli)
- (action
-  (run %{bin:gen_js_api} -o %{targets} %{deps})))
-
 (documentation)

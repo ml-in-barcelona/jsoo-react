@@ -20,7 +20,7 @@ type style
 
      [jsoo-react] works with both.
 
-     React docs for {{:https://reactjs.org/docs/refs-and-the-dom.html}refs and the DOM}. *)
+     React.js docs for {{:https://reactjs.org/docs/refs-and-the-dom.html}refs and the DOM}. *)
 type domRef
 
 (** The type for the props passed to a React DOM
@@ -34,9 +34,9 @@ val unmountComponentAtNode : domElement -> bool
 
      Removes the mounted React component in [container] from the DOM and clean up its event handlers and state.
      If no component was mounted in the container, calling this function does nothing.
-     Returns true if a component was unmounted and false if there was no component to unmount.
+     Returns [true] if a component was unmounted and [false] if there was no component to unmount.
 
-     React docs for {{:https://reactjs.org/docs/react-dom.html#unmountcomponentatnode}[ReactDOM.unmountComponentAtNode]}
+     React.js docs for {{:https://reactjs.org/docs/react-dom.html#unmountcomponentatnode}[ReactDOM.unmountComponentAtNode]}.
 *)
 
 val render : Core.element -> domElement -> unit
@@ -49,7 +49,7 @@ val render : Core.element -> domElement -> unit
      If the React [element] was previously rendered into container, this will perform an update on it and only mutate
      the DOM as necessary to reflect the latest React element.
 
-     React docs for {{:https://reactjs.org/docs/react-dom.html#render}[ReactDOM.render]}
+     React.js docs for {{:https://reactjs.org/docs/react-dom.html#render}[ReactDOM.render]}.
 *)
 
 val renderToElementWithId : Core.element -> string -> unit
@@ -62,7 +62,7 @@ val renderToElementWithId : Core.element -> string -> unit
      If the React element was previously rendered into container, this will perform an update on it and only mutate
      the DOM as necessary to reflect the latest React element.
 
-     React docs for {{:https://reactjs.org/docs/react-dom.html#render}[ReactDOM.render]}
+     React.js docs for {{:https://reactjs.org/docs/react-dom.html#render}[ReactDOM.render]}.
 
      @raise Invalid_argument If [container_id] is not found in the DOM.
 *)
@@ -649,7 +649,7 @@ val createElement :
 
      Note this function leverages the variadic version of [children] that is allowed by React.js.
 
-     React docs for {{:https://reactjs.org/docs/react-api.html#createelement}[React.createElement]}
+     React.js docs for {{:https://reactjs.org/docs/react-api.html#createelement}[React.createElement]}.
 *)
 
 val forwardRef :
@@ -662,7 +662,7 @@ val forwardRef :
 
      As all component [make] functions, the function passed to [forwardRef] should return a React element.
 
-     React docs for {{:https://reactjs.org/docs/react-api.html#reactforwardref}[React.forwardRef]}
+     React.js docs for {{:https://reactjs.org/docs/react-api.html#reactforwardref}[React.forwardRef]}.
 *)
 
 (** This module provides utilities to work with React.js
@@ -1072,7 +1072,7 @@ module Style : sig
           *)
     -> unit
     -> style
-  (** (** Builder function to create a JavaScript object of type {{!style}[style]}. *) *)
+  (** Builder function to create a JavaScript object of type {{!style}[style]}. *)
 
   (* CSS2Properties: https://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSS2Properties *)
   (* let combine: (style, style) -> style =

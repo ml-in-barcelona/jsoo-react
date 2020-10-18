@@ -160,9 +160,6 @@ type watcherID = unit -> unit
 
 let url () = {path= path (); hash= hash (); search= search ()}
 
-(* alias exposed publicly *)
-let dangerouslyGetInitialUrl = url
-
 let watchUrl callback =
   match Browser.window with
   | None ->
@@ -180,18 +177,14 @@ let unwatchUrl watcherID =
       Event.removeEventListener window "popstate" watcherID
 
 let useUrl ?serverUrl () =
-  let url, setUrl =
+  let oldUrl, setUrl =
     Core.useState (fun () ->
-        match serverUrl with
-        | Some url ->
-            url
-        | None ->
-            dangerouslyGetInitialUrl ())
+        match serverUrl with Some url -> url | None -> url ())
   in
   Core.useEffect0 (fun () ->
       let watcherId = watchUrl (fun url -> setUrl (fun _ -> url)) in
-      (* check for updates that may have occured between the initial state and the subscribe above *)
-      let newUrl = dangerouslyGetInitialUrl () in
-      if urlNotEqual newUrl url then setUrl (fun _ -> newUrl) ;
+      (* check for updates that may have occurred between the initial state and the subscribe above *)
+      let newUrl = url () in
+      if urlNotEqual newUrl oldUrl then setUrl (fun _ -> newUrl) ;
       Some (fun () -> unwatchUrl watcherId)) ;
-  url
+  oldUrl

@@ -1,295 +1,444 @@
-type element = private Ojs.t
+(** Provides bindings to React.js
+     {{:https://reactjs.org/docs/react-api.html}[react]} package, also known as React top-level API. *)
+
+(** {1 Types} *)
+
+(** The type that represents {{:https://reactjs.org/docs/glossary.html#elements}React elements}. React elements are not to be confounded with
+DOM elements. React elements are just JavaScript objects that define what needs to be rendered 
+on screen.
+
+React glossary entry for {{:https://reactjs.org/docs/glossary.html#elements}elements}.
+
+For more information, read {{:https://reactjs.org/blog/2015/12/18/react-components-elements-and-instances.html}React Components, Elements, and Instances}.
+
+*)
+type element
+
+(** The type of possibly [null] values. *)
+type 'a js_nullable = 'a Js_of_ocaml.Js.Opt.t
+
+(** A helper type for functions that have component-like shape. *)
+type ('props, 'return) componentLike = 'props -> 'return
+
+(** The type of components. *)
+type 'props component = ('props, element) componentLike
+
+(** The type for callbacks passed to [useCallback*] effects. *)
+type ('input, 'output) callback = 'input -> 'output
+
+(** {1 Converters for [gen_js_api]} *)
+
+(** These functions convert values from / to JavaScript and are useful in case {{:https://github.com/LexiFi/gen_js_api}gen_js_api}
+is used.
+*)
 
 val element_of_js : Ojs.t -> element
 
 val element_to_js : element -> Ojs.t
 
-val null : element [@@js.custom let null = Ojs.null]
-
-val string : string -> element [@@js.cast]
-
-val int : int -> element [@@js.cast]
-
-val float : float -> element [@@js.cast]
-
-val list : element list -> element [@@js.cast]
-
-[@@@js.stop]
-
-type 'a option_undefined = 'a option
-
-type 'a js_nullable = 'a Js_of_ocaml.Js.Opt.t
-
 val js_nullable_of_js : (Ojs.t -> 'value) -> Ojs.t -> 'value js_nullable
 
 val js_nullable_to_js : ('value -> Ojs.t) -> 'value js_nullable -> Ojs.t
 
-type ('props, 'return) componentLike = 'props -> 'return
+val component_of_js : (Ojs.t -> 'props) -> Ojs.t -> 'props component
 
-type 'props component = ('props, element) componentLike
+val component_to_js : ('props -> Ojs.t) -> 'props component -> Ojs.t
 
-val component_of_js : 'a -> 'a
+(** {1 Coercion to React elements} *)
 
-val component_to_js : 'a -> 'a
+val null : element
+(** Creates an empty React element.
+*)
 
-type ('input, 'output) callback = 'input -> 'output
+val string : string -> element
+(** Converts a string into a React element.
+*)
 
-[@@@js.start]
+val int : int -> element
+(** Converts an integer into a React element.
+*)
 
-[@@@js.implem
-type 'a option_undefined = 'a option
+val float : float -> element
+(** Converts a float into a React element.
+*)
 
-type 'a js_nullable = 'a Js_of_ocaml.Js.Opt.t
+val list : element list -> element
+(** Converts a list of elements into a React element.
+*)
 
-external equals : Ojs.t -> Ojs.t -> bool = "caml_js_equals"
-
-let undefined = Ojs.variable "undefined"
-
-let option_undefined_of_js f x = if equals x undefined then None else Some (f x)
-
-let option_undefined_to_js f = function Some x -> f x | None -> undefined
-
-external js_nullable_of_ojs : Ojs.t -> 'value js_nullable = "%identity"
-
-external js_nullable_to_js : 'value js_nullable -> Ojs.t = "%identity"
-
-let js_nullable_of_js _f x = js_nullable_of_ojs x
-
-let js_nullable_to_js _f x = js_nullable_to_js x
-
-type ('props, 'return) componentLike = 'props -> 'return
-
-type 'props component = ('props, element) componentLike
-
-let component_to_js cb = cb
-
-let component_of_js js = js
-
-type ('input, 'output) callback = 'input -> 'output
-
-let callback_to_js _ cb = cb
-
-let callback_of_js _ js = js]
+(** {1 Elements creation and cloning} *)
 
 val createElement : 'props component -> 'props -> element
-  [@@js.global "React.createElement"]
+(** OCaml syntax: [createElement component props].
+
+    Reason syntax: [createElement(component, props)].
+    
+    Create and return a new React element by calling the [component] [make] function with the given [props].
+
+    If you are using [jsoo-react] {{!page:ppx}ppx}, you will not need to call [createElement] directly. This
+    function will be called behind the scenes for components with zero or one child (see {!createElementVariadic}, which
+    is called for elements with more than 1 child).
+
+    React.js docs for {{:https://reactjs.org/docs/react-api.html#createelement}[React.createElement]}.
+*)
 
 val createElementVariadic :
   'props component -> 'props -> (element list[@js.variadic]) -> element
-  [@@js.global "React.createElement"]
+(** OCaml syntax: [createElementVariadic component props child1 child2 child3].
+
+    Reason syntax: [createElementVariadic(component, props, child1, child2, child3)].
+    
+    Create and return a new React element by calling the [component] [make] function with the given [props] and children
+    ([child1], [child2], [child3] in the example, but there can be any number).
+
+    If you are using [jsoo-react] {{!page:ppx}ppx}, you will not need to call [createElementVariadic] directly. This
+    function will be called behind the scenes for components with zero or one child (see {!createElement}, which
+    is called for elements with 0 and 1 child).
+
+    React.js docs for {{:https://reactjs.org/docs/react-api.html#createelement}[React.createElement]}.
+*)
 
 val cloneElement : element -> 'props -> element
-  [@@js.global "React.cloneElement"]
+(** OCaml syntax: [cloneElement element props].
 
-val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
-  [@@js.global "React.useEffect"]
+    Reason syntax: [cloneElement(element, props)].
+    
+    Clone and return a new React element using [element] as the starting point.
+    The resulting element will have the original element’s props with the new [props] merged in shallowly. 
+    New children will replace existing children. [key] and [ref] from the original element will be preserved.
 
-val useEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
-  [@@js.custom
-    val useEffectInternal :
-      (unit -> (unit -> unit) option_undefined) -> Ojs.t array -> unit
-      [@@js.global "React.useEffect"]
+    React.js docs for {{:https://reactjs.org/docs/react-api.html#cloneelement}[React.cloneElement]}.
+*)
 
-    let useEffect0 effect = useEffectInternal effect [||]]
+(** {1 Hooks} *)
 
-val useEffect1 : (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
-  [@@js.global "React.useEffect"]
+(** {2 [useEffect]} *)
 
-val useEffect2 : (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
-  [@@js.global "React.useEffect"]
+val useEffect : (unit -> (unit -> unit) option) -> unit
+(** OCaml syntax: [useEffect didUpdate].
 
-val useEffect3 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
-  [@@js.global "React.useEffect"]
+    Reason syntax: [useEffect(didUpdate)].
+    
+    The function [didUpdate] will run after every render is committed to the screen.
 
-val useEffect4 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
-  [@@js.global "React.useEffect"]
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#useeffect}[React.useEffect]}.
+*)
+
+val useEffect0 : (unit -> (unit -> unit) option) -> unit
+(** OCaml syntax: [useEffect0 didUpdate].
+
+    Reason syntax: [useEffect0(didUpdate)].
+    
+    The function [didUpdate] will run just once, after the first render is committed to the screen.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#useeffect}[React.useEffect]}.
+*)
+
+val useEffect1 : (unit -> (unit -> unit) option) -> 'a array -> unit
+(** OCaml syntax: [useEffect1 didUpdate [|dependency|]].
+
+    Reason syntax: [useEffect1(didUpdate, [|dependency|])].
+    
+    The function [didUpdate] will run just conditionally after the first render is committed to the screen,
+    if the value of [dependency] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#useeffect}[React.useEffect]}.
+*)
+
+val useEffect2 : (unit -> (unit -> unit) option) -> 'a * 'b -> unit
+(** OCaml syntax: [useEffect2 didUpdate dependencies].
+
+    Reason syntax: [useEffect2(didUpdate, dependencies)].
+    
+    The function [didUpdate] will run just conditionally after the first render is committed to the screen,
+    if the value of any of the 2 [dependencies] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#useeffect}[React.useEffect]}.
+*)
+
+val useEffect3 : (unit -> (unit -> unit) option) -> 'a * 'b * 'c -> unit
+(** OCaml syntax: [useEffect3 didUpdate dependencies].
+
+    Reason syntax: [useEffect3(didUpdate, dependencies)].
+    
+    The function [didUpdate] will run just conditionally after the first render is committed to the screen,
+    if the value of any of the 3 [dependencies] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#useeffect}[React.useEffect]}.
+*)
+
+val useEffect4 : (unit -> (unit -> unit) option) -> 'a * 'b * 'c * 'd -> unit
+(** OCaml syntax: [useEffect4 didUpdate dependencies].
+
+    Reason syntax: [useEffect4(didUpdate, dependencies)].
+    
+    The function [didUpdate] will run just conditionally after the first render is committed to the screen,
+    if the value of any of the 4 [dependencies] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#useeffect}[React.useEffect]}.
+*)
 
 val useEffect5 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
-  [@@js.global "React.useEffect"]
+  (unit -> (unit -> unit) option) -> 'a * 'b * 'c * 'd * 'e -> unit
+(** OCaml syntax: [useEffect5 didUpdate dependencies].
+
+    Reason syntax: [useEffect5(didUpdate, dependencies)].
+    
+    The function [didUpdate] will run just conditionally after the first render is committed to the screen,
+    if the value of any of the 5 [dependencies] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#useeffect}[React.useEffect]}.
+*)
 
 val useEffect6 :
-     (unit -> (unit -> unit) option_undefined)
-  -> 'a * 'b * 'c * 'd * 'e * 'f
-  -> unit
-  [@@js.global "React.useEffect"]
+  (unit -> (unit -> unit) option) -> 'a * 'b * 'c * 'd * 'e * 'f -> unit
+(** OCaml syntax: [useEffect6 didUpdate dependencies].
+
+    Reason syntax: [useEffect6(didUpdate, dependencies)].
+    
+    The function [didUpdate] will run just conditionally after the first render is committed to the screen,
+    if the value of any of the 6 [dependencies] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#useeffect}[React.useEffect]}.
+*)
 
 val useEffect7 :
-     (unit -> (unit -> unit) option_undefined)
-  -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
-  -> unit
-  [@@js.global "React.useEffect"]
+  (unit -> (unit -> unit) option) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> unit
+(** OCaml syntax: [useEffect7 didUpdate dependencies].
 
-val useLayoutEffect : (unit -> (unit -> unit) option_undefined) -> unit
-  [@@js.global "React.useLayoutEffect"]
+    Reason syntax: [useEffect7(didUpdate, dependencies)].
+    
+    The function [didUpdate] will run just conditionally after the first render is committed to the screen,
+    if the value of any of the 7 [dependencies] has changed.
 
-val useLayoutEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
-  [@@js.custom
-    val useLayoutEffectInternal :
-      (unit -> (unit -> unit) option_undefined) -> Ojs.t array -> unit
-      [@@js.global "React.useLayoutEffect"]
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
 
-    let useLayoutEffect0 effect = useLayoutEffectInternal effect [||]]
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#useeffect}[React.useEffect]}.
+*)
 
-val useLayoutEffect1 :
-  (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
-  [@@js.global "React.useLayoutEffect"]
+(** {2 [useLayoutEffect]} *)
 
-val useLayoutEffect2 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
-  [@@js.global "React.useLayoutEffect"]
+val useLayoutEffect : (unit -> (unit -> unit) option) -> unit
+(** OCaml syntax: [useLayoutEffect didUpdate].
 
-val useLayoutEffect3 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
-  [@@js.global "React.useLayoutEffect"]
+    Reason syntax: [useLayoutEffect(didUpdate)].
+    
+    The function [didUpdate] will run before every render is committed to the screen.
 
-val useLayoutEffect4 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
-  [@@js.global "React.useLayoutEffect"]
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#uselayouteffect}[React.useLayoutEffect]}.
+*)
+
+val useLayoutEffect0 : (unit -> (unit -> unit) option) -> unit
+(** OCaml syntax: [useLayoutEffect0 didUpdate].
+
+    Reason syntax: [useLayoutEffect0(didUpdate)].
+    
+    The function [didUpdate] will run just once, before the first render is committed to the screen.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#uselayouteffect}[React.useLayoutEffect]}.
+*)
+
+val useLayoutEffect1 : (unit -> (unit -> unit) option) -> 'a array -> unit
+(** OCaml syntax: [useLayoutEffect1 didUpdate [|dependency|]].
+
+    Reason syntax: [useLayoutEffect1(didUpdate, [|dependency|])].
+    
+    The function [didUpdate] will run just conditionally before the first render is committed to the screen,
+    if the value of [dependency] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#uselayouteffect}[React.useLayoutEffect]}.
+*)
+
+val useLayoutEffect2 : (unit -> (unit -> unit) option) -> 'a * 'b -> unit
+(** OCaml syntax: [useLayoutEffect2 didUpdate dependencies].
+
+    Reason syntax: [useLayoutEffect2(didUpdate, dependencies)].
+    
+    The function [didUpdate] will run just conditionally before the first render is committed to the screen,
+    if the value of any of the 2 [dependencies] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#uselayouteffect}[React.useLayoutEffect]}.
+*)
+
+val useLayoutEffect3 : (unit -> (unit -> unit) option) -> 'a * 'b * 'c -> unit
+(** OCaml syntax: [useLayoutEffect3 didUpdate dependencies].
+
+    Reason syntax: [useLayoutEffect3(didUpdate, dependencies)].
+    
+    The function [didUpdate] will run just conditionally before the first render is committed to the screen,
+    if the value of any of the 3 [dependencies] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#uselayouteffect}[React.useLayoutEffect]}.
+*)
+
+val useLayoutEffect4 : (unit -> (unit -> unit) option) -> 'a * 'b * 'c * 'd -> unit
+(** OCaml syntax: [useLayoutEffect4 didUpdate dependencies].
+
+    Reason syntax: [useLayoutEffect4(didUpdate, dependencies)].
+    
+    The function [didUpdate] will run just conditionally before the first render is committed to the screen,
+    if the value of any of the 4 [dependencies] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#uselayouteffect}[React.useLayoutEffect]}.
+*)
 
 val useLayoutEffect5 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
-  [@@js.global "React.useLayoutEffect"]
+  (unit -> (unit -> unit) option) -> 'a * 'b * 'c * 'd * 'e -> unit
+(** OCaml syntax: [useLayoutEffect5 didUpdate dependencies].
+
+    Reason syntax: [useLayoutEffect5(didUpdate, dependencies)].
+    
+    The function [didUpdate] will run just conditionally before the first render is committed to the screen,
+    if the value of any of the 5 [dependencies] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#uselayouteffect}[React.useLayoutEffect]}.
+*)
 
 val useLayoutEffect6 :
-     (unit -> (unit -> unit) option_undefined)
-  -> 'a * 'b * 'c * 'd * 'e * 'f
-  -> unit
-  [@@js.global "React.useLayoutEffect"]
+  (unit -> (unit -> unit) option) -> 'a * 'b * 'c * 'd * 'e * 'f -> unit
+(** OCaml syntax: [useLayoutEffect6 didUpdate dependencies].
+
+    Reason syntax: [useLayoutEffect6(didUpdate, dependencies)].
+    
+    The function [didUpdate] will run just conditionally before the first render is committed to the screen,
+    if the value of any of the 6 [dependencies] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#uselayouteffect}[React.useLayoutEffect]}.
+*)
 
 val useLayoutEffect7 :
-     (unit -> (unit -> unit) option_undefined)
-  -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
-  -> unit
-  [@@js.global "React.useLayoutEffect"]
+  (unit -> (unit -> unit) option) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> unit
+(** OCaml syntax: [useLayoutEffect7 didUpdate dependencies].
+
+    Reason syntax: [useLayoutEffect7(didUpdate, dependencies)].
+    
+    The function [didUpdate] will run just conditionally before the first render is committed to the screen,
+    if the value of any of the 7 [dependencies] has changed.
+
+    [didUpdate] can optionally return a callback. If it does, the callback will be called before executing the next effect.
+
+    React.js docs for {{:https://reactjs.org/docs/hooks-reference.html#uselayouteffect}[React.useLayoutEffect]}.
+*)
+
+(** {2 [useCallback]} *)
 
 val useCallback : ('input, 'output) callback -> ('input, 'output) callback
-  [@@js.custom
-    val useCallbackInternal :
-         ('input, 'output) callback
-      -> 'a array option_undefined
-         (* Important: we don't want to use an arrow type to represent returning callback (i.e. (Ojs.t -> Ojs.t)) as the callback
-            would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
-      -> ('input, 'output) callback
-      [@@js.global "React.useCallback"]
-
-    let useCallback cb = useCallbackInternal cb None]
 
 val useCallback0 : ('input, 'output) callback -> ('input, 'output) callback
-  [@@js.custom let useCallback0 f = useCallbackInternal f (Some [||])]
 
 val useCallback1 :
   ('input, 'output) callback -> 'a array -> ('input, 'output) callback
-  [@@js.global "React.useCallback"]
 
 val useCallback2 :
   ('input, 'output) callback -> 'a * 'b -> ('input, 'output) callback
-  [@@js.global "React.useCallback"]
 
 val useCallback3 :
   ('input, 'output) callback -> 'a * 'b * 'c -> ('input, 'output) callback
-  [@@js.global "React.useCallback"]
 
 val useCallback4 :
   ('input, 'output) callback -> 'a * 'b * 'c * 'd -> ('input, 'output) callback
-  [@@js.global "React.useCallback"]
 
 val useCallback5 :
      ('input, 'output) callback
   -> 'a * 'b * 'c * 'd * 'e
   -> ('input, 'output) callback
-  [@@js.global "React.useCallback"]
 
 val useCallback6 :
      ('input, 'output) callback
   -> 'a * 'b * 'c * 'd * 'e * 'f
   -> ('input, 'output) callback
-  [@@js.global "React.useCallback"]
 
 val useCallback7 :
      ('input, 'output) callback
   -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
   -> ('input, 'output) callback
-  [@@js.global "React.useCallback"]
+
+(** {2 [useMemo]} *)
 
 val useMemo : (unit -> 'value) -> 'value
-  [@@js.custom
-    val useMemoInternal :
-      (unit -> 'value) -> 'any array option_undefined -> 'value
-      [@@js.global "React.useMemo"]
-
-    let useMemo f = useMemoInternal f None]
 
 val useMemo0 : (unit -> 'value) -> 'value
-  [@@js.custom let useMemo0 f = useMemoInternal f (Some [||])]
 
 val useMemo1 : (unit -> 'value) -> 'a array -> 'value
-  [@@js.global "React.useMemo"]
 
 val useMemo2 : (unit -> 'value) -> 'a * 'b -> 'value
-  [@@js.global "React.useMemo"]
 
 val useMemo3 : (unit -> 'value) -> 'a * 'b * 'c -> 'value
-  [@@js.global "React.useMemo"]
 
 val useMemo4 : (unit -> 'value) -> 'a * 'b * 'c * 'd -> 'value
-  [@@js.global "React.useMemo"]
 
 val useMemo5 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e -> 'value
-  [@@js.global "React.useMemo"]
 
 val useMemo6 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f -> 'value
-  [@@js.global "React.useMemo"]
 
 val useMemo7 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> 'value
-  [@@js.global "React.useMemo"]
+
+(** {2 [useState]} *)
 
 val useState : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
-  [@@js.global "React.useState"]
+
+(** {2 [useReducer]} *)
 
 val useReducer :
   ('state -> 'action -> 'state) -> 'state -> 'state * ('action -> unit)
-  [@@js.global "React.useReducer"]
 
 val useReducerWithMapState :
      ('state -> 'action -> 'state)
   -> 'initialState
   -> ('initialState -> 'state)
   -> 'state * ('action -> unit)
-  [@@js.global "React.useReducer"]
+
+(** {1 Refs} *)
 
 module Ref : sig
   type 'value t
-
-  [@@@js.stop]
 
   val t_of_js : (Ojs.t -> 'value) -> Ojs.t -> 'value t
 
   val t_to_js : ('value -> Ojs.t) -> 'value t -> Ojs.t
 
-  [@@@js.start]
+  val current : 'value t -> 'value
 
-  val current : 'value t -> 'value [@@js.get "current"]
-
-  val setCurrent : 'value t -> 'value -> unit [@@js.set "current"]
+  val setCurrent : 'value t -> 'value -> unit
 end
 
-val useRef : 'value -> 'value Ref.t [@@js.global "React.useRef"]
+(** {2 [useRef]} *)
 
-val createRef : unit -> 'a js_nullable Ref.t [@@js.global "React.createRef"]
+val useRef : 'value -> 'value Ref.t
 
-(* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
- Although Reason parser doesn't support it so that's a requirement before adding it here *)
+val createRef : unit -> 'a js_nullable Ref.t
+
 val createFragment : element list -> element
-  [@@js.custom
-    val createFragmentInternal : Ojs.t -> Ojs.t -> element list -> element
-      [@@js.global "React.createElement"]
 
-    val fragmentInternal : Ojs.t [@@js.global "React.Fragment"]
-
-    let createFragment l = createFragmentInternal fragmentInternal Ojs.null l]
+(** {1 Context} *)
 
 module Context : sig
   type 'props t
@@ -300,51 +449,39 @@ module Context : sig
     -> unit
     -> < value: 'props ; children: element Js_of_ocaml.Js.readonly_prop >
        Js_of_ocaml.Js.t
-    [@@js.custom
-      let makeProps ~value ~children () =
-        Js_of_ocaml.Js.Unsafe.(
-          obj [|("value", inject value); ("children", inject children)|])]
 
   val provider :
        'props t
     -> < value: 'props ; children: element Js_of_ocaml.Js.readonly_prop >
        Js_of_ocaml.Js.t
        component
-    [@@js.custom
-      external of_ojs :
-           Ojs.t
-        -> < value: 'props ; children: element Js_of_ocaml.Js.readonly_prop >
-           Js_of_ocaml.Js.t
-           component = "%identity"
-
-      val providerInternal : 'props t -> Ojs.t [@@js.get "Provider"]
-
-      let provider c = of_ojs (providerInternal c)]
 end
 
-val createContext : 'a -> 'a Context.t [@@js.global "React.createContext"]
+val createContext : 'a -> 'a Context.t
 
-val useContext : 'value Context.t -> 'value [@@js.global "React.useContext"]
+(** {2 [useContext]} *)
+
+val useContext : 'value Context.t -> 'value
+
+(** {1 Children} *)
 
 module Children : sig
   val map : element -> (element -> element) -> element
-    [@@js.global "React.Children.map"]
 
   val mapWithIndex : element -> (element -> int -> element) -> element
-    [@@js.global "React.Children.map"]
 
   val forEach : element -> (element -> unit) -> unit
-    [@@js.global "React.Children.forEach"]
 
   val forEachWithIndex : element -> (element -> int -> unit) -> unit
-    [@@js.global "React.Children.forEach"]
 
-  val count : element -> int [@@js.global "React.Children.count"]
+  val count : element -> int
 
-  val only : element -> element [@@js.global "React.Children.only"]
+  val only : element -> element
 
-  val toArray : element -> element array [@@js.global "React.Children.toArray"]
+  val toArray : element -> element array
 end
+
+(** {1 Fragment} *)
 
 module Fragment : sig
   val makeProps :
@@ -352,33 +489,19 @@ module Fragment : sig
     -> ?key:Js_of_ocaml.Js.js_string Js_of_ocaml.Js.t
     -> unit
     -> < children: element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
-    [@@js.custom
-      let makeProps ~children ?key () =
-        match key with
-        | Some k ->
-            Js_of_ocaml.Js.Unsafe.(
-              obj [|("key", inject k); ("children", inject children)|])
-        | None ->
-            Js_of_ocaml.Js.Unsafe.(obj [|("children", inject children)|])]
 
   val make :
     < children: element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
     component
-    [@@js.custom
-      external to_component :
-           Ojs.t
-        -> < children: element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
-           component = "%identity"
-
-      val makeInternal : Ojs.t [@@js.global "React.Fragment"]
-
-      let make = to_component makeInternal]
 end
 
-val memo : 'props component -> 'props component [@@js.global "React.memo"]
+(** {1 Memoization} *)
+
+val memo : 'props component -> 'props component
 
 val memoCustomCompareProps :
   'props component -> ('props -> 'props -> bool) -> 'props component
-  [@@js.global "React.memo"]
 
-val setDisplayName : 'props component -> string -> unit [@@js.set "displayName"]
+(** {1 Debugging} *)
+
+val setDisplayName : 'props component -> string -> unit
