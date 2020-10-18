@@ -8,8 +8,7 @@ include [%js:
 val unmountComponentAtNode : domElement -> bool
   [@@js.global "ReactDOM.unmountComponentAtNode"]
 
-val render : Core.element -> domElement -> unit
-  [@@js.global "ReactDOM.render"]
+val render : Core.element -> domElement -> unit [@@js.global "ReactDOM.render"]
 
 type style
 
@@ -17,14 +16,17 @@ type domRef
 
 type domProps
 
-val domRef_of_js: Ojs.t -> domRef
-val domRef_to_js:  domRef -> Ojs.t
+val domRef_of_js : Ojs.t -> domRef
 
-val style_of_js: Ojs.t -> style
-val style_to_js:  style -> Ojs.t
+val domRef_to_js : domRef -> Ojs.t
 
-val domProps_of_js: Ojs.t -> domProps
-val domProps_to_js: domProps -> Ojs.t
+val style_of_js : Ojs.t -> style
+
+val style_to_js : style -> Ojs.t
+
+val domProps_of_js : Ojs.t -> domProps
+
+val domProps_to_js : domProps -> Ojs.t
 
 val renderToElementWithId : Core.element -> string -> unit
   [@@js.custom
@@ -48,11 +50,10 @@ module Ref : sig
 
   type callbackDomRef = domElement Core.js_nullable -> unit
 
-  val domRef : currentDomRef -> domRef
+  val domRef : currentDomRef -> domRef [@@js.cast]
 
-  val callbackDomRef : callbackDomRef -> domRef
-end
-]
+  val callbackDomRef : callbackDomRef -> domRef [@@js.cast]
+end]
 
 val domProps :
      ?key:string
