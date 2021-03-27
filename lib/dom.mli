@@ -16,9 +16,9 @@ external domElement_to_js : domElement -> Ojs.t = "%identity"
 external domElement_of_js : Ojs.t -> domElement = "%identity"]
 
 val unmountComponentAtNode : domElement -> bool
+  [@@js.global "ReactDOM.unmountComponentAtNode"]
 
-val render : Core.element -> domElement -> unit
-  [@@js.global "ReactDOM.render"]
+val render : Core.element -> domElement -> unit [@@js.global "ReactDOM.render"]
 
 val renderToElementWithId : Core.element -> string -> unit
   [@@js.custom

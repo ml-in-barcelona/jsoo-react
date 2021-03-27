@@ -121,7 +121,7 @@ module Mouse = struct
 
   val ctrlKey : t -> bool [@@js.get]
 
-  val getModifierState : t -> string -> bool [@@bs.send]
+  val getModifierState : t -> string -> bool [@@js.call]
 
   val metaKey : t -> bool [@@js.get]
 
