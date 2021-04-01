@@ -42,9 +42,6 @@ jobs:
         with:
           node-version: 12
 
-      - name: Pin gen_js_api
-        run: opam pin add gen_js_api https://github.com/jchavarri/gen_js_api.git#typ_var --no-action
-
       - name: Pin package
         run: opam pin add jsoo-react.dev . --no-action
 
