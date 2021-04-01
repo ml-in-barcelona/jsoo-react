@@ -9,7 +9,7 @@
 (authors "Javier Chávarri <javier.chavarri@gmail.com>")
 
 (source
- (github jchavarri/jsoo-react))
+ (github reason-in-barcelona/jsoo-react))
 
 (generate_opam_files true)
 
