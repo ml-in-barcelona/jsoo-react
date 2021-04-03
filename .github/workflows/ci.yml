@@ -28,9 +28,9 @@ jobs:
         id: cache-opam
         with:
           path: ~/.opam
-          key: v1-${{ runner.os }}-opam-${{ matrix.ocaml-version }}-${{ hashFiles('jsoo-react.opam.locked') }}
+          key: v1-${{ runner.os }}-opam-${{ matrix.ocaml-version }}-${{ hashFiles('jsoo-react.opam') }}
           restore-keys: |
-            v1-${{ runner.os }}-opam-${{ matrix.ocaml-version }}-
+            v1-${{ runner.os }}-opam-${{ matrix.ocaml-version }}-${{ hashFiles('jsoo-react.opam') }}
 
       - name: Use OCaml ${{ matrix.ocaml-version }}
         uses: avsm/setup-ocaml@v1
@@ -42,16 +42,12 @@ jobs:
         with:
           node-version: 12
 
-      - name: Pin gen_js_api
-        run: opam pin add gen_js_api https://github.com/jchavarri/gen_js_api.git#typ_var --no-action
 
-      - name: Pin package
-        run: opam pin add jsoo-react.dev . --no-action
 
       - name: Install dependencies
         if: steps.cache-opam.outputs.cache-hit != 'true'
         run: |
-          opam install . --deps-only --with-doc --with-test --locked --unlock-base
+          opam install . --deps-only --with-doc --with-test --unlock-base
           opam install ocamlformat
 
       - name: Upgrade dependencies

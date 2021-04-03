@@ -29,7 +29,7 @@ format:
 publish-example:
 	git checkout master && opam exec -- dune build --profile=prod @@default && cd example && yarn webpack:production \
 	&& cd - && git checkout gh-pages && cp example/build/* . && git commit -am "$(current_hash)"
-	
+
 # Update the package dependencies when new deps are added to dune-project
 $(opam_file): dune-project
 	opam exec -- dune build @install        # Update the $(project_name).opam file
