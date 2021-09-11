@@ -1,4 +1,4 @@
-open Migrate_parsetree
+open Ppxlib
 
 (* To run as a standalone binary, run the registered drivers *)
-let () = Driver.run_main ()
+let () = Driver.standalone ()
