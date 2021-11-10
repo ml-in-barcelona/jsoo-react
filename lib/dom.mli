@@ -62,6 +62,15 @@ end
 
 type domProps = private Ojs.t
 
+[@@@js.stop]
+
+val create : unit -> domProps
+
+[@@@js.start]
+
+[@@@js.implem
+let create = Ojs.empty_obj]
+
 val domProps :
      ?key:string
   -> ?ref:

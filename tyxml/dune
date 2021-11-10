@@ -1,0 +1,2 @@
+(library (name jsoo_react_tyxml) (public_name jsoo-react.tyxml)
+ (libraries react js_of_ocaml tyxml.functor))
