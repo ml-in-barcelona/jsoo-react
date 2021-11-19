@@ -356,28 +356,25 @@ let rec makeFunsForMakePropsBody list args =
   | [] ->
       args
 
-let makeAttributeValue ({type_; _} : Html.attribute) value =
+let makeAttributeValue ~loc ({type_; _} : Html.attribute) value =
   match type_ with
   | String ->
-      (* [%expr
-         Js_of_ocaml.Js.string
-           [%e Exp.constant ~loc (Pconst_string (value, None))]] *)
-      [%expr [%e value]]
+      [%expr Js_of_ocaml.Js.string ([%e value] : string)]
   | Int ->
-      [%expr [%e value]]
+      [%expr ([%e value] : int)]
   | Float ->
-      [%expr [%e value]]
+      [%expr ([%e value] : float)]
   | Bool ->
-      [%expr [%e value]]
+      [%expr ([%e value] : bool)]
 
-let makeEventValue _event value = [%expr [%e value]]
+let makeEventValue ~loc:_ _event value = value
 
-let makeValue prop value =
+let makeValue ~loc prop value =
   match prop with
   | Html.Attribute attribute ->
-      makeAttributeValue attribute value
-  | Html.Event event ->
-      makeEventValue event value
+      makeAttributeValue ~loc attribute value
+  | Html.Event _event ->
+      [%expr []]
 
 let makeJsObj ~loc namedArgListWithKeyAndRef =
   let labelToTuple label =
@@ -556,7 +553,8 @@ let jsxMapper () =
             [%expr
               [%e
                 Exp.constant ~loc (Pconst_string (Html.getHtmlName prop, None))]
-              , Js_of_ocaml.Js.Unsafe.inject [%e makeValue prop value]]
+              (* loc here points to the element <div />, we could be more precise and point to the prop *)
+              , Js_of_ocaml.Js.Unsafe.inject [%e makeValue ~loc prop value]]
           in
           let items = List.map makePropItem propsWithName in
           let propsObj =
