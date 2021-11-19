@@ -342,7 +342,6 @@ let propTypeList =
   ; Attribute {type_= String; name= "radioGroup"; htmlName= "radioGroup"}
   ; Attribute {type_= String; name= "radius"; htmlName= "radius"}
   ; Attribute {type_= Bool; name= "readOnly"; htmlName= "readOnly"}
-    (* `ref` should be part of this list? *)
   ; Attribute {type_= Ref; name= "ref"; htmlName= "ref"}
   ; Attribute {type_= String; name= "refX"; htmlName= "refX"}
   ; Attribute {type_= String; name= "refY"; htmlName= "refY"}
