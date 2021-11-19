@@ -356,6 +356,29 @@ let rec makeFunsForMakePropsBody list args =
   | [] ->
       args
 
+let makeAttributeValue ({type_; _} : Html.attribute) value =
+  match type_ with
+  | String ->
+      (* [%expr
+         Js_of_ocaml.Js.string
+           [%e Exp.constant ~loc (Pconst_string (value, None))]] *)
+      [%expr [%e value]]
+  | Int ->
+      [%expr [%e value]]
+  | Float ->
+      [%expr [%e value]]
+  | Bool ->
+      [%expr [%e value]]
+
+let makeEventValue _event value = [%expr [%e value]]
+
+let makeValue prop value =
+  match prop with
+  | Html.Attribute attribute ->
+      makeAttributeValue attribute value
+  | Html.Event event ->
+      makeEventValue event value
+
 let makeJsObj ~loc namedArgListWithKeyAndRef =
   let labelToTuple label =
     let l = getLabel label in
@@ -515,26 +538,36 @@ let jsxMapper () =
     in
     let args =
       match nonChildrenProps with
-      | [_justTheUnitArgumentAtEnd] ->
+      | [_justTheUnitArgumentAtTheEnd] ->
           [ (* "div" *)
             (nolabel, componentNameExpr)
           ; (* React.Dom.props(~className=blabla, ~foo=bar, ()) *)
-            (labelled "props", [%expr React.Dom.domProps ()])
+            (labelled "props", [%expr Js_of_ocaml.Js.Unsafe.obj [||]])
           ; (* [|moreCreateElementCallsHere|] *)
             (nolabel, childrenExpr) ]
       | nonEmptyProps ->
-          let propsCall =
-            Exp.apply ~loc
-              (Exp.ident ~loc
-                 {loc; txt= Ldot (Ldot (Lident "React", "Dom"), "domProps")} )
-              ( nonEmptyProps
-              |> List.map (fun (label, expression) ->
-                     (label, mapper.expr mapper expression) ) )
+          (* Filtering out the props that don't have a label, not sure why is possible *)
+          let propsWithName =
+            List.filter (fun (name, _) -> getLabel name != "") nonEmptyProps
+          in
+          let makePropItem (arg_label, value) =
+            let name = getLabel arg_label in
+            let prop = Html.findByName name in
+            [%expr
+              [%e
+                Exp.constant ~loc (Pconst_string (Html.getHtmlName prop, None))]
+              , Js_of_ocaml.Js.Unsafe.inject [%e makeValue prop value]]
+          in
+          let items = List.map makePropItem propsWithName in
+          let propsObj =
+            [%expr
+              ( Js_of_ocaml.Js.Unsafe.obj [%e Exp.array ~loc items]
+                : React.Dom.domProps )]
           in
           [ (* "div" *)
             (nolabel, componentNameExpr)
           ; (* React.Dom.props(~className=blabla, ~foo=bar, ()) *)
-            (labelled "props", propsCall)
+            (labelled "props", propsObj)
           ; (* [|moreCreateElementCallsHere|] *)
             (nolabel, childrenExpr) ]
     in
