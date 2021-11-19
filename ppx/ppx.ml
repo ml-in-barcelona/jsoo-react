@@ -126,7 +126,7 @@ let extractChildren ?(removeLastPositionUnit = false) ~loc propsAndChildren =
     | (Nolabel, _) :: _rest ->
         raise
           (Invalid_argument
-             "JSX: found non-labelled argument before the last position")
+             "JSX: found non-labelled argument before the last position" )
     | arg :: rest ->
         allButLast_ rest (arg :: acc)
   in
@@ -197,7 +197,7 @@ let getPropsNameValue _acc (loc, exp) =
       raise
         (Invalid_argument
            ( "react.component only accepts props as an option, given: "
-           ^ Longident.last txt ))
+           ^ Longident.last txt ) )
 
 (* Lookup the `props` record or string as part of [@react.component] and store the name for use when rewriting *)
 let getPropsAttr payload =
@@ -207,18 +207,19 @@ let getPropsAttr payload =
       (PStr
         ({ pstr_desc=
              Pstr_eval ({pexp_desc= Pexp_record (recordFields, None)}, _) }
-        :: _rest)) ->
+        :: _rest ) ) ->
       List.fold_left getPropsNameValue defaultProps recordFields
   | Some
       (PStr
         ({ pstr_desc=
              Pstr_eval ({pexp_desc= Pexp_ident {txt= Lident "props"}}, _) }
-        :: _rest)) ->
+        :: _rest ) ) ->
       {propsName= "props"}
   | Some (PStr ({pstr_desc= Pstr_eval (_, _)} :: _rest)) ->
       raise
         (Invalid_argument
-           "react.component accepts a record config with props as an options.")
+           "react.component accepts a record config with props as an options."
+        )
   | _ ->
       defaultProps
 
@@ -315,7 +316,7 @@ let makePropsValue fnName loc namedArgListWithKeyAndRef propsType =
           ; ptyp_loc= loc
           ; ptyp_attributes= []
           ; ptyp_loc_stack= [] }
-          propsType))
+          propsType ) )
 
 (* Build an AST node for the signature of the `external` definition *)
 let makePropsExternalSig fnName loc namedArgListWithKeyAndRef propsType =
@@ -340,7 +341,7 @@ let makePropsType ~loc namedTypeList =
        ( {txt= Ldot (Ldot (Lident "Js_of_ocaml", "Js"), "t"); loc}
        , [ Typ.mk ~loc
              (Ptyp_object (List.map (makeObjectField loc) namedTypeList, Closed))
-         ] ))
+         ] ) )
 
 let rec makeFunsForMakePropsBody list args =
   match list with
@@ -351,7 +352,7 @@ let rec makeFunsForMakePropsBody list args =
            ; ppat_loc= loc
            ; ppat_attributes= []
            ; ppat_loc_stack= [] }
-           args)
+           args )
   | [] ->
       args
 
@@ -381,7 +382,7 @@ let makeJsObj ~loc namedArgListWithKeyAndRef =
           Exp.array ~loc
             (List.map
                (fun (label, _, _, _) -> labelToTuple label)
-               namedArgListWithKeyAndRef)]
+               namedArgListWithKeyAndRef )]
       |> Array.to_list
       |> List.filter_map (fun x -> x)
       |> Array.of_list )]
@@ -399,7 +400,7 @@ let makePropsValueBinding fnName loc namedArgListWithKeyAndRef propsType =
           , { ptyp_desc= Ptyp_poly ([], core_type)
             ; ptyp_loc= loc
             ; ptyp_attributes= []
-            ; ptyp_loc_stack= [] } )))
+            ; ptyp_loc_stack= [] } ) ) )
     (Exp.mk ~loc
        (Pexp_constraint
           ( makeFunsForMakePropsBody namedArgListWithKeyAndRef
@@ -407,7 +408,7 @@ let makePropsValueBinding fnName loc namedArgListWithKeyAndRef propsType =
                 fun _ ->
                   let open Js_of_ocaml.Js.Unsafe in
                   [%e makeJsObj ~loc namedArgListWithKeyAndRef]]
-          , core_type )))
+          , core_type ) ) )
 
 (* Returns a structure item for the `makeProps` function *)
 let makePropsItem fnName loc namedArgListWithKeyAndRef propsType =
@@ -415,7 +416,7 @@ let makePropsItem fnName loc namedArgListWithKeyAndRef propsType =
     (Pstr_value
        ( Nonrecursive
        , [makePropsValueBinding fnName loc namedArgListWithKeyAndRef propsType]
-       ))
+       ) )
 
 (* Builds an AST node for the entire `makeProps` function *)
 let makePropsDecl fnName loc namedArgListWithKeyAndRef namedTypeList =
@@ -434,7 +435,7 @@ let jsxMapper () =
     let recursivelyTransformedArgsForMake =
       argsForMake
       |> List.map (fun (label, expression) ->
-             (label, mapper.expr mapper expression))
+             (label, mapper.expr mapper expression) )
     in
     let childrenArg = ref None in
     let args =
@@ -474,7 +475,7 @@ let jsxMapper () =
       | _ ->
           raise
             (Invalid_argument
-               "JSX name can't be the result of function applications")
+               "JSX name can't be the result of function applications" )
     in
     let props =
       Exp.apply ~attrs ~loc (Exp.ident ~loc {loc; txt= propsIdent}) args
@@ -489,7 +490,7 @@ let jsxMapper () =
     | Some children ->
         Exp.apply ~loc ~attrs
           (Exp.ident ~loc
-             {loc; txt= Ldot (Lident "React", "createElementVariadic")})
+             {loc; txt= Ldot (Lident "React", "createElementVariadic")} )
           [ (nolabel, Exp.ident ~loc {txt= ident; loc})
           ; (nolabel, props)
           ; (nolabel, children) ]
@@ -510,7 +511,7 @@ let jsxMapper () =
           raise
             (Invalid_argument
                "A spread as a DOM element's children don't make sense written \
-                together. You can simply remove the spread.")
+                together. You can simply remove the spread." )
     in
     let args =
       match nonChildrenProps with
@@ -525,10 +526,10 @@ let jsxMapper () =
           let propsCall =
             Exp.apply ~loc
               (Exp.ident ~loc
-                 {loc; txt= Ldot (Ldot (Lident "React", "Dom"), "domProps")})
+                 {loc; txt= Ldot (Ldot (Lident "React", "Dom"), "domProps")} )
               ( nonEmptyProps
               |> List.map (fun (label, expression) ->
-                     (label, mapper.expr mapper expression)) )
+                     (label, mapper.expr mapper expression) ) )
           in
           [ (* "div" *)
             (nolabel, componentNameExpr)
@@ -542,7 +543,7 @@ let jsxMapper () =
       ~attrs
       (* React.Dom.createElement *)
       (Exp.ident ~loc
-         {loc; txt= Ldot (Ldot (Lident "React", "Dom"), createElementCall)})
+         {loc; txt= Ldot (Ldot (Lident "React", "Dom"), createElementCall)} )
       args
   in
   let rec recursivelyTransformNamedArgsForMake mapper expr list =
@@ -553,12 +554,12 @@ let jsxMapper () =
         raise
           (Invalid_argument
              "Key cannot be accessed inside of a component. Don't worry - you \
-              can always key a component from its parent!")
+              can always key a component from its parent!" )
     | Pexp_fun (Labelled "ref", _, _, _) | Pexp_fun (Optional "ref", _, _, _) ->
         raise
           (Invalid_argument
              "Ref cannot be passed as a normal prop. Please use `forwardRef` \
-              API instead.")
+              API instead." )
     | Pexp_fun (arg, default, pattern, expression)
       when isOptional arg || isLabelled arg ->
         let () =
@@ -582,7 +583,7 @@ let jsxMapper () =
                      (Printf.sprintf
                         "jsoo-react: optional argument annotations must have \
                          explicit `option`. Did you mean `option(%s)=?`?"
-                        currentType)) )
+                        currentType ) ) )
           | _ ->
               ()
         in
@@ -739,7 +740,7 @@ let jsxMapper () =
           raise
             (Invalid_argument
                "Only one react.component call can exist on a component at one \
-                time") )
+                time" ) )
     (* let component = ... *)
     | {pstr_loc; pstr_desc= Pstr_value (recFlag, valueBindings)} ->
         let fileName = filenameFromLoc pstr_loc in
@@ -788,7 +789,7 @@ let jsxMapper () =
                       (Invalid_argument
                          "react.component calls can only be on function \
                           definitions or component wrappers (forwardRef, \
-                          memo).")
+                          memo)." )
               in
               spelunkForFunExpression expression
             in
@@ -892,7 +893,7 @@ let jsxMapper () =
                     in
                     ( (fun exp ->
                         Exp.apply wrapperExpression
-                          [(nolabel, exp); compareProps])
+                          [(nolabel, exp); compareProps] )
                     , hasUnit
                     , exp )
                 | { pexp_desc=
@@ -995,7 +996,7 @@ let jsxMapper () =
                       (fun (type res a0) (a0 : a0 Js_of_ocaml.Js.t)
                            (_ : a0 -> < get: res ; .. > Js_of_ocaml.Js.gen_prop)
                            : res ->
-                        Js_of_ocaml.Js.Unsafe.get a0 [%e labelStringConst])
+                        Js_of_ocaml.Js.Unsafe.get a0 [%e labelStringConst] )
                         ([%e propsNameId] : < .. > Js_of_ocaml.Js.t)
                         (fun x -> [%e send])] )
             in
@@ -1021,7 +1022,7 @@ let jsxMapper () =
                          | Recursive ->
                              internalFnName
                          | Nonrecursive ->
-                             fnName ) })
+                             fnName ) } )
                 innerExpressionArgs
             in
             let innerExpressionWithRef =
@@ -1071,7 +1072,7 @@ let jsxMapper () =
                            ; Vb.mk
                                (Pat.var {loc= emptyLoc; txt= fnName})
                                fullExpression ]
-                           (Exp.ident {loc= emptyLoc; txt= Lident fnName})) ]
+                           (Exp.ident {loc= emptyLoc; txt= Lident fnName}) ) ]
                   , None )
               | Nonrecursive ->
                   ( [{binding with pvb_expr= expression; pvb_attributes= []}]
@@ -1173,7 +1174,7 @@ let jsxMapper () =
           raise
             (Invalid_argument
                "Only one react.component call can exist on a component at one \
-                time") )
+                time" ) )
     | signature ->
         signature :: returnSignatures
   in
@@ -1187,7 +1188,7 @@ let jsxMapper () =
       | {txt= Lident "createElement"} ->
           raise
             (Invalid_argument
-               "JSX: `createElement` should be preceeded by a module name.")
+               "JSX: `createElement` should be preceeded by a module name." )
       (* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) *)
       | {loc; txt= Ldot (modulePath, ("createElement" | "make"))} ->
           transformUppercaseCall modulePath mapper loc attrs callExpression
@@ -1203,18 +1204,18 @@ let jsxMapper () =
                ( "JSX: the JSX attribute should be attached to a \
                   `YourModuleName.createElement` or `YourModuleName.make` \
                   call. We saw `" ^ anythingNotCreateElementOrMake ^ "` instead"
-               ))
+               ) )
       | {txt= Lapply _} ->
           (* don't think there's ever a case where this is reached *)
           raise
             (Invalid_argument
                "JSX: encountered a weird case while processing the code. \
-                Please report this!") )
+                Please report this!" ) )
     | _ ->
         raise
           (Invalid_argument
              "JSX: `createElement` should be preceeded by a simple, direct \
-              module name.")
+              module name." )
   in
   let signature mapper signature =
     default_mapper.signature mapper
