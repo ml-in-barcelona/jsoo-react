@@ -1,6 +1,20 @@
-type attributeType = String | Int | Float | Bool
+type attributeType = String | Int | Float | Bool | Style | Ref
 
-type eventType = string (* This shoudn't be an string, define variants here *)
+type eventType =
+  | Clipboard
+  | Composition
+  | Keyboard
+  | Focus
+  | Form
+  | Mouse
+  | Selection
+  | Touch
+  | UI
+  | Wheel
+  | Media
+  | Image
+  | Animation
+  | Transition
 
 type attribute = {type_: attributeType; name: string; htmlName: string}
 
@@ -9,9 +23,7 @@ type event = {type_: eventType; name: string}
 type prop = Attribute of attribute | Event of event
 
 let propTypeList =
-  [ (* `ref` shoudn't be part of this list *)
-    Attribute {type_= String; name= "ref"; htmlName= "ref"}
-  ; Attribute {type_= String; name= "about"; htmlName= "about"}
+  [ Attribute {type_= String; name= "about"; htmlName= "about"}
   ; Attribute {type_= String; name= "about"; htmlName= "about"}
   ; Attribute {type_= String; name= "accentHeight"; htmlName= "accentHeight"}
   ; Attribute {type_= String; name= "accept"; htmlName= "accept"}
@@ -330,6 +342,8 @@ let propTypeList =
   ; Attribute {type_= String; name= "radioGroup"; htmlName= "radioGroup"}
   ; Attribute {type_= String; name= "radius"; htmlName= "radius"}
   ; Attribute {type_= Bool; name= "readOnly"; htmlName= "readOnly"}
+    (* `ref` should be part of this list? *)
+  ; Attribute {type_= Ref; name= "ref"; htmlName= "ref"}
   ; Attribute {type_= String; name= "refX"; htmlName= "refX"}
   ; Attribute {type_= String; name= "refY"; htmlName= "refY"}
   ; Attribute {type_= String; name= "rel"; htmlName= "rel"}
@@ -405,7 +419,7 @@ let propTypeList =
       {type_= String; name= "strokeMiterlimit"; htmlName= "strokeMiterlimit"}
   ; Attribute {type_= String; name= "strokeOpacity"; htmlName= "strokeOpacity"}
   ; Attribute {type_= String; name= "strokeWidth"; htmlName= "strokeWidth"}
-  ; Attribute {type_= String; name= "style"; htmlName= "style"}
+  ; Attribute {type_= Style; name= "style"; htmlName= "style"}
   ; Attribute {type_= String; name= "summary"; htmlName= "summary"}
   ; Attribute
       { type_= Bool
@@ -484,72 +498,72 @@ let propTypeList =
       {type_= String; name= "yChannelSelector"; htmlName= "yChannelSelector"}
   ; Attribute {type_= String; name= "z"; htmlName= "z"}
   ; Attribute {type_= String; name= "zoomAndPan"; htmlName= "zoomAndPan"}
-  ; Event {name= "onAbort"; type_= "Media"}
-  ; Event {name= "onAnimationEnd"; type_= "Animation"}
-  ; Event {name= "onAnimationIteration"; type_= "Animation"}
-  ; Event {name= "onAnimationStart"; type_= "Animation"}
-  ; Event {name= "onBlur"; type_= "Focus"}
-  ; Event {name= "onCanPlay"; type_= "Media"}
-  ; Event {name= "onCanPlayThrough"; type_= "Media"}
-  ; Event {name= "onChange"; type_= "Form"}
-  ; Event {name= "onClick"; type_= "Mouse"}
-  ; Event {name= "onCompositionEnd"; type_= "Composition"}
-  ; Event {name= "onCompositionStart"; type_= "Composition"}
-  ; Event {name= "onCompositionUpdate"; type_= "Composition"}
-  ; Event {name= "onContextMenu"; type_= "Mouse"}
-  ; Event {name= "onCopy"; type_= "Clipboard"}
-  ; Event {name= "onCut"; type_= "Clipboard"}
-  ; Event {name= "onDoubleClick"; type_= "Mouse"}
-  ; Event {name= "onDrag"; type_= "Mouse"}
-  ; Event {name= "onDragEnd"; type_= "Mouse"}
-  ; Event {name= "onDragEnter"; type_= "Mouse"}
-  ; Event {name= "onDragExit"; type_= "Mouse"}
-  ; Event {name= "onDragLeave"; type_= "Mouse"}
-  ; Event {name= "onDragOver"; type_= "Mouse"}
-  ; Event {name= "onDragStart"; type_= "Mouse"}
-  ; Event {name= "onDrop"; type_= "Mouse"}
-  ; Event {name= "onDurationChange"; type_= "Media"}
-  ; Event {name= "onEmptied"; type_= "Media"}
-  ; Event {name= "onEncrypetd"; type_= "Media"}
-  ; Event {name= "onEnded"; type_= "Media"}
-  ; Event {name= "onError"; type_= "Media"}
-  ; Event {name= "onFocus"; type_= "Focus"}
-  ; Event {name= "onInput"; type_= "Form"}
-  ; Event {name= "onKeyDown"; type_= "Keyboard"}
-  ; Event {name= "onKeyPress"; type_= "Keyboard"}
-  ; Event {name= "onKeyUp"; type_= "Keyboard"}
-  ; Event {name= "onLoadedData"; type_= "Media"}
-  ; Event {name= "onLoadedMetadata"; type_= "Media"}
-  ; Event {name= "onLoadStart"; type_= "Media"}
-  ; Event {name= "onMouseDown"; type_= "Mouse"}
-  ; Event {name= "onMouseEnter"; type_= "Mouse"}
-  ; Event {name= "onMouseLeave"; type_= "Mouse"}
-  ; Event {name= "onMouseMove"; type_= "Mouse"}
-  ; Event {name= "onMouseOut"; type_= "Mouse"}
-  ; Event {name= "onMouseOver"; type_= "Mouse"}
-  ; Event {name= "onMouseUp"; type_= "Mouse"}
-  ; Event {name= "onPaste"; type_= "Clipboard"}
-  ; Event {name= "onPause"; type_= "Media"}
-  ; Event {name= "onPlay"; type_= "Media"}
-  ; Event {name= "onPlaying"; type_= "Media"}
-  ; Event {name= "onProgress"; type_= "Media"}
-  ; Event {name= "onRateChange"; type_= "Media"}
-  ; Event {name= "onScroll"; type_= "UI"}
-  ; Event {name= "onSeeked"; type_= "Media"}
-  ; Event {name= "onSeeking"; type_= "Media"}
-  ; Event {name= "onSelect"; type_= "Selection"}
-  ; Event {name= "onStalled"; type_= "Media"}
-  ; Event {name= "onSubmit"; type_= "Form"}
-  ; Event {name= "onSuspend"; type_= "Media"}
-  ; Event {name= "onTimeUpdate"; type_= "Media"}
-  ; Event {name= "onTouchCancel"; type_= "Touch"}
-  ; Event {name= "onTouchEnd"; type_= "Touch"}
-  ; Event {name= "onTouchMove"; type_= "Touch"}
-  ; Event {name= "onTouchStart"; type_= "Touch"}
-  ; Event {name= "onTransitionEnd"; type_= "Transition"}
-  ; Event {name= "onVolumeChange"; type_= "Media"}
-  ; Event {name= "onWaiting"; type_= "Media"}
-  ; Event {name= "onWheel"; type_= "Wheel"} ]
+  ; Event {name= "onAbort"; type_= Media}
+  ; Event {name= "onAnimationEnd"; type_= Animation}
+  ; Event {name= "onAnimationIteration"; type_= Animation}
+  ; Event {name= "onAnimationStart"; type_= Animation}
+  ; Event {name= "onBlur"; type_= Focus}
+  ; Event {name= "onCanPlay"; type_= Media}
+  ; Event {name= "onCanPlayThrough"; type_= Media}
+  ; Event {name= "onChange"; type_= Form}
+  ; Event {name= "onClick"; type_= Mouse}
+  ; Event {name= "onCompositionEnd"; type_= Composition}
+  ; Event {name= "onCompositionStart"; type_= Composition}
+  ; Event {name= "onCompositionUpdate"; type_= Composition}
+  ; Event {name= "onContextMenu"; type_= Mouse}
+  ; Event {name= "onCopy"; type_= Clipboard}
+  ; Event {name= "onCut"; type_= Clipboard}
+  ; Event {name= "onDoubleClick"; type_= Mouse}
+  ; Event {name= "onDrag"; type_= Mouse}
+  ; Event {name= "onDragEnd"; type_= Mouse}
+  ; Event {name= "onDragEnter"; type_= Mouse}
+  ; Event {name= "onDragExit"; type_= Mouse}
+  ; Event {name= "onDragLeave"; type_= Mouse}
+  ; Event {name= "onDragOver"; type_= Mouse}
+  ; Event {name= "onDragStart"; type_= Mouse}
+  ; Event {name= "onDrop"; type_= Mouse}
+  ; Event {name= "onDurationChange"; type_= Media}
+  ; Event {name= "onEmptied"; type_= Media}
+  ; Event {name= "onEncrypetd"; type_= Media}
+  ; Event {name= "onEnded"; type_= Media}
+  ; Event {name= "onError"; type_= Media}
+  ; Event {name= "onFocus"; type_= Focus}
+  ; Event {name= "onInput"; type_= Form}
+  ; Event {name= "onKeyDown"; type_= Keyboard}
+  ; Event {name= "onKeyPress"; type_= Keyboard}
+  ; Event {name= "onKeyUp"; type_= Keyboard}
+  ; Event {name= "onLoadedData"; type_= Media}
+  ; Event {name= "onLoadedMetadata"; type_= Media}
+  ; Event {name= "onLoadStart"; type_= Media}
+  ; Event {name= "onMouseDown"; type_= Mouse}
+  ; Event {name= "onMouseEnter"; type_= Mouse}
+  ; Event {name= "onMouseLeave"; type_= Mouse}
+  ; Event {name= "onMouseMove"; type_= Mouse}
+  ; Event {name= "onMouseOut"; type_= Mouse}
+  ; Event {name= "onMouseOver"; type_= Mouse}
+  ; Event {name= "onMouseUp"; type_= Mouse}
+  ; Event {name= "onPaste"; type_= Clipboard}
+  ; Event {name= "onPause"; type_= Media}
+  ; Event {name= "onPlay"; type_= Media}
+  ; Event {name= "onPlaying"; type_= Media}
+  ; Event {name= "onProgress"; type_= Media}
+  ; Event {name= "onRateChange"; type_= Media}
+  ; Event {name= "onScroll"; type_= UI}
+  ; Event {name= "onSeeked"; type_= Media}
+  ; Event {name= "onSeeking"; type_= Media}
+  ; Event {name= "onSelect"; type_= Selection}
+  ; Event {name= "onStalled"; type_= Media}
+  ; Event {name= "onSubmit"; type_= Form}
+  ; Event {name= "onSuspend"; type_= Media}
+  ; Event {name= "onTimeUpdate"; type_= Media}
+  ; Event {name= "onTouchCancel"; type_= Touch}
+  ; Event {name= "onTouchEnd"; type_= Touch}
+  ; Event {name= "onTouchMove"; type_= Touch}
+  ; Event {name= "onTouchStart"; type_= Touch}
+  ; Event {name= "onTransitionEnd"; type_= Transition}
+  ; Event {name= "onVolumeChange"; type_= Media}
+  ; Event {name= "onWaiting"; type_= Media}
+  ; Event {name= "onWheel"; type_= Wheel} ]
 
 let getName = function Attribute {name; _} -> name | Event {name; _} -> name
 

@@ -1,6 +1,20 @@
-type attributeType = String | Int | Float | Bool
+type attributeType = String | Int | Float | Bool | Style | Ref
 
-type eventType = string
+type eventType =
+  | Clipboard
+  | Composition
+  | Keyboard
+  | Focus
+  | Form
+  | Mouse
+  | Selection
+  | Touch
+  | UI
+  | Wheel
+  | Media
+  | Image
+  | Animation
+  | Transition
 
 type attribute = {type_: attributeType; name: string; htmlName: string}
 

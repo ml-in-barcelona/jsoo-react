@@ -366,8 +366,41 @@ let makeAttributeValue ~loc ({type_; _} : Html.attribute) value =
       [%expr ([%e value] : float)]
   | Bool ->
       [%expr ([%e value] : bool)]
+  | Style ->
+      [%expr ([%e value] : React.Dom.Style.t)]
+  | Ref ->
+      [%expr ([%e value] : React.Dom.domRef option)]
 
-let makeEventValue ~loc:_ _event value = value
+let makeEventValue ~loc:_ ({type_; _} : Html.event) value =
+  match type_ with
+  | Clipboard ->
+      [%expr [%e value]]
+  | Composition ->
+      [%expr [%e value]]
+  | Keyboard ->
+      [%expr [%e value]]
+  | Focus ->
+      [%expr [%e value]]
+  | Form ->
+      [%expr [%e value]]
+  | Mouse ->
+      [%expr [%e value]]
+  | Selection ->
+      [%expr [%e value]]
+  | Touch ->
+      [%expr [%e value]]
+  | UI ->
+      [%expr [%e value]]
+  | Wheel ->
+      [%expr [%e value]]
+  | Media ->
+      [%expr [%e value]]
+  | Image ->
+      [%expr [%e value]]
+  | Animation ->
+      [%expr [%e value]]
+  | Transition ->
+      [%expr [%e value]]
 
 let makeValue ~loc prop value =
   match prop with
