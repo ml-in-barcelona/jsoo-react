@@ -371,43 +371,43 @@ let makeAttributeValue ~loc ({type_; _} : Html.attribute) value =
   | Ref ->
       [%expr ([%e value] : React.Dom.domRef option)]
 
-let makeEventValue ~loc:_ ({type_; _} : Html.event) value =
+let makeEventValue ~loc ({type_; _} : Html.event) value =
   match type_ with
   | Clipboard ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Clipboard.t -> unit)]
   | Composition ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Composition.t -> unit)]
   | Keyboard ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Keyboard.t -> unit)]
   | Focus ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Focus.t -> unit)]
   | Form ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Form.t -> unit)]
   | Mouse ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Mouse.t -> unit)]
   | Selection ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Selection.t -> unit)]
   | Touch ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Touch.t -> unit)]
   | UI ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.UI.t -> unit)]
   | Wheel ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Wheel.t -> unit)]
   | Media ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Media.t -> unit)]
   | Image ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Image.t -> unit)]
   | Animation ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Animation.t -> unit)]
   | Transition ->
-      [%expr [%e value]]
+      [%expr ([%e value] : React.Event.Transition.t -> unit)]
 
 let makeValue ~loc prop value =
   match prop with
   | Html.Attribute attribute ->
       makeAttributeValue ~loc attribute value
-  | Html.Event _event ->
-      [%expr []]
+  | Html.Event event ->
+      makeEventValue ~loc event value
 
 let makeJsObj ~loc namedArgListWithKeyAndRef =
   let labelToTuple label =
