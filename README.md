@@ -28,10 +28,9 @@ For new projects, the best way to start is by using [Spin](https://github.com/tm
 
 ### Existing project
 
-1. Install the `jsoo-react` package and [gen_js_api](https://github.com/LexiFi/gen_js_api) dependency:
+1. Install the `jsoo-react` package:
 
     ```bash
-    opam pin add -y gen_js_api https://github.com/jchavarri/gen_js_api.git#typ_var
     opam pin add -y jsoo-react https://github.com/jchavarri/jsoo-react.git
     ```
 
