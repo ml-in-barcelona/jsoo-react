@@ -356,7 +356,7 @@ let rec makeFunsForMakePropsBody list args =
   | [] ->
       args
 
-let makeAttributeValue ~loc ({type_; _} : Html.attribute) value =
+let makeAttributeValue ~loc (type_ : Html.attributeType) value =
   match type_ with
   | String ->
       [%expr Js_of_ocaml.Js.string ([%e value] : string)]
@@ -373,7 +373,7 @@ let makeAttributeValue ~loc ({type_; _} : Html.attribute) value =
   | InnerHtml ->
       [%expr ([%e value] : React.Dom.DangerouslySetInnerHTML.t)]
 
-let makeEventValue ~loc ({type_; _} : Html.event) value =
+let makeEventValue ~loc (type_ : Html.eventType) value =
   match type_ with
   | Clipboard ->
       [%expr ([%e value] : React.Event.Clipboard.t -> unit)]
@@ -407,9 +407,9 @@ let makeEventValue ~loc ({type_; _} : Html.event) value =
 let makeValue ~loc prop value =
   match prop with
   | Html.Attribute attribute ->
-      makeAttributeValue ~loc attribute value
+      makeAttributeValue ~loc attribute.type_ value
   | Html.Event event ->
-      makeEventValue ~loc event value
+      makeEventValue ~loc event.type_ value
 
 let makeJsObj ~loc namedArgListWithKeyAndRef =
   let labelToTuple label =
@@ -578,11 +578,11 @@ let jsxMapper () =
           ; (* [|moreCreateElementCallsHere|] *)
             (nolabel, childrenExpr) ]
       | nonEmptyProps ->
-          (* Filtering out the props that don't have a label, not sure why is possible *)
+          (* Filtering out the props that don't have a label, not sure how's possible *)
           let propsWithName =
             List.filter (fun (name, _) -> getLabel name != "") nonEmptyProps
           in
-          let makePropItem (arg_label, value) =
+          let makePropField (arg_label, value) =
             let name = getLabel arg_label in
             let prop = Html.findByName name in
             [%expr
@@ -591,15 +591,15 @@ let jsxMapper () =
               (* loc here points to the element <div />, we could be more precise and point to the prop *)
               , Js_of_ocaml.Js.Unsafe.inject [%e makeValue ~loc prop value]]
           in
-          let items = List.map makePropItem propsWithName in
           let propsObj =
             [%expr
-              ( Js_of_ocaml.Js.Unsafe.obj [%e Exp.array ~loc items]
+              ( Js_of_ocaml.Js.Unsafe.obj
+                  [%e Exp.array ~loc (List.map makePropField propsWithName)]
                 : React.Dom.domProps )]
           in
           [ (* "div" *)
             (nolabel, componentNameExpr)
-          ; (* React.Dom.props(~className=blabla, ~foo=bar, ()) *)
+          ; (* props: Js_of_ocaml.Js.Unsafe.obj ... *)
             (labelled "props", propsObj)
           ; (* [|moreCreateElementCallsHere|] *)
             (nolabel, childrenExpr) ]
