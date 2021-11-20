@@ -31,7 +31,7 @@ val renderToElementWithId : Core.element -> string -> unit
           raise
             (Invalid_argument
                ( "ReactDOM.renderToElementWithId : no element of id " ^ id
-               ^ " found in the HTML." ))
+               ^ " found in the HTML." ) )
       | Some element ->
           render reactElement element]
 
@@ -75,26 +75,31 @@ val domProps :
   -> ?ariaHidden:(bool[@js "aria-hidden"])
   -> ?ariaKeyshortcuts:
        ((* -> ?ariaInvalid: (grammar|false|spelling|true [@js "aria-invalid"]) *)
-        string[@js "aria-keyshortcuts"])
+        string
+       [@js "aria-keyshortcuts"] )
   -> ?ariaLabel:(string[@js "aria-label"])
   -> ?ariaRoledescription:(string[@js "aria-roledescription"])
   -> ?ariaExpanded:
        ((* Widget Attributes *)
         (* -> ?ariaAutocomplete: (inline|list|both|none [@js "aria-autocomplete"]) *)
         (* -> ?ariaChecked: (true|false|mixed [@js "aria-checked"]) (* https://www.w3.org/TR/wai-aria-1.1/#valuetype_tristate *) *)
-        bool[@js "aria-expanded"])
+        bool
+       [@js "aria-expanded"] )
   -> ?ariaLevel:
        ((* -> ?ariaHaspopup: (false|true|menu|listbox|tree|grid|dialog [@js "aria-haspopup"]) *)
-        int[@js "aria-level"])
+        int
+       [@js "aria-level"] )
   -> ?ariaModal:(bool[@js "aria-modal"])
   -> ?ariaMultiline:(bool[@js "aria-multiline"])
   -> ?ariaMultiselectable:(bool[@js "aria-multiselectable"])
   -> ?ariaPlaceholder:
        ((* -> ?ariaOrientation: (horizontal|vertical|undefined [@js "aria-orientation"]) *)
-        string[@js "aria-placeholder"])
+        string
+       [@js "aria-placeholder"] )
   -> ?ariaReadonly:
        ((* -> ?ariaPressed: (true|false|mixed [@js "aria-pressed"]) (* https://www.w3.org/TR/wai-aria-1.1/#valuetype_tristate *) *)
-        bool[@js "aria-readonly"])
+        bool
+       [@js "aria-readonly"] )
   -> ?ariaRequired:(bool[@js "aria-required"])
   -> ?ariaSelected:(bool[@js "aria-selected"])
   -> ?ariaSort:(string[@js "aria-sort"])
@@ -107,13 +112,16 @@ val domProps :
   -> ?ariaBusy:(bool[@js "aria-busy"])
   -> ?ariaRelevant:
        ((* -> ?ariaLive: (off|polite|assertive|rude [@js "aria-live"]) *)
-        string[@js "aria-relevant"])
+        string
+       [@js "aria-relevant"] )
   -> ?ariaGrabbed:
        ((* Drag-and-Drop Attributes *)
         (* -> ?ariaDropeffect: (copy|move|link|execute|popup|none [@js "aria-dropeffect"]) *)
-        bool[@js "aria-grabbed"])
-  -> ?ariaActivedescendant:((* Relationship Attributes *)
-                            string[@js "aria-activedescendant"])
+        bool
+       [@js "aria-grabbed"] )
+  -> ?ariaActivedescendant:
+       ((* Relationship Attributes *)
+        string[@js "aria-activedescendant"])
   -> ?ariaColcount:(int[@js "aria-colcount"])
   -> ?ariaColindex:(int[@js "aria-colindex"])
   -> ?ariaColspan:(int[@js "aria-colspan"])
@@ -149,8 +157,10 @@ val domProps :
   -> ?itemProp:string
   -> ?itemRef:string
   -> ?itemScope:bool
-  -> ?itemType:string (* uri *)
-                      (* tag-specific html attributes *)
+  -> ?itemType:
+       string
+       (* uri *)
+       (* tag-specific html attributes *)
   -> ?accept:string
   -> ?acceptCharset:string
   -> ?action:string (* uri *)
@@ -348,7 +358,7 @@ val domProps :
            (* ?onError: Event.Image.t -> unit=?*)
            (* Animation events *)
            Event.Animation.t
-        -> unit)
+        -> unit )
   -> ?onAnimationEnd:(Event.Animation.t -> unit)
   -> ?onAnimationIteration:(Event.Animation.t -> unit)
   -> ?onTransitionEnd:((* Transition events *)

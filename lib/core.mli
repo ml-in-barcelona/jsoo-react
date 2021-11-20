@@ -281,7 +281,7 @@ val useRef : 'value -> 'value Ref.t [@@js.global "React.useRef"]
 val createRef : unit -> 'a js_nullable Ref.t [@@js.global "React.createRef"]
 
 (* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
- Although Reason parser doesn't support it so that's a requirement before adding it here *)
+   Although Reason parser doesn't support it so that's a requirement before adding it here *)
 val createFragment : element list -> element
   [@@js.custom
     val createFragmentInternal : Ojs.t -> Ojs.t -> element list -> element

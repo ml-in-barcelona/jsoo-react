@@ -63,7 +63,7 @@ let sliceToEnd s =
 
 (* if we ever roll our own parser in the future, make sure you test all url combinations
    e.g. foo.com/?#bar
-   *)
+*)
 (* URLSearchParams doesn't work on IE11, edge16, etc. *)
 (* The library doesn't provide search for now. Users can roll their own solution/data structure.*)
 let path () =
@@ -186,12 +186,12 @@ let useUrl ?serverUrl () =
         | Some url ->
             url
         | None ->
-            dangerouslyGetInitialUrl ())
+            dangerouslyGetInitialUrl () )
   in
   Core.useEffect0 (fun () ->
       let watcherId = watchUrl (fun url -> setUrl (fun _ -> url)) in
       (* check for updates that may have occured between the initial state and the subscribe above *)
       let newUrl = dangerouslyGetInitialUrl () in
       if urlNotEqual newUrl url then setUrl (fun _ -> newUrl) ;
-      Some (fun () -> unwatchUrl watcherId)) ;
+      Some (fun () -> unwatchUrl watcherId) ) ;
   url
