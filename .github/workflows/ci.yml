@@ -42,12 +42,10 @@ jobs:
         with:
           node-version: 12
 
-
-
       - name: Install dependencies
         if: steps.cache-opam.outputs.cache-hit != 'true'
         run: |
-          opam install . --deps-only --with-doc --with-test --unlock-base
+          opam install . --deps-only --with-doc --with-test
           opam install ocamlformat
 
       - name: Upgrade dependencies
@@ -61,7 +59,7 @@ jobs:
       # - name: Check formatting
       #   run: make format
 
-      - name: "Install npm packages for tests"
+      - name: Install npm packages for tests
         run: yarn install
         working-directory: test
 
