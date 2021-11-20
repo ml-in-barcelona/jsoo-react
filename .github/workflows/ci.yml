@@ -59,7 +59,7 @@ jobs:
       # - name: Check formatting
       #   run: make format
 
-      - name: Install npm packages for tests
+      - name: "Install npm packages for tests"
         run: yarn install
         working-directory: test
 
