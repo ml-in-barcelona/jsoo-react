@@ -6,7 +6,7 @@
 (library
  (name jsoo_react_ppx)
  (public_name jsoo-react.ppx)
- (libraries compiler-libs.common ocaml-migrate-parsetree)
+ (libraries compiler-libs.common ppxlib ppxlib.astlib)
  (preprocess
   (pps ppxlib.metaquot))
  (kind ppx_rewriter))

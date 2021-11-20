@@ -21,11 +21,11 @@
  (depends
   ;; General system dependencies
   (dune (and (>= 2) (< 3)))
-  (ocaml (and (>= 4.10.0) (< 4.11.0)))
+  (ocaml (and (>= 4.10.0) (< 4.14.0)))
 
-  (js_of_ocaml (and (>= 3.7.0) (< 3.8.0)))
-  (gen_js_api (and (>= 1.0.7) (< 1.1.0)))
-  (ocaml-migrate-parsetree (and (>= 1.7.3) (< 2.0.0)))
+  (js_of_ocaml (and (>= 3.8.0) (< 3.11.0)))
+  (gen_js_api (and (>= 1.0.8) (< 1.1.0)))
+  (ppxlib (>= 0.23.0))
 
   ;; Test dependencies
   (webtest :with-test)

@@ -19,13 +19,9 @@
    `React.createFragment([foo])`
  *)
 
-open Migrate_parsetree
-open OCaml_410.Ast
+module Ocaml_location = Location
+open Ppxlib
 open Ast_helper
-open Ast_mapper
-open Asttypes
-open Parsetree
-open Longident
 
 let rec find_opt p = function
   | [] ->
@@ -54,8 +50,7 @@ let argIsKeyRef = function
   | _ ->
       false
 
-let constantString ~loc str =
-  Ast_helper.Exp.constant ~loc (Pconst_string (str, None))
+let constantString ~loc str = Ast_helper.Exp.constant ~loc (Const.string str)
 
 let safeTypeFromValue valueStr =
   let valueStr = getLabel valueStr in
@@ -97,9 +92,9 @@ let transformChildrenIfListUpper ~loc ~mapper theList =
       | accum ->
           ListLiteral (revAstList ~loc accum) )
     | [%expr [%e? v] :: [%e? acc]] ->
-        transformChildren_ acc [%expr [%e mapper.expr mapper v] :: [%e accum]]
+        transformChildren_ acc [%expr [%e mapper#expression v] :: [%e accum]]
     | notAList ->
-        Exact (mapper.expr mapper notAList)
+        Exact (mapper#expression notAList)
   in
   transformChildren_ theList [%expr []]
 
@@ -110,9 +105,9 @@ let transformChildrenIfList ~loc ~mapper theList =
     | [%expr []] ->
         revAstList ~loc accum
     | [%expr [%e? v] :: [%e? acc]] ->
-        transformChildren_ acc [%expr [%e mapper.expr mapper v] :: [%e accum]]
+        transformChildren_ acc [%expr [%e mapper#expression v] :: [%e accum]]
     | notAList ->
-        mapper.expr mapper notAList
+        mapper#expression notAList
   in
   transformChildren_ theList [%expr []]
 
@@ -148,7 +143,7 @@ let extractChildren ?(removeLastPositionUnit = false) ~loc propsAndChildren =
 
 let unerasableIgnore loc =
   { attr_name= {txt= "warning"; loc}
-  ; attr_payload= PStr [Str.eval (Exp.constant (Pconst_string ("-16", None)))]
+  ; attr_payload= PStr [Str.eval (Exp.constant (Const.string "-16"))]
   ; attr_loc= loc }
 
 let merlinFocus =
@@ -197,7 +192,7 @@ let getPropsNameValue _acc (loc, exp) =
       raise
         (Invalid_argument
            ( "react.component only accepts props as an option, given: "
-           ^ Longident.last txt ) )
+           ^ Longident.last_exn txt ) )
 
 (* Lookup the `props` record or string as part of [@react.component] and store the name for use when rewriting *)
 let getPropsAttr payload =
@@ -232,7 +227,7 @@ let filenameFromLoc (pstr_loc : Location.t) =
   let fileName =
     match pstr_loc.loc_start.pos_fname with
     | "" ->
-        !Location.input_name
+        !Ocaml_location.input_name
     | fileName ->
         fileName
   in
@@ -419,11 +414,10 @@ let makeJsObj ~loc namedArgListWithKeyAndRef =
       match l = "key" with
       | true ->
           [%expr
-            [%e Exp.constant ~loc (Pconst_string (l, None))]
+            [%e Exp.constant ~loc (Const.string l)]
             , inject (Js_of_ocaml.Js.string [%e raw])]
       | false ->
-          [%expr
-            [%e Exp.constant ~loc (Pconst_string (l, None))], inject [%e raw]]
+          [%expr [%e Exp.constant ~loc (Const.string l)], inject [%e raw]]
     in
     match isOptional label with
     | true ->
@@ -490,7 +484,7 @@ let jsxMapper () =
     let recursivelyTransformedArgsForMake =
       argsForMake
       |> List.map (fun (label, expression) ->
-             (label, mapper.expr mapper expression) )
+             (label, mapper#expression expression) )
     in
     let childrenArg = ref None in
     let args =
@@ -587,7 +581,7 @@ let jsxMapper () =
             let prop = Html.findByName name in
             [%expr
               [%e
-                Exp.constant ~loc (Pconst_string (Html.getHtmlName prop, None))]
+                Exp.constant ~loc (Pconst_string (Html.getHtmlName prop, loc, None))]
               (* loc here points to the element <div />, we could be more precise and point to the prop *)
               , Js_of_ocaml.Js.Unsafe.inject [%e makeValue ~loc prop value]]
           in
@@ -613,7 +607,7 @@ let jsxMapper () =
       args
   in
   let rec recursivelyTransformNamedArgsForMake mapper expr list =
-    let expr = mapper.expr mapper expr in
+    let expr = mapper#expression expr in
     match expr.pexp_desc with
     (* TODO: make this show up with a loc. *)
     | Pexp_fun (Labelled "key", _, _, _) | Pexp_fun (Optional "key", _, _, _) ->
@@ -638,18 +632,16 @@ let jsxMapper () =
                 let currentType =
                   match ptyp_desc with
                   | Ptyp_constr ({txt}, []) ->
-                      String.concat "." (Longident.flatten txt)
+                      String.concat "." (Longident.flatten_exn txt)
                   | Ptyp_constr ({txt}, _innerTypeArgs) ->
-                      String.concat "." (Longident.flatten txt) ^ "(...)"
+                      String.concat "." (Longident.flatten_exn txt) ^ "(...)"
                   | _ ->
                       "..."
                 in
-                Location.prerr_warning pattern.ppat_loc
-                  (Preprocessor
-                     (Printf.sprintf
-                        "jsoo-react: optional argument annotations must have \
-                         explicit `option`. Did you mean `option(%s)=?`?"
-                        currentType ) ) )
+                Location.raise_errorf ~loc:pattern.ppat_loc
+                  "jsoo-react: optional argument annotations must have \
+                   explicit `option`. Did you mean `option(%s)=?`?"
+                  currentType )
           | _ ->
               ()
         in
@@ -1050,7 +1042,7 @@ let jsxMapper () =
                       Exp.ident ~loc {txt= Lident props.propsName; loc}
                     in
                     let labelStringConst =
-                      Exp.constant ~loc (Pconst_string (labelString, None))
+                      Exp.constant ~loc (Const.string labelString)
                     in
                     let send =
                       Exp.send ~loc
@@ -1283,79 +1275,79 @@ let jsxMapper () =
              "JSX: `createElement` should be preceeded by a simple, direct \
               module name." )
   in
-  let signature mapper signature =
-    default_mapper.signature mapper
-    @@ reactComponentSignatureTransform mapper signature
-  in
-  let structure mapper structure =
-    match structure with
-    | structures ->
-        default_mapper.structure mapper
-        @@ reactComponentTransform mapper structures
-  in
-  let expr mapper expression =
-    match expression with
-    (* Does the function application have the @JSX attribute? *)
-    | {pexp_desc= Pexp_apply (callExpression, callArguments); pexp_attributes}
-      -> (
-        let jsxAttribute, nonJSXAttributes =
-          List.partition
-            (fun attribute -> attribute.attr_name.txt = "JSX")
-            pexp_attributes
-        in
-        match (jsxAttribute, nonJSXAttributes) with
-        (* no JSX attribute *)
-        | [], _ ->
-            default_mapper.expr mapper expression
-        | _, nonJSXAttributes ->
-            transformJsxCall mapper callExpression callArguments
-              nonJSXAttributes )
-    (* is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo]*)
-    | { pexp_desc=
-          ( Pexp_construct
-              ({txt= Lident "::"; loc}, Some {pexp_desc= Pexp_tuple _})
-          | Pexp_construct ({txt= Lident "[]"; loc}, None) )
-      ; pexp_attributes } as listItems -> (
-        let jsxAttribute, nonJSXAttributes =
-          List.partition
-            (fun attribute -> attribute.attr_name.txt = "JSX")
-            pexp_attributes
-        in
-        match (jsxAttribute, nonJSXAttributes) with
-        (* no JSX attribute *)
-        | [], _ ->
-            default_mapper.expr mapper expression
-        | _, nonJSXAttributes ->
-            let callExpression = [%expr React.Fragment.createElement] in
-            transformJsxCall mapper callExpression
-              [(Labelled "children", listItems)]
-              nonJSXAttributes )
-    (* Delegate to the default mapper, a deep identity traversal *)
-    | e ->
-        default_mapper.expr mapper e
-  in
-  let module_binding mapper module_binding =
-    let _ =
-      match module_binding.pmb_name.txt with
-      | None ->
-          ()
-      | Some txt ->
-          nestedModules := txt :: !nestedModules
-    in
-    let mapped = default_mapper.module_binding mapper module_binding in
-    let _ = nestedModules := List.tl !nestedModules in
-    mapped
-  in
-  {default_mapper with structure; expr; signature; module_binding}
+  object (self)
+    inherit Ast_traverse.map as super
+
+    method! signature signature =
+      super#signature @@ reactComponentSignatureTransform self signature
+
+    method! structure structure =
+      match structure with
+      | structures ->
+          super#structure @@ reactComponentTransform self structures
+
+    method! expression expression =
+      match expression with
+      (* Does the function application have the @JSX attribute? *)
+      | {pexp_desc= Pexp_apply (callExpression, callArguments); pexp_attributes}
+        -> (
+          let jsxAttribute, nonJSXAttributes =
+            List.partition
+              (fun attribute -> attribute.attr_name.txt = "JSX")
+              pexp_attributes
+          in
+          match (jsxAttribute, nonJSXAttributes) with
+          (* no JSX attribute *)
+          | [], _ ->
+              super#expression expression
+          | _, nonJSXAttributes ->
+              transformJsxCall self callExpression callArguments
+                nonJSXAttributes )
+      (* is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo]*)
+      | { pexp_desc=
+            ( Pexp_construct
+                ({txt= Lident "::"; loc}, Some {pexp_desc= Pexp_tuple _})
+            | Pexp_construct ({txt= Lident "[]"; loc}, None) )
+        ; pexp_attributes } as listItems -> (
+          let jsxAttribute, nonJSXAttributes =
+            List.partition
+              (fun attribute -> attribute.attr_name.txt = "JSX")
+              pexp_attributes
+          in
+          match (jsxAttribute, nonJSXAttributes) with
+          (* no JSX attribute *)
+          | [], _ ->
+              super#expression expression
+          | _, nonJSXAttributes ->
+              let callExpression = [%expr React.Fragment.createElement] in
+              transformJsxCall self callExpression
+                [(Labelled "children", listItems)]
+                nonJSXAttributes )
+      (* Delegate to the default mapper, a deep identity traversal *)
+      | e ->
+          super#expression e
+
+    method! module_binding module_binding =
+      let _ =
+        match module_binding.pmb_name.txt with
+        | None ->
+            ()
+        | Some txt ->
+            nestedModules := txt :: !nestedModules
+      in
+      let mapped = super#module_binding module_binding in
+      let _ = nestedModules := List.tl !nestedModules in
+      mapped
+  end
 
 let rewrite_implementation (code : Parsetree.structure) : Parsetree.structure =
   let mapper = jsxMapper () in
-  mapper.structure mapper code
+  mapper#structure code
 
 let rewrite_signature (code : Parsetree.signature) : Parsetree.signature =
   let mapper = jsxMapper () in
-  mapper.signature mapper code
+  mapper#signature code
 
 let () =
-  Driver.register ~name:"jsoo-react-ppx" Migrate_parsetree.Versions.ocaml_410
-    (fun _config _cookies -> jsxMapper ())
+  Driver.register_transformation "jsoo-react-ppx" ~impl:rewrite_implementation
+    ~intf:rewrite_signature
