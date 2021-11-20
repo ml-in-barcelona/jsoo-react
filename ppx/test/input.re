@@ -103,7 +103,8 @@ let upperWithChildren = (foo, bar) => <Upper> foo bar </Upper>;
 
 let lower = <lower />;
 
-let lowerWithChildAndProps = foo => <lower cols=1 href="https://example.com"> foo </lower>;
+let lowerWithChildAndProps = foo =>
+  <lower cols=1 href="https://example.com"> foo </lower>;
 
 let lowerWithChildren = (foo, bar) => <lower> foo bar </lower>;
 

@@ -581,7 +581,8 @@ let jsxMapper () =
             let prop = Html.findByName name in
             [%expr
               [%e
-                Exp.constant ~loc (Pconst_string (Html.getHtmlName prop, loc, None))]
+                Exp.constant ~loc
+                  (Pconst_string (Html.getHtmlName prop, loc, None))]
               (* loc here points to the element <div />, we could be more precise and point to the prop *)
               , Js_of_ocaml.Js.Unsafe.inject [%e makeValue ~loc prop value]]
           in

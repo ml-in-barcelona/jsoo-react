@@ -22,5 +22,6 @@ type event = {type_: eventType; name: string}
 
 type prop = Attribute of attribute | Event of event
 
-val getHtmlName: prop -> string
-val findByName: string -> prop
+val getHtmlName : prop -> string
+
+val findByName : string -> prop

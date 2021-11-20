@@ -71,8 +71,7 @@ val createDOMElementVariadic :
   -> Core.element
   [@@js.global "React.createElement"]
 
-val forwardRef :
-  ('props -> domRef -> Core.element) -> 'props Core.component
+val forwardRef : ('props -> domRef -> Core.element) -> 'props Core.component
   [@@js.global "React.forwardRef"]
 
 module Style : sig
@@ -500,5 +499,5 @@ end
 
 module DangerouslySetInnerHTML : sig
   (* Need to check the representation in JS of this type, can we have an Obj with a field type-safe in jsoo? *)
-  type t = { __html: string }
+  type t = {__html: string}
 end
