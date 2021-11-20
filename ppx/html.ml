@@ -1,4 +1,4 @@
-type attributeType = String | Int | Float | Bool | Style | Ref
+type attributeType = String | Int | Float | Bool | Style | Ref | InnerHtml
 
 type eventType =
   | Clipboard
@@ -147,6 +147,10 @@ let propTypeList =
   ; Attribute {type_= String; name= "data"; htmlName= "data"}
   ; Attribute {type_= String; name= "datatype"; htmlName= "datatype"}
   ; Attribute {type_= String; name= "dateTime"; htmlName= "dateTime"}
+  ; Attribute
+      { type_= InnerHtml
+      ; name= "dangerouslySetInnerHTML"
+      ; htmlName= "dangerouslySetInnerHTML" }
   ; Attribute {type_= String; name= "decelerate"; htmlName= "decelerate"}
   ; Attribute {type_= Bool; name= "default"; htmlName= "default"}
   ; Attribute {type_= Bool; name= "defaultChecked"; htmlName= "defaultChecked"}

@@ -497,3 +497,8 @@ module Style : sig
          combine(style, propStyle);
        }; *)
 end
+
+module DangerouslySetInnerHTML : sig
+  (* Need to check the representation in JS of this type, can we have an Obj with a field type-safe in jsoo? *)
+  type t = { __html: string }
+end

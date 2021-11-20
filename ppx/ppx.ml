@@ -370,6 +370,8 @@ let makeAttributeValue ~loc ({type_; _} : Html.attribute) value =
       [%expr ([%e value] : React.Dom.Style.t)]
   | Ref ->
       [%expr ([%e value] : React.Dom.domRef option)]
+  | InnerHtml ->
+      [%expr ([%e value] : React.Dom.DangerouslySetInnerHTML.t)]
 
 let makeEventValue ~loc ({type_; _} : Html.event) value =
   match type_ with

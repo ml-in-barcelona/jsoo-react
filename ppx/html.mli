@@ -1,4 +1,4 @@
-type attributeType = String | Int | Float | Bool | Style | Ref
+type attributeType = String | Int | Float | Bool | Style | Ref | InnerHtml
 
 type eventType =
   | Clipboard
