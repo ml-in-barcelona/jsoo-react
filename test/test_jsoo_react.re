@@ -568,8 +568,8 @@ let testForwardRef = () => {
   module FancyButton = {
     [@react.component]
     let make =
-      React.Dom.forwardRef((~children, theRef) => {
-        <button ref=?theRef className="FancyButton"> children </button>
+      React.Dom.forwardRef((~children, ref) => {
+        <button ref className="FancyButton"> children </button>
       });
   };
 
