@@ -569,11 +569,7 @@ let testForwardRef = () => {
     [@react.component]
     let make =
       React.Dom.forwardRef((~children, theRef) => {
-        <button
-          ref=?{theRef |> Js_of_ocaml.Js.Opt.to_option}
-          className="FancyButton">
-          children
-        </button>
+        <button ref=?theRef className="FancyButton"> children </button>
       });
   };
 

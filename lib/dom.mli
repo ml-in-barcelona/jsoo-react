@@ -72,7 +72,7 @@ val createDOMElementVariadic :
   [@@js.global "React.createElement"]
 
 val forwardRef :
-  ('props -> domRef Core.js_nullable -> Core.element) -> 'props Core.component
+  ('props -> domRef -> Core.element) -> 'props Core.component
   [@@js.global "React.forwardRef"]
 
 module Style : sig

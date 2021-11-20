@@ -369,7 +369,7 @@ let makeAttributeValue ~loc (type_ : Html.attributeType) value =
   | Style ->
       [%expr ([%e value] : React.Dom.Style.t)]
   | Ref ->
-      [%expr ([%e value] : React.Dom.domRef option)]
+      [%expr ([%e value] : React.Dom.domRef)]
   | InnerHtml ->
       [%expr ([%e value] : React.Dom.DangerouslySetInnerHTML.t)]
 
