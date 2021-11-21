@@ -1,5 +1,5 @@
 - Start Date: 2021-11-20
-- RFC PR: tbd
+- RFC PR: https://github.com/reason-in-barcelona/jsoo-react/pull/67
 
 # Summary
 
