@@ -1,6 +1,11 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+  schedule:
+    # Prime the caches every Monday
+    - cron: 0 1 * * MON
 
 jobs:
   build:
@@ -16,26 +21,16 @@ jobs:
           - ubuntu-latest
           - windows-latest
         ocaml-version:
-          - 4.10.0
+          - 4.13.0
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Retrieve opam cache
-        uses: actions/cache@v2
-        if: runner.os != 'Windows'
-        id: cache-opam
+      - name: Use OCaml ${{ matrix.ocaml-compiler }}
+        uses: ocaml/setup-ocaml@v2
         with:
-          path: ~/.opam
-          key: v1-${{ runner.os }}-opam-${{ matrix.ocaml-version }}-${{ hashFiles('jsoo-react.opam') }}
-          restore-keys: |
-            v1-${{ runner.os }}-opam-${{ matrix.ocaml-version }}-${{ hashFiles('jsoo-react.opam') }}
-
-      - name: Use OCaml ${{ matrix.ocaml-version }}
-        uses: avsm/setup-ocaml@v1
-        with:
-          ocaml-version: ${{ matrix.ocaml-version }}
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
 
       - name: Use Node 12
         uses: actions/setup-node@v1
