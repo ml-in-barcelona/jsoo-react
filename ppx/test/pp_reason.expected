@@ -76,7 +76,7 @@ let make =
       [@reason.preserve_braces ]))
   [@warning "-16"])
 let make =
-  let Test
+  let Test_reason
     (Props :
       < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
     =
@@ -86,7 +86,7 @@ let make =
                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                    -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
-  Test
+  Test_reason
 let makeProps
   : a:'a ->
       b:'b ->
@@ -123,7 +123,7 @@ let make =
       [@warning "-16"]))
   [@warning "-16"])
 let make =
-  let Test
+  let Test_reason
     (Props :
       <
         a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
@@ -142,7 +142,7 @@ let make =
               fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
                 (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
             (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
-  Test
+  Test_reason
 module External =
   struct
     let componentProps
@@ -221,7 +221,7 @@ module Bar =
           [@warning "-16"]))
       [@warning "-16"])
     let make =
-      let Test$Bar
+      let Test_reason$Bar
         (Props :
           <
             a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
@@ -240,7 +240,7 @@ module Bar =
                   fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                     -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
-      Test$Bar
+      Test_reason$Bar
     let componentProps
       : a:'a ->
           b:'b ->
@@ -280,7 +280,7 @@ module Bar =
           [@warning "-16"]))
       [@warning "-16"])
     let component =
-      let Test$Bar$component
+      let Test_reason$Bar$component
         (Props :
           <
             a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
@@ -299,7 +299,7 @@ module Bar =
                   fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                     -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
-      Test$Bar$component
+      Test_reason$Bar$component
   end
 module type X_int  = sig val x : int end
 module Func(M:X_int) =
@@ -344,7 +344,7 @@ module Func(M:X_int) =
           [@warning "-16"]))
       [@warning "-16"])
     let make =
-      let Test$Func
+      let Test_reason$Func
         (Props :
           <
             a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
@@ -363,7 +363,7 @@ module Func(M:X_int) =
                   fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                     -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
-      Test$Func
+      Test_reason$Func
   end
 module ForwardRef =
   struct
@@ -398,9 +398,9 @@ module ForwardRef =
       [@warning "-16"])
     let make =
       React.forwardRef
-        (let Test$ForwardRef (Props : <  >  Js_of_ocaml.Js.t) theRef =
+        (let Test_reason$ForwardRef (Props : <  >  Js_of_ocaml.Js.t) theRef =
            make theRef in
-         Test$ForwardRef)
+         Test_reason$ForwardRef)
   end
 module Memo =
   struct
@@ -433,7 +433,7 @@ module Memo =
       [@warning "-16"])
     let make =
       React.memo
-        (let Test$Memo
+        (let Test_reason$Memo
            (Props :
              < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
            =
@@ -445,7 +445,7 @@ module Memo =
                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                        -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                    (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) in
-         Test$Memo)
+         Test_reason$Memo)
   end
 module MemoCustomCompareProps =
   struct
@@ -478,7 +478,7 @@ module MemoCustomCompareProps =
       [@warning "-16"])
     let make =
       React.memoCustomCompareProps
-        (let Test$MemoCustomCompareProps
+        (let Test_reason$MemoCustomCompareProps
            (Props :
              < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
            =
@@ -490,7 +490,7 @@ module MemoCustomCompareProps =
                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                        -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                    (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) in
-         Test$MemoCustomCompareProps)
+         Test_reason$MemoCustomCompareProps)
         (fun prevPros -> fun nextProps -> false)
   end
 let fragment foo =

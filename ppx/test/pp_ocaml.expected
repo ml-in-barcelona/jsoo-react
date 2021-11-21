@@ -1,0 +1,7 @@
+let element =
+  React.Dom.createDOMElementVariadic "div"
+    ~props:(Js_of_ocaml.Js.Unsafe.obj
+              [|("id",
+                  (Js_of_ocaml.Js.Unsafe.inject
+                     (Js_of_ocaml.Js.string ("foo" : string))))|] : React.Dom.domProps)
+    []

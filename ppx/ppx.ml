@@ -23,6 +23,12 @@ module Ocaml_location = Location
 open Ppxlib
 open Ast_helper
 
+module Context = struct
+  type t = {react_dom: bool}
+
+  let init = {react_dom= false}
+end
+
 let rec find_opt p = function
   | [] ->
       None
@@ -78,7 +84,7 @@ let revAstList ~loc expr =
   revAstList_ [%expr []] expr
 
 (* unlike reason-react ppx, we don't transform to array, just apply mapper to children *)
-let transformChildrenIfListUpper ~loc ~mapper theList =
+let transformChildrenIfListUpper ~loc ~mapper ~ctxt theList =
   (* unlike reason-react ppx, we don't transform to array as it'd be incompatible with
      [@js.variadic] gen_js_api attribute, which requires argument to be a list *)
   let rec transformChildren_ theList accum =
@@ -92,22 +98,24 @@ let transformChildrenIfListUpper ~loc ~mapper theList =
       | accum ->
           ListLiteral (revAstList ~loc accum) )
     | [%expr [%e? v] :: [%e? acc]] ->
-        transformChildren_ acc [%expr [%e mapper#expression v] :: [%e accum]]
+        transformChildren_ acc
+          [%expr [%e mapper#expression ctxt v] :: [%e accum]]
     | notAList ->
-        Exact (mapper#expression notAList)
+        Exact (mapper#expression ctxt notAList)
   in
   transformChildren_ theList [%expr []]
 
 (* unlike reason-react ppx, we don't transform to array, just apply mapper to children *)
-let transformChildrenIfList ~loc ~mapper theList =
+let transformChildrenIfList ~loc ~mapper ~ctxt theList =
   let rec transformChildren_ theList accum =
     match theList with
     | [%expr []] ->
         revAstList ~loc accum
     | [%expr [%e? v] :: [%e? acc]] ->
-        transformChildren_ acc [%expr [%e mapper#expression v] :: [%e accum]]
+        transformChildren_ acc
+          [%expr [%e mapper#expression ctxt v] :: [%e accum]]
     | notAList ->
-        mapper#expression notAList
+        mapper#expression ctxt notAList
   in
   transformChildren_ theList [%expr []]
 
@@ -164,6 +172,15 @@ let hasAttrOnBinding {pvb_attributes} = find_opt hasAttr pvb_attributes <> None
 let filterAttrOnBinding binding =
   { binding with
     pvb_attributes= List.filter otherAttrsPure binding.pvb_attributes }
+
+let used_attributes_tbl = Hashtbl.create 16
+
+let register_loc attr =
+  Ppxlib.Attribute.mark_as_handled_manually attr ;
+  Hashtbl.replace used_attributes_tbl attr.attr_name.loc ()
+
+let filter_attr_name key attr =
+  if attr.attr_name.txt = key then (register_loc attr ; true) else false
 
 (* Finds the name of the variable the binding is assigned to, otherwise raises Invalid_argument *)
 let getFnName binding =
@@ -475,16 +492,18 @@ let makePropsDecl fnName loc namedArgListWithKeyAndRef namedTypeList =
 
 (* TODO: some line number might still be wrong *)
 let jsxMapper () =
-  let transformUppercaseCall modulePath mapper loc attrs _ callArguments =
+  let transformUppercaseCall modulePath mapper ctxt loc attrs _ callArguments =
     let children, argsWithLabels =
       extractChildren ~loc ~removeLastPositionUnit:true callArguments
     in
     let argsForMake = argsWithLabels in
-    let childrenExpr = transformChildrenIfListUpper ~loc ~mapper children in
+    let childrenExpr =
+      transformChildrenIfListUpper ~loc ~mapper ~ctxt children
+    in
     let recursivelyTransformedArgsForMake =
       argsForMake
       |> List.map (fun (label, expression) ->
-             (label, mapper#expression expression) )
+             (label, mapper#expression ctxt expression) )
     in
     let childrenArg = ref None in
     let args =
@@ -544,10 +563,10 @@ let jsxMapper () =
           ; (nolabel, props)
           ; (nolabel, children) ]
   in
-  let transformLowercaseCall mapper loc attrs callArguments id =
+  let transformLowercaseCall mapper ctxt loc attrs callArguments id =
     let children, nonChildrenProps = extractChildren ~loc callArguments in
     let componentNameExpr = constantString ~loc id in
-    let childrenExpr = transformChildrenIfList ~loc ~mapper children in
+    let childrenExpr = transformChildrenIfList ~loc ~mapper ~ctxt children in
     let createElementCall =
       match children with
       (* [@JSX] div(~children=[a]), coming from <div> a </div> *)
@@ -607,8 +626,8 @@ let jsxMapper () =
          {loc; txt= Ldot (Ldot (Lident "React", "Dom"), createElementCall)} )
       args
   in
-  let rec recursivelyTransformNamedArgsForMake mapper expr list =
-    let expr = mapper#expression expr in
+  let rec recursivelyTransformNamedArgsForMake mapper ctxt expr list =
+    let expr = mapper#expression ctxt expr in
     match expr.pexp_desc with
     (* TODO: make this show up with a loc. *)
     | Pexp_fun (Labelled "key", _, _, _) | Pexp_fun (Optional "key", _, _, _) ->
@@ -662,7 +681,7 @@ let jsxMapper () =
           | _ ->
               None
         in
-        recursivelyTransformNamedArgsForMake mapper expression
+        recursivelyTransformNamedArgsForMake mapper ctxt expression
           ((arg, default, pattern, alias, pattern.ppat_loc, type_) :: list)
     | Pexp_fun
         ( Nolabel
@@ -742,7 +761,7 @@ let jsxMapper () =
         types
   in
   let nestedModules = ref [] in
-  let transformComponentDefinition mapper structure returnStructures =
+  let transformComponentDefinition mapper ctxt structure returnStructures =
     match structure with
     (* external *)
     | { pstr_loc
@@ -987,7 +1006,7 @@ let jsxMapper () =
             let props = getPropsAttr payload in
             (* do stuff here! *)
             let namedArgList, forwardRef =
-              recursivelyTransformNamedArgsForMake mapper
+              recursivelyTransformNamedArgsForMake mapper ctxt
                 (modifiedBindingOld binding)
                 []
             in
@@ -1174,8 +1193,8 @@ let jsxMapper () =
     | structure ->
         structure :: returnStructures
   in
-  let reactComponentTransform mapper structures =
-    List.fold_right (transformComponentDefinition mapper) structures []
+  let reactComponentTransform mapper ctxt structures =
+    List.fold_right (transformComponentDefinition mapper ctxt) structures []
   in
   let transformComponentSignature _mapper signature returnSignatures =
     match signature with
@@ -1240,7 +1259,7 @@ let jsxMapper () =
   let reactComponentSignatureTransform mapper signatures =
     List.fold_right (transformComponentSignature mapper) signatures []
   in
-  let transformJsxCall mapper callExpression callArguments attrs =
+  let transformJsxCall mapper ctxt callExpression callArguments attrs =
     match callExpression.pexp_desc with
     | Pexp_ident caller -> (
       match caller with
@@ -1250,13 +1269,13 @@ let jsxMapper () =
                "JSX: `createElement` should be preceeded by a module name." )
       (* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) *)
       | {loc; txt= Ldot (modulePath, ("createElement" | "make"))} ->
-          transformUppercaseCall modulePath mapper loc attrs callExpression
+          transformUppercaseCall modulePath mapper ctxt loc attrs callExpression
             callArguments
       (* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) *)
       (* turn that into
          React.Dom.createElement(~props=React.Dom.props(~props1=foo, ~props2=bar, ()), [|bla|]) *)
       | {loc; txt= Lident id} ->
-          transformLowercaseCall mapper loc attrs callArguments id
+          transformLowercaseCall mapper ctxt loc attrs callArguments id
       | {txt= Ldot (_, anythingNotCreateElementOrMake)} ->
           raise
             (Invalid_argument
@@ -1277,33 +1296,46 @@ let jsxMapper () =
               module name." )
   in
   object (self)
-    inherit Ast_traverse.map as super
+    inherit [Context.t] Ast_traverse.map_with_context as super
 
-    method! signature signature =
-      super#signature @@ reactComponentSignatureTransform self signature
+    method! signature c signature =
+      super#signature c (reactComponentSignatureTransform self signature)
 
-    method! structure structure =
+    method! structure c structure =
       match structure with
+      | {pstr_desc= Pstr_attribute attribute; _} :: rest
+        when filter_attr_name "react.dom" attribute ->
+          super#structure {react_dom= true}
+            (reactComponentTransform self c rest)
       | structures ->
-          super#structure @@ reactComponentTransform self structures
+          super#structure c (reactComponentTransform self c structures)
 
-    method! expression expression =
+    method! expression c expression =
       match expression with
       (* Does the function application have the @JSX attribute? *)
       | {pexp_desc= Pexp_apply (callExpression, callArguments); pexp_attributes}
         -> (
-          let jsxAttribute, nonJSXAttributes =
-            List.partition
-              (fun attribute -> attribute.attr_name.txt = "JSX")
-              pexp_attributes
-          in
-          match (jsxAttribute, nonJSXAttributes) with
-          (* no JSX attribute *)
-          | [], _ ->
-              super#expression expression
-          | _, nonJSXAttributes ->
-              transformJsxCall self callExpression callArguments
-                nonJSXAttributes )
+        match c with
+        | {react_dom= true} -> (
+          match callExpression with
+          | {pexp_desc= Pexp_ident {txt= Lident "div"; _}} ->
+              transformJsxCall self c callExpression callArguments
+                pexp_attributes
+          | _ ->
+              super#expression c expression )
+        | {react_dom= false} -> (
+            let jsxAttribute, nonJSXAttributes =
+              List.partition
+                (fun attribute -> attribute.attr_name.txt = "JSX")
+                pexp_attributes
+            in
+            match (jsxAttribute, nonJSXAttributes) with
+            (* no JSX attribute *)
+            | [], _ ->
+                super#expression c expression
+            | _, nonJSXAttributes ->
+                transformJsxCall self c callExpression callArguments
+                  nonJSXAttributes ) )
       (* is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo]*)
       | { pexp_desc=
             ( Pexp_construct
@@ -1318,17 +1350,17 @@ let jsxMapper () =
           match (jsxAttribute, nonJSXAttributes) with
           (* no JSX attribute *)
           | [], _ ->
-              super#expression expression
+              super#expression c expression
           | _, nonJSXAttributes ->
               let callExpression = [%expr React.Fragment.createElement] in
-              transformJsxCall self callExpression
+              transformJsxCall self c callExpression
                 [(Labelled "children", listItems)]
                 nonJSXAttributes )
       (* Delegate to the default mapper, a deep identity traversal *)
       | e ->
-          super#expression e
+          super#expression c e
 
-    method! module_binding module_binding =
+    method! module_binding c module_binding =
       let _ =
         match module_binding.pmb_name.txt with
         | None ->
@@ -1336,18 +1368,20 @@ let jsxMapper () =
         | Some txt ->
             nestedModules := txt :: !nestedModules
       in
-      let mapped = super#module_binding module_binding in
+      let mapped = super#module_binding c module_binding in
       let _ = nestedModules := List.tl !nestedModules in
       mapped
   end
 
 let rewrite_implementation (code : Parsetree.structure) : Parsetree.structure =
+  let c = Context.init in
   let mapper = jsxMapper () in
-  mapper#structure code
+  mapper#structure c code
 
 let rewrite_signature (code : Parsetree.signature) : Parsetree.signature =
+  let c = Context.init in
   let mapper = jsxMapper () in
-  mapper#signature code
+  mapper#signature c code
 
 let () =
   Driver.register_transformation "jsoo-react-ppx" ~impl:rewrite_implementation
