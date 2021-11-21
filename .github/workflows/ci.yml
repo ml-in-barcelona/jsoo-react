@@ -21,7 +21,7 @@ jobs:
           - ubuntu-latest
           - windows-latest
         ocaml-version:
-          - 4.13.0
+          - 4.10.0
 
     steps:
       - name: Checkout code
@@ -38,14 +38,9 @@ jobs:
           node-version: 12
 
       - name: Install dependencies
-        if: steps.cache-opam.outputs.cache-hit != 'true'
         run: |
           opam install . --deps-only --with-doc --with-test
           opam install ocamlformat
-
-      - name: Upgrade dependencies
-        run: opam upgrade --fixup
-        if: steps.cache-opam.outputs.cache-hit == 'true'
 
       - name: Build
         run: make build
