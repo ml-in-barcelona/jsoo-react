@@ -201,31 +201,7 @@ The proposal is split between four different parts:
 
 - **Proposal**
 
-  For OCaml syntax, it would be much friendlier to use infix syntax for component implementation, like it's done in [brisk-reconciler](ttps://github.com/briskml/brisk-reconciler/).
-
-  The example above would look like:
-
-  ```ocaml
-  module Greeting = struct
-    let%component make () = React.string "Hello world from OCaml"
-  end
-  ```
-
-### Implementation of components
-
-- **Current input**
-
-  Right now, components are defined with an attribute attached to the component value binding, e.g.:
-
-  ```ocaml
-  module Greeting = struct
-    let make () = React.string "Hello world from OCaml" [@@react.component]
-  end
-  ```
-
-- **Proposal**
-
-  For OCaml syntax, it would be much friendlier to use infix syntax for component implementation, like it's done in [brisk-reconciler](ttps://github.com/briskml/brisk-reconciler/).
+  For OCaml syntax, it would be much friendlier to use infix syntax for component implementation, like it's done in [brisk-reconciler](https://github.com/briskml/brisk-reconciler/).
 
   The example above would look like:
 
@@ -292,9 +268,10 @@ Here is a component with some jsoo-react functionality to see how all the differ
 
 # Drawbacks
 
-- Performance: some of the points above like "1. Creating DOM elements" will involve more work from the PPX.
-- Confusion and bad user experience: the proposal "1. Creating DOM elements" will lead to the PPX processing _every_ function with a name like DOM elements (`p`, `div`). This can lead to confusion if the user redefines any of these functions for different purposes.
+- Performance: some of the points above like "1. Creating DOM elements" will involve more work from the PPX, as it has to check every `Pexp_apply` expression and then compare its `Pexp_ident` with all DOM elements `p`, `div`,... tag strings.
+- Confusion and bad user experience: the proposal "1. Creating DOM elements" will lead to the PPX processing _every_ function with a name like DOM elements (`p`, `div`). This can lead to opaque compilation errors and confusion if the user redefines any of these functions for different purposes.
 - Maintenance burden: the additions proposed will involve more maintenance work, and more use cases to support.
+- Backwards compatibility: at some point we might decide to drop support for old ways to implement components using `[@react.component]`. This would mean that it'd not be as straight forward to migrate existing [ReasonReact](https://reasonml.github.io/reason-react) apps to jsoo-react.
 
 # Unresolved questions
 
