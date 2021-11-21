@@ -20,8 +20,8 @@ jobs:
           - macos-latest
           - ubuntu-latest
           - windows-latest
-        ocaml-version:
-          - 4.10.0
+        ocaml-compiler:
+          - 4.10.2
 
     steps:
       - name: Checkout code
