@@ -5,3 +5,14 @@ let element =
                   (Js_of_ocaml.Js.Unsafe.inject
                      (Js_of_ocaml.Js.string ("foo" : string))))|] : React.Dom.domProps)
     []
+let element =
+  React.Dom.createDOMElementVariadic "a"
+    ~props:(Js_of_ocaml.Js.Unsafe.obj
+              [|("id",
+                  (Js_of_ocaml.Js.Unsafe.inject
+                     (Js_of_ocaml.Js.string ("foo" : string))));("href",
+                                                                  (Js_of_ocaml.Js.Unsafe.inject
+                                                                    (Js_of_ocaml.Js.string
+                                                                    ("https://www.hello.com" : 
+                                                                    string))))|] : 
+    React.Dom.domProps) [React.string "hello"]
