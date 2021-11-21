@@ -45,9 +45,8 @@ jobs:
       - name: Build
         run: make build
 
-      # Formatting is broken in ci for some reason
-      # - name: Check formatting
-      #   run: make format
+      - name: Check formatting
+        run: make format
 
       - name: "Install npm packages for tests"
         run: yarn install
