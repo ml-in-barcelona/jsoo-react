@@ -594,7 +594,7 @@ let jsxMapper () =
           in
           [ (* "div" *)
             (nolabel, componentNameExpr)
-          ; (* props: Js_of_ocaml.Js.Unsafe.obj ... *)
+          ; (* ~props: Js_of_ocaml.Js.Unsafe.obj ... *)
             (labelled "props", propsObj)
           ; (* [|moreCreateElementCallsHere|] *)
             (nolabel, childrenExpr) ]
