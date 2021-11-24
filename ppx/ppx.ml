@@ -50,6 +50,13 @@ let argIsKeyRef = function
   | _ ->
       false
 
+let isUnit expr =
+  match expr.pexp_desc with
+  | Pexp_construct ({txt= Lident "()"; _}, _) ->
+      true
+  | _ ->
+      false
+
 let constantString ~loc str = Ast_helper.Exp.constant ~loc (Const.string str)
 
 let safeTypeFromValue valueStr =
@@ -572,10 +579,11 @@ let jsxMapper () =
           ; (* [|moreCreateElementCallsHere|] *)
             (nolabel, childrenExpr) ]
       | nonEmptyProps ->
-          (* Filtering out the props that don't have a label, not sure how's possible *)
-          let propsWithName =
-            List.filter (fun (name, _) -> getLabel name != "") nonEmptyProps
+          (* Filtering out last unit *)
+          let isLabeledArg (name, value) =
+            getLabel name != "" && not (isUnit value)
           in
+          let propsWithName = List.filter isLabeledArg nonEmptyProps in
           let unionLocation first second =
             let diff = Location.compare first second in
             let loc_start = {first.loc_start with pos_lnum= diff} in
