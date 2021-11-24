@@ -576,15 +576,32 @@ let jsxMapper () =
           let propsWithName =
             List.filter (fun (name, _) -> getLabel name != "") nonEmptyProps
           in
+          let unionLocation first second =
+            let diff = Location.compare first second in
+            let loc_start = {first.loc_start with pos_lnum= diff} in
+            let loc_end = second.loc_end in
+            {loc_start; loc_end; loc_ghost= false}
+          in
           let makePropField (arg_label, value) =
+            let valueLoc = value.pexp_loc in
+            let argLabelLoc = unionLocation loc value.pexp_loc in
             let name = getLabel arg_label in
-            let prop = Html.findByName name in
+            let prop =
+              match Html.findByName name with
+              | Some p ->
+                  p
+              | None ->
+                  raise
+                  @@ Location.raise_errorf ~loc:argLabelLoc
+                       "prop '%s' isn't a valid React prop" name
+            in
             [%expr
               [%e
                 Exp.constant ~loc
                   (Pconst_string (Html.getHtmlName prop, loc, None))]
               (* loc here points to the element <div />, we could be more precise and point to the prop *)
-              , Js_of_ocaml.Js.Unsafe.inject [%e makeValue ~loc prop value]]
+              , Js_of_ocaml.Js.Unsafe.inject
+                  [%e makeValue ~loc:valueLoc prop value]]
           in
           let propsObj =
             [%expr

@@ -576,9 +576,4 @@ let getHtmlName = function
   | Event {name; _} ->
       name
 
-let findByName name =
-  match List.find_opt (fun p -> name = getName p) propTypeList with
-  | Some p ->
-      p
-  | None ->
-      failwith @@ Printf.sprintf "prop '%s' doesn't exist in React" name
+let findByName name = List.find_opt (fun p -> name = getName p) propTypeList
