@@ -155,6 +155,8 @@ let lowerWithChildrenComplex2 =
 
 let nestedElement = <Foo.Bar a=1 b="1" />;
 
+let innerHTML = <div dangerouslySetInnerHTML={ __html: "<lol></lol>"} />;
+
 // TODO: fix this test (are these components deprecated??)
 // let nestedElementCustomName = <Foo.component a=1 b="1" />;
 

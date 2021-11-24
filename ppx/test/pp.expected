@@ -651,3 +651,13 @@ let lowerWithChildrenComplex2 =
 let nestedElement =
   React.createElement Foo.Bar.make
     (Foo.Bar.makeProps ~a:1 ~b:(("1")[@reason.raw_literal "1"]) ())
+let innerHTML =
+  React.Dom.createDOMElementVariadic "div"
+    ~props:(Js_of_ocaml.Js.Unsafe.obj
+              [|("dangerouslySetInnerHTML",
+                  (Js_of_ocaml.Js.Unsafe.inject
+                     ({
+                        __html = (("<lol></lol>")
+                          [@reason.raw_literal "<lol></lol>"])
+                      } : React.Dom.DangerouslySetInnerHTML.t)))|] : 
+    React.Dom.domProps) []
