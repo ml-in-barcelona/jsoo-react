@@ -551,7 +551,7 @@ let jsxMapper () =
           ; (nolabel, props)
           ; (nolabel, children) ]
   in
-  let transformLowercaseCall mapper loc attrs callArguments id =
+  let transformLowercaseCall mapper loc attrs callArguments id callLoc =
     let children, nonChildrenProps = extractChildren ~loc callArguments in
     let componentNameExpr = constantString ~loc id in
     let childrenExpr = transformChildrenIfList ~loc ~mapper children in
@@ -584,15 +584,8 @@ let jsxMapper () =
             getLabel name != "" && not (isUnit value)
           in
           let propsWithName = List.filter isLabeledArg nonEmptyProps in
-          let unionLocation first second =
-            let diff = Location.compare first second in
-            let loc_start = {first.loc_start with pos_lnum= diff} in
-            let loc_end = second.loc_end in
-            {loc_start; loc_end; loc_ghost= false}
-          in
           let makePropField (arg_label, value) =
-            let valueLoc = value.pexp_loc in
-            let argLabelLoc = unionLocation loc value.pexp_loc in
+            let loc = callLoc in
             let name = getLabel arg_label in
             let prop =
               match Html.findByName name with
@@ -600,16 +593,14 @@ let jsxMapper () =
                   p
               | None ->
                   raise
-                  @@ Location.raise_errorf ~loc:argLabelLoc
+                  @@ Location.raise_errorf ~loc
                        "prop '%s' isn't a valid React prop" name
             in
             [%expr
               [%e
                 Exp.constant ~loc
                   (Pconst_string (Html.getHtmlName prop, loc, None))]
-              (* loc here points to the element <div />, we could be more precise and point to the prop *)
-              , Js_of_ocaml.Js.Unsafe.inject
-                  [%e makeValue ~loc:valueLoc prop value]]
+              , Js_of_ocaml.Js.Unsafe.inject [%e makeValue ~loc prop value]]
           in
           let propsObj =
             [%expr
@@ -1265,7 +1256,7 @@ let jsxMapper () =
   let reactComponentSignatureTransform mapper signatures =
     List.fold_right (transformComponentSignature mapper) signatures []
   in
-  let transformJsxCall mapper callExpression callArguments attrs =
+  let transformJsxCall mapper callExpression callArguments attrs applyLoc =
     match callExpression.pexp_desc with
     | Pexp_ident caller -> (
       match caller with
@@ -1281,7 +1272,7 @@ let jsxMapper () =
       (* turn that into
          React.Dom.createElement(~props=React.Dom.props(~props1=foo, ~props2=bar, ()), [|bla|]) *)
       | {loc; txt= Lident id} ->
-          transformLowercaseCall mapper loc attrs callArguments id
+          transformLowercaseCall mapper loc attrs callArguments id applyLoc
       | {txt= Ldot (_, anythingNotCreateElementOrMake)} ->
           raise
             (Invalid_argument
@@ -1315,8 +1306,9 @@ let jsxMapper () =
     method! expression expression =
       match expression with
       (* Does the function application have the @JSX attribute? *)
-      | {pexp_desc= Pexp_apply (callExpression, callArguments); pexp_attributes}
-        -> (
+      | { pexp_desc= Pexp_apply (callExpression, callArguments)
+        ; pexp_attributes
+        ; pexp_loc= applyLoc } -> (
           let jsxAttribute, nonJSXAttributes =
             List.partition
               (fun attribute -> attribute.attr_name.txt = "JSX")
@@ -1328,7 +1320,7 @@ let jsxMapper () =
               super#expression expression
           | _, nonJSXAttributes ->
               transformJsxCall self callExpression callArguments
-                nonJSXAttributes )
+                nonJSXAttributes applyLoc )
       (* is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo]*)
       | { pexp_desc=
             ( Pexp_construct
@@ -1348,7 +1340,7 @@ let jsxMapper () =
               let callExpression = [%expr React.Fragment.createElement] in
               transformJsxCall self callExpression
                 [(Labelled "children", listItems)]
-                nonJSXAttributes )
+                nonJSXAttributes listItems.pexp_loc )
       (* Delegate to the default mapper, a deep identity traversal *)
       | e ->
           super#expression e
