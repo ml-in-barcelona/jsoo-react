@@ -570,50 +570,42 @@ let jsxMapper () =
                 together. You can simply remove the spread." )
     in
     let args =
-      match nonChildrenProps with
-      | [_justTheUnitArgumentAtTheEnd] ->
-          [ (* "div" *)
-            (nolabel, componentNameExpr)
-          ; (* React.Dom.props(~className=blabla, ~foo=bar, ()) *)
-            (labelled "props", [%expr Js_of_ocaml.Js.Unsafe.obj [||]])
-          ; (* [|moreCreateElementCallsHere|] *)
-            (nolabel, childrenExpr) ]
-      | nonEmptyProps ->
-          (* Filtering out last unit *)
-          let isLabeledArg (name, value) =
-            getLabel name != "" && not (isUnit value)
-          in
-          let propsWithName = List.filter isLabeledArg nonEmptyProps in
-          let makePropField (arg_label, value) =
-            let loc = callLoc in
-            let name = getLabel arg_label in
-            let prop =
-              match Html.findByName name with
-              | Some p ->
-                  p
-              | None ->
-                  raise
-                  @@ Location.raise_errorf ~loc
-                       "prop '%s' isn't a valid React prop" name
-            in
-            [%expr
-              [%e
-                Exp.constant ~loc
-                  (Pconst_string (Html.getHtmlName prop, loc, None))]
-              , Js_of_ocaml.Js.Unsafe.inject [%e makeValue ~loc prop value]]
-          in
-          let propsObj =
-            [%expr
-              ( Js_of_ocaml.Js.Unsafe.obj
-                  [%e Exp.array ~loc (List.map makePropField propsWithName)]
-                : React.Dom.domProps )]
-          in
-          [ (* "div" *)
-            (nolabel, componentNameExpr)
-          ; (* ~props: Js_of_ocaml.Js.Unsafe.obj ... *)
-            (labelled "props", propsObj)
-          ; (* [|moreCreateElementCallsHere|] *)
-            (nolabel, childrenExpr) ]
+      (* Filtering out last unit *)
+      let isLabeledArg (name, value) =
+        getLabel name != "" && not (isUnit value)
+      in
+      let labeledProps = List.filter isLabeledArg nonChildrenProps in
+      let makePropField (arg_label, value) =
+        let loc = callLoc in
+        let name = getLabel arg_label in
+        let prop =
+          match Html.findByName name with
+          | Some p ->
+              p
+          | None ->
+              raise
+              @@ Location.raise_errorf ~loc "prop '%s' isn't a valid React prop"
+                   name
+        in
+        let htmlName = Html.getHtmlName prop in
+        let objectKey =
+          Exp.constant ~loc (Pconst_string (htmlName, loc, None))
+        in
+        let objectValue = makeValue ~loc prop value in
+        [%expr [%e objectKey], Js_of_ocaml.Js.Unsafe.inject [%e objectValue]]
+      in
+      let propsObj =
+        [%expr
+          ( Js_of_ocaml.Js.Unsafe.obj
+              [%e Exp.array ~loc (List.map makePropField labeledProps)]
+            : React.Dom.domProps )]
+      in
+      [ (* "div" *)
+        (nolabel, componentNameExpr)
+      ; (* ~props: Js_of_ocaml.Js.Unsafe.obj ... *)
+        (labelled "props", propsObj)
+      ; (* [|moreCreateElementCallsHere|] *)
+        (nolabel, childrenExpr) ]
     in
     Exp.apply
       ~loc (* throw away the [@JSX] attribute and keep the others, if any *)
