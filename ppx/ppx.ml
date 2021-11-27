@@ -624,7 +624,7 @@ let makePropsDecl fnName loc namedArgListWithKeyAndRef namedTypeList =
     (List.map pluckLabelDefaultLocType namedArgListWithKeyAndRef)
     (makePropsType ~loc namedTypeList)
 
-(* Builds the args list for elements like <Foo bar=2 /> *)
+(* Builds the args list for elements like <Foo bar=2 />, or for React.Fragment: <> <div /> <p /> </> *)
 let uppercase_element_args ~is_user_element ~loc callArguments mapper ctxt =
   let children, argsWithLabels =
     extractChildren ~loc ~removeLastPositionUnit:true callArguments
@@ -640,10 +640,10 @@ let uppercase_element_args ~is_user_element ~loc callArguments mapper ctxt =
   in
   let filtered_children =
     match (children_expr, is_user_element) with
-    | Exact children, _ | ListLiteral children, true ->
-        [(labelled "children", children)]
     | ListLiteral [%expr []], _ ->
         []
+    | Exact children, _ | ListLiteral children, true ->
+        [(labelled "children", children)]
     | ListLiteral _expression, false ->
         [ ( labelled "children"
           , Exp.ident ~loc {loc; txt= Ldot (Lident "React", "null")} ) ]
