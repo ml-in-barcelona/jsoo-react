@@ -587,16 +587,17 @@ let makeJsObj ~loc namedArgListWithKeyAndRef =
       |> List.filter_map (fun x -> x)
       |> Array.of_list )]
 
+let makeMakePropsFnName fnName = fnName ^ "Props"
+
 let makePropsValueBinding fnName loc namedArgListWithKeyAndRef propsType =
   let core_type =
     makeArgsForMakePropsType namedArgListWithKeyAndRef
       [%type: unit -> [%t propsType]]
   in
-  let propsName = fnName ^ "Props" in
   Vb.mk ~loc
     (Pat.mk ~loc
        (Ppat_constraint
-          ( makePropsName ~loc propsName
+          ( makePropsName ~loc (makeMakePropsFnName fnName)
           , { ptyp_desc= Ptyp_poly ([], core_type)
             ; ptyp_loc= loc
             ; ptyp_attributes= []
@@ -1278,7 +1279,17 @@ let jsxMapper () =
                     [ Vb.mk ~loc:emptyLoc
                         (Pat.var ~loc:emptyLoc {loc= emptyLoc; txt})
                         fullExpression ]
-                    (Exp.ident ~loc:emptyLoc {loc= emptyLoc; txt= Lident txt})
+                    (Exp.apply ~loc
+                       (Exp.ident ~loc
+                          {loc; txt= Ldot (Lident "React", "createElement")} )
+                       [ ( nolabel
+                         , Exp.ident ~loc:emptyLoc
+                             {loc= emptyLoc; txt= Lident txt} )
+                       ; ( nolabel
+                         , Exp.apply ~loc
+                             (Exp.ident ~loc
+                                {loc; txt= Lident (makeMakePropsFnName fnName)} )
+                             [] ) ] )
             in
             let bindings, newBinding =
               match recFlag with
