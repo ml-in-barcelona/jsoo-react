@@ -1061,7 +1061,29 @@ let jsxMapper () =
                      (List.map pluckLabelDefaultLocType
                         namedArgListWithKeyAndRef )
                      (let loc = emptyLoc in
-                      [%expr fun () -> [%e expressionFn expression]] ) )
+                      [%expr
+                        fun () ->
+                          React.createElement [%e expressionFn expression]
+                            [%e
+                              Exp.apply ~loc
+                                (Exp.ident ~loc
+                                   { loc
+                                   ; txt= Lident (makeMakePropsFnName fnName) } )
+                                ( List.map
+                                    (fun ( arg
+                                         , _default
+                                         , _pattern
+                                         , alias
+                                         , _pattern_loc
+                                         , _type_ ) ->
+                                      ( arg
+                                      , Exp.ident ~loc:emptyLoc
+                                          {loc= emptyLoc; txt= Lident alias} )
+                                      )
+                                    namedArgListWithKeyAndRef
+                                @ [ ( Nolabel
+                                    , Exp.construct {loc; txt= Lident "()"} None
+                                    ) ] )]] ) )
               in
               let expression = binding.pvb_expr in
               let unerasableIgnoreExp exp =
@@ -1283,31 +1305,7 @@ let jsxMapper () =
                     [ Vb.mk ~loc:emptyLoc
                         (Pat.var ~loc:emptyLoc {loc= emptyLoc; txt})
                         fullExpression ]
-                    (Exp.apply ~loc:emptyLoc
-                       (Exp.ident ~loc:emptyLoc
-                          { loc= emptyLoc
-                          ; txt= Ldot (Lident "React", "createElement") } )
-                       [ ( nolabel
-                         , Exp.ident ~loc:emptyLoc
-                             {loc= emptyLoc; txt= Lident txt} )
-                       ; ( nolabel
-                         , Exp.apply ~loc
-                             (Exp.ident ~loc
-                                {loc; txt= Lident (makeMakePropsFnName fnName)} )
-                             ( List.map
-                                 (fun ( arg
-                                      , _default
-                                      , _pattern
-                                      , alias
-                                      , _pattern_loc
-                                      , _type_ ) ->
-                                   ( arg
-                                   , Exp.ident ~loc:emptyLoc
-                                       {loc= emptyLoc; txt= Lident alias} ) )
-                                 namedArgListWithKeyAndRef
-                             @ [ ( Nolabel
-                                 , Exp.construct {loc; txt= Lident "()"} None )
-                               ] ) ) ] )
+                    (Exp.ident ~loc:emptyLoc {loc= emptyLoc; txt= Lident txt})
             in
             let bindings, newBinding =
               match recFlag with

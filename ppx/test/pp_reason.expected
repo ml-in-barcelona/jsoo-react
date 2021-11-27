@@ -75,17 +75,20 @@ let make =
       [@reason.preserve_braces ]))
   [@warning "-16"])
 let make ?name  ?key  () =
-  let Test_reason
-    (Props :
-      < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
-    =
-    make
-      ?name:(fun (type res) -> fun (type a0) ->
-               fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                   -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
-               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
-  React.createElement Test_reason (makeProps ?key ?name ())
+  React.createElement
+    (let Test_reason
+       (Props :
+         < name: 'name option Js_of_ocaml.Js.readonly_prop   > 
+           Js_of_ocaml.Js.t)
+       =
+       make
+         ?name:(fun (type res) -> fun (type a0) ->
+                  fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                    fun
+                      (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                      -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
+                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
+     Test_reason) (makeProps ?key ?name ())
 let makeProps
   : a:'a ->
       b:'b ->
@@ -122,26 +125,27 @@ let make =
       [@warning "-16"]))
   [@warning "-16"])
 let make ~a  ~b  ?key  () =
-  let Test_reason
-    (Props :
-      <
-        a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
-                                                  Js_of_ocaml.Js.readonly_prop
-                                                 > 
-        Js_of_ocaml.Js.t)
-    =
-    make
-      ~b:(fun (type res) -> fun (type a0) ->
-            fun (a0 : a0 Js_of_ocaml.Js.t) ->
-              fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
-      ~a:(fun (type res) -> fun (type a0) ->
-            fun (a0 : a0 Js_of_ocaml.Js.t) ->
-              fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-            (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
-  React.createElement Test_reason (makeProps ?key ~b ~a ())
+  React.createElement
+    (let Test_reason
+       (Props :
+         <
+           a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
+                                                     Js_of_ocaml.Js.readonly_prop
+                                                    > 
+           Js_of_ocaml.Js.t)
+       =
+       make
+         ~b:(fun (type res) -> fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
+               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
+         ~a:(fun (type res) -> fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
+     Test_reason) (makeProps ?key ~b ~a ())
 module External =
   struct
     let componentProps
@@ -220,26 +224,31 @@ module Bar =
           [@warning "-16"]))
       [@warning "-16"])
     let make ~a  ~b  ?key  () =
-      let Test_reason$Bar
-        (Props :
-          <
-            a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
-                                                      Js_of_ocaml.Js.readonly_prop
-                                                     > 
-            Js_of_ocaml.Js.t)
-        =
-        make
-          ~b:(fun (type res) -> fun (type a0) ->
-                fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                    -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
-                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
-          ~a:(fun (type res) -> fun (type a0) ->
-                fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                    -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
-      React.createElement Test_reason$Bar (makeProps ?key ~b ~a ())
+      React.createElement
+        (let Test_reason$Bar
+           (Props :
+             <
+               a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
+                                                         Js_of_ocaml.Js.readonly_prop
+                                                        > 
+               Js_of_ocaml.Js.t)
+           =
+           make
+             ~b:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
+                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
+             ~a:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
+         Test_reason$Bar) (makeProps ?key ~b ~a ())
     let componentProps
       : a:'a ->
           b:'b ->
@@ -279,27 +288,31 @@ module Bar =
           [@warning "-16"]))
       [@warning "-16"])
     let component ~a  ~b  ?key  () =
-      let Test_reason$Bar$component
-        (Props :
-          <
-            a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
-                                                      Js_of_ocaml.Js.readonly_prop
-                                                     > 
-            Js_of_ocaml.Js.t)
-        =
-        component
-          ~b:(fun (type res) -> fun (type a0) ->
-                fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                    -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
-                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
-          ~a:(fun (type res) -> fun (type a0) ->
-                fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                    -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
-      React.createElement Test_reason$Bar$component
-        (componentProps ?key ~b ~a ())
+      React.createElement
+        (let Test_reason$Bar$component
+           (Props :
+             <
+               a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
+                                                         Js_of_ocaml.Js.readonly_prop
+                                                        > 
+               Js_of_ocaml.Js.t)
+           =
+           component
+             ~b:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
+                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
+             ~a:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
+         Test_reason$Bar$component) (componentProps ?key ~b ~a ())
   end
 module type X_int  = sig val x : int end
 module Func(M:X_int) =
@@ -344,26 +357,31 @@ module Func(M:X_int) =
           [@warning "-16"]))
       [@warning "-16"])
     let make ~a  ~b  ?key  () =
-      let Test_reason$Func
-        (Props :
-          <
-            a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
-                                                      Js_of_ocaml.Js.readonly_prop
-                                                     > 
-            Js_of_ocaml.Js.t)
-        =
-        make
-          ~b:(fun (type res) -> fun (type a0) ->
-                fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                    -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
-                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
-          ~a:(fun (type res) -> fun (type a0) ->
-                fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                    -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
-      React.createElement Test_reason$Func (makeProps ?key ~b ~a ())
+      React.createElement
+        (let Test_reason$Func
+           (Props :
+             <
+               a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
+                                                         Js_of_ocaml.Js.readonly_prop
+                                                        > 
+               Js_of_ocaml.Js.t)
+           =
+           make
+             ~b:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
+                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
+             ~a:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
+         Test_reason$Func) (makeProps ?key ~b ~a ())
   end
 module ForwardRef =
   struct
@@ -397,10 +415,11 @@ module ForwardRef =
             [@reason.preserve_braces ])])
       [@warning "-16"])
     let make ?key  ?ref  () =
-      React.forwardRef
-        (let Test_reason$ForwardRef (Props : <  >  Js_of_ocaml.Js.t) theRef =
-           make theRef in
-         React.createElement Test_reason$ForwardRef (makeProps ?ref ?key ()))
+      React.createElement
+        (React.forwardRef
+           (let Test_reason$ForwardRef (Props : <  >  Js_of_ocaml.Js.t)
+              theRef = make theRef in
+            Test_reason$ForwardRef)) (makeProps ?ref ?key ())
   end
 module Memo =
   struct
@@ -432,20 +451,21 @@ module Memo =
           [@reason.preserve_braces ]))
       [@warning "-16"])
     let make ~a  ?key  () =
-      React.memo
-        (let Test_reason$Memo
-           (Props :
-             < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
-           =
-           make
-             ~a:(fun (type res) -> fun (type a0) ->
-                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                     fun
-                       (_ :
-                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                       -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) in
-         React.createElement Test_reason$Memo (makeProps ?key ~a ()))
+      React.createElement
+        (React.memo
+           (let Test_reason$Memo
+              (Props :
+                < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+              =
+              make
+                ~a:(fun (type res) -> fun (type a0) ->
+                      fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                        fun
+                          (_ :
+                            a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                          -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+                      (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) in
+            Test_reason$Memo)) (makeProps ?key ~a ())
   end
 module MemoCustomCompareProps =
   struct
@@ -477,21 +497,22 @@ module MemoCustomCompareProps =
           [@reason.preserve_braces ]))
       [@warning "-16"])
     let make ~a  ?key  () =
-      React.memoCustomCompareProps
-        (let Test_reason$MemoCustomCompareProps
-           (Props :
-             < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
-           =
-           make
-             ~a:(fun (type res) -> fun (type a0) ->
-                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                     fun
-                       (_ :
-                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                       -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) in
-         React.createElement Test_reason$MemoCustomCompareProps
-           (makeProps ?key ~a ())) (fun prevPros -> fun nextProps -> false)
+      React.createElement
+        (React.memoCustomCompareProps
+           (let Test_reason$MemoCustomCompareProps
+              (Props :
+                < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+              =
+              make
+                ~a:(fun (type res) -> fun (type a0) ->
+                      fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                        fun
+                          (_ :
+                            a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                          -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+                      (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) in
+            Test_reason$MemoCustomCompareProps)
+           (fun prevPros -> fun nextProps -> false)) (makeProps ?key ~a ())
   end
 let fragment foo =
   ((React.createElement React.Fragment.make
