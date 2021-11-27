@@ -1,44 +1,11 @@
 module type Foo  =
   sig
-    val makeProps :
+    val make :
       ?title:string ->
         ?defaultTitle:string ->
           ?meta:metaField array ->
             ?htmlAttributes:htmlAttribute array ->
-              children:React.element ->
-                ?key:string ->
-                  unit ->
-                    <
-                      title: string option Js_of_ocaml.Js.readonly_prop  ;
-                      defaultTitle: string option
-                                      Js_of_ocaml.Js.readonly_prop  ;
-                      meta: metaField array option
-                              Js_of_ocaml.Js.readonly_prop  ;htmlAttributes: 
-                                                               htmlAttribute
-                                                                 array option
-                                                                 Js_of_ocaml.Js.readonly_prop
-                                                                ;children: 
-                                                                   React.element
-                                                                    Js_of_ocaml.Js.readonly_prop
-                                                                     > 
-                      Js_of_ocaml.Js.t
-    val make :
-      (<
-         title: string option Js_of_ocaml.Js.readonly_prop  ;defaultTitle: 
-                                                               string option
-                                                                 Js_of_ocaml.Js.readonly_prop
-                                                                ;meta: 
-                                                                   metaField
-                                                                    array
-                                                                    option
-                                                                    Js_of_ocaml.Js.readonly_prop
-                                                                    ;
-         htmlAttributes: htmlAttribute array option
-                           Js_of_ocaml.Js.readonly_prop  ;children: React.element
-                                                                    Js_of_ocaml.Js.readonly_prop
-                                                              > 
-         Js_of_ocaml.Js.t,
-        React.element) React.componentLike
+              children:React.element -> React.element[@@react.component ]
   end
 let makeProps
   : ?name:'name ->

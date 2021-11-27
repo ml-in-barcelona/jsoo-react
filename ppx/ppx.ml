@@ -454,25 +454,6 @@ let rec makeArgsForMakePropsType list args =
 
 let makeMakePropsFnName fnName = fnName ^ "Props"
 
-(* Build an AST node for the Js object representing props for a component *)
-let makePropsValue fnName loc namedArgListWithKeyAndRef propsType =
-  let propsName = makeMakePropsFnName fnName in
-  Val.mk ~loc {txt= propsName; loc}
-    (makeArgsForMakePropsType namedArgListWithKeyAndRef
-       (Typ.arrow Nolabel
-          { ptyp_desc= Ptyp_constr ({txt= Lident "unit"; loc}, [])
-          ; ptyp_loc= loc
-          ; ptyp_attributes= []
-          ; ptyp_loc_stack= [] }
-          propsType ) )
-
-(* Build an AST node for the signature of the `external` definition *)
-let makePropsExternalSig fnName loc namedArgListWithKeyAndRef propsType =
-  { psig_loc= loc
-  ; psig_desc=
-      Psig_value (makePropsValue fnName loc namedArgListWithKeyAndRef propsType)
-  }
-
 (* Build an AST node for the props name when converted to a Js.t inside the function signature  *)
 let makePropsName ~loc name = Pat.mk ~loc (Ppat_var {txt= name; loc})
 
@@ -1362,69 +1343,6 @@ let jsxMapper () =
   let reactComponentTransform mapper ctxt structures =
     List.fold_right (transformComponentDefinition mapper ctxt) structures []
   in
-  let transformComponentSignature _mapper signature returnSignatures =
-    match signature with
-    | { psig_loc
-      ; psig_desc=
-          Psig_value
-            ({pval_name= {txt= fnName}; pval_attributes; pval_type} as psig_desc)
-      } as psig -> (
-      match List.filter hasAttr pval_attributes with
-      | [] ->
-          signature :: returnSignatures
-      | [_] ->
-          let rec getPropTypes types ({ptyp_loc; ptyp_desc} as fullType) =
-            match ptyp_desc with
-            | Ptyp_arrow (name, type_, ({ptyp_desc= Ptyp_arrow _} as rest))
-              when isOptional name || isLabelled name ->
-                getPropTypes ((name, ptyp_loc, type_) :: types) rest
-            | Ptyp_arrow (Nolabel, _type, rest) ->
-                getPropTypes types rest
-            | Ptyp_arrow (name, type_, returnValue)
-              when isOptional name || isLabelled name ->
-                (returnValue, (name, returnValue.ptyp_loc, type_) :: types)
-            | _ ->
-                (fullType, types)
-          in
-          let innerType, propTypes = getPropTypes [] pval_type in
-          let namedTypeList = List.fold_left argToConcreteType [] propTypes in
-          let pluckLabelAndLoc (label, loc, type_) =
-            (label, None, loc, Some type_)
-          in
-          let retPropsType = makePropsType ~loc:psig_loc namedTypeList in
-          let externalPropsDecl =
-            makePropsExternalSig fnName psig_loc
-              ( (optional "key", None, psig_loc, Some (keyType psig_loc))
-              :: List.map pluckLabelAndLoc propTypes )
-              retPropsType
-          in
-          (* can't be an arrow because it will defensively uncurry *)
-          let newExternalType =
-            Ptyp_constr
-              ( {loc= psig_loc; txt= Ldot (Lident "React", "componentLike")}
-              , [retPropsType; innerType] )
-          in
-          let newStructure =
-            { psig with
-              psig_desc=
-                Psig_value
-                  { psig_desc with
-                    pval_type= {pval_type with ptyp_desc= newExternalType}
-                  ; pval_attributes= List.filter otherAttrsPure pval_attributes
-                  } }
-          in
-          externalPropsDecl :: newStructure :: returnSignatures
-      | _ ->
-          raise
-            (Invalid_argument
-               "Only one react.component call can exist on a component at one \
-                time" ) )
-    | signature ->
-        signature :: returnSignatures
-  in
-  let reactComponentSignatureTransform mapper signatures =
-    List.fold_right (transformComponentSignature mapper) signatures []
-  in
   let transformJsxCall mapper ctxt callExpression callArguments attrs pexp_loc
       pexp_loc_stack =
     match callExpression.pexp_desc with
@@ -1479,9 +1397,6 @@ let jsxMapper () =
   in
   object (self)
     inherit [Context.t] Ast_traverse.map_with_context as super
-
-    method! signature c signature =
-      super#signature c (reactComponentSignatureTransform self signature)
 
     method! structure c structure =
       match structure with
