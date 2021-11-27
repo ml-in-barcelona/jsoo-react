@@ -49,7 +49,7 @@ let makeProps
   =
   fun ?name ->
     fun ?key ->
-      fun _ ->
+      fun () ->
         let open Js_of_ocaml.Js.Unsafe in
           obj
             ((([|(Option.map
@@ -68,14 +68,13 @@ let make =
              [((React.string
                   ((("Hello ")[@reason.raw_literal "Hello "]) ^ name))
              [@reason.preserve_braces ])];
-          React.createElement Hello.make
-            (Hello.makeProps ~one:(("1")[@reason.raw_literal "1"])
-               ~children:((React.string
-                             ((("Hello ")[@reason.raw_literal "Hello "]) ^
-                                name))[@reason.preserve_braces ]) ())])
+          Hello.make ~one:(("1")[@reason.raw_literal "1"])
+            ~children:((React.string
+                          ((("Hello ")[@reason.raw_literal "Hello "]) ^ name))
+            [@reason.preserve_braces ]) ()])
       [@reason.preserve_braces ]))
   [@warning "-16"])
-let make =
+let make ?name  ?key  () =
   let Test_reason
     (Props :
       < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
@@ -86,7 +85,7 @@ let make =
                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                    -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
-  Test_reason
+  React.createElement Test_reason (makeProps ?key ?name ())
 let makeProps
   : a:'a ->
       b:'b ->
@@ -101,7 +100,7 @@ let makeProps
   fun ~a ->
     fun ~b ->
       fun ?key ->
-        fun _ ->
+        fun () ->
           let open Js_of_ocaml.Js.Unsafe in
             obj
               ((([|(Option.map
@@ -122,7 +121,7 @@ let make =
             [@reason.preserve_braces ]))
       [@warning "-16"]))
   [@warning "-16"])
-let make =
+let make ~a  ~b  ?key  () =
   let Test_reason
     (Props :
       <
@@ -142,7 +141,7 @@ let make =
               fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
                 (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
             (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
-  Test_reason
+  React.createElement Test_reason (makeProps ?key ~b ~a ())
 module External =
   struct
     let componentProps
@@ -159,7 +158,7 @@ module External =
       fun ~a ->
         fun ~b ->
           fun ?key ->
-            fun _ ->
+            fun () ->
               let open Js_of_ocaml.Js.Unsafe in
                 obj
                   ((([|(Option.map
@@ -197,7 +196,7 @@ module Bar =
       fun ~a ->
         fun ~b ->
           fun ?key ->
-            fun _ ->
+            fun () ->
               let open Js_of_ocaml.Js.Unsafe in
                 obj
                   ((([|(Option.map
@@ -220,7 +219,7 @@ module Bar =
                 [@reason.preserve_braces ]))
           [@warning "-16"]))
       [@warning "-16"])
-    let make =
+    let make ~a  ~b  ?key  () =
       let Test_reason$Bar
         (Props :
           <
@@ -240,7 +239,7 @@ module Bar =
                   fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                     -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
-      Test_reason$Bar
+      React.createElement Test_reason$Bar (makeProps ?key ~b ~a ())
     let componentProps
       : a:'a ->
           b:'b ->
@@ -255,7 +254,7 @@ module Bar =
       fun ~a ->
         fun ~b ->
           fun ?key ->
-            fun _ ->
+            fun () ->
               let open Js_of_ocaml.Js.Unsafe in
                 obj
                   ((([|(Option.map
@@ -279,7 +278,7 @@ module Bar =
                 [@reason.preserve_braces ]))
           [@warning "-16"]))
       [@warning "-16"])
-    let component =
+    let component ~a  ~b  ?key  () =
       let Test_reason$Bar$component
         (Props :
           <
@@ -299,7 +298,8 @@ module Bar =
                   fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                     -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
-      Test_reason$Bar$component
+      React.createElement Test_reason$Bar$component
+        (componentProps ?key ~b ~a ())
   end
 module type X_int  = sig val x : int end
 module Func(M:X_int) =
@@ -319,7 +319,7 @@ module Func(M:X_int) =
       fun ~a ->
         fun ~b ->
           fun ?key ->
-            fun _ ->
+            fun () ->
               let open Js_of_ocaml.Js.Unsafe in
                 obj
                   ((([|(Option.map
@@ -343,7 +343,7 @@ module Func(M:X_int) =
                 [@reason.preserve_braces ]))
           [@warning "-16"]))
       [@warning "-16"])
-    let make =
+    let make ~a  ~b  ?key  () =
       let Test_reason$Func
         (Props :
           <
@@ -363,7 +363,7 @@ module Func(M:X_int) =
                   fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                     -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
-      Test_reason$Func
+      React.createElement Test_reason$Func (makeProps ?key ~b ~a ())
   end
 module ForwardRef =
   struct
@@ -373,7 +373,7 @@ module ForwardRef =
       =
       fun ?key ->
         fun ?ref ->
-          fun _ ->
+          fun () ->
             let open Js_of_ocaml.Js.Unsafe in
               obj
                 ((([|(Option.map (fun raw -> ("ref", (inject raw))) ref);(
@@ -396,11 +396,11 @@ module ForwardRef =
                  [@reason.raw_literal "ForwardRef"]))
             [@reason.preserve_braces ])])
       [@warning "-16"])
-    let make =
+    let make ?key  ?ref  () =
       React.forwardRef
         (let Test_reason$ForwardRef (Props : <  >  Js_of_ocaml.Js.t) theRef =
            make theRef in
-         Test_reason$ForwardRef)
+         React.createElement Test_reason$ForwardRef (makeProps ?ref ?key ()))
   end
 module Memo =
   struct
@@ -412,7 +412,7 @@ module Memo =
       =
       fun ~a ->
         fun ?key ->
-          fun _ ->
+          fun () ->
             let open Js_of_ocaml.Js.Unsafe in
               obj
                 ((([|(Option.map
@@ -431,7 +431,7 @@ module Memo =
               [@reason.preserve_braces ])])
           [@reason.preserve_braces ]))
       [@warning "-16"])
-    let make =
+    let make ~a  ?key  () =
       React.memo
         (let Test_reason$Memo
            (Props :
@@ -445,7 +445,7 @@ module Memo =
                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                        -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                    (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) in
-         Test_reason$Memo)
+         React.createElement Test_reason$Memo (makeProps ?key ~a ()))
   end
 module MemoCustomCompareProps =
   struct
@@ -457,7 +457,7 @@ module MemoCustomCompareProps =
       =
       fun ~a ->
         fun ?key ->
-          fun _ ->
+          fun () ->
             let open Js_of_ocaml.Js.Unsafe in
               obj
                 ((([|(Option.map
@@ -476,7 +476,7 @@ module MemoCustomCompareProps =
               [@reason.preserve_braces ])])
           [@reason.preserve_braces ]))
       [@warning "-16"])
-    let make =
+    let make ~a  ?key  () =
       React.memoCustomCompareProps
         (let Test_reason$MemoCustomCompareProps
            (Props :
@@ -490,8 +490,8 @@ module MemoCustomCompareProps =
                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                        -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                    (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) in
-         Test_reason$MemoCustomCompareProps)
-        (fun prevPros -> fun nextProps -> false)
+         React.createElement Test_reason$MemoCustomCompareProps
+           (makeProps ?key ~a ())) (fun prevPros -> fun nextProps -> false)
   end
 let fragment foo =
   ((React.createElement React.Fragment.make
@@ -506,14 +506,10 @@ let nestedFragment foo bar baz =
     [foo;
     React.createElementVariadic React.Fragment.make
       (React.Fragment.makeProps ~children:React.null ()) [bar; baz]]
-let upper = React.createElement Upper.make (Upper.makeProps ())
-let upperWithProp =
-  React.createElement Upper.make (Upper.makeProps ~count ())
-let upperWithChild foo =
-  React.createElement Upper.make (Upper.makeProps ~children:foo ())
-let upperWithChildren foo bar =
-  React.createElementVariadic Upper.make
-    (Upper.makeProps ~children:React.null ()) [foo; bar]
+let upper = Upper.make ()
+let upperWithProp = Upper.make ~count ()
+let upperWithChild foo = Upper.make ~children:foo ()
+let upperWithChildren foo bar = Upper.make ~children:[foo; bar] ()
 let lower =
   React.Dom.createDOMElementVariadic "lower"
     ~props:(Js_of_ocaml.Js.Unsafe.obj [||]) []
@@ -648,6 +644,4 @@ let lowerWithChildrenComplex2 =
              ((example.code)
              [@reason.preserve_braces ])]))
        [@reason.preserve_braces ])]]
-let nestedElement =
-  React.createElement Foo.Bar.make
-    (Foo.Bar.makeProps ~a:1 ~b:(("1")[@reason.raw_literal "1"]) ())
+let nestedElement = Foo.Bar.make ~a:1 ~b:(("1")[@reason.raw_literal "1"]) ()

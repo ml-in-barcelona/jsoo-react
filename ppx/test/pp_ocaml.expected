@@ -7,7 +7,7 @@ let makeProps
   =
   fun ?name ->
     fun ?key ->
-      fun _ ->
+      fun () ->
         let open Js_of_ocaml.Js.Unsafe in
           obj
             ((([|(Option.map
@@ -22,7 +22,7 @@ let make =
         ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
         [React.string ("Hello " ^ name)])
   [@warning "-16"])
-let make =
+let make ?name  ?key  () =
   let Input_ocaml
     (Props :
       < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
@@ -33,7 +33,7 @@ let make =
                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                    -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
-  Input_ocaml
+  React.createElement Input_ocaml (makeProps ?key ?name ())
 let element =
   React.Dom.createDOMElementVariadic "div"
     ~props:(Js_of_ocaml.Js.Unsafe.obj

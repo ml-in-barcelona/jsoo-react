@@ -452,9 +452,11 @@ let rec makeArgsForMakePropsType list args =
   | [] ->
       args
 
+let makeMakePropsFnName fnName = fnName ^ "Props"
+
 (* Build an AST node for the Js object representing props for a component *)
 let makePropsValue fnName loc namedArgListWithKeyAndRef propsType =
-  let propsName = fnName ^ "Props" in
+  let propsName = makeMakePropsFnName fnName in
   Val.mk ~loc {txt= propsName; loc}
     (makeArgsForMakePropsType namedArgListWithKeyAndRef
        (Typ.arrow Nolabel
@@ -587,8 +589,6 @@ let makeJsObj ~loc namedArgListWithKeyAndRef =
       |> List.filter_map (fun x -> x)
       |> Array.of_list )]
 
-let makeMakePropsFnName fnName = fnName ^ "Props"
-
 let makePropsValueBinding fnName loc namedArgListWithKeyAndRef propsType =
   let core_type =
     makeArgsForMakePropsType namedArgListWithKeyAndRef
@@ -606,7 +606,7 @@ let makePropsValueBinding fnName loc namedArgListWithKeyAndRef propsType =
        (Pexp_constraint
           ( makeFunsForMakePropsBody namedArgListWithKeyAndRef
               [%expr
-                fun _ ->
+                fun () ->
                   let open Js_of_ocaml.Js.Unsafe in
                   [%e makeJsObj ~loc namedArgListWithKeyAndRef]]
           , core_type ) ) )
@@ -1011,13 +1011,57 @@ let jsxMapper () =
               in
               spelunkForFunExpression expression
             in
+            let namedArgList, forwardRef =
+              recursivelyTransformNamedArgsForMake mapper ctxt
+                (modifiedBindingOld binding)
+                []
+            in
+            let namedArgListWithKeyAndRef =
+              ( optional "key"
+              , None
+              , Pat.var {txt= "key"; loc= emptyLoc}
+              , "key"
+              , emptyLoc
+              , Some (keyType emptyLoc) )
+              :: namedArgList
+            in
+            let namedArgListWithKeyAndRef =
+              match forwardRef with
+              | Some _ ->
+                  ( optional "ref"
+                  , None
+                  , Pat.var {txt= "ref"; loc= emptyLoc}
+                  , "ref"
+                  , emptyLoc
+                  , Some (refType emptyLoc) )
+                  :: namedArgListWithKeyAndRef
+              | None ->
+                  namedArgListWithKeyAndRef
+            in
+            let namedArgListWithKeyAndRefForNew =
+              match forwardRef with
+              | Some txt ->
+                  namedArgList
+                  @ [ ( nolabel
+                      , None
+                      , Pat.var {txt; loc= emptyLoc}
+                      , txt
+                      , emptyLoc
+                      , None ) ]
+              | None ->
+                  namedArgList
+            in
             let modifiedBinding binding =
               let hasApplication = ref false in
               let wrapExpressionWithBinding expressionFn expression =
                 Vb.mk ~loc:bindingLoc
                   ~attrs:(List.filter otherAttrsPure binding.pvb_attributes)
                   (Pat.var ~loc:bindingPatLoc {loc= bindingPatLoc; txt= fnName})
-                  (expressionFn expression)
+                  (makeFunsForMakePropsBody
+                     (List.map pluckLabelDefaultLocType
+                        namedArgListWithKeyAndRef )
+                     (let loc = emptyLoc in
+                      [%expr fun () -> [%e expressionFn expression]] ) )
               in
               let expression = binding.pvb_expr in
               let unerasableIgnoreExp exp =
@@ -1144,47 +1188,6 @@ let jsxMapper () =
                   (emptyLoc, None)
             in
             let props = getPropsAttr payload in
-            (* do stuff here! *)
-            let namedArgList, forwardRef =
-              recursivelyTransformNamedArgsForMake mapper ctxt
-                (modifiedBindingOld binding)
-                []
-            in
-            let namedArgListWithKeyAndRef =
-              ( optional "key"
-              , None
-              , Pat.var {txt= "key"; loc= emptyLoc}
-              , "key"
-              , emptyLoc
-              , Some (keyType emptyLoc) )
-              :: namedArgList
-            in
-            let namedArgListWithKeyAndRef =
-              match forwardRef with
-              | Some _ ->
-                  ( optional "ref"
-                  , None
-                  , Pat.var {txt= "ref"; loc= emptyLoc}
-                  , "ref"
-                  , emptyLoc
-                  , Some (refType emptyLoc) )
-                  :: namedArgListWithKeyAndRef
-              | None ->
-                  namedArgListWithKeyAndRef
-            in
-            let namedArgListWithKeyAndRefForNew =
-              match forwardRef with
-              | Some txt ->
-                  namedArgList
-                  @ [ ( nolabel
-                      , None
-                      , Pat.var {txt; loc= emptyLoc}
-                      , txt
-                      , emptyLoc
-                      , None ) ]
-              | None ->
-                  namedArgList
-            in
             let pluckArg (label, _, _, alias, loc, _) =
               let labelString =
                 match label with
@@ -1273,15 +1276,17 @@ let jsxMapper () =
             let fullExpression =
               match fullModuleName with
               | "" ->
+                  (* how can this happen? *)
                   fullExpression
               | txt ->
                   Exp.let_ Nonrecursive
                     [ Vb.mk ~loc:emptyLoc
                         (Pat.var ~loc:emptyLoc {loc= emptyLoc; txt})
                         fullExpression ]
-                    (Exp.apply ~loc
-                       (Exp.ident ~loc
-                          {loc; txt= Ldot (Lident "React", "createElement")} )
+                    (Exp.apply ~loc:emptyLoc
+                       (Exp.ident ~loc:emptyLoc
+                          { loc= emptyLoc
+                          ; txt= Ldot (Lident "React", "createElement") } )
                        [ ( nolabel
                          , Exp.ident ~loc:emptyLoc
                              {loc= emptyLoc; txt= Lident txt} )
@@ -1289,7 +1294,20 @@ let jsxMapper () =
                          , Exp.apply ~loc
                              (Exp.ident ~loc
                                 {loc; txt= Lident (makeMakePropsFnName fnName)} )
-                             [] ) ] )
+                             ( List.map
+                                 (fun ( arg
+                                      , _default
+                                      , _pattern
+                                      , alias
+                                      , _pattern_loc
+                                      , _type_ ) ->
+                                   ( arg
+                                   , Exp.ident ~loc:emptyLoc
+                                       {loc= emptyLoc; txt= Lident alias} ) )
+                                 namedArgListWithKeyAndRef
+                             @ [ ( Nolabel
+                                 , Exp.construct {loc; txt= Lident "()"} None )
+                               ] ) ) ] )
             in
             let bindings, newBinding =
               match recFlag with
