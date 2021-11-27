@@ -1,3 +1,39 @@
+let makeProps
+  : ?name:'name ->
+      ?key:string ->
+        unit ->
+          < name: 'name option Js_of_ocaml.Js.readonly_prop   > 
+            Js_of_ocaml.Js.t
+  =
+  fun ?name ->
+    fun ?key ->
+      fun _ ->
+        let open Js_of_ocaml.Js.Unsafe in
+          obj
+            ((([|(Option.map
+                    (fun raw -> ("key", (inject (Js_of_ocaml.Js.string raw))))
+                    key);(Option.map (fun raw -> ("name", (inject raw))) name)|]
+                 |> Array.to_list)
+                |> (List.filter_map (fun x -> x)))
+               |> Array.of_list)
+let make =
+  ((fun ?(name= "") ->
+      React.Dom.createDOMElementVariadic "div"
+        ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+        [React.string ("Hello " ^ name)])
+  [@warning "-16"])
+let make =
+  let Input_ocaml
+    (Props :
+      < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+    =
+    make
+      ?name:(fun (type res) -> fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
+               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
+  Input_ocaml
 let element =
   React.Dom.createDOMElementVariadic "div"
     ~props:(Js_of_ocaml.Js.Unsafe.obj
