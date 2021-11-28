@@ -294,22 +294,7 @@ val createFragment : element list -> element
 module Context : sig
   type 'props t
 
-  val makeProps :
-       value:'props
-    -> children:element
-    -> unit
-    -> < value: 'props ; children: element Js_of_ocaml.Js.readonly_prop >
-       Js_of_ocaml.Js.t
-    [@@js.custom
-      let makeProps ~value ~children () =
-        Js_of_ocaml.Js.Unsafe.(
-          obj [|("value", inject value); ("children", inject children)|])]
-
-  val provider :
-       'props t
-    -> < value: 'props ; children: element Js_of_ocaml.Js.readonly_prop >
-       Js_of_ocaml.Js.t
-       component
+  val provider : 'props t -> value:'props -> children:element -> unit -> element
     [@@js.custom
       external of_ojs :
            Ojs.t
@@ -319,7 +304,14 @@ module Context : sig
 
       val providerInternal : 'props t -> Ojs.t [@@js.get "Provider"]
 
-      let provider c = of_ojs (providerInternal c)]
+      let makeProps ~value ~children () =
+        Js_of_ocaml.Js.Unsafe.(
+          obj [|("value", inject value); ("children", inject children)|])
+
+      let provider c ~value ~children () =
+        createElement
+          (of_ojs (providerInternal c))
+          (makeProps ~value ~children ())]
 end
 
 val createContext : 'a -> 'a Context.t [@@js.global "React.createContext"]
