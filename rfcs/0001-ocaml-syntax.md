@@ -101,7 +101,7 @@ The proposal is split between four different parts:
 
 - **Current input**
 
-  The current way to write component elements also relies on Reason ppx, which requires `[@JSX]:
+  The current way to write component elements also relies on Reason ppx, which requires `[@JSX]`:
 
   ```ocaml
   Greeting.createElement ~name:"John" ~children:[] () [@JSX]
