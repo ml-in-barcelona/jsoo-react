@@ -360,9 +360,11 @@ module ForwardRef =
                  [@reason.raw_literal "ForwardRef"]))
             [@reason.preserve_braces ])])
       [@warning "-16"])
-    let make (Props : <  >  Js_of_ocaml.Js.t) theRef = make theRef
+    let make =
+      React.forwardRef
+        (fun (Props : <  >  Js_of_ocaml.Js.t) -> fun theRef -> make theRef)
     let make ?key  ?ref  () =
-      React.createElement (React.forwardRef make) (makeProps ?ref ?key ())
+      React.createElement make (makeProps ?ref ?key ())
   end
 module Memo =
   struct
@@ -393,16 +395,21 @@ module Memo =
               [@reason.preserve_braces ])])
           [@reason.preserve_braces ]))
       [@warning "-16"])
-    let make
-      (Props : < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t) =
-      make
-        ~a:(fun (type res) -> fun (type a0) ->
-              fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a))
-    let make ~a  ?key  () =
-      React.createElement (React.memo make) (makeProps ?key ~a ())
+    let make =
+      React.memo
+        (fun
+           (Props :
+             < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+           ->
+           make
+             ~a:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)))
+    let make ~a  ?key  () = React.createElement make (makeProps ?key ~a ())
   end
 module MemoCustomCompareProps =
   struct
@@ -433,18 +440,22 @@ module MemoCustomCompareProps =
               [@reason.preserve_braces ])])
           [@reason.preserve_braces ]))
       [@warning "-16"])
-    let make
-      (Props : < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t) =
-      make
-        ~a:(fun (type res) -> fun (type a0) ->
-              fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a))
-    let make ~a  ?key  () =
-      React.createElement
-        (React.memoCustomCompareProps make
-           (fun prevPros -> fun nextProps -> false)) (makeProps ?key ~a ())
+    let make =
+      React.memoCustomCompareProps
+        (fun
+           (Props :
+             < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+           ->
+           make
+             ~a:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)))
+        (fun prevPros -> fun nextProps -> false)
+    let make ~a  ?key  () = React.createElement make (makeProps ?key ~a ())
   end
 let fragment foo = ((React.Fragment.make ~children:foo ())[@bla ])
 let polyChildrenFragment foo bar =

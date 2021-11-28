@@ -984,40 +984,37 @@ let jsxMapper () =
               | None ->
                   namedArgList
             in
+            let outerMake expression =
+              Vb.mk ~loc:bindingLoc
+                ~attrs:(List.filter otherAttrsPure binding.pvb_attributes)
+                (Pat.var ~loc:bindingPatLoc {loc= bindingPatLoc; txt= fnName})
+                (makeFunsForMakePropsBody
+                   (List.map pluckLabelDefaultLocType namedArgListWithKeyAndRef)
+                   (let loc = emptyLoc in
+                    [%expr
+                      fun () ->
+                        React.createElement [%e expression]
+                          [%e
+                            Exp.apply ~loc
+                              (Exp.ident ~loc
+                                 {loc; txt= Lident (makeMakePropsFnName fnName)} )
+                              ( List.map
+                                  (fun ( arg
+                                       , _default
+                                       , _pattern
+                                       , alias
+                                       , _pattern_loc
+                                       , _type_ ) ->
+                                    ( arg
+                                    , Exp.ident ~loc:emptyLoc
+                                        {loc= emptyLoc; txt= Lident alias} ) )
+                                  namedArgListWithKeyAndRef
+                              @ [ ( Nolabel
+                                  , Exp.construct {loc; txt= Lident "()"} None
+                                  ) ] )]] ) )
+            in
             let modifiedBinding binding =
               let hasApplication = ref false in
-              let wrapExpressionWithBinding expressionFn expression =
-                Vb.mk ~loc:bindingLoc
-                  ~attrs:(List.filter otherAttrsPure binding.pvb_attributes)
-                  (Pat.var ~loc:bindingPatLoc {loc= bindingPatLoc; txt= fnName})
-                  (makeFunsForMakePropsBody
-                     (List.map pluckLabelDefaultLocType
-                        namedArgListWithKeyAndRef )
-                     (let loc = emptyLoc in
-                      [%expr
-                        fun () ->
-                          React.createElement [%e expressionFn expression]
-                            [%e
-                              Exp.apply ~loc
-                                (Exp.ident ~loc
-                                   { loc
-                                   ; txt= Lident (makeMakePropsFnName fnName) } )
-                                ( List.map
-                                    (fun ( arg
-                                         , _default
-                                         , _pattern
-                                         , alias
-                                         , _pattern_loc
-                                         , _type_ ) ->
-                                      ( arg
-                                      , Exp.ident ~loc:emptyLoc
-                                          {loc= emptyLoc; txt= Lident alias} )
-                                      )
-                                    namedArgListWithKeyAndRef
-                                @ [ ( Nolabel
-                                    , Exp.construct {loc; txt= Lident "()"} None
-                                    ) ] )]] ) )
-              in
               let expression = binding.pvb_expr in
               let unerasableIgnoreExp exp =
                 { exp with
@@ -1128,9 +1125,9 @@ let jsxMapper () =
               let wrapExpression, hasUnit, expression =
                 spelunkForFunExpression expression
               in
-              (wrapExpressionWithBinding wrapExpression, hasUnit, expression)
+              (wrapExpression, hasUnit, expression)
             in
-            let bindingWrapper, hasUnit, expression = modifiedBinding binding in
+            let wrapExpression, hasUnit, expression = modifiedBinding binding in
             let reactComponentAttribute =
               try Some (List.find hasAttr binding.pvb_attributes)
               with Not_found -> None
@@ -1232,15 +1229,15 @@ let jsxMapper () =
               match fullModuleName with
               | "" ->
                   (* how can this happen? *)
-                  fullExpression
+                  wrapExpression fullExpression
               | _txt ->
-                  fullExpression
+                  wrapExpression fullExpression
             in
             let innerMakeIdent = Exp.ident ~loc {loc; txt= Lident fnName} in
             let bindings, newBinding =
               match recFlag with
               | Recursive ->
-                  ( [ bindingWrapper
+                  ( [ outerMake
                         (Exp.let_ ~loc:emptyLoc Recursive
                            [ makeNewBinding binding expression internalFnName
                            ; Vb.mk
@@ -1250,7 +1247,7 @@ let jsxMapper () =
                   , None )
               | Nonrecursive ->
                   ( [{binding with pvb_expr= expression; pvb_attributes= []}]
-                  , Some (bindingWrapper innerMakeIdent) )
+                  , Some (outerMake innerMakeIdent) )
             in
             ( Some makePropsLet
             , Some (Vb.mk (Pat.var {loc= emptyLoc; txt= fnName}) fullExpression)
@@ -1317,10 +1314,8 @@ let jsxMapper () =
           raise
             (Invalid_argument
                "JSX: `createElement` should be preceeded by a module name." )
-      | { loc
-        ; txt= Ldot (Ldot (Lident "React", "Fragment"), "make") as modulePath }
       (* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) *)
-      | {loc; txt= Ldot (modulePath, ("createElement" | "make"))} ->
+      | {loc; txt= Ldot (modulePath, "createElement")} ->
           let _children_expr, args =
             uppercase_element_args ~is_user_element:true ~loc callArguments
               mapper ctxt
