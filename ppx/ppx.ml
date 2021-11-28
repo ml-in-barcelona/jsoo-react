@@ -1233,12 +1233,8 @@ let jsxMapper () =
               | "" ->
                   (* how can this happen? *)
                   fullExpression
-              | txt ->
-                  Exp.let_ Nonrecursive
-                    [ Vb.mk ~loc:emptyLoc
-                        (Pat.var ~loc:emptyLoc {loc= emptyLoc; txt})
-                        fullExpression ]
-                    (Exp.ident ~loc:emptyLoc {loc= emptyLoc; txt= Lident txt})
+              | _txt ->
+                  fullExpression
             in
             let bindings, newBinding =
               match recFlag with
@@ -1255,18 +1251,28 @@ let jsxMapper () =
                   ( [{binding with pvb_expr= expression; pvb_attributes= []}]
                   , Some (bindingWrapper fullExpression) )
             in
-            (Some makePropsLet, bindings, newBinding)
-          else (None, [binding], None)
+            ( Some makePropsLet
+            , Some (Vb.mk (Pat.var {loc= emptyLoc; txt= fnName}) fullExpression)
+            , bindings
+            , newBinding )
+          else (None, None, [binding], None)
         in
         let structuresAndBinding = List.map mapBinding valueBindings in
-        let otherStructures (extern, binding, newBinding)
-            (externs, bindings, newBindings) =
+        let otherStructures (extern, innerMake, binding, newBinding)
+            (externs, innerMakes, bindings, newBindings) =
           let externs =
             match extern with
             | Some extern ->
                 extern :: externs
             | None ->
                 externs
+          in
+          let innerMakes =
+            match innerMake with
+            | Some innerMake ->
+                innerMake :: innerMakes
+            | None ->
+                innerMakes
           in
           let newBindings =
             match newBinding with
@@ -1275,13 +1281,19 @@ let jsxMapper () =
             | None ->
                 newBindings
           in
-          (externs, binding @ bindings, newBindings)
+          (externs, innerMakes, binding @ bindings, newBindings)
         in
-        let externs, bindings, newBindings =
-          List.fold_right otherStructures structuresAndBinding ([], [], [])
+        let externs, innerMakes, bindings, newBindings =
+          List.fold_right otherStructures structuresAndBinding ([], [], [], [])
         in
         externs
         @ [{pstr_loc; pstr_desc= Pstr_value (recFlag, bindings)}]
+        @ ( match innerMakes with
+          | [] ->
+              []
+          | innerMakes ->
+              [{pstr_loc= emptyLoc; pstr_desc= Pstr_value (recFlag, innerMakes)}]
+          )
         @ ( match newBindings with
           | [] ->
               []
