@@ -339,23 +339,7 @@ module Children : sig
 end
 
 module Fragment : sig
-  val makeProps :
-       children:element
-    -> ?key:Js_of_ocaml.Js.js_string Js_of_ocaml.Js.t
-    -> unit
-    -> < children: element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
-    [@@js.custom
-      let makeProps ~children ?key () =
-        match key with
-        | Some k ->
-            Js_of_ocaml.Js.Unsafe.(
-              obj [|("key", inject k); ("children", inject children)|])
-        | None ->
-            Js_of_ocaml.Js.Unsafe.(obj [|("children", inject children)|])]
-
-  val make :
-    < children: element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
-    component
+  val make : children:element list -> ?key:string -> unit -> element
     [@@js.custom
       external to_component :
            Ojs.t
@@ -364,7 +348,18 @@ module Fragment : sig
 
       val makeInternal : Ojs.t [@@js.global "React.Fragment"]
 
-      let make = to_component makeInternal]
+      let makeProps ~children ?key () =
+        match key with
+        | Some k ->
+            Js_of_ocaml.Js.Unsafe.(
+              obj [|("key", inject k); ("children", inject children)|])
+        | None ->
+            Js_of_ocaml.Js.Unsafe.(obj [|("children", inject children)|])
+
+      let make ~children ?key () =
+        createElement
+          (to_component makeInternal)
+          (makeProps ~children:(list children) ?key ())]
 end
 
 val memo : 'props component -> 'props component [@@js.global "React.memo"]

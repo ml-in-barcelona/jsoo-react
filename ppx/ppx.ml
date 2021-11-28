@@ -636,54 +636,6 @@ let uppercase_element_args ~is_user_element ~loc callArguments mapper ctxt =
 
 (* TODO: some line number might still be wrong *)
 let jsxMapper () =
-  let transformFragmentCall modulePath mapper ctxt loc attrs callArguments =
-    let children_expr, args =
-      uppercase_element_args ~is_user_element:false ~loc callArguments mapper
-        ctxt
-    in
-    let isCap str =
-      let first = String.sub str 0 1 in
-      let capped = String.uppercase_ascii first in
-      first = capped
-    in
-    let ident =
-      match modulePath with
-      | Lident _ ->
-          Ldot (modulePath, "make")
-      | Ldot (_modulePath, value) as fullPath when isCap value ->
-          Ldot (fullPath, "make")
-      | modulePath ->
-          modulePath
-    in
-    let propsIdent =
-      match ident with
-      | Lident path ->
-          Lident (path ^ "Props")
-      | Ldot (ident, path) ->
-          Ldot (ident, path ^ "Props")
-      | _ ->
-          raise
-            (Invalid_argument
-               "JSX name can't be the result of function applications" )
-    in
-    let props =
-      Exp.apply ~attrs ~loc (Exp.ident ~loc {loc; txt= propsIdent}) args
-    in
-    (* handle key, ref, children *)
-    (* React.createElement(Component.make, props, ...children) *)
-    match children_expr with
-    | Exact _ | ListLiteral [%expr []] ->
-        Exp.apply ~loc ~attrs
-          (Exp.ident ~loc {loc; txt= Ldot (Lident "React", "createElement")})
-          [(nolabel, Exp.ident ~loc {txt= ident; loc}); (nolabel, props)]
-    | ListLiteral children ->
-        Exp.apply ~loc ~attrs
-          (Exp.ident ~loc
-             {loc; txt= Ldot (Lident "React", "createElementVariadic")} )
-          [ (nolabel, Exp.ident ~loc {txt= ident; loc})
-          ; (nolabel, props)
-          ; (nolabel, children) ]
-  in
   let transformLowercaseCall mapper ctxt loc attrs callArguments id =
     let children, nonChildrenProps = extractChildren ~loc callArguments in
     let componentNameExpr = constantString ~loc id in
@@ -1354,8 +1306,6 @@ let jsxMapper () =
                "JSX: `createElement` should be preceeded by a module name." )
       | { loc
         ; txt= Ldot (Ldot (Lident "React", "Fragment"), "make") as modulePath }
-        ->
-          transformFragmentCall modulePath mapper ctxt loc attrs callArguments
       (* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) *)
       | {loc; txt= Ldot (modulePath, ("createElement" | "make"))} ->
           let _children_expr, args =
@@ -1454,7 +1404,7 @@ let jsxMapper () =
           | [], _ ->
               super#expression c expression
           | _, nonJSXAttributes ->
-              let callExpression = [%expr React.Fragment.make] in
+              let callExpression = [%expr React.Fragment.createElement] in
               transformJsxCall self c callExpression
                 [(Labelled "children", listItems)]
                 nonJSXAttributes pexp_loc pexp_loc_stack )
