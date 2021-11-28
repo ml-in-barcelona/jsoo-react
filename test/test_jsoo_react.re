@@ -623,7 +623,7 @@ let testChildrenMapWithIndex = () => {
     [@react.component]
     let make = (~children, ()) => {
       <div>
-        {React.Children.mapWithIndex(children, (element, index) => {
+        {React.Children.mapWithIndex(React.list(children), (element, index) => {
            React.cloneElement(
              element,
              Js_of_ocaml.Js.Unsafe.(

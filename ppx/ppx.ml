@@ -1236,6 +1236,7 @@ let jsxMapper () =
               | _txt ->
                   fullExpression
             in
+            let innerMakeIdent = Exp.ident ~loc {loc; txt= Lident fnName} in
             let bindings, newBinding =
               match recFlag with
               | Recursive ->
@@ -1244,12 +1245,12 @@ let jsxMapper () =
                            [ makeNewBinding binding expression internalFnName
                            ; Vb.mk
                                (Pat.var {loc= emptyLoc; txt= fnName})
-                               fullExpression ]
+                               innerMakeIdent ]
                            (Exp.ident {loc= emptyLoc; txt= Lident fnName}) ) ]
                   , None )
               | Nonrecursive ->
                   ( [{binding with pvb_expr= expression; pvb_attributes= []}]
-                  , Some (bindingWrapper fullExpression) )
+                  , Some (bindingWrapper innerMakeIdent) )
             in
             ( Some makePropsLet
             , Some (Vb.mk (Pat.var {loc= emptyLoc; txt= fnName}) fullExpression)

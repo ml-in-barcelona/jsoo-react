@@ -22,21 +22,17 @@ let make =
         ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
         [React.string ("Hello " ^ name)])
   [@warning "-16"])
-let make ?name  ?key  () =
-  React.createElement
-    (let Input_ocaml
-       (Props :
-         < name: 'name option Js_of_ocaml.Js.readonly_prop   > 
-           Js_of_ocaml.Js.t)
-       =
-       make
-         ?name:(fun (type res) -> fun (type a0) ->
-                  fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                    fun
-                      (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                      -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
-                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
-     Input_ocaml) (makeProps ?key ?name ())
+let make
+  (Props :
+    < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+  =
+  make
+    ?name:(fun (type res) -> fun (type a0) ->
+             fun (a0 : a0 Js_of_ocaml.Js.t) ->
+               fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
+                 (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
+             (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name))
+let make ?name  ?key  () = React.createElement make (makeProps ?key ?name ())
 let element =
   React.Dom.createDOMElementVariadic "div"
     ~props:(Js_of_ocaml.Js.Unsafe.obj
