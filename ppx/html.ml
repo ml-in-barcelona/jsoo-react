@@ -22,558 +22,1858 @@ type event = {type_: eventType; name: string}
 
 type prop = Attribute of attribute | Event of event
 
-let propTypeList =
-  [ Attribute {type_= String; name= "about"; htmlName= "about"}
-  ; Attribute {type_= String; name= "about"; htmlName= "about"}
-  ; Attribute {type_= String; name= "accentHeight"; htmlName= "accentHeight"}
-  ; Attribute {type_= String; name= "accept"; htmlName= "accept"}
-  ; Attribute {type_= String; name= "acceptCharset"; htmlName= "acceptCharset"}
-  ; Attribute {type_= String; name= "accessKey"; htmlName= "accessKey"}
-  ; Attribute {type_= String; name= "accumulate"; htmlName= "accumulate"}
-  ; Attribute {type_= String; name= "action"; htmlName= "action"}
-  ; Attribute {type_= String; name= "additive"; htmlName= "additive"}
-  ; Attribute
-      {type_= String; name= "alignmentBaseline"; htmlName= "alignmentBaseline"}
-  ; Attribute {type_= Bool; name= "allowFullScreen"; htmlName= "allowFullScreen"}
-  ; Attribute {type_= String; name= "allowReorder"; htmlName= "allowReorder"}
-  ; Attribute {type_= String; name= "alphabetic"; htmlName= "alphabetic"}
-  ; Attribute {type_= String; name= "alt"; htmlName= "alt"}
-  ; Attribute {type_= String; name= "amplitude"; htmlName= "amplitude"}
-  ; Attribute {type_= String; name= "arabicForm"; htmlName= "arabicForm"}
-  ; Attribute
-      { type_= String
-      ; name= "ariaActivedescendant"
-      ; htmlName= "aria-activedescendant" }
-  ; Attribute {type_= Bool; name= "ariaAtomic"; htmlName= "aria-atomic"}
-  ; Attribute {type_= Bool; name= "ariaBusy"; htmlName= "aria-busy"}
-  ; Attribute {type_= Int; name= "ariaColcount"; htmlName= "aria-colcount"}
-  ; Attribute {type_= Int; name= "ariaColindex"; htmlName= "aria-colindex"}
-  ; Attribute {type_= Int; name= "ariaColspan"; htmlName= "aria-colspan"}
-  ; Attribute {type_= String; name= "ariaControls"; htmlName= "aria-controls"}
-  ; Attribute
-      {type_= String; name= "ariaDescribedby"; htmlName= "aria-describedby"}
-  ; Attribute {type_= String; name= "ariaDetails"; htmlName= "aria-details"}
-  ; Attribute {type_= Bool; name= "ariaDisabled"; htmlName= "aria-disabled"}
-  ; Attribute
-      {type_= String; name= "ariaErrormessage"; htmlName= "aria-errormessage"}
-  ; Attribute {type_= Bool; name= "ariaExpanded"; htmlName= "aria-expanded"}
-  ; Attribute {type_= String; name= "ariaFlowto"; htmlName= "aria-flowto"}
-  ; Attribute {type_= Bool; name= "ariaGrabbed"; htmlName= "aria-grabbed"}
-  ; Attribute {type_= Bool; name= "ariaHidden"; htmlName= "aria-hidden"}
-  ; Attribute
-      {type_= String; name= "ariaKeyshortcuts"; htmlName= "aria-keyshortcuts"}
-  ; Attribute {type_= String; name= "ariaLabel"; htmlName= "aria-label"}
-  ; Attribute
-      {type_= String; name= "ariaLabelledby"; htmlName= "aria-labelledby"}
-  ; Attribute {type_= Int; name= "ariaLevel"; htmlName= "aria-level"}
-  ; Attribute {type_= Bool; name= "ariaModal"; htmlName= "aria-modal"}
-  ; Attribute {type_= Bool; name= "ariaMultiline"; htmlName= "aria-multiline"}
-  ; Attribute
-      { type_= Bool
-      ; name= "ariaMultiselectable"
-      ; htmlName= "aria-multiselectable" }
-  ; Attribute {type_= String; name= "ariaOwns"; htmlName= "aria-owns"}
-  ; Attribute
-      {type_= String; name= "ariaPlaceholder"; htmlName= "aria-placeholder"}
-  ; Attribute {type_= Int; name= "ariaPosinset"; htmlName= "aria-posinset"}
-  ; Attribute {type_= Bool; name= "ariaReadonly"; htmlName= "aria-readonly"}
-  ; Attribute {type_= String; name= "ariaRelevant"; htmlName= "aria-relevant"}
-  ; Attribute {type_= Bool; name= "ariaRequired"; htmlName= "aria-required"}
-  ; Attribute
-      { type_= String
-      ; name= "ariaRoledescription"
-      ; htmlName= "aria-roledescription" }
-  ; Attribute {type_= Int; name= "ariaRowcount"; htmlName= "aria-rowcount"}
-  ; Attribute {type_= Int; name= "ariaRowindex"; htmlName= "aria-rowindex"}
-  ; Attribute {type_= Int; name= "ariaRowspan"; htmlName= "aria-rowspan"}
-  ; Attribute {type_= Bool; name= "ariaSelected"; htmlName= "aria-selected"}
-  ; Attribute {type_= Int; name= "ariaSetsize"; htmlName= "aria-setsize"}
-  ; Attribute {type_= String; name= "ariaSort"; htmlName= "aria-sort"}
-  ; Attribute {type_= Float; name= "ariaValuemax"; htmlName= "aria-valuemax"}
-  ; Attribute {type_= Float; name= "ariaValuemin"; htmlName= "aria-valuemin"}
-  ; Attribute {type_= Float; name= "ariaValuenow"; htmlName= "aria-valuenow"}
-  ; Attribute {type_= String; name= "ariaValuetext"; htmlName= "aria-valuetext"}
-  ; Attribute {type_= String; name= "ascent"; htmlName= "ascent"}
-  ; Attribute {type_= Bool; name= "async"; htmlName= "async"}
-  ; Attribute {type_= String; name= "attributeName"; htmlName= "attributeName"}
-  ; Attribute {type_= String; name= "attributeType"; htmlName= "attributeType"}
-  ; Attribute {type_= String; name= "autoComplete"; htmlName= "autoComplete"}
-  ; Attribute {type_= Bool; name= "autoFocus"; htmlName= "autoFocus"}
-  ; Attribute {type_= Bool; name= "autoPlay"; htmlName= "autoPlay"}
-  ; Attribute {type_= String; name= "autoReverse"; htmlName= "autoReverse"}
-  ; Attribute {type_= String; name= "azimuth"; htmlName= "azimuth"}
-  ; Attribute {type_= String; name= "baseFrequency"; htmlName= "baseFrequency"}
-  ; Attribute {type_= String; name= "baselineShift"; htmlName= "baselineShift"}
-  ; Attribute {type_= String; name= "baseProfile"; htmlName= "baseProfile"}
-  ; Attribute {type_= String; name= "bbox"; htmlName= "bbox"}
-  ; Attribute {type_= String; name= "begin_"; htmlName= "begin_"}
-  ; Attribute {type_= String; name= "bias"; htmlName= "bias"}
-  ; Attribute {type_= String; name= "by"; htmlName= "by"}
-  ; Attribute {type_= String; name= "calcMode"; htmlName= "calcMode"}
-  ; Attribute {type_= String; name= "capHeight"; htmlName= "capHeight"}
-  ; Attribute {type_= String; name= "challenge"; htmlName= "challenge"}
-  ; Attribute {type_= String; name= "charSet"; htmlName= "charSet"}
-  ; Attribute {type_= Bool; name= "checked"; htmlName= "checked"}
-  ; Attribute {type_= String; name= "cite"; htmlName= "cite"}
-  ; Attribute {type_= String; name= "className"; htmlName= "className"}
-  ; Attribute {type_= String; name= "clip"; htmlName= "clip"}
-  ; Attribute {type_= String; name= "clipPath"; htmlName= "clipPath"}
-  ; Attribute {type_= String; name= "clipPathUnits"; htmlName= "clipPathUnits"}
-  ; Attribute {type_= String; name= "clipRule"; htmlName= "clipRule"}
-  ; Attribute
-      {type_= String; name= "colorInterpolation"; htmlName= "colorInterpolation"}
-  ; Attribute
-      { type_= String
-      ; name= "colorInterpolationFilters"
-      ; htmlName= "colorInterpolationFilters" }
-  ; Attribute {type_= String; name= "colorProfile"; htmlName= "colorProfile"}
-  ; Attribute {type_= String; name= "colorRendering"; htmlName= "colorRendering"}
-  ; Attribute {type_= Int; name= "cols"; htmlName= "cols"}
-  ; Attribute {type_= Int; name= "colSpan"; htmlName= "colSpan"}
-  ; Attribute {type_= String; name= "content"; htmlName= "content"}
-  ; Attribute {type_= Bool; name= "contentEditable"; htmlName= "contentEditable"}
-  ; Attribute
-      {type_= String; name= "contentScriptType"; htmlName= "contentScriptType"}
-  ; Attribute
-      {type_= String; name= "contentStyleType"; htmlName= "contentStyleType"}
-  ; Attribute {type_= String; name= "contextMenu"; htmlName= "contextMenu"}
-  ; Attribute {type_= Bool; name= "controls"; htmlName= "controls"}
-  ; Attribute {type_= String; name= "coords"; htmlName= "coords"}
-  ; Attribute {type_= Bool; name= "crossorigin"; htmlName= "crossorigin"}
-  ; Attribute {type_= String; name= "cursor"; htmlName= "cursor"}
-  ; Attribute {type_= String; name= "cx"; htmlName= "cx"}
-  ; Attribute {type_= String; name= "cy"; htmlName= "cy"}
-  ; Attribute {type_= String; name= "d"; htmlName= "d"}
-  ; Attribute {type_= String; name= "data"; htmlName= "data"}
-  ; Attribute {type_= String; name= "datatype"; htmlName= "datatype"}
-  ; Attribute {type_= String; name= "dateTime"; htmlName= "dateTime"}
-  ; Attribute
-      { type_= InnerHtml
-      ; name= "dangerouslySetInnerHTML"
-      ; htmlName= "dangerouslySetInnerHTML" }
-  ; Attribute {type_= String; name= "decelerate"; htmlName= "decelerate"}
-  ; Attribute {type_= Bool; name= "default"; htmlName= "default"}
-  ; Attribute {type_= Bool; name= "defaultChecked"; htmlName= "defaultChecked"}
-  ; Attribute {type_= String; name= "defaultValue"; htmlName= "defaultValue"}
-  ; Attribute {type_= Bool; name= "defer"; htmlName= "defer"}
-  ; Attribute {type_= String; name= "descent"; htmlName= "descent"}
-  ; Attribute
-      {type_= String; name= "diffuseConstant"; htmlName= "diffuseConstant"}
-  ; Attribute {type_= String; name= "dir"; htmlName= "dir"}
-  ; Attribute {type_= String; name= "direction"; htmlName= "direction"}
-  ; Attribute {type_= Bool; name= "disabled"; htmlName= "disabled"}
-  ; Attribute {type_= String; name= "display"; htmlName= "display"}
-  ; Attribute {type_= String; name= "divisor"; htmlName= "divisor"}
-  ; Attribute
-      {type_= String; name= "dominantBaseline"; htmlName= "dominantBaseline"}
-  ; Attribute {type_= String; name= "download"; htmlName= "download"}
-  ; Attribute {type_= Bool; name= "draggable"; htmlName= "draggable"}
-  ; Attribute {type_= String; name= "dur"; htmlName= "dur"}
-  ; Attribute {type_= String; name= "dx"; htmlName= "dx"}
-  ; Attribute {type_= String; name= "dy"; htmlName= "dy"}
-  ; Attribute {type_= String; name= "edgeMode"; htmlName= "edgeMode"}
-  ; Attribute {type_= String; name= "elevation"; htmlName= "elevation"}
-  ; Attribute
-      {type_= String; name= "enableBackground"; htmlName= "enableBackground"}
-  ; Attribute {type_= String; name= "encType"; htmlName= "encType"}
-  ; Attribute {type_= String; name= "end_"; htmlName= "end_"}
-  ; Attribute {type_= String; name= "exponent"; htmlName= "exponent"}
-  ; Attribute
-      { type_= String
-      ; name= "externalResourcesRequired"
-      ; htmlName= "externalResourcesRequired" }
-  ; Attribute {type_= String; name= "fill"; htmlName= "fill"}
-  ; Attribute {type_= String; name= "fillOpacity"; htmlName= "fillOpacity"}
-  ; Attribute {type_= String; name= "fillRule"; htmlName= "fillRule"}
-  ; Attribute {type_= String; name= "filter"; htmlName= "filter"}
-  ; Attribute {type_= String; name= "filterRes"; htmlName= "filterRes"}
-  ; Attribute {type_= String; name= "filterUnits"; htmlName= "filterUnits"}
-  ; Attribute {type_= String; name= "floodColor"; htmlName= "floodColor"}
-  ; Attribute {type_= String; name= "floodOpacity"; htmlName= "floodOpacity"}
-  ; Attribute {type_= String; name= "focusable"; htmlName= "focusable"}
-    (* fomat? *)
-  ; Attribute {type_= String; name= "fomat"; htmlName= "fomat"}
-  ; Attribute {type_= String; name= "fontFamily"; htmlName= "fontFamily"}
-  ; Attribute {type_= String; name= "fontSize"; htmlName= "fontSize"}
-  ; Attribute {type_= String; name= "fontSizeAdjust"; htmlName= "fontSizeAdjust"}
-  ; Attribute {type_= String; name= "fontStretch"; htmlName= "fontStretch"}
-  ; Attribute {type_= String; name= "fontStyle"; htmlName= "fontStyle"}
-  ; Attribute {type_= String; name= "fontVariant"; htmlName= "fontVariant"}
-  ; Attribute {type_= String; name= "fontWeight"; htmlName= "fontWeight"}
-  ; Attribute {type_= String; name= "form"; htmlName= "form"}
-  ; Attribute {type_= String; name= "formAction"; htmlName= "formAction"}
-  ; Attribute {type_= String; name= "formMethod"; htmlName= "formMethod"}
-  ; Attribute {type_= String; name= "formTarget"; htmlName= "formTarget"}
-  ; Attribute {type_= String; name= "from"; htmlName= "from"}
-  ; Attribute {type_= String; name= "fx"; htmlName= "fx"}
-  ; Attribute {type_= String; name= "fy"; htmlName= "fy"}
-  ; Attribute {type_= String; name= "g1"; htmlName= "g1"}
-  ; Attribute {type_= String; name= "g2"; htmlName= "g2"}
-  ; Attribute {type_= String; name= "glyphName"; htmlName= "glyphName"}
-  ; Attribute
-      { type_= String
-      ; name= "glyphOrientationHorizontal"
-      ; htmlName= "glyphOrientationHorizontal" }
-  ; Attribute
-      { type_= String
-      ; name= "glyphOrientationVertical"
-      ; htmlName= "glyphOrientationVertical" }
-  ; Attribute {type_= String; name= "glyphRef"; htmlName= "glyphRef"}
-  ; Attribute
-      {type_= String; name= "gradientTransform"; htmlName= "gradientTransform"}
-  ; Attribute {type_= String; name= "gradientUnits"; htmlName= "gradientUnits"}
-  ; Attribute {type_= String; name= "hanging"; htmlName= "hanging"}
-  ; Attribute {type_= String; name= "headers"; htmlName= "headers"}
-  ; Attribute {type_= String; name= "height"; htmlName= "height"}
-  ; Attribute {type_= Bool; name= "hidden"; htmlName= "hidden"}
-  ; Attribute {type_= Int; name= "high"; htmlName= "high"}
-  ; Attribute {type_= String; name= "horizAdvX"; htmlName= "horizAdvX"}
-  ; Attribute {type_= String; name= "horizOriginX"; htmlName= "horizOriginX"}
-  ; Attribute {type_= String; name= "href"; htmlName= "href"}
-  ; Attribute {type_= String; name= "hrefLang"; htmlName= "hrefLang"}
-  ; Attribute {type_= String; name= "htmlFor"; htmlName= "htmlFor"}
-  ; Attribute {type_= String; name= "httpEquiv"; htmlName= "httpEquiv"}
-  ; Attribute {type_= String; name= "icon"; htmlName= "icon"}
-  ; Attribute {type_= String; name= "id"; htmlName= "id"}
-  ; Attribute {type_= String; name= "ideographic"; htmlName= "ideographic"}
-  ; Attribute {type_= String; name= "imageRendering"; htmlName= "imageRendering"}
-  ; Attribute {type_= String; name= "in_"; htmlName= "in_"}
-  ; Attribute {type_= String; name= "in2"; htmlName= "in2"}
-  ; Attribute {type_= String; name= "inlist"; htmlName= "inlist"}
-  ; Attribute {type_= String; name= "inputMode"; htmlName= "inputMode"}
-  ; Attribute {type_= String; name= "integrity"; htmlName= "integrity"}
-  ; Attribute {type_= String; name= "intercept"; htmlName= "intercept"}
-  ; Attribute {type_= String; name= "itemID"; htmlName= "itemID"}
-  ; Attribute {type_= String; name= "itemProp"; htmlName= "itemProp"}
-  ; Attribute {type_= String; name= "itemRef"; htmlName= "itemRef"}
-  ; Attribute {type_= Bool; name= "itemScope"; htmlName= "itemScope"}
-  ; Attribute {type_= String; name= "itemType"; htmlName= "itemType"}
-  ; Attribute {type_= String; name= "k"; htmlName= "k"}
-  ; Attribute {type_= String; name= "k1"; htmlName= "k1"}
-  ; Attribute {type_= String; name= "k2"; htmlName= "k2"}
-  ; Attribute {type_= String; name= "k3"; htmlName= "k3"}
-  ; Attribute {type_= String; name= "k4"; htmlName= "k4"}
-  ; Attribute {type_= String; name= "kernelMatrix"; htmlName= "kernelMatrix"}
-  ; Attribute
-      {type_= String; name= "kernelUnitLength"; htmlName= "kernelUnitLength"}
-  ; Attribute {type_= String; name= "kerning"; htmlName= "kerning"}
-  ; Attribute {type_= String; name= "key"; htmlName= "key"}
-  ; Attribute {type_= String; name= "keyPoints"; htmlName= "keyPoints"}
-  ; Attribute {type_= String; name= "keySplines"; htmlName= "keySplines"}
-  ; Attribute {type_= String; name= "keyTimes"; htmlName= "keyTimes"}
-  ; Attribute {type_= String; name= "keyType"; htmlName= "keyType"}
-  ; Attribute {type_= String; name= "kind"; htmlName= "kind"}
-  ; Attribute {type_= String; name= "label"; htmlName= "label"}
-  ; Attribute {type_= String; name= "lang"; htmlName= "lang"}
-  ; Attribute {type_= String; name= "lengthAdjust"; htmlName= "lengthAdjust"}
-  ; Attribute {type_= String; name= "letterSpacing"; htmlName= "letterSpacing"}
-  ; Attribute {type_= String; name= "lightingColor"; htmlName= "lightingColor"}
-  ; Attribute
-      {type_= String; name= "limitingConeAngle"; htmlName= "limitingConeAngle"}
-  ; Attribute {type_= String; name= "list"; htmlName= "list"}
-  ; Attribute {type_= String; name= "local"; htmlName= "local"}
-  ; Attribute {type_= Bool; name= "loop"; htmlName= "loop"}
-  ; Attribute {type_= Int; name= "low"; htmlName= "low"}
-  ; Attribute {type_= String; name= "manifest"; htmlName= "manifest"}
-  ; Attribute {type_= String; name= "markerEnd"; htmlName= "markerEnd"}
-  ; Attribute {type_= String; name= "markerHeight"; htmlName= "markerHeight"}
-  ; Attribute {type_= String; name= "markerMid"; htmlName= "markerMid"}
-  ; Attribute {type_= String; name= "markerStart"; htmlName= "markerStart"}
-  ; Attribute {type_= String; name= "markerUnits"; htmlName= "markerUnits"}
-  ; Attribute {type_= String; name= "markerWidth"; htmlName= "markerWidth"}
-  ; Attribute {type_= String; name= "mask"; htmlName= "mask"}
-  ; Attribute
-      {type_= String; name= "maskContentUnits"; htmlName= "maskContentUnits"}
-  ; Attribute {type_= String; name= "maskUnits"; htmlName= "maskUnits"}
-  ; Attribute {type_= String; name= "mathematical"; htmlName= "mathematical"}
-  ; Attribute {type_= String; name= "max"; htmlName= "max"}
-  ; Attribute {type_= Int; name= "maxLength"; htmlName= "maxLength"}
-  ; Attribute {type_= String; name= "media"; htmlName= "media"}
-  ; Attribute {type_= String; name= "mediaGroup"; htmlName= "mediaGroup"}
-  ; Attribute {type_= Int; name= "min"; htmlName= "min"}
-  ; Attribute {type_= Int; name= "minLength"; htmlName= "minLength"}
-  ; Attribute {type_= String; name= "mode"; htmlName= "mode"}
-  ; Attribute {type_= Bool; name= "multiple"; htmlName= "multiple"}
-  ; Attribute {type_= Bool; name= "muted"; htmlName= "muted"}
-  ; Attribute {type_= String; name= "name"; htmlName= "name"}
-  ; Attribute {type_= String; name= "nonce"; htmlName= "nonce"}
-  ; Attribute {type_= Bool; name= "noValidate"; htmlName= "noValidate"}
-  ; Attribute {type_= String; name= "numOctaves"; htmlName= "numOctaves"}
-  ; Attribute {type_= String; name= "offset"; htmlName= "offset"}
-  ; Attribute {type_= String; name= "opacity"; htmlName= "opacity"}
-  ; Attribute {type_= Bool; name= "open_"; htmlName= "open_"}
-  ; Attribute {type_= String; name= "operator"; htmlName= "operator"}
-  ; Attribute {type_= Int; name= "optimum"; htmlName= "optimum"}
-  ; Attribute {type_= String; name= "order"; htmlName= "order"}
-  ; Attribute {type_= String; name= "orient"; htmlName= "orient"}
-  ; Attribute {type_= String; name= "orientation"; htmlName= "orientation"}
-  ; Attribute {type_= String; name= "origin"; htmlName= "origin"}
-  ; Attribute {type_= String; name= "overflow"; htmlName= "overflow"}
-  ; Attribute {type_= String; name= "overflowX"; htmlName= "overflowX"}
-  ; Attribute {type_= String; name= "overflowY"; htmlName= "overflowY"}
-  ; Attribute
-      {type_= String; name= "overlinePosition"; htmlName= "overlinePosition"}
-  ; Attribute
-      {type_= String; name= "overlineThickness"; htmlName= "overlineThickness"}
-  ; Attribute {type_= String; name= "paintOrder"; htmlName= "paintOrder"}
-  ; Attribute {type_= String; name= "panose1"; htmlName= "panose1"}
-  ; Attribute {type_= String; name= "pathLength"; htmlName= "pathLength"}
-  ; Attribute {type_= String; name= "pattern"; htmlName= "pattern"}
-  ; Attribute
-      { type_= String
-      ; name= "patternContentUnits"
-      ; htmlName= "patternContentUnits" }
-  ; Attribute
-      {type_= String; name= "patternTransform"; htmlName= "patternTransform"}
-  ; Attribute {type_= String; name= "patternUnits"; htmlName= "patternUnits"}
-  ; Attribute {type_= String; name= "placeholder"; htmlName= "placeholder"}
-  ; Attribute {type_= String; name= "pointerEvents"; htmlName= "pointerEvents"}
-  ; Attribute {type_= String; name= "points"; htmlName= "points"}
-  ; Attribute {type_= String; name= "pointsAtX"; htmlName= "pointsAtX"}
-  ; Attribute {type_= String; name= "pointsAtY"; htmlName= "pointsAtY"}
-  ; Attribute {type_= String; name= "pointsAtZ"; htmlName= "pointsAtZ"}
-  ; Attribute {type_= String; name= "poster"; htmlName= "poster"}
-  ; Attribute {type_= String; name= "prefix"; htmlName= "prefix"}
-  ; Attribute {type_= String; name= "preload"; htmlName= "preload"}
-  ; Attribute {type_= String; name= "preserveAlpha"; htmlName= "preserveAlpha"}
-  ; Attribute
-      { type_= String
-      ; name= "preserveAspectRatio"
-      ; htmlName= "preserveAspectRatio" }
-  ; Attribute {type_= String; name= "primitiveUnits"; htmlName= "primitiveUnits"}
-  ; Attribute {type_= String; name= "property"; htmlName= "property"}
-  ; Attribute {type_= String; name= "r"; htmlName= "r"}
-  ; Attribute {type_= String; name= "radioGroup"; htmlName= "radioGroup"}
-  ; Attribute {type_= String; name= "radius"; htmlName= "radius"}
-  ; Attribute {type_= Bool; name= "readOnly"; htmlName= "readOnly"}
-  ; Attribute {type_= Ref; name= "ref"; htmlName= "ref"}
-  ; Attribute {type_= String; name= "refX"; htmlName= "refX"}
-  ; Attribute {type_= String; name= "refY"; htmlName= "refY"}
-  ; Attribute {type_= String; name= "rel"; htmlName= "rel"}
-  ; Attribute
-      {type_= String; name= "renderingIntent"; htmlName= "renderingIntent"}
-  ; Attribute {type_= String; name= "repeatCount"; htmlName= "repeatCount"}
-  ; Attribute {type_= String; name= "repeatDur"; htmlName= "repeatDur"}
-  ; Attribute {type_= Bool; name= "required"; htmlName= "required"}
-  ; Attribute
-      {type_= String; name= "requiredExtensions"; htmlName= "requiredExtensions"}
-  ; Attribute
-      {type_= String; name= "requiredFeatures"; htmlName= "requiredFeatures"}
-  ; Attribute {type_= String; name= "resource"; htmlName= "resource"}
-  ; Attribute {type_= String; name= "restart"; htmlName= "restart"}
-  ; Attribute {type_= String; name= "result"; htmlName= "result"}
-  ; Attribute {type_= Bool; name= "reversed"; htmlName= "reversed"}
-  ; Attribute {type_= String; name= "role"; htmlName= "role"}
-  ; Attribute {type_= String; name= "rotate"; htmlName= "rotate"}
-  ; Attribute {type_= Int; name= "rows"; htmlName= "rows"}
-  ; Attribute {type_= Int; name= "rowSpan"; htmlName= "rowSpan"}
-  ; Attribute {type_= String; name= "rx"; htmlName= "rx"}
-  ; Attribute {type_= String; name= "ry"; htmlName= "ry"}
-  ; Attribute {type_= String; name= "sandbox"; htmlName= "sandbox"}
-  ; Attribute {type_= String; name= "scale"; htmlName= "scale"}
-  ; Attribute {type_= String; name= "scope"; htmlName= "scope"}
-  ; Attribute {type_= Bool; name= "scoped"; htmlName= "scoped"}
-  ; Attribute {type_= String; name= "scrolling"; htmlName= "scrolling"}
-  ; Attribute {type_= String; name= "seed"; htmlName= "seed"}
-  ; Attribute {type_= Bool; name= "selected"; htmlName= "selected"}
-  ; Attribute {type_= String; name= "shape"; htmlName= "shape"}
-  ; Attribute {type_= String; name= "shapeRendering"; htmlName= "shapeRendering"}
-  ; Attribute {type_= Int; name= "size"; htmlName= "size"}
-  ; Attribute {type_= String; name= "sizes"; htmlName= "sizes"}
-  ; Attribute {type_= String; name= "slope"; htmlName= "slope"}
-  ; Attribute {type_= String; name= "spacing"; htmlName= "spacing"}
-  ; Attribute {type_= Int; name= "span"; htmlName= "span"}
-  ; Attribute
-      {type_= String; name= "specularConstant"; htmlName= "specularConstant"}
-  ; Attribute
-      {type_= String; name= "specularExponent"; htmlName= "specularExponent"}
-  ; Attribute {type_= String; name= "speed"; htmlName= "speed"}
-  ; Attribute {type_= Bool; name= "spellCheck"; htmlName= "spellCheck"}
-  ; Attribute {type_= String; name= "spreadMethod"; htmlName= "spreadMethod"}
-  ; Attribute {type_= String; name= "src"; htmlName= "src"}
-  ; Attribute {type_= String; name= "srcDoc"; htmlName= "srcDoc"}
-  ; Attribute {type_= String; name= "srcLang"; htmlName= "srcLang"}
-  ; Attribute {type_= String; name= "srcSet"; htmlName= "srcSet"}
-  ; Attribute {type_= Int; name= "start"; htmlName= "start"}
-  ; Attribute {type_= String; name= "startOffset"; htmlName= "startOffset"}
-  ; Attribute {type_= String; name= "stdDeviation"; htmlName= "stdDeviation"}
-  ; Attribute {type_= String; name= "stemh"; htmlName= "stemh"}
-  ; Attribute {type_= String; name= "stemv"; htmlName= "stemv"}
-  ; Attribute {type_= Float; name= "step"; htmlName= "step"}
-  ; Attribute {type_= String; name= "stitchTiles"; htmlName= "stitchTiles"}
-  ; Attribute {type_= String; name= "stopColor"; htmlName= "stopColor"}
-  ; Attribute {type_= String; name= "stopOpacity"; htmlName= "stopOpacity"}
-  ; Attribute
-      { type_= String
-      ; name= "strikethroughPosition"
-      ; htmlName= "strikethroughPosition" }
-  ; Attribute
-      { type_= String
-      ; name= "strikethroughThickness"
-      ; htmlName= "strikethroughThickness" }
-  ; Attribute {type_= String; name= "stroke"; htmlName= "stroke"}
-  ; Attribute
-      {type_= String; name= "strokeDasharray"; htmlName= "strokeDasharray"}
-  ; Attribute
-      {type_= String; name= "strokeDashoffset"; htmlName= "strokeDashoffset"}
-  ; Attribute {type_= String; name= "strokeLinecap"; htmlName= "strokeLinecap"}
-  ; Attribute {type_= String; name= "strokeLinejoin"; htmlName= "strokeLinejoin"}
-  ; Attribute
-      {type_= String; name= "strokeMiterlimit"; htmlName= "strokeMiterlimit"}
-  ; Attribute {type_= String; name= "strokeOpacity"; htmlName= "strokeOpacity"}
-  ; Attribute {type_= String; name= "strokeWidth"; htmlName= "strokeWidth"}
-  ; Attribute {type_= Style; name= "style"; htmlName= "style"}
-  ; Attribute {type_= String; name= "summary"; htmlName= "summary"}
-  ; Attribute
-      { type_= Bool
-      ; name= "suppressContentEditableWarning"
-      ; htmlName= "suppressContentEditableWarning" }
-  ; Attribute {type_= String; name= "surfaceScale"; htmlName= "surfaceScale"}
-  ; Attribute {type_= String; name= "systemLanguage"; htmlName= "systemLanguage"}
-  ; Attribute {type_= Int; name= "tabIndex"; htmlName= "tabIndex"}
-  ; Attribute {type_= String; name= "tableValues"; htmlName= "tableValues"}
-  ; Attribute {type_= String; name= "target"; htmlName= "target"}
-  ; Attribute {type_= String; name= "targetX"; htmlName= "targetX"}
-  ; Attribute {type_= String; name= "targetY"; htmlName= "targetY"}
-  ; Attribute {type_= String; name= "textAnchor"; htmlName= "textAnchor"}
-  ; Attribute {type_= String; name= "textDecoration"; htmlName= "textDecoration"}
-  ; Attribute {type_= String; name= "textLength"; htmlName= "textLength"}
-  ; Attribute {type_= String; name= "textRendering"; htmlName= "textRendering"}
-  ; Attribute {type_= String; name= "title"; htmlName= "title"}
-  ; Attribute {type_= String; name= "to_"; htmlName= "to_"}
-  ; Attribute {type_= String; name= "transform"; htmlName= "transform"}
-  ; Attribute {type_= String; name= "type_"; htmlName= "type"}
-  ; Attribute {type_= String; name= "typeof"; htmlName= "typeof"}
-  ; Attribute {type_= String; name= "u1"; htmlName= "u1"}
-  ; Attribute {type_= String; name= "u2"; htmlName= "u2"}
-  ; Attribute
-      {type_= String; name= "underlinePosition"; htmlName= "underlinePosition"}
-  ; Attribute
-      {type_= String; name= "underlineThickness"; htmlName= "underlineThickness"}
-  ; Attribute {type_= String; name= "unicode"; htmlName= "unicode"}
-  ; Attribute {type_= String; name= "unicodeBidi"; htmlName= "unicodeBidi"}
-  ; Attribute {type_= String; name= "unicodeRange"; htmlName= "unicodeRange"}
-  ; Attribute {type_= String; name= "unitsPerEm"; htmlName= "unitsPerEm"}
-  ; Attribute {type_= String; name= "useMap"; htmlName= "useMap"}
-  ; Attribute {type_= String; name= "vAlphabetic"; htmlName= "vAlphabetic"}
-  ; Attribute {type_= String; name= "value"; htmlName= "value"}
-  ; Attribute {type_= String; name= "values"; htmlName= "values"}
-  ; Attribute {type_= String; name= "vectorEffect"; htmlName= "vectorEffect"}
-  ; Attribute {type_= String; name= "version"; htmlName= "version"}
-  ; Attribute {type_= String; name= "vertAdvX"; htmlName= "vertAdvX"}
-  ; Attribute {type_= String; name= "vertAdvY"; htmlName= "vertAdvY"}
-  ; Attribute {type_= String; name= "vertOriginX"; htmlName= "vertOriginX"}
-  ; Attribute {type_= String; name= "vertOriginY"; htmlName= "vertOriginY"}
-  ; Attribute {type_= String; name= "vHanging"; htmlName= "vHanging"}
-  ; Attribute {type_= String; name= "vIdeographic"; htmlName= "vIdeographic"}
-  ; Attribute {type_= String; name= "viewBox"; htmlName= "viewBox"}
-  ; Attribute {type_= String; name= "viewTarget"; htmlName= "viewTarget"}
-  ; Attribute {type_= String; name= "visibility"; htmlName= "visibility"}
-  ; Attribute {type_= String; name= "vMathematical"; htmlName= "vMathematical"}
-  ; Attribute {type_= String; name= "vocab"; htmlName= "vocab"}
-  ; Attribute {type_= String; name= "width"; htmlName= "width"}
-  ; Attribute {type_= String; name= "widths"; htmlName= "widths"}
-  ; Attribute {type_= String; name= "wordSpacing"; htmlName= "wordSpacing"}
-  ; Attribute {type_= String; name= "wrap"; htmlName= "wrap"}
-  ; Attribute {type_= String; name= "writingMode"; htmlName= "writingMode"}
-  ; Attribute {type_= String; name= "x"; htmlName= "x"}
-  ; Attribute {type_= String; name= "x1"; htmlName= "x1"}
-  ; Attribute {type_= String; name= "x2"; htmlName= "x2"}
-  ; Attribute
-      {type_= String; name= "xChannelSelector"; htmlName= "xChannelSelector"}
-  ; Attribute {type_= String; name= "xHeight"; htmlName= "xHeight"}
-  ; Attribute {type_= String; name= "xlinkActuate"; htmlName= "xlinkActuate"}
-  ; Attribute {type_= String; name= "xlinkArcrole"; htmlName= "xlinkArcrole"}
-  ; Attribute {type_= String; name= "xlinkHref"; htmlName= "xlinkHref"}
-  ; Attribute {type_= String; name= "xlinkRole"; htmlName= "xlinkRole"}
-  ; Attribute {type_= String; name= "xlinkShow"; htmlName= "xlinkShow"}
-  ; Attribute {type_= String; name= "xlinkTitle"; htmlName= "xlinkTitle"}
-  ; Attribute {type_= String; name= "xlinkType"; htmlName= "xlinkType"}
-  ; Attribute {type_= String; name= "xmlBase"; htmlName= "xmlBase"}
-  ; Attribute {type_= String; name= "xmlLang"; htmlName= "xmlLang"}
-  ; Attribute {type_= String; name= "xmlns"; htmlName= "xmlns"}
-  ; Attribute {type_= String; name= "xmlnsXlink"; htmlName= "xmlnsXlink"}
-  ; Attribute {type_= String; name= "xmlSpace"; htmlName= "xmlSpace"}
-  ; Attribute {type_= String; name= "y"; htmlName= "y"}
-  ; Attribute {type_= String; name= "y1"; htmlName= "y1"}
-  ; Attribute {type_= String; name= "y2"; htmlName= "y2"}
-  ; Attribute
-      {type_= String; name= "yChannelSelector"; htmlName= "yChannelSelector"}
-  ; Attribute {type_= String; name= "z"; htmlName= "z"}
-  ; Attribute {type_= String; name= "zoomAndPan"; htmlName= "zoomAndPan"}
-  ; Event {name= "onAbort"; type_= Media}
-  ; Event {name= "onAnimationEnd"; type_= Animation}
-  ; Event {name= "onAnimationIteration"; type_= Animation}
-  ; Event {name= "onAnimationStart"; type_= Animation}
-  ; Event {name= "onBlur"; type_= Focus}
-  ; Event {name= "onCanPlay"; type_= Media}
-  ; Event {name= "onCanPlayThrough"; type_= Media}
-  ; Event {name= "onChange"; type_= Form}
-  ; Event {name= "onClick"; type_= Mouse}
-  ; Event {name= "onCompositionEnd"; type_= Composition}
-  ; Event {name= "onCompositionStart"; type_= Composition}
-  ; Event {name= "onCompositionUpdate"; type_= Composition}
-  ; Event {name= "onContextMenu"; type_= Mouse}
-  ; Event {name= "onCopy"; type_= Clipboard}
-  ; Event {name= "onCut"; type_= Clipboard}
-  ; Event {name= "onDoubleClick"; type_= Mouse}
-  ; Event {name= "onDrag"; type_= Mouse}
-  ; Event {name= "onDragEnd"; type_= Mouse}
-  ; Event {name= "onDragEnter"; type_= Mouse}
-  ; Event {name= "onDragExit"; type_= Mouse}
-  ; Event {name= "onDragLeave"; type_= Mouse}
-  ; Event {name= "onDragOver"; type_= Mouse}
-  ; Event {name= "onDragStart"; type_= Mouse}
-  ; Event {name= "onDrop"; type_= Mouse}
-  ; Event {name= "onDurationChange"; type_= Media}
-  ; Event {name= "onEmptied"; type_= Media}
-  ; Event {name= "onEncrypetd"; type_= Media}
-  ; Event {name= "onEnded"; type_= Media}
-  ; Event {name= "onError"; type_= Media}
-  ; Event {name= "onFocus"; type_= Focus}
-  ; Event {name= "onInput"; type_= Form}
-  ; Event {name= "onKeyDown"; type_= Keyboard}
-  ; Event {name= "onKeyPress"; type_= Keyboard}
-  ; Event {name= "onKeyUp"; type_= Keyboard}
-  ; Event {name= "onLoadedData"; type_= Media}
-  ; Event {name= "onLoadedMetadata"; type_= Media}
-  ; Event {name= "onLoadStart"; type_= Media}
-  ; Event {name= "onMouseDown"; type_= Mouse}
-  ; Event {name= "onMouseEnter"; type_= Mouse}
-  ; Event {name= "onMouseLeave"; type_= Mouse}
-  ; Event {name= "onMouseMove"; type_= Mouse}
-  ; Event {name= "onMouseOut"; type_= Mouse}
-  ; Event {name= "onMouseOver"; type_= Mouse}
-  ; Event {name= "onMouseUp"; type_= Mouse}
-  ; Event {name= "onPaste"; type_= Clipboard}
-  ; Event {name= "onPause"; type_= Media}
-  ; Event {name= "onPlay"; type_= Media}
-  ; Event {name= "onPlaying"; type_= Media}
-  ; Event {name= "onProgress"; type_= Media}
-  ; Event {name= "onRateChange"; type_= Media}
-  ; Event {name= "onScroll"; type_= UI}
-  ; Event {name= "onSeeked"; type_= Media}
-  ; Event {name= "onSeeking"; type_= Media}
-  ; Event {name= "onSelect"; type_= Selection}
-  ; Event {name= "onStalled"; type_= Media}
-  ; Event {name= "onSubmit"; type_= Form}
-  ; Event {name= "onSuspend"; type_= Media}
-  ; Event {name= "onTimeUpdate"; type_= Media}
-  ; Event {name= "onTouchCancel"; type_= Touch}
-  ; Event {name= "onTouchEnd"; type_= Touch}
-  ; Event {name= "onTouchMove"; type_= Touch}
-  ; Event {name= "onTouchStart"; type_= Touch}
-  ; Event {name= "onTransitionEnd"; type_= Transition}
-  ; Event {name= "onVolumeChange"; type_= Media}
-  ; Event {name= "onWaiting"; type_= Media}
-  ; Event {name= "onWheel"; type_= Wheel} ]
+type element = {tag: string; attributes: attribute list}
 
-let getName = function Attribute {name; _} -> name | Event {name; _} -> name
+let commonDOMAttributes =
+  [ (* dangerouslySetInnerHTML?: {
+           __html: string;
+       };
 
-let getHtmlName = function
-  | Attribute {htmlName; _} ->
-      htmlName
-  | Event {name; _} ->
-      name
+       // Clipboard Events
+       onCopy?: ClipboardEventHandler<T>;
+       onCopyCapture?: ClipboardEventHandler<T>;
+       onCut?: ClipboardEventHandler<T>;
+       onCutCapture?: ClipboardEventHandler<T>;
+       onPaste?: ClipboardEventHandler<T>;
+       onPasteCapture?: ClipboardEventHandler<T>;
 
-let findByName name = List.find_opt (fun p -> name = getName p) propTypeList
+       // Composition Events
+       onCompositionEnd?: CompositionEventHandler<T>;
+       onCompositionEndCapture?: CompositionEventHandler<T>;
+       onCompositionStart?: CompositionEventHandler<T>;
+       onCompositionStartCapture?: CompositionEventHandler<T>;
+       onCompositionUpdate?: CompositionEventHandler<T>;
+       onCompositionUpdateCapture?: CompositionEventHandler<T>;
+
+       // Focus Events
+       onFocus?: FocusEventHandler<T>;
+       onFocusCapture?: FocusEventHandler<T>;
+       onBlur?: FocusEventHandler<T>;
+       onBlurCapture?: FocusEventHandler<T>;
+
+       // Form Events
+       onChange?: FormEventHandler<T>;
+       onChangeCapture?: FormEventHandler<T>;
+       onBeforeInput?: FormEventHandler<T>;
+       onBeforeInputCapture?: FormEventHandler<T>;
+       onInput?: FormEventHandler<T>;
+       onInputCapture?: FormEventHandler<T>;
+       onReset?: FormEventHandler<T>;
+       onResetCapture?: FormEventHandler<T>;
+       onSubmit?: FormEventHandler<T>;
+       onSubmitCapture?: FormEventHandler<T>;
+       onInvalid?: FormEventHandler<T>;
+       onInvalidCapture?: FormEventHandler<T>;
+
+       // Image Events
+       onLoad?: ReactEventHandler<T>;
+       onLoadCapture?: ReactEventHandler<T>;
+       onError?: ReactEventHandler<T>; // also a Media Event
+       onErrorCapture?: ReactEventHandler<T>; // also a Media Event
+
+       // Keyboard Events
+       onKeyDown?: KeyboardEventHandler<T>;
+       onKeyDownCapture?: KeyboardEventHandler<T>;
+       onKeyPress?: KeyboardEventHandler<T>;
+       onKeyPressCapture?: KeyboardEventHandler<T>;
+       onKeyUp?: KeyboardEventHandler<T>;
+       onKeyUpCapture?: KeyboardEventHandler<T>;
+
+       // Media Events
+       onAbort?: ReactEventHandler<T>;
+       onAbortCapture?: ReactEventHandler<T>;
+       onCanPlay?: ReactEventHandler<T>;
+       onCanPlayCapture?: ReactEventHandler<T>;
+       onCanPlayThrough?: ReactEventHandler<T>;
+       onCanPlayThroughCapture?: ReactEventHandler<T>;
+       onDurationChange?: ReactEventHandler<T>;
+       onDurationChangeCapture?: ReactEventHandler<T>;
+       onEmptied?: ReactEventHandler<T>;
+       onEmptiedCapture?: ReactEventHandler<T>;
+       onEncrypted?: ReactEventHandler<T>;
+       onEncryptedCapture?: ReactEventHandler<T>;
+       onEnded?: ReactEventHandler<T>;
+       onEndedCapture?: ReactEventHandler<T>;
+       onLoadedData?: ReactEventHandler<T>;
+       onLoadedDataCapture?: ReactEventHandler<T>;
+       onLoadedMetadata?: ReactEventHandler<T>;
+       onLoadedMetadataCapture?: ReactEventHandler<T>;
+       onLoadStart?: ReactEventHandler<T>;
+       onLoadStartCapture?: ReactEventHandler<T>;
+       onPause?: ReactEventHandler<T>;
+       onPauseCapture?: ReactEventHandler<T>;
+       onPlay?: ReactEventHandler<T>;
+       onPlayCapture?: ReactEventHandler<T>;
+       onPlaying?: ReactEventHandler<T>;
+       onPlayingCapture?: ReactEventHandler<T>;
+       onProgress?: ReactEventHandler<T>;
+       onProgressCapture?: ReactEventHandler<T>;
+       onRateChange?: ReactEventHandler<T>;
+       onRateChangeCapture?: ReactEventHandler<T>;
+       onSeeked?: ReactEventHandler<T>;
+       onSeekedCapture?: ReactEventHandler<T>;
+       onSeeking?: ReactEventHandler<T>;
+       onSeekingCapture?: ReactEventHandler<T>;
+       onStalled?: ReactEventHandler<T>;
+       onStalledCapture?: ReactEventHandler<T>;
+       onSuspend?: ReactEventHandler<T>;
+       onSuspendCapture?: ReactEventHandler<T>;
+       onTimeUpdate?: ReactEventHandler<T>;
+       onTimeUpdateCapture?: ReactEventHandler<T>;
+       onVolumeChange?: ReactEventHandler<T>;
+       onVolumeChangeCapture?: ReactEventHandler<T>;
+       onWaiting?: ReactEventHandler<T>;
+       onWaitingCapture?: ReactEventHandler<T>;
+
+       // MouseEvents
+       onAuxClick?: MouseEventHandler<T>;
+       onAuxClickCapture?: MouseEventHandler<T>;
+       onClick?: MouseEventHandler<T>;
+       onClickCapture?: MouseEventHandler<T>;
+       onContextMenu?: MouseEventHandler<T>;
+       onContextMenuCapture?: MouseEventHandler<T>;
+       onDoubleClick?: MouseEventHandler<T>;
+       onDoubleClickCapture?: MouseEventHandler<T>;
+       onDrag?: DragEventHandler<T>;
+       onDragCapture?: DragEventHandler<T>;
+       onDragEnd?: DragEventHandler<T>;
+       onDragEndCapture?: DragEventHandler<T>;
+       onDragEnter?: DragEventHandler<T>;
+       onDragEnterCapture?: DragEventHandler<T>;
+       onDragExit?: DragEventHandler<T>;
+       onDragExitCapture?: DragEventHandler<T>;
+       onDragLeave?: DragEventHandler<T>;
+       onDragLeaveCapture?: DragEventHandler<T>;
+       onDragOver?: DragEventHandler<T>;
+       onDragOverCapture?: DragEventHandler<T>;
+       onDragStart?: DragEventHandler<T>;
+       onDragStartCapture?: DragEventHandler<T>;
+       onDrop?: DragEventHandler<T>;
+       onDropCapture?: DragEventHandler<T>;
+       onMouseDown?: MouseEventHandler<T>;
+       onMouseDownCapture?: MouseEventHandler<T>;
+       onMouseEnter?: MouseEventHandler<T>;
+       onMouseLeave?: MouseEventHandler<T>;
+       onMouseMove?: MouseEventHandler<T>;
+       onMouseMoveCapture?: MouseEventHandler<T>;
+       onMouseOut?: MouseEventHandler<T>;
+       onMouseOutCapture?: MouseEventHandler<T>;
+       onMouseOver?: MouseEventHandler<T>;
+       onMouseOverCapture?: MouseEventHandler<T>;
+       onMouseUp?: MouseEventHandler<T>;
+       onMouseUpCapture?: MouseEventHandler<T>;
+
+       // Selection Events
+       onSelect?: ReactEventHandler<T>;
+       onSelectCapture?: ReactEventHandler<T>;
+
+       // Touch Events
+       onTouchCancel?: TouchEventHandler<T>;
+       onTouchCancelCapture?: TouchEventHandler<T>;
+       onTouchEnd?: TouchEventHandler<T>;
+       onTouchEndCapture?: TouchEventHandler<T>;
+       onTouchMove?: TouchEventHandler<T>;
+       onTouchMoveCapture?: TouchEventHandler<T>;
+       onTouchStart?: TouchEventHandler<T>;
+       onTouchStartCapture?: TouchEventHandler<T>;
+
+       // Pointer Events
+       onPointerDown?: PointerEventHandler<T>;
+       onPointerDownCapture?: PointerEventHandler<T>;
+       onPointerMove?: PointerEventHandler<T>;
+       onPointerMoveCapture?: PointerEventHandler<T>;
+       onPointerUp?: PointerEventHandler<T>;
+       onPointerUpCapture?: PointerEventHandler<T>;
+       onPointerCancel?: PointerEventHandler<T>;
+       onPointerCancelCapture?: PointerEventHandler<T>;
+       onPointerEnter?: PointerEventHandler<T>;
+       onPointerEnterCapture?: PointerEventHandler<T>;
+       onPointerLeave?: PointerEventHandler<T>;
+       onPointerLeaveCapture?: PointerEventHandler<T>;
+       onPointerOver?: PointerEventHandler<T>;
+       onPointerOverCapture?: PointerEventHandler<T>;
+       onPointerOut?: PointerEventHandler<T>;
+       onPointerOutCapture?: PointerEventHandler<T>;
+       onGotPointerCapture?: PointerEventHandler<T>;
+       onGotPointerCaptureCapture?: PointerEventHandler<T>;
+       onLostPointerCapture?: PointerEventHandler<T>;
+       onLostPointerCaptureCapture?: PointerEventHandler<T>;
+
+       // UI Events
+       onScroll?: UIEventHandler<T>;
+       onScrollCapture?: UIEventHandler<T>;
+
+       // Wheel Events
+       onWheel?: WheelEventHandler<T>;
+       onWheelCapture?: WheelEventHandler<T>;
+
+       // Animation Events
+       onAnimationStart?: AnimationEventHandler<T>;
+       onAnimationStartCapture?: AnimationEventHandler<T>;
+       onAnimationEnd?: AnimationEventHandler<T>;
+       onAnimationEndCapture?: AnimationEventHandler<T>;
+       onAnimationIteration?: AnimationEventHandler<T>;
+       onAnimationIterationCapture?: AnimationEventHandler<T>;
+
+       // Transition Events
+       onTransitionEnd?: TransitionEventHandler<T>;
+       onTransitionEndCapture?: TransitionEventHandler<T>; *) ]
+
+(* All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/ *)
+let ariaAttributes =
+  [ (* /** Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. */
+        'aria-activedescendant'?: string;
+        /** Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. */
+        'aria-atomic'?: boolean | 'false' | 'true';
+        /**
+     * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
+     * presented if they are made.
+     */
+        'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both';
+        /** Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. */
+        'aria-busy'?: boolean | 'false' | 'true';
+        /**
+     * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
+     * @see aria-pressed @see aria-selected.
+     */
+        'aria-checked'?: boolean | 'false' | 'mixed' | 'true';
+        /**
+     * Defines the total number of columns in a table, grid, or treegrid.
+     * @see aria-colindex.
+     */
+        'aria-colcount'?: number;
+        /**
+     * Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
+     * @see aria-colcount @see aria-colspan.
+     */
+        'aria-colindex'?: number;
+        /**
+     * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
+     * @see aria-colindex @see aria-rowspan.
+     */
+        'aria-colspan'?: number;
+        /**
+     * Identifies the element (or elements) whose contents or presence are controlled by the current element.
+     * @see aria-owns.
+     */
+        'aria-controls'?: string;
+        /** Indicates the element that represents the current item within a container or set of related elements. */
+        'aria-current'?: boolean | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time';
+        /**
+     * Identifies the element (or elements) that describes the object.
+     * @see aria-labelledby
+     */
+        'aria-describedby'?: string;
+        /**
+     * Identifies the element that provides a detailed, extended description for the object.
+     * @see aria-describedby.
+     */
+        'aria-details'?: string;
+        /**
+     * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
+     * @see aria-hidden @see aria-readonly.
+     */
+        'aria-disabled'?: boolean | 'false' | 'true';
+        /**
+     * Indicates what functions can be performed when a dragged object is released on the drop target.
+     * @deprecated in ARIA 1.1
+     */
+        'aria-dropeffect'?: 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup';
+        /**
+     * Identifies the element that provides an error message for the object.
+     * @see aria-invalid @see aria-describedby.
+     */
+        'aria-errormessage'?: string;
+        /** Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. */
+        'aria-expanded'?: boolean | 'false' | 'true';
+        /**
+     * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
+     * allows assistive technology to override the general default of reading in document source order.
+     */
+        'aria-flowto'?: string;
+        /**
+     * Indicates an element's "grabbed" state in a drag-and-drop operation.
+     * @deprecated in ARIA 1.1
+     */
+        'aria-grabbed'?: boolean | 'false' | 'true';
+        /** Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. */
+        'aria-haspopup'?: boolean | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
+        /**
+     * Indicates whether the element is exposed to an accessibility API.
+     * @see aria-disabled.
+     */
+        'aria-hidden'?: boolean | 'false' | 'true';
+        /**
+     * Indicates the entered value does not conform to the format expected by the application.
+     * @see aria-errormessage.
+     */
+        'aria-invalid'?: boolean | 'false' | 'true' | 'grammar' | 'spelling';
+        /** Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. */
+        'aria-keyshortcuts'?: string;
+        /**
+     * Defines a string value that labels the current element.
+     * @see aria-labelledby.
+     */
+        'aria-label'?: string;
+        /**
+     * Identifies the element (or elements) that labels the current element.
+     * @see aria-describedby.
+     */
+        'aria-labelledby'?: string;
+        /** Defines the hierarchical level of an element within a structure. */
+        'aria-level'?: number;
+        /** Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. */
+        'aria-live'?: 'off' | 'assertive' | 'polite';
+        /** Indicates whether an element is modal when displayed. */
+        'aria-modal'?: boolean | 'false' | 'true';
+        /** Indicates whether a text box accepts multiple lines of input or only a single line. */
+        'aria-multiline'?: boolean | 'false' | 'true';
+        /** Indicates that the user may select more than one item from the current selectable descendants. */
+        'aria-multiselectable'?: boolean | 'false' | 'true';
+        /** Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. */
+        'aria-orientation'?: 'horizontal' | 'vertical';
+        /**
+     * Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
+     * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
+     * @see aria-controls.
+     */
+        'aria-owns'?: string;
+        /**
+     * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
+     * A hint could be a sample value or a brief description of the expected format.
+     */
+        'aria-placeholder'?: string;
+        /**
+     * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
+     * @see aria-setsize.
+     */
+        'aria-posinset'?: number;
+        /**
+     * Indicates the current "pressed" state of toggle buttons.
+     * @see aria-checked @see aria-selected.
+     */
+        'aria-pressed'?: boolean | 'false' | 'mixed' | 'true';
+        /**
+     * Indicates that the element is not editable, but is otherwise operable.
+     * @see aria-disabled.
+     */
+        'aria-readonly'?: boolean | 'false' | 'true';
+        /**
+     * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
+     * @see aria-atomic.
+     */
+        'aria-relevant'?: 'additions' | 'additions removals' | 'additions text' | 'all' | 'removals' | 'removals additions' | 'removals text' | 'text' | 'text additions' | 'text removals';
+        /** Indicates that user input is required on the element before a form may be submitted. */
+        'aria-required'?: boolean | 'false' | 'true';
+        /** Defines a human-readable, author-localized description for the role of an element. */
+        'aria-roledescription'?: string;
+        /**
+     * Defines the total number of rows in a table, grid, or treegrid.
+     * @see aria-rowindex.
+     */
+        'aria-rowcount'?: number;
+        /**
+     * Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.
+     * @see aria-rowcount @see aria-rowspan.
+     */
+        'aria-rowindex'?: number;
+        /**
+     * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
+     * @see aria-rowindex @see aria-colspan.
+     */
+        'aria-rowspan'?: number;
+        /**
+     * Indicates the current "selected" state of various widgets.
+     * @see aria-checked @see aria-pressed.
+     */
+        'aria-selected'?: boolean | 'false' | 'true';
+        /**
+     * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
+     * @see aria-posinset.
+     */
+        'aria-setsize'?: number;
+        /** Indicates if items in a table or grid are sorted in ascending or descending order. */
+        'aria-sort'?: 'none' | 'ascending' | 'descending' | 'other';
+        /** Defines the maximum allowed value for a range widget. */
+        'aria-valuemax'?: number;
+        /** Defines the minimum allowed value for a range widget. */
+        'aria-valuemin'?: number;
+        /**
+     * Defines the current value for a range widget.
+     * @see aria-valuetext.
+     */
+        'aria-valuenow'?: number;
+        /** Defines the human readable text alternative of aria-valuenow for a range widget. */
+        'aria-valuetext'?: string; *) ]
+
+(* All the WAI-ARIA 1.1 role attribute values from https://www.w3.org/TR/wai-aria-1.1/#role_definitions *)
+type ariaRole = string
+(* | Alert
+   | Alertdialog
+   | Application
+   | Article
+   | Banner
+   | Button
+   | Cell
+   | Checkbox
+   | Columnheader
+   | Combobox
+   | Complementary
+   | Contentinfo
+   | Definition
+   | Dialog
+   | Directory
+   | Document
+   | Feed
+   | Figure
+   | Form
+   | Grid
+   | Gridcell
+   | Group
+   | Heading
+   | Img
+   | Link
+   | List
+   | Listbox
+   | Listitem
+   | Log
+   | Main
+   | Marquee
+   | Math
+   | Menu
+   | Menubar
+   | Menuitem
+   | Menuitemcheckbox
+   | Menuitemradio
+   | Navigation
+   | None
+   | Note
+   | Option
+   | Presentation
+   | Progressbar
+   | Radio
+   | Radiogroup
+   | Region
+   | Row
+   | Rowgroup
+   | Rowheader
+   | Scrollbar
+   | Search
+   | Searchbox
+   | Separator
+   | Slider
+   | Spinbutton
+   | Status
+   | Switch
+   | Tab
+   | Table
+   | Tablist
+   | Tabpanel
+   | Term
+   | Textbox
+   | Timer
+   | Toolbar
+   | Tooltip
+   | Tree
+   | Treegrid
+   | Treeitem
+   | Custom of string *)
+
+let attributesHTML = []
+
+(* <T> extends AriaAttributes, DOMAttributes<T> { *)
+(* React-specific Attributes *)
+(* defaultChecked?: boolean;
+   defaultValue?: string | number | ReadonlyArray<string>;
+   suppressContentEditableWarning?: boolean;
+   suppressHydrationWarning?: boolean; *)
+
+(* Standard HTML Attributes *)
+(* accessKey?: string;
+        className?: string;
+        contentEditable?: Booleanish | "inherit";
+        contextMenu?: string;
+        dir?: string;
+        draggable?: Booleanish;
+        hidden?: boolean;
+        id?: string;
+        lang?: string;
+        placeholder?: string;
+        slot?: string;
+        spellCheck?: Booleanish;
+        style?: CSSProperties;
+        tabIndex?: number;
+        title?: string;
+        translate?: 'yes' | 'no';
+
+        // Unknown
+        radioGroup?: string; // <command>, <menuitem>
+
+        // WAI-ARIA
+        role?: AriaRole;
+
+        // RDFa Attributes
+        about?: string;
+        datatype?: string;
+        inlist?: any;
+        prefix?: string;
+        property?: string;
+        resource?: string;
+        typeof?: string;
+        vocab?: string;
+
+        // Non-standard Attributes
+        autoCapitalize?: string;
+        autoCorrect?: string;
+        autoSave?: string;
+        color?: string;
+        itemProp?: string;
+        itemScope?: boolean;
+        itemType?: string;
+        itemID?: string;
+        itemRef?: string;
+        results?: number;
+        security?: string;
+        unselectable?: 'on' | 'off';
+
+        // Living Standard
+        /**
+ * Hints at the type of data that might be entered by the user while editing the element or its contents
+ * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute
+ */
+        inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
+        /**
+ * Specify that a standard HTML element should behave like a defined custom built-in element
+ * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is
+ */
+        is?: string; *)
+
+let allHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       // Standard HTML Attributes
+       accept?: string;
+       acceptCharset?: string;
+       action?: string;
+       allowFullScreen?: boolean;
+       allowTransparency?: boolean;
+       alt?: string;
+       as?: string;
+       async?: boolean;
+       autoComplete?: string;
+       autoFocus?: boolean;
+       autoPlay?: boolean;
+       capture?: boolean | string;
+       cellPadding?: number | string;
+       cellSpacing?: number | string;
+       charSet?: string;
+       challenge?: string;
+       checked?: boolean;
+       cite?: string;
+       classID?: string;
+       cols?: number;
+       colSpan?: number;
+       content?: string;
+       controls?: boolean;
+       coords?: string;
+       crossOrigin?: string;
+       data?: string;
+       dateTime?: string;
+       default?: boolean;
+       defer?: boolean;
+       disabled?: boolean;
+       download?: any;
+       encType?: string;
+       form?: string;
+       formAction?: string;
+       formEncType?: string;
+       formMethod?: string;
+       formNoValidate?: boolean;
+       formTarget?: string;
+       frameBorder?: number | string;
+       headers?: string;
+       height?: number | string;
+       high?: number;
+       href?: string;
+       hrefLang?: string;
+       htmlFor?: string;
+       httpEquiv?: string;
+       integrity?: string;
+       keyParams?: string;
+       keyType?: string;
+       kind?: string;
+       label?: string;
+       list?: string;
+       loop?: boolean;
+       low?: number;
+       manifest?: string;
+       marginHeight?: number;
+       marginWidth?: number;
+       max?: number | string;
+       maxLength?: number;
+       media?: string;
+       mediaGroup?: string;
+       method?: string;
+       min?: number | string;
+       minLength?: number;
+       multiple?: boolean;
+       muted?: boolean;
+       name?: string;
+       nonce?: string;
+       noValidate?: boolean;
+       open?: boolean;
+       optimum?: number;
+       pattern?: string;
+       placeholder?: string;
+       playsInline?: boolean;
+       poster?: string;
+       preload?: string;
+       readOnly?: boolean;
+       rel?: string;
+       required?: boolean;
+       reversed?: boolean;
+       rows?: number;
+       rowSpan?: number;
+       sandbox?: string;
+       scope?: string;
+       scoped?: boolean;
+       scrolling?: string;
+       seamless?: boolean;
+       selected?: boolean;
+       shape?: string;
+       size?: number;
+       sizes?: string;
+       span?: number;
+       src?: string;
+       srcDoc?: string;
+       srcLang?: string;
+       srcSet?: string;
+       start?: number;
+       step?: number | string;
+       summary?: string;
+       target?: string;
+       type?: string;
+       useMap?: string;
+       value?: string | ReadonlyArray<string> | number;
+       width?: number | string;
+       wmode?: string;
+       wrap?: string;
+   } *)
+
+type attributeReferrerPolicy = string
+(* | Empty
+   | NoReferrer
+   | NoReferrerWhenDowngrade
+   | Origin
+   | OriginWhenCrossOrigin
+   | SameOrigin
+   | StrictOrigin
+   | StrictOriginWhenCrossOrigin
+   | UnsafeUrl *)
+
+type attributeAnchorTarget = string
+(* | Self
+   | Blank
+   | Parent
+   | Top
+   | Custom of string *)
+
+let anchorHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       download?: any;
+       href?: string;
+       hrefLang?: string;
+       media?: string;
+       ping?: string;
+       rel?: string;
+       target?: HTMLAttributeAnchorTarget;
+       type?: string;
+       referrerPolicy?: HTMLAttributeReferrerPolicy;
+   } *)
+
+let audioHTMLAttributes = [] (* <T> extends MediaHTMLAttributes<T> {} *)
+
+let areaHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       alt?: string;
+       coords?: string;
+       download?: any;
+       href?: string;
+       hrefLang?: string;
+       media?: string;
+       referrerPolicy?: HTMLAttributeReferrerPolicy;
+       rel?: string;
+       shape?: string;
+       target?: string;
+   } *)
+
+let baseHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       href?: string;
+       target?: string;
+   } *)
+
+let blockquoteHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       cite?: string;
+   } *)
+
+let buttonHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       autoFocus?: boolean;
+       disabled?: boolean;
+       form?: string;
+       formAction?: string;
+       formEncType?: string;
+       formMethod?: string;
+       formNoValidate?: boolean;
+       formTarget?: string;
+       name?: string;
+       type?: 'submit' | 'reset' | 'button';
+       value?: string | ReadonlyArray<string> | number;
+   } *)
+
+let canvasHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       height?: number | string;
+       width?: number | string;
+   } *)
+
+let colHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       span?: number;
+       width?: number | string;
+   } *)
+
+let colgroupHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       span?: number;
+   } *)
+
+let dataHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       value?: string | ReadonlyArray<string> | number;
+   } *)
+
+let detailsHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       open?: boolean;
+       onToggle?: ReactEventHandler<T>;
+   } *)
+
+let delHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       cite?: string;
+       dateTime?: string;
+   } *)
+
+let dialogHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       open?: boolean;
+   } *)
+
+let embedHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       height?: number | string;
+       src?: string;
+       type?: string;
+       width?: number | string;
+   } *)
+
+let fieldsetHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       disabled?: boolean;
+       form?: string;
+       name?: string;
+   } *)
+
+let formHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       acceptCharset?: string;
+       action?: string;
+       autoComplete?: string;
+       encType?: string;
+       method?: string;
+       name?: string;
+       noValidate?: boolean;
+       target?: string;
+   } *)
+
+let htmlHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       manifest?: string;
+   } *)
+
+let iframeHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       allow?: string;
+       allowFullScreen?: boolean;
+       allowTransparency?: boolean;
+       /** @deprecated */
+       frameBorder?: number | string;
+       height?: number | string;
+       loading?: "eager" | "lazy";
+       /** @deprecated */
+       marginHeight?: number;
+       /** @deprecated */
+       marginWidth?: number;
+       name?: string;
+       referrerPolicy?: HTMLAttributeReferrerPolicy;
+       sandbox?: string;
+       /** @deprecated */
+       scrolling?: string;
+       seamless?: boolean;
+       src?: string;
+       srcDoc?: string;
+       width?: number | string;
+   } *)
+
+let imgHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       alt?: string;
+       crossOrigin?: "anonymous" | "use-credentials" | "";
+       decoding?: "async" | "auto" | "sync";
+       height?: number | string;
+       loading?: "eager" | "lazy";
+       referrerPolicy?: HTMLAttributeReferrerPolicy;
+       sizes?: string;
+       src?: string;
+       srcSet?: string;
+       useMap?: string;
+       width?: number | string;
+   } *)
+
+let insHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       cite?: string;
+       dateTime?: string;
+   } *)
+
+type inputTypeAttribute = string
+(*
+        | 'button'
+        | 'checkbox'
+        | 'color'
+        | 'date'
+        | 'datetime-local'
+        | 'email'
+        | 'file'
+        | 'hidden'
+        | 'image'
+        | 'month'
+        | 'number'
+        | 'password'
+        | 'radio'
+        | 'range'
+        | 'reset'
+        | 'search'
+        | 'submit'
+        | 'tel'
+        | 'text'
+        | 'time'
+        | 'url'
+        | 'week'
+        | (string & {});  *)
+
+let inputHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       accept?: string;
+       alt?: string;
+       autoComplete?: string;
+       autoFocus?: boolean;
+       capture?: boolean | string; // https://www.w3.org/TR/html-media-capture/#the-capture-attribute
+       checked?: boolean;
+       crossOrigin?: string;
+       disabled?: boolean;
+       form?: string;
+       formAction?: string;
+       formEncType?: string;
+       formMethod?: string;
+       formNoValidate?: boolean;
+       formTarget?: string;
+       height?: number | string;
+       list?: string;
+       max?: number | string;
+       maxLength?: number;
+       min?: number | string;
+       minLength?: number;
+       multiple?: boolean;
+       name?: string;
+       pattern?: string;
+       placeholder?: string;
+       readOnly?: boolean;
+       required?: boolean;
+       size?: number;
+       src?: string;
+       step?: number | string;
+       type?: HTMLInputTypeAttribute;
+       value?: string | ReadonlyArray<string> | number;
+       width?: number | string;
+
+       onChange?: ChangeEventHandler<T>;
+   } *)
+
+let keygenHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       autoFocus?: boolean;
+       challenge?: string;
+       disabled?: boolean;
+       form?: string;
+       keyType?: string;
+       keyParams?: string;
+       name?: string;
+   } *)
+
+let labelHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       form?: string;
+       htmlFor?: string;
+   } *)
+
+let liHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       value?: string | ReadonlyArray<string> | number;
+   } *)
+
+let linkHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       as?: string;
+       crossOrigin?: string;
+       href?: string;
+       hrefLang?: string;
+       integrity?: string;
+       imageSrcSet?: string;
+       media?: string;
+       referrerPolicy?: HTMLAttributeReferrerPolicy;
+       rel?: string;
+       sizes?: string;
+       type?: string;
+       charSet?: string;
+   } *)
+
+let mapHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       name?: string;
+   } *)
+
+let menuHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       type?: string;
+   } *)
+
+let mediaHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       autoPlay?: boolean;
+       controls?: boolean;
+       controlsList?: string;
+       crossOrigin?: string;
+       loop?: boolean;
+       mediaGroup?: string;
+       muted?: boolean;
+       playsInline?: boolean;
+       preload?: string;
+       src?: string;
+   } *)
+
+let metaHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       charSet?: string;
+       content?: string;
+       httpEquiv?: string;
+       name?: string;
+       media?: string;
+   } *)
+
+let meterHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       form?: string;
+       high?: number;
+       low?: number;
+       max?: number | string;
+       min?: number | string;
+       optimum?: number;
+       value?: string | ReadonlyArray<string> | number;
+   } *)
+
+let quoteHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       cite?: string;
+   } *)
+
+let objectHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       classID?: string;
+       data?: string;
+       form?: string;
+       height?: number | string;
+       name?: string;
+       type?: string;
+       useMap?: string;
+       width?: number | string;
+       wmode?: string;
+   } *)
+
+let olHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       reversed?: boolean;
+       start?: number;
+       type?: '1' | 'a' | 'A' | 'i' | 'I';
+   } *)
+
+let optgroupHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       disabled?: boolean;
+       label?: string;
+   } *)
+
+let optionHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       disabled?: boolean;
+       label?: string;
+       selected?: boolean;
+       value?: string | ReadonlyArray<string> | number;
+   } *)
+
+let outputHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       form?: string;
+       htmlFor?: string;
+       name?: string;
+   } *)
+
+let paramHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       name?: string;
+       value?: string | ReadonlyArray<string> | number;
+   } *)
+
+let progressHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       max?: number | string;
+       value?: string | ReadonlyArray<string> | number;
+   } *)
+
+let slotHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       name?: string;
+   } *)
+
+let scriptHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       async?: boolean;
+       /** @deprecated */
+       charSet?: string;
+       crossOrigin?: string;
+       defer?: boolean;
+       integrity?: string;
+       noModule?: boolean;
+       nonce?: string;
+       referrerPolicy?: HTMLAttributeReferrerPolicy;
+       src?: string;
+       type?: string;
+   } *)
+
+let selectHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       autoComplete?: string;
+       autoFocus?: boolean;
+       disabled?: boolean;
+       form?: string;
+       multiple?: boolean;
+       name?: string;
+       required?: boolean;
+       size?: number;
+       value?: string | ReadonlyArray<string> | number;
+       onChange?: ChangeEventHandler<T>;
+   } *)
+
+let sourceHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       height?: number | string;
+       media?: string;
+       sizes?: string;
+       src?: string;
+       srcSet?: string;
+       type?: string;
+       width?: number | string;
+   } *)
+
+let styleHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       media?: string;
+       nonce?: string;
+       scoped?: boolean;
+       type?: string;
+   } *)
+
+let tableHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       cellPadding?: number | string;
+       cellSpacing?: number | string;
+       summary?: string;
+       width?: number | string;
+   } *)
+
+let textareaHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       autoComplete?: string;
+       autoFocus?: boolean;
+       cols?: number;
+       dirName?: string;
+       disabled?: boolean;
+       form?: string;
+       maxLength?: number;
+       minLength?: number;
+       name?: string;
+       placeholder?: string;
+       readOnly?: boolean;
+       required?: boolean;
+       rows?: number;
+       value?: string | ReadonlyArray<string> | number;
+       wrap?: string;
+
+       onChange?: ChangeEventHandler<T>;
+   } *)
+
+let tdHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       align?: "left" | "center" | "right" | "justify" | "char";
+       colSpan?: number;
+       headers?: string;
+       rowSpan?: number;
+       scope?: string;
+       abbr?: string;
+       height?: number | string;
+       width?: number | string;
+       valign?: "top" | "middle" | "bottom" | "baseline";
+   } *)
+
+let thHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       align?: "left" | "center" | "right" | "justify" | "char";
+       colSpan?: number;
+       headers?: string;
+       rowSpan?: number;
+       scope?: string;
+       abbr?: string;
+   } *)
+
+let timeHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       dateTime?: string;
+   } *)
+
+let trackHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       default?: boolean;
+       kind?: string;
+       label?: string;
+       src?: string;
+       srcLang?: string;
+   } *)
+
+let videoHTMLAttributes = []
+(* <T> extends MediaHTMLAttributes<T> {
+       height?: number | string;
+       playsInline?: boolean;
+       poster?: string;
+       width?: number | string;
+       disablePictureInPicture?: boolean;
+   } *)
+
+(* // this list is "complete" in that it contains every SVG attribute
+   // that React supports, but the types can be improved.
+   // Full list here: https://facebook.github.io/react/docs/dom-elements.html
+   //
+   // The three broad type categories are (in order of restrictiveness):
+   //   - "number | string"
+   //   - "string"
+   //   - union of string literals *)
+let sVGAttributes = []
+(* <T> extends AriaAttributes, DOMAttributes<T> {
+       // Attributes which also defined in HTMLAttributes
+       // See comment in SVGDOMPropertyConfig.js
+       className?: string;
+       color?: string;
+       height?: number | string;
+       id?: string;
+       lang?: string;
+       max?: number | string;
+       media?: string;
+       method?: string;
+       min?: number | string;
+       name?: string;
+       style?: CSSProperties;
+       target?: string;
+       type?: string;
+       width?: number | string;
+
+       // Other HTML properties supported by SVG elements in browsers
+       role?: AriaRole;
+       tabIndex?: number;
+       crossOrigin?: "anonymous" | "use-credentials" | "";
+
+       // SVG Specific attributes
+       accentHeight?: number | string;
+       accumulate?: "none" | "sum";
+       additive?: "replace" | "sum";
+       alignmentBaseline?: "auto" | "baseline" | "before-edge" | "text-before-edge" | "middle" | "central" | "after-edge" |
+       "text-after-edge" | "ideographic" | "alphabetic" | "hanging" | "mathematical" | "inherit";
+       allowReorder?: "no" | "yes";
+       alphabetic?: number | string;
+       amplitude?: number | string;
+       arabicForm?: "initial" | "medial" | "terminal" | "isolated";
+       ascent?: number | string;
+       attributeName?: string;
+       attributeType?: string;
+       autoReverse?: Booleanish;
+       azimuth?: number | string;
+       baseFrequency?: number | string;
+       baselineShift?: number | string;
+       baseProfile?: number | string;
+       bbox?: number | string;
+       begin?: number | string;
+       bias?: number | string;
+       by?: number | string;
+       calcMode?: number | string;
+       capHeight?: number | string;
+       clip?: number | string;
+       clipPath?: string;
+       clipPathUnits?: number | string;
+       clipRule?: number | string;
+       colorInterpolation?: number | string;
+       colorInterpolationFilters?: "auto" | "sRGB" | "linearRGB" | "inherit";
+       colorProfile?: number | string;
+       colorRendering?: number | string;
+       contentScriptType?: number | string;
+       contentStyleType?: number | string;
+       cursor?: number | string;
+       cx?: number | string;
+       cy?: number | string;
+       d?: string;
+       decelerate?: number | string;
+       descent?: number | string;
+       diffuseConstant?: number | string;
+       direction?: number | string;
+       display?: number | string;
+       divisor?: number | string;
+       dominantBaseline?: number | string;
+       dur?: number | string;
+       dx?: number | string;
+       dy?: number | string;
+       edgeMode?: number | string;
+       elevation?: number | string;
+       enableBackground?: number | string;
+       end?: number | string;
+       exponent?: number | string;
+       externalResourcesRequired?: Booleanish;
+       fill?: string;
+       fillOpacity?: number | string;
+       fillRule?: "nonzero" | "evenodd" | "inherit";
+       filter?: string;
+       filterRes?: number | string;
+       filterUnits?: number | string;
+       floodColor?: number | string;
+       floodOpacity?: number | string;
+       focusable?: Booleanish | "auto";
+       fontFamily?: string;
+       fontSize?: number | string;
+       fontSizeAdjust?: number | string;
+       fontStretch?: number | string;
+       fontStyle?: number | string;
+       fontVariant?: number | string;
+       fontWeight?: number | string;
+       format?: number | string;
+       fr?: number | string;
+       from?: number | string;
+       fx?: number | string;
+       fy?: number | string;
+       g1?: number | string;
+       g2?: number | string;
+       glyphName?: number | string;
+       glyphOrientationHorizontal?: number | string;
+       glyphOrientationVertical?: number | string;
+       glyphRef?: number | string;
+       gradientTransform?: string;
+       gradientUnits?: string;
+       hanging?: number | string;
+       horizAdvX?: number | string;
+       horizOriginX?: number | string;
+       href?: string;
+       ideographic?: number | string;
+       imageRendering?: number | string;
+       in2?: number | string;
+       in?: string;
+       intercept?: number | string;
+       k1?: number | string;
+       k2?: number | string;
+       k3?: number | string;
+       k4?: number | string;
+       k?: number | string;
+       kernelMatrix?: number | string;
+       kernelUnitLength?: number | string;
+       kerning?: number | string;
+       keyPoints?: number | string;
+       keySplines?: number | string;
+       keyTimes?: number | string;
+       lengthAdjust?: number | string;
+       letterSpacing?: number | string;
+       lightingColor?: number | string;
+       limitingConeAngle?: number | string;
+       local?: number | string;
+       markerEnd?: string;
+       markerHeight?: number | string;
+       markerMid?: string;
+       markerStart?: string;
+       markerUnits?: number | string;
+       markerWidth?: number | string;
+       mask?: string;
+       maskContentUnits?: number | string;
+       maskUnits?: number | string;
+       mathematical?: number | string;
+       mode?: number | string;
+       numOctaves?: number | string;
+       offset?: number | string;
+       opacity?: number | string;
+       operator?: number | string;
+       order?: number | string;
+       orient?: number | string;
+       orientation?: number | string;
+       origin?: number | string;
+       overflow?: number | string;
+       overlinePosition?: number | string;
+       overlineThickness?: number | string;
+       paintOrder?: number | string;
+       panose1?: number | string;
+       path?: string;
+       pathLength?: number | string;
+       patternContentUnits?: string;
+       patternTransform?: number | string;
+       patternUnits?: string;
+       pointerEvents?: number | string;
+       points?: string;
+       pointsAtX?: number | string;
+       pointsAtY?: number | string;
+       pointsAtZ?: number | string;
+       preserveAlpha?: Booleanish;
+       preserveAspectRatio?: string;
+       primitiveUnits?: number | string;
+       r?: number | string;
+       radius?: number | string;
+       refX?: number | string;
+       refY?: number | string;
+       renderingIntent?: number | string;
+       repeatCount?: number | string;
+       repeatDur?: number | string;
+       requiredExtensions?: number | string;
+       requiredFeatures?: number | string;
+       restart?: number | string;
+       result?: string;
+       rotate?: number | string;
+       rx?: number | string;
+       ry?: number | string;
+       scale?: number | string;
+       seed?: number | string;
+       shapeRendering?: number | string;
+       slope?: number | string;
+       spacing?: number | string;
+       specularConstant?: number | string;
+       specularExponent?: number | string;
+       speed?: number | string;
+       spreadMethod?: string;
+       startOffset?: number | string;
+       stdDeviation?: number | string;
+       stemh?: number | string;
+       stemv?: number | string;
+       stitchTiles?: number | string;
+       stopColor?: string;
+       stopOpacity?: number | string;
+       strikethroughPosition?: number | string;
+       strikethroughThickness?: number | string;
+       string?: number | string;
+       stroke?: string;
+       strokeDasharray?: string | number;
+       strokeDashoffset?: string | number;
+       strokeLinecap?: "butt" | "round" | "square" | "inherit";
+       strokeLinejoin?: "miter" | "round" | "bevel" | "inherit";
+       strokeMiterlimit?: number | string;
+       strokeOpacity?: number | string;
+       strokeWidth?: number | string;
+       surfaceScale?: number | string;
+       systemLanguage?: number | string;
+       tableValues?: number | string;
+       targetX?: number | string;
+       targetY?: number | string;
+       textAnchor?: string;
+       textDecoration?: number | string;
+       textLength?: number | string;
+       textRendering?: number | string;
+       to?: number | string;
+       transform?: string;
+       u1?: number | string;
+       u2?: number | string;
+       underlinePosition?: number | string;
+       underlineThickness?: number | string;
+       unicode?: number | string;
+       unicodeBidi?: number | string;
+       unicodeRange?: number | string;
+       unitsPerEm?: number | string;
+       vAlphabetic?: number | string;
+       values?: string;
+       vectorEffect?: number | string;
+       version?: string;
+       vertAdvY?: number | string;
+       vertOriginX?: number | string;
+       vertOriginY?: number | string;
+       vHanging?: number | string;
+       vIdeographic?: number | string;
+       viewBox?: string;
+       viewTarget?: number | string;
+       visibility?: number | string;
+       vMathematical?: number | string;
+       widths?: number | string;
+       wordSpacing?: number | string;
+       writingMode?: number | string;
+       x1?: number | string;
+       x2?: number | string;
+       x?: number | string;
+       xChannelSelector?: string;
+       xHeight?: number | string;
+       xlinkActuate?: string;
+       xlinkArcrole?: string;
+       xlinkHref?: string;
+       xlinkRole?: string;
+       xlinkShow?: string;
+       xlinkTitle?: string;
+       xlinkType?: string;
+       xmlBase?: string;
+       xmlLang?: string;
+       xmlns?: string;
+       xmlnsXlink?: string;
+       xmlSpace?: string;
+       y1?: number | string;
+       y2?: number | string;
+       y?: number | string;
+       yChannelSelector?: string;
+       z?: number | string;
+       zoomAndPan?: string;
+   } *)
+
+let webViewHTMLAttributes = []
+(* <T> extends HTMLAttributes<T> {
+       allowFullScreen?: boolean;
+       allowpopups?: boolean;
+       autoFocus?: boolean;
+       autosize?: boolean;
+       blinkfeatures?: string;
+       disableblinkfeatures?: string;
+       disableguestresize?: boolean;
+       disablewebsecurity?: boolean;
+       guestinstance?: string;
+       httpreferrer?: string;
+       nodeintegration?: boolean;
+       partition?: string;
+       plugins?: boolean;
+       preload?: string;
+       src?: string;
+       useragent?: string;
+       webpreferences?: string;
+   } *)
+
+let reactSVG = []
+(* {
+       animate: SVGFactory;
+       circle: SVGFactory;
+       clipPath: SVGFactory;
+       defs: SVGFactory;
+       desc: SVGFactory;
+       ellipse: SVGFactory;
+       feBlend: SVGFactory;
+       feColorMatrix: SVGFactory;
+       feComponentTransfer: SVGFactory;
+       feComposite: SVGFactory;
+       feConvolveMatrix: SVGFactory;
+       feDiffuseLighting: SVGFactory;
+       feDisplacementMap: SVGFactory;
+       feDistantLight: SVGFactory;
+       feDropShadow: SVGFactory;
+       feFlood: SVGFactory;
+       feFuncA: SVGFactory;
+       feFuncB: SVGFactory;
+       feFuncG: SVGFactory;
+       feFuncR: SVGFactory;
+       feGaussianBlur: SVGFactory;
+       feImage: SVGFactory;
+       feMerge: SVGFactory;
+       feMergeNode: SVGFactory;
+       feMorphology: SVGFactory;
+       feOffset: SVGFactory;
+       fePointLight: SVGFactory;
+       feSpecularLighting: SVGFactory;
+       feSpotLight: SVGFactory;
+       feTile: SVGFactory;
+       feTurbulence: SVGFactory;
+       filter: SVGFactory;
+       foreignObject: SVGFactory;
+       g: SVGFactory;
+       image: SVGFactory;
+       line: SVGFactory;
+       linearGradient: SVGFactory;
+       marker: SVGFactory;
+       mask: SVGFactory;
+       metadata: SVGFactory;
+       path: SVGFactory;
+       pattern: SVGFactory;
+       polygon: SVGFactory;
+       polyline: SVGFactory;
+       radialGradient: SVGFactory;
+       rect: SVGFactory;
+       stop: SVGFactory;
+       svg: SVGFactory;
+       switch: SVGFactory;
+       symbol: SVGFactory;
+       text: SVGFactory;
+       textPath: SVGFactory;
+       tspan: SVGFactory;
+       use: SVGFactory;
+       view: SVGFactory;
+   } *)
+
+(* //
+   // Browser Interfaces
+   // https://github.com/nikeee/2048-typescript/blob/master/2048/js/touch.d.ts
+   // ---------------------------------------------------------------------- *)
+
+let abstractView = []
+(* {
+       styleMedia: StyleMedia;
+       document: Document;
+   } *)
+
+let touch = []
+(* {
+       identifier: number;
+       target: EventTarget;
+       screenX: number;
+       screenY: number;
+       clientX: number;
+       clientY: number;
+       pageX: number;
+       pageY: number;
+   } *)
+
+let touchList = []
+(* {
+       [index: number]: Touch;
+       length: number;
+       item(index: number): Touch;
+       identifiedTouch(identifier: number): Touch;
+   } *)
+
+(* // Error Interfaces *)
+let errorInfo = []
+(* {
+       /**
+        * Captures which component contained the exception, and its ancestors.
+        */
+       componentStack: string;
+   } *)
+
+let htmlElements =
+  [ (* HTML *)
+    { tag= "a"
+    ; attributes=
+        [ (* attributesHTML + <React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> *) ]
+    }
+  ; (*
+a: DetailedHTMLFactory<AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>;
+        abbr: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        address: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        area: DetailedHTMLFactory<AreaHTMLAttributes<HTMLAreaElement>, HTMLAreaElement>;
+        article: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        aside: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        audio: DetailedHTMLFactory<AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement>;
+        b: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        base: DetailedHTMLFactory<BaseHTMLAttributes<HTMLBaseElement>, HTMLBaseElement>;
+        bdi: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        bdo: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        big: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        blockquote: DetailedHTMLFactory<BlockquoteHTMLAttributes<HTMLElement>, HTMLElement>;
+        body: DetailedHTMLFactory<HTMLAttributes<HTMLBodyElement>, HTMLBodyElement>;
+        br: DetailedHTMLFactory<HTMLAttributes<HTMLBRElement>, HTMLBRElement>;
+        button: DetailedHTMLFactory<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
+        canvas: DetailedHTMLFactory<CanvasHTMLAttributes<HTMLCanvasElement>, HTMLCanvasElement>;
+        caption: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        cite: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        code: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        col: DetailedHTMLFactory<ColHTMLAttributes<HTMLTableColElement>, HTMLTableColElement>;
+        colgroup: DetailedHTMLFactory<ColgroupHTMLAttributes<HTMLTableColElement>, HTMLTableColElement>;
+        data: DetailedHTMLFactory<DataHTMLAttributes<HTMLDataElement>, HTMLDataElement>;
+        datalist: DetailedHTMLFactory<HTMLAttributes<HTMLDataListElement>, HTMLDataListElement>;
+        dd: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        del: DetailedHTMLFactory<DelHTMLAttributes<HTMLElement>, HTMLElement>;
+        details: DetailedHTMLFactory<DetailsHTMLAttributes<HTMLElement>, HTMLElement>;
+        dfn: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        dialog: DetailedHTMLFactory<DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>;
+        div: DetailedHTMLFactory<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+        dl: DetailedHTMLFactory<HTMLAttributes<HTMLDListElement>, HTMLDListElement>;
+        dt: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        em: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        embed: DetailedHTMLFactory<EmbedHTMLAttributes<HTMLEmbedElement>, HTMLEmbedElement>;
+        fieldset: DetailedHTMLFactory<FieldsetHTMLAttributes<HTMLFieldSetElement>, HTMLFieldSetElement>;
+        figcaption: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        figure: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        footer: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        form: DetailedHTMLFactory<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>;
+        h1: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+        h2: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+        h3: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+        h4: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+        h5: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+        h6: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+        head: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLHeadElement>;
+        header: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        hgroup: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        hr: DetailedHTMLFactory<HTMLAttributes<HTMLHRElement>, HTMLHRElement>;
+        html: DetailedHTMLFactory<HtmlHTMLAttributes<HTMLHtmlElement>, HTMLHtmlElement>;
+        i: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        iframe: DetailedHTMLFactory<IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
+        img: DetailedHTMLFactory<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
+        input: DetailedHTMLFactory<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+        ins: DetailedHTMLFactory<InsHTMLAttributes<HTMLModElement>, HTMLModElement>;
+        kbd: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        keygen: DetailedHTMLFactory<KeygenHTMLAttributes<HTMLElement>, HTMLElement>;
+        label: DetailedHTMLFactory<LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>;
+        legend: DetailedHTMLFactory<HTMLAttributes<HTMLLegendElement>, HTMLLegendElement>;
+        li: DetailedHTMLFactory<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>;
+        link: DetailedHTMLFactory<LinkHTMLAttributes<HTMLLinkElement>, HTMLLinkElement>;
+        main: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        map: DetailedHTMLFactory<MapHTMLAttributes<HTMLMapElement>, HTMLMapElement>;
+        mark: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        menu: DetailedHTMLFactory<MenuHTMLAttributes<HTMLElement>, HTMLElement>;
+        menuitem: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        meta: DetailedHTMLFactory<MetaHTMLAttributes<HTMLMetaElement>, HTMLMetaElement>;
+        meter: DetailedHTMLFactory<MeterHTMLAttributes<HTMLElement>, HTMLElement>;
+        nav: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        noscript: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        object: DetailedHTMLFactory<ObjectHTMLAttributes<HTMLObjectElement>, HTMLObjectElement>;
+        ol: DetailedHTMLFactory<OlHTMLAttributes<HTMLOListElement>, HTMLOListElement>;
+        optgroup: DetailedHTMLFactory<OptgroupHTMLAttributes<HTMLOptGroupElement>, HTMLOptGroupElement>;
+        option: DetailedHTMLFactory<OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>;
+        output: DetailedHTMLFactory<OutputHTMLAttributes<HTMLElement>, HTMLElement>;
+        p: DetailedHTMLFactory<HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>;
+        param: DetailedHTMLFactory<ParamHTMLAttributes<HTMLParamElement>, HTMLParamElement>;
+        picture: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        pre: DetailedHTMLFactory<HTMLAttributes<HTMLPreElement>, HTMLPreElement>;
+        progress: DetailedHTMLFactory<ProgressHTMLAttributes<HTMLProgressElement>, HTMLProgressElement>;
+        q: DetailedHTMLFactory<QuoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement>;
+        rp: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        rt: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        ruby: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        s: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        samp: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        slot: DetailedHTMLFactory<SlotHTMLAttributes<HTMLSlotElement>, HTMLSlotElement>;
+        script: DetailedHTMLFactory<ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement>;
+        section: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        select: DetailedHTMLFactory<SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
+        small: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        source: DetailedHTMLFactory<SourceHTMLAttributes<HTMLSourceElement>, HTMLSourceElement>;
+        span: DetailedHTMLFactory<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
+        strong: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        style: DetailedHTMLFactory<StyleHTMLAttributes<HTMLStyleElement>, HTMLStyleElement>;
+        sub: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        summary: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        sup: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        table: DetailedHTMLFactory<TableHTMLAttributes<HTMLTableElement>, HTMLTableElement>;
+        template: DetailedHTMLFactory<HTMLAttributes<HTMLTemplateElement>, HTMLTemplateElement>;
+        tbody: DetailedHTMLFactory<HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
+        td: DetailedHTMLFactory<TdHTMLAttributes<HTMLTableDataCellElement>, HTMLTableDataCellElement>;
+        textarea: DetailedHTMLFactory<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
+        tfoot: DetailedHTMLFactory<HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
+        th: DetailedHTMLFactory<ThHTMLAttributes<HTMLTableHeaderCellElement>, HTMLTableHeaderCellElement>;
+        thead: DetailedHTMLFactory<HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
+        time: DetailedHTMLFactory<TimeHTMLAttributes<HTMLElement>, HTMLElement>;
+        title: DetailedHTMLFactory<HTMLAttributes<HTMLTitleElement>, HTMLTitleElement>;
+        tr: DetailedHTMLFactory<HTMLAttributes<HTMLTableRowElement>, HTMLTableRowElement>;
+        track: DetailedHTMLFactory<TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement>;
+        u: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        ul: DetailedHTMLFactory<HTMLAttributes<HTMLUListElement>, HTMLUListElement>;
+        "var": DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        video: DetailedHTMLFactory<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
+        wbr: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
+        webview: DetailedHTMLFactory<WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement>;
+  abbr: attributesHTML + <HTMLElement>, HTMLElement>;
+       address: attributesHTML + <HTMLElement>, HTMLElement>;
+       area: attributesHTML + <React.AreaHTMLAttributes<HTMLAreaElement>, HTMLAreaElement>;
+       article: attributesHTML + <HTMLElement>, HTMLElement>;
+       aside: attributesHTML + <HTMLElement>, HTMLElement>;
+       audio: attributesHTML + <React.AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement>;
+       b: attributesHTML + <HTMLElement>, HTMLElement>;
+       base: attributesHTML + <React.BaseHTMLAttributes<HTMLBaseElement>, HTMLBaseElement>;
+       bdi: attributesHTML + <HTMLElement>, HTMLElement>;
+       bdo: attributesHTML + <HTMLElement>, HTMLElement>;
+       big: attributesHTML + <HTMLElement>, HTMLElement>;
+       blockquote: attributesHTML + <React.BlockquoteHTMLAttributes<HTMLElement>, HTMLElement>;
+       body: attributesHTML + <HTMLBodyElement>, HTMLBodyElement>;
+       br: attributesHTML + <HTMLBRElement>, HTMLBRElement>;
+       button: attributesHTML + <React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
+       canvas: attributesHTML + <React.CanvasHTMLAttributes<HTMLCanvasElement>, HTMLCanvasElement>;
+       caption: attributesHTML + <HTMLElement>, HTMLElement>;
+       cite: attributesHTML + <HTMLElement>, HTMLElement>;
+       code: attributesHTML + <HTMLElement>, HTMLElement>;
+       col: attributesHTML + <React.ColHTMLAttributes<HTMLTableColElement>, HTMLTableColElement>;
+       colgroup: attributesHTML + <React.ColgroupHTMLAttributes<HTMLTableColElement>, HTMLTableColElement>;
+       data: attributesHTML + <React.DataHTMLAttributes<HTMLDataElement>, HTMLDataElement>;
+       datalist: attributesHTML + <HTMLDataListElement>, HTMLDataListElement>;
+       dd: attributesHTML + <HTMLElement>, HTMLElement>;
+       del: attributesHTML + <React.DelHTMLAttributes<HTMLElement>, HTMLElement>;
+       details: attributesHTML + <React.DetailsHTMLAttributes<HTMLElement>, HTMLElement>;
+       dfn: attributesHTML + <HTMLElement>, HTMLElement>;
+       dialog: attributesHTML + <React.DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>;
+       div: attributesHTML + <HTMLDivElement>, HTMLDivElement>;
+       dl: attributesHTML + <HTMLDListElement>, HTMLDListElement>;
+       dt: attributesHTML + <HTMLElement>, HTMLElement>;
+       em: attributesHTML + <HTMLElement>, HTMLElement>;
+       embed: attributesHTML + <React.EmbedHTMLAttributes<HTMLEmbedElement>, HTMLEmbedElement>;
+       fieldset: attributesHTML + <React.FieldsetHTMLAttributes<HTMLFieldSetElement>, HTMLFieldSetElement>;
+       figcaption: attributesHTML + <HTMLElement>, HTMLElement>;
+       figure: attributesHTML + <HTMLElement>, HTMLElement>;
+       footer: attributesHTML + <HTMLElement>, HTMLElement>;
+       form: attributesHTML + <React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>;
+       h1: attributesHTML + <HTMLHeadingElement>, HTMLHeadingElement>;
+       h2: attributesHTML + <HTMLHeadingElement>, HTMLHeadingElement>;
+       h3: attributesHTML + <HTMLHeadingElement>, HTMLHeadingElement>;
+       h4: attributesHTML + <HTMLHeadingElement>, HTMLHeadingElement>;
+       h5: attributesHTML + <HTMLHeadingElement>, HTMLHeadingElement>;
+       h6: attributesHTML + <HTMLHeadingElement>, HTMLHeadingElement>;
+       head: attributesHTML + <HTMLHeadElement>, HTMLHeadElement>;
+       header: attributesHTML + <HTMLElement>, HTMLElement>;
+       hgroup: attributesHTML + <HTMLElement>, HTMLElement>;
+       hr: attributesHTML + <HTMLHRElement>, HTMLHRElement>;
+       html: attributesHTML + <React.HtmlHTMLAttributes<HTMLHtmlElement>, HTMLHtmlElement>;
+       i: attributesHTML + <HTMLElement>, HTMLElement>;
+       iframe: attributesHTML + <React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
+       img: attributesHTML + <React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
+       input: attributesHTML + <React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+       ins: attributesHTML + <React.InsHTMLAttributes<HTMLModElement>, HTMLModElement>;
+       kbd: attributesHTML + <HTMLElement>, HTMLElement>;
+       keygen: attributesHTML + <React.KeygenHTMLAttributes<HTMLElement>, HTMLElement>;
+       label: attributesHTML + <React.LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>;
+       legend: attributesHTML + <HTMLLegendElement>, HTMLLegendElement>;
+       li: attributesHTML + <React.LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>;
+       link: attributesHTML + <React.LinkHTMLAttributes<HTMLLinkElement>, HTMLLinkElement>;
+       main: attributesHTML + <HTMLElement>, HTMLElement>;
+       map: attributesHTML + <React.MapHTMLAttributes<HTMLMapElement>, HTMLMapElement>;
+       mark: attributesHTML + <HTMLElement>, HTMLElement>;
+       menu: attributesHTML + <React.MenuHTMLAttributes<HTMLElement>, HTMLElement>;
+       menuitem: attributesHTML + <HTMLElement>, HTMLElement>;
+       meta: attributesHTML + <React.MetaHTMLAttributes<HTMLMetaElement>, HTMLMetaElement>;
+       meter: attributesHTML + <React.MeterHTMLAttributes<HTMLElement>, HTMLElement>;
+       nav: attributesHTML + <HTMLElement>, HTMLElement>;
+       noindex: attributesHTML + <HTMLElement>, HTMLElement>;
+       noscript: attributesHTML + <HTMLElement>, HTMLElement>;
+       object_: attributesHTML + <React.ObjectHTMLAttributes<HTMLObjectElement>, HTMLObjectElement>;
+       ol: attributesHTML + <React.OlHTMLAttributes<HTMLOListElement>, HTMLOListElement>;
+       optgroup: attributesHTML + <React.OptgroupHTMLAttributes<HTMLOptGroupElement>, HTMLOptGroupElement>;
+       option: attributesHTML + <React.OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>;
+       output: attributesHTML + <React.OutputHTMLAttributes<HTMLElement>, HTMLElement>;
+       p: attributesHTML + <HTMLParagraphElement>, HTMLParagraphElement>;
+       param: attributesHTML + <React.ParamHTMLAttributes<HTMLParamElement>, HTMLParamElement>;
+       picture: attributesHTML + <HTMLElement>, HTMLElement>;
+       pre: attributesHTML + <HTMLPreElement>, HTMLPreElement>;
+       progress: attributesHTML + <React.ProgressHTMLAttributes<HTMLProgressElement>, HTMLProgressElement>;
+       q: attributesHTML + <React.QuoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement>;
+       rp: attributesHTML + <HTMLElement>, HTMLElement>;
+       rt: attributesHTML + <HTMLElement>, HTMLElement>;
+       ruby: attributesHTML + <HTMLElement>, HTMLElement>;
+       s: attributesHTML + <HTMLElement>, HTMLElement>;
+       samp: attributesHTML + <HTMLElement>, HTMLElement>;
+       slot: attributesHTML + <React.SlotHTMLAttributes<HTMLSlotElement>, HTMLSlotElement>;
+       script: attributesHTML + <React.ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement>;
+       section: attributesHTML + <HTMLElement>, HTMLElement>;
+       select: attributesHTML + <React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
+       small: attributesHTML + <HTMLElement>, HTMLElement>;
+       source: attributesHTML + <React.SourceHTMLAttributes<HTMLSourceElement>, HTMLSourceElement>;
+       span: attributesHTML + <HTMLSpanElement>, HTMLSpanElement>;
+       strong: attributesHTML + <HTMLElement>, HTMLElement>;
+       style: attributesHTML + <React.StyleHTMLAttributes<HTMLStyleElement>, HTMLStyleElement>;
+       sub: attributesHTML + <HTMLElement>, HTMLElement>;
+       summary: attributesHTML + <HTMLElement>, HTMLElement>;
+       sup: attributesHTML + <HTMLElement>, HTMLElement>;
+       table: attributesHTML + <React.TableHTMLAttributes<HTMLTableElement>, HTMLTableElement>;
+       template: attributesHTML + <HTMLTemplateElement>, HTMLTemplateElement>;
+       tbody: attributesHTML + <HTMLTableSectionElement>, HTMLTableSectionElement>;
+       td: attributesHTML + <React.TdHTMLAttributes<HTMLTableDataCellElement>, HTMLTableDataCellElement>;
+       textarea: attributesHTML + <React.TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
+       tfoot: attributesHTML + <HTMLTableSectionElement>, HTMLTableSectionElement>;
+       th: attributesHTML + <React.ThHTMLAttributes<HTMLTableHeaderCellElement>, HTMLTableHeaderCellElement>;
+       thead: attributesHTML + <HTMLTableSectionElement>, HTMLTableSectionElement>;
+       time: attributesHTML + <React.TimeHTMLAttributes<HTMLElement>, HTMLElement>;
+       title: attributesHTML + <HTMLTitleElement>, HTMLTitleElement>;
+       tr: attributesHTML + <HTMLTableRowElement>, HTMLTableRowElement>;
+       track: attributesHTML + <React.TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement>;
+       u: attributesHTML + <HTMLElement>, HTMLElement>;
+       ul: attributesHTML + <HTMLUListElement>, HTMLUListElement>;
+       "var": attributesHTML + <HTMLElement>, HTMLElement>;
+       video: attributesHTML + <React.VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
+       wbr: attributesHTML + <HTMLElement>, HTMLElement>;
+       webview: attributesHTML + <React.WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement>;
+    *)
+    (* SVG *)
+    {tag= "svg"; attributes= [ (* React.SVGProps<SVGSVGElement> *) ]}
+    (* animate: React.SVGProps<SVGElement>; (* TODO: It is SVGAnimateElement but is not in TypeScript's lib.dom.d.ts for now. *)
+       animateMotion: React.SVGProps<SVGElement>;
+       animateTransform: React.SVGProps<SVGElement>; (* TODO: It is SVGAnimateTransformElement but is not in TypeScript's lib.dom.d.ts for now. *)
+       circle: React.SVGProps<SVGCircleElement>;
+       clipPath: React.SVGProps<SVGClipPathElement>;
+       defs: React.SVGProps<SVGDefsElement>;
+       desc: React.SVGProps<SVGDescElement>;
+       ellipse: React.SVGProps<SVGEllipseElement>;
+       feBlend: React.SVGProps<SVGFEBlendElement>;
+       feColorMatrix: React.SVGProps<SVGFEColorMatrixElement>;
+       feComponentTransfer: React.SVGProps<SVGFEComponentTransferElement>;
+       feComposite: React.SVGProps<SVGFECompositeElement>;
+       feConvolveMatrix: React.SVGProps<SVGFEConvolveMatrixElement>;
+       feDiffuseLighting: React.SVGProps<SVGFEDiffuseLightingElement>;
+       feDisplacementMap: React.SVGProps<SVGFEDisplacementMapElement>;
+       feDistantLight: React.SVGProps<SVGFEDistantLightElement>;
+       feDropShadow: React.SVGProps<SVGFEDropShadowElement>;
+       feFlood: React.SVGProps<SVGFEFloodElement>;
+       feFuncA: React.SVGProps<SVGFEFuncAElement>;
+       feFuncB: React.SVGProps<SVGFEFuncBElement>;
+       feFuncG: React.SVGProps<SVGFEFuncGElement>;
+       feFuncR: React.SVGProps<SVGFEFuncRElement>;
+       feGaussianBlur: React.SVGProps<SVGFEGaussianBlurElement>;
+       feImage: React.SVGProps<SVGFEImageElement>;
+       feMerge: React.SVGProps<SVGFEMergeElement>;
+       feMergeNode: React.SVGProps<SVGFEMergeNodeElement>;
+       feMorphology: React.SVGProps<SVGFEMorphologyElement>;
+       feOffset: React.SVGProps<SVGFEOffsetElement>;
+       fePointLight: React.SVGProps<SVGFEPointLightElement>;
+       feSpecularLighting: React.SVGProps<SVGFESpecularLightingElement>;
+       feSpotLight: React.SVGProps<SVGFESpotLightElement>;
+       feTile: React.SVGProps<SVGFETileElement>;
+       feTurbulence: React.SVGProps<SVGFETurbulenceElement>;
+       filter: React.SVGProps<SVGFilterElement>;
+       foreignObject: React.SVGProps<SVGForeignObjectElement>;
+       g: React.SVGProps<SVGGElement>;
+       image: React.SVGProps<SVGImageElement>;
+       line: React.SVGProps<SVGLineElement>;
+       linearGradient: React.SVGProps<SVGLinearGradientElement>;
+       marker: React.SVGProps<SVGMarkerElement>;
+       mask: React.SVGProps<SVGMaskElement>;
+       metadata: React.SVGProps<SVGMetadataElement>;
+       mpath: React.SVGProps<SVGElement>;
+       path: React.SVGProps<SVGPathElement>;
+       pattern: React.SVGProps<SVGPatternElement>;
+       polygon: React.SVGProps<SVGPolygonElement>;
+       polyline: React.SVGProps<SVGPolylineElement>;
+       radialGradient: React.SVGProps<SVGRadialGradientElement>;
+       rect: React.SVGProps<SVGRectElement>;
+       stop: React.SVGProps<SVGStopElement>;
+       switch: React.SVGProps<SVGSwitchElement>;
+       symbol: React.SVGProps<SVGSymbolElement>;
+       text: React.SVGProps<SVGTextElement>;
+       textPath: React.SVGProps<SVGTextPathElement>;
+       tspan: React.SVGProps<SVGTSpanElement>;
+       use: React.SVGProps<SVGUseElement>;
+       view: React.SVGProps<SVGViewElement>; *) ]
