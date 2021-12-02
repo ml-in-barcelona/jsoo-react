@@ -284,7 +284,8 @@ val createRef : unit -> 'a js_nullable Ref.t [@@js.global "React.createRef"]
    Although Reason parser doesn't support it so that's a requirement before adding it here *)
 val createFragment : element list -> element
   [@@js.custom
-    val createFragmentInternal : Ojs.t -> Ojs.t -> element list -> element
+    val createFragmentInternal :
+      Ojs.t -> Ojs.t -> (element list[@js.variadic]) -> element
       [@@js.global "React.createElement"]
 
     val fragmentInternal : Ojs.t [@@js.global "React.Fragment"]
@@ -348,18 +349,18 @@ module Fragment : sig
 
       val makeInternal : Ojs.t [@@js.global "React.Fragment"]
 
-      let makeProps ~children ?key () =
+      let makeProps ?key () =
         match key with
         | Some k ->
             Js_of_ocaml.Js.Unsafe.(
-              obj [|("key", inject k); ("children", inject children)|])
+              obj [|("key", inject k);|])
         | None ->
-            Js_of_ocaml.Js.Unsafe.(obj [|("children", inject children)|])
+            Js_of_ocaml.Js.Unsafe.(obj [||])
 
       let make ~children ?key () =
-        createElement
+        createElementVariadic
           (to_component makeInternal)
-          (makeProps ~children:(list children) ?key ())]
+          (makeProps ?key ()) children]
 end
 
 val memo : 'props component -> 'props component [@@js.global "React.memo"]
