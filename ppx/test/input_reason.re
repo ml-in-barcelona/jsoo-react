@@ -31,7 +31,7 @@ let make = (~a, ~b, _) => {
 
 module External = {
   [@react.component] [@otherAttribute "bla"]
-  external component: (~a: int, ~b: string, _) => React.element;
+  external component: (~a: int, ~b: string) => React.element;
 };
 
 module Bar = {

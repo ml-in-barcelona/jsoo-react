@@ -29,6 +29,26 @@ module Context = struct
   let init = {react_dom= false}
 end
 
+module Str_label = struct
+  type t = Labelled of string | Optional of string
+
+  let of_arg_label : arg_label -> t = function
+    | Labelled s ->
+        Labelled s
+    | Optional s ->
+        Optional s
+    | Nolabel ->
+        failwith "invariant failed: Str_label called with Nolabel"
+
+  let to_arg_label : t -> arg_label = function
+    | Labelled s ->
+        Labelled s
+    | Optional s ->
+        Optional s
+
+  let str = function Labelled s -> s | Optional s -> s
+end
+
 let rec find_opt p = function
   | [] ->
       None
@@ -192,9 +212,9 @@ let dom_tags =
 
 let constantString ~loc str = Ast_helper.Exp.constant ~loc (Const.string str)
 
-let safeTypeFromValue valueStr =
-  let valueStr = getLabel valueStr in
-  match String.sub valueStr 0 1 with "_" -> "T" ^ valueStr | _ -> valueStr
+let safeTypeFromValue label =
+  let str = Str_label.str label in
+  match String.sub str 0 1 with "_" -> "T" ^ str | _ -> str
 
 let keyType loc =
   Typ.constr ~loc {loc; txt= optionIdent}
@@ -373,6 +393,9 @@ let getPropsAttr payload =
 let pluckLabelDefaultLocType (label, default, _, _, loc, type_) =
   (label, default, loc, type_)
 
+let with_arg_label (name, default, noLabelName, alias, loc, type_) =
+  (Str_label.to_arg_label name, default, noLabelName, alias, loc, type_)
+
 (* Lookup the filename from the location information on the AST node and turn it into a valid module identifier *)
 let filenameFromLoc (pstr_loc : Location.t) =
   let fileName =
@@ -414,6 +437,7 @@ let makeModuleName fileName nestedModules fnName =
 
 (* Build an AST node representing all named args for the `makeProps` definition for a component's props *)
 let rec makeArgsForMakePropsType list args =
+  let open Str_label in
   match list with
   | (label, default, loc, interiorType) :: tl ->
       let coreType =
@@ -425,10 +449,10 @@ let rec makeArgsForMakePropsType list args =
         | _label, Some type_, Some _ ->
             type_
         (* ~foo: option(int)=? *)
-        | ( label
+        | ( _label
           , Some {ptyp_desc= Ptyp_constr ({txt= Lident "option"; _}, [type_]); _}
           , _ )
-        | ( label
+        | ( _label
           , Some
               { ptyp_desc=
                   Ptyp_constr
@@ -436,11 +460,10 @@ let rec makeArgsForMakePropsType list args =
               ; _ }
           , _ )
         (* ~foo: int=? - note this isnt valid. but we want to get a type error *)
-        | label, Some type_, _
-          when isOptional label ->
+        | (Optional _ as _label), Some type_, _ ->
             type_
         (* ~foo=? *)
-        | label, None, _ when isOptional label ->
+        | (Optional _ as label), None, _ ->
             Typ.mk ~loc (Ptyp_var (safeTypeFromValue label))
         (* ~foo *)
         | label, None, _ ->
@@ -448,7 +471,8 @@ let rec makeArgsForMakePropsType list args =
         | _label, Some type_, _ ->
             type_
       in
-      makeArgsForMakePropsType tl (Typ.arrow ~loc label coreType args)
+      makeArgsForMakePropsType tl
+        (Typ.arrow ~loc (to_arg_label label) coreType args)
   | [] ->
       args
 
@@ -457,9 +481,10 @@ let makeMakePropsFnName fnName = fnName ^ "Props"
 (* Build an AST node for the props name when converted to a Js.t inside the function signature  *)
 let makePropsName ~loc name = Pat.mk ~loc (Ppat_var {txt= name; loc})
 
-let makeObjectField loc (str, _attrs, propType) =
+let makeObjectField loc (label, _attrs, propType) =
   let type_ = [%type: [%t propType] Js_of_ocaml.Js.readonly_prop] in
-  { pof_desc= Otag ({loc; txt= str}, {type_ with ptyp_attributes= []})
+  { pof_desc=
+      Otag ({loc; txt= Str_label.str label}, {type_ with ptyp_attributes= []})
   ; pof_loc= loc
   ; pof_attributes= [] }
 
@@ -476,8 +501,10 @@ let rec makeFunsForMakePropsBody list args =
   match list with
   | (label, _default, loc, _interiorType) :: tl ->
       makeFunsForMakePropsBody tl
-        (Exp.fun_ ~loc label None
-           { ppat_desc= Ppat_var {txt= getLabel label; loc}
+        (Exp.fun_ ~loc
+           (Str_label.to_arg_label label)
+           None
+           { ppat_desc= Ppat_var {txt= Str_label.str label; loc}
            ; ppat_loc= loc
            ; ppat_attributes= []
            ; ppat_loc_stack= [] }
@@ -541,8 +568,9 @@ let makeValue ~loc prop value =
       makeEventValue ~loc event.type_ value
 
 let makeJsObj ~loc namedArgListWithKeyAndRef =
+  let open Str_label in
   let labelToTuple label =
-    let l = getLabel label in
+    let l = str label in
     let id = Exp.ident ~loc {txt= Lident l; loc} in
     let make_tuple raw =
       match l = "key" with
@@ -553,10 +581,10 @@ let makeJsObj ~loc namedArgListWithKeyAndRef =
       | false ->
           [%expr [%e Exp.constant ~loc (Const.string l)], inject [%e raw]]
     in
-    match isOptional label with
-    | true ->
+    match label with
+    | Optional _ ->
         [%expr Option.map (fun raw -> [%e make_tuple [%expr raw]]) [%e id]]
-    | false ->
+    | Labelled _ ->
         [%expr Some [%e make_tuple id]]
   in
   [%expr
@@ -640,20 +668,6 @@ let jsxMapper () =
     let children, nonChildrenProps = extractChildren ~loc callArguments in
     let componentNameExpr = constantString ~loc id in
     let childrenExpr = transformChildrenIfList ~loc ~mapper ~ctxt children in
-    let createElementCall =
-      match children with
-      (* [@JSX] div(~children=[a]), coming from <div> a </div> *)
-      | { pexp_desc=
-            ( Pexp_construct ({txt= Lident "::"}, Some {pexp_desc= Pexp_tuple _})
-            | Pexp_construct ({txt= Lident "[]"}, None) ) } ->
-          "createDOMElementVariadic"
-      (* [@JSX] div(~children= value), coming from <div> ...(value) </div> *)
-      | _ ->
-          raise
-            (Invalid_argument
-               "A spread as a DOM element's children don't make sense written \
-                together. You can simply remove the spread." )
-    in
     let args =
       match nonChildrenProps with
       | [_justTheUnitArgumentAtTheEnd] ->
@@ -694,9 +708,11 @@ let jsxMapper () =
     Exp.apply
       ~loc (* throw away the [@JSX] attribute and keep the others, if any *)
       ~attrs
-      (* React.Dom.createElement *)
+      (* React.Dom.createDOMElementVariadic *)
       (Exp.ident ~loc
-         {loc; txt= Ldot (Ldot (Lident "React", "Dom"), createElementCall)} )
+         { loc
+         ; txt= Ldot (Ldot (Lident "React", "Dom"), "createDOMElementVariadic")
+         } )
       args
   in
   let rec recursivelyTransformNamedArgsForMake mapper ctxt expr list =
@@ -713,8 +729,11 @@ let jsxMapper () =
           (Invalid_argument
              "Ref cannot be passed as a normal prop. Please use `forwardRef` \
               API instead." )
-    | Pexp_fun (arg, default, pattern, expression)
-      when isOptional arg || isLabelled arg ->
+    | Pexp_fun
+        ( ((Labelled label | Optional label) as arg)
+        , default
+        , pattern
+        , expression ) ->
         let () =
           match (isOptional arg, pattern, default) with
           | true, {ppat_desc= Ppat_constraint (_, {ptyp_desc})}, None -> (
@@ -745,7 +764,7 @@ let jsxMapper () =
           | {ppat_desc= Ppat_any} ->
               "_"
           | _ ->
-              getLabel arg
+              label
         in
         let type_ =
           match pattern with
@@ -755,7 +774,13 @@ let jsxMapper () =
               None
         in
         recursivelyTransformNamedArgsForMake mapper ctxt expression
-          ((arg, default, pattern, alias, pattern.ppat_loc, type_) :: list)
+          ( ( Str_label.of_arg_label arg
+            , default
+            , pattern
+            , alias
+            , pattern.ppat_loc
+            , type_ )
+          :: list )
     | Pexp_fun
         ( Nolabel
         , _
@@ -778,10 +803,12 @@ let jsxMapper () =
         (list, None)
   in
   let argToType types (name, default, _noLabelName, _alias, loc, type_) =
+    let open Str_label in
     match (type_, name, default) with
-    | Some {ptyp_desc= Ptyp_constr ({txt= Lident "option"}, [type_])}, name, _
-      when isOptional name ->
-        ( getLabel name
+    | ( Some {ptyp_desc= Ptyp_constr ({txt= Lident "option"}, [type_])}
+      , (Optional _ as name)
+      , _ ) ->
+        ( name
         , []
         , { type_ with
             ptyp_desc=
@@ -789,7 +816,7 @@ let jsxMapper () =
         )
         :: types
     | Some type_, name, Some _default ->
-        ( getLabel name
+        ( name
         , []
         , { ptyp_desc= Ptyp_constr ({loc; txt= optionIdent}, [type_])
           ; ptyp_loc= loc
@@ -797,9 +824,9 @@ let jsxMapper () =
           ; ptyp_loc_stack= [] } )
         :: types
     | Some type_, name, _ ->
-        (getLabel name, [], type_) :: types
-    | None, name, _ when isOptional name ->
-        ( getLabel name
+        (name, [], type_) :: types
+    | None, (Optional _ as name), _ ->
+        ( name
         , []
         , { ptyp_desc=
               Ptyp_constr
@@ -812,26 +839,22 @@ let jsxMapper () =
           ; ptyp_attributes= []
           ; ptyp_loc_stack= [] } )
         :: types
-    | None, name, _ when isLabelled name ->
-        ( getLabel name
+    | None, (Labelled _ as name), _ ->
+        ( name
         , []
         , { ptyp_desc= Ptyp_var (safeTypeFromValue name)
           ; ptyp_loc= loc
           ; ptyp_attributes= []
           ; ptyp_loc_stack= [] } )
         :: types
-    | _ ->
-        types
   in
   let argToConcreteType types (name, loc, type_) =
+    let open Str_label in
     match name with
-    | name when isLabelled name ->
-        (getLabel name, [], type_) :: types
-    | name when isOptional name ->
-        (getLabel name, [], Typ.constr ~loc {loc; txt= optionIdent} [type_])
-        :: types
-    | _ ->
-        types
+    | Labelled _ as name ->
+        (name, [], type_) :: types
+    | Optional _ as name ->
+        (name, [], Typ.constr ~loc {loc; txt= optionIdent} [type_]) :: types
   in
   let nestedModules = ref [] in
   let transformComponentDefinition mapper ctxt structure returnStructures =
@@ -848,14 +871,21 @@ let jsxMapper () =
       | [_] ->
           let rec getPropTypes types ({ptyp_loc; ptyp_desc} as fullType) =
             match ptyp_desc with
-            | Ptyp_arrow (name, type_, ({ptyp_desc= Ptyp_arrow _} as rest))
-              when isLabelled name || isOptional name ->
-                getPropTypes ((name, ptyp_loc, type_) :: types) rest
-            | Ptyp_arrow (Nolabel, _type, rest) ->
-                getPropTypes types rest
-            | Ptyp_arrow (name, type_, returnValue)
-              when isLabelled name || isOptional name ->
-                (returnValue, (name, returnValue.ptyp_loc, type_) :: types)
+            | Ptyp_arrow
+                ( ((Labelled _ | Optional _) as name)
+                , type_
+                , ({ptyp_desc= Ptyp_arrow _} as rest) ) ->
+                getPropTypes
+                  ((Str_label.of_arg_label name, ptyp_loc, type_) :: types)
+                  rest
+            | Ptyp_arrow (Nolabel, type_, _rest) ->
+                Location.raise_errorf ~loc:type_.ptyp_loc
+                  "jsoo-react: props need to be labelled arguments."
+            | Ptyp_arrow
+                (((Labelled _ | Optional _) as name), type_, returnValue) ->
+                ( returnValue
+                , (Str_label.of_arg_label name, returnValue.ptyp_loc, type_)
+                  :: types )
             | _ ->
                 (fullType, types)
           in
@@ -950,7 +980,7 @@ let jsxMapper () =
                 []
             in
             let namedArgListWithKeyAndRef =
-              ( optional "key"
+              ( Str_label.Optional "key"
               , None
               , Pat.var {txt= "key"; loc= emptyLoc}
               , "key"
@@ -961,7 +991,7 @@ let jsxMapper () =
             let namedArgListWithKeyAndRef =
               match forwardRef with
               | Some _ ->
-                  ( optional "ref"
+                  ( Str_label.Optional "ref"
                   , None
                   , Pat.var {txt= "ref"; loc= emptyLoc}
                   , "ref"
@@ -974,7 +1004,7 @@ let jsxMapper () =
             let namedArgListWithKeyAndRefForNew =
               match forwardRef with
               | Some txt ->
-                  namedArgList
+                  List.map with_arg_label namedArgList
                   @ [ ( nolabel
                       , None
                       , Pat.var {txt; loc= emptyLoc}
@@ -982,7 +1012,7 @@ let jsxMapper () =
                       , emptyLoc
                       , None ) ]
               | None ->
-                  namedArgList
+                  List.map with_arg_label namedArgList
             in
             let outerMake expression =
               Vb.mk ~loc:bindingLoc
@@ -1002,12 +1032,13 @@ let jsxMapper () =
                                   (fun ( arg
                                        , _default
                                        , _pattern
-                                       , alias
+                                       , _alias
                                        , _pattern_loc
-                                       , _type_ ) ->
-                                    ( arg
+                                       , _type ) ->
+                                    ( Str_label.to_arg_label arg
                                     , Exp.ident ~loc:emptyLoc
-                                        {loc= emptyLoc; txt= Lident alias} ) )
+                                        { loc= emptyLoc
+                                        ; txt= Lident (Str_label.str arg) } ) )
                                   namedArgListWithKeyAndRef
                               @ [ ( Nolabel
                                   , Exp.construct {loc; txt= Lident "()"} None

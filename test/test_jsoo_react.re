@@ -693,6 +693,55 @@ let testFragmentSyntax = () => {
   });
 };
 
+let testNonListChildren = () => {
+  module NonListChildrenComponent = {
+    [@react.component]
+    let make = (~children as (first, second), ()) => {
+      <div> first second </div>;
+    };
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <NonListChildrenComponent>
+          {(<div> {React.int(1)} </div>, <div> {React.int(3)} </div>)}
+        </NonListChildrenComponent>,
+        Html.element(c),
+      )
+    });
+    printInnerHTML(c);
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<div><div>1</div><div>3</div></div>"),
+    );
+  });
+};
+
+let testAliasedChildren = () => {
+  module AliasedChildrenComponent = {
+    [@react.component]
+    let make = (~children as kids, ()) => {
+      <div> ...kids </div>;
+    };
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <AliasedChildrenComponent>
+          <div> {React.int(1)} </div>
+          <div> {React.int(3)} </div>
+        </AliasedChildrenComponent>,
+        Html.element(c),
+      )
+    });
+    printInnerHTML(c);
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<div><div>1</div><div>3</div></div>"),
+    );
+  });
+};
+
 let basic =
   "basic"
   >::: [
@@ -740,7 +789,13 @@ let refs =
     "useRef" >:: testUseRef,
   ];
 
-let children = "children" >::: ["mapWithIndex" >:: testChildrenMapWithIndex];
+let children =
+  "children"
+  >::: [
+    "mapWithIndex" >:: testChildrenMapWithIndex,
+    "nonListChildren" >:: testNonListChildren,
+    "aliasedChildren" >:: testAliasedChildren,
+  ];
 
 let fragments =
   "fragments"
