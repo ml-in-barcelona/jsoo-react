@@ -28,17 +28,19 @@ let makeProps
 let make =
   ((fun ?(name= (("")[@reason.raw_literal ""])) ->
       ((React.Fragment.make
-          ~children:[React.Dom.createDOMElementVariadic "div"
-                       ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
-                       [((React.string
-                            ((("Hello ")[@reason.raw_literal "Hello "]) ^
-                               name))
-                       [@reason.preserve_braces ])];
-                    Hello.make ~one:(("1")[@reason.raw_literal "1"])
-                      ~children:((React.string
-                                    ((("Hello ")
-                                       [@reason.raw_literal "Hello "]) ^ name))
-                      [@reason.preserve_braces ]) ()] ())
+          ~children:(([React.Dom.createDOMElementVariadic "div"
+                         ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+                         [((React.string
+                              ((("Hello ")[@reason.raw_literal "Hello "]) ^
+                                 name))
+                         [@reason.preserve_braces ])];
+                      Hello.make ~one:(("1")[@reason.raw_literal "1"])
+                        ~children:[((React.string
+                                       ((("Hello ")
+                                          [@reason.raw_literal "Hello "]) ^
+                                          name))
+                                  [@reason.preserve_braces ])] ()])
+          [@reason.preserve_braces ]) ())
       [@reason.preserve_braces ]))
   [@warning "-16"])
 let make
@@ -457,7 +459,8 @@ module MemoCustomCompareProps =
         (fun prevPros -> fun nextProps -> false)
     let make ~a  ?key  () = React.createElement make (makeProps ?key ~a ())
   end
-let fragment foo = ((React.Fragment.make ~children:foo ())[@bla ])
+let fragment foo = ((React.Fragment.make ~children:(([foo])[@bla ]) ())
+  [@bla ])
 let polyChildrenFragment foo bar =
   React.Fragment.make ~children:[foo; bar] ()
 let nestedFragment foo bar baz =
@@ -465,7 +468,7 @@ let nestedFragment foo bar baz =
     ~children:[foo; React.Fragment.make ~children:[bar; baz] ()] ()
 let upper = Upper.make ()
 let upperWithProp = Upper.make ~count ()
-let upperWithChild foo = Upper.make ~children:foo ()
+let upperWithChild foo = Upper.make ~children:[foo] ()
 let upperWithChildren foo bar = Upper.make ~children:[foo; bar] ()
 let lower =
   React.Dom.createDOMElementVariadic "lower"
@@ -602,3 +605,138 @@ let lowerWithChildrenComplex2 =
              [@reason.preserve_braces ])]))
        [@reason.preserve_braces ])]]
 let nestedElement = Foo.Bar.make ~a:1 ~b:(("1")[@reason.raw_literal "1"]) ()
+let makeProps
+  : title:'title ->
+      children:'children ->
+        ?key:string ->
+          unit ->
+            <
+              title: 'title Js_of_ocaml.Js.readonly_prop  ;children: 
+                                                             'children
+                                                               Js_of_ocaml.Js.readonly_prop
+                                                               > 
+              Js_of_ocaml.Js.t
+  =
+  fun ~title ->
+    fun ~children ->
+      fun ?key ->
+        fun () ->
+          let open Js_of_ocaml.Js.Unsafe in
+            obj
+              ((([|(Option.map
+                      (fun raw ->
+                         ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
+                   Some ("children", (inject children)));(Some
+                                                            ("title",
+                                                              (inject title)))|]
+                   |> Array.to_list)
+                  |> (List.filter_map (fun x -> x)))
+                 |> Array.of_list)
+let make =
+  ((fun ~title ->
+      ((fun ~children ->
+          ((React.Dom.createDOMElementVariadic "div"
+              ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+              (((React.Dom.createDOMElementVariadic "span"
+                   ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+                   [((title |> s)[@reason.preserve_braces ])]) :: children)
+              [@reason.preserve_braces ]))
+          [@reason.preserve_braces ]))
+      [@warning "-16"]))
+  [@warning "-16"])
+let make
+  (Props :
+    <
+      title: 'title Js_of_ocaml.Js.readonly_prop  ;children: 'children
+                                                               Js_of_ocaml.Js.readonly_prop
+                                                       > 
+      Js_of_ocaml.Js.t)
+  =
+  make
+    ~children:(fun (type res) -> fun (type a0) ->
+                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                   fun
+                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                     -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : res)
+                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#children))
+    ~title:(fun (type res) -> fun (type a0) ->
+              fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                  -> (Js_of_ocaml.Js.Unsafe.get a0 "title" : res)
+              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#title))
+let make ~title  ~children  ?key  () =
+  React.createElement make (makeProps ?key ~children ~title ())
+let t =
+  FancyButton.make ~ref:buttonRef
+    ~children:[React.Dom.createDOMElementVariadic "div"
+                 ~props:(Js_of_ocaml.Js.Unsafe.obj [||]) []] ()
+let t =
+  React.Dom.createDOMElementVariadic "button"
+    ~props:(Js_of_ocaml.Js.Unsafe.obj
+              [|("ref",
+                  (Js_of_ocaml.Js.Unsafe.inject (ref : React.Dom.domRef)));
+                ("className",
+                  (Js_of_ocaml.Js.Unsafe.inject
+                     (Js_of_ocaml.Js.string ((("FancyButton")
+                        [@reason.raw_literal "FancyButton"]) : string))))|] : 
+    React.Dom.domProps) children
+let makeProps
+  : children:'children ->
+      ?key:string ->
+        ?ref:React.Dom.domRef ->
+          unit ->
+            < children: 'children Js_of_ocaml.Js.readonly_prop   > 
+              Js_of_ocaml.Js.t
+  =
+  fun ~children ->
+    fun ?key ->
+      fun ?ref ->
+        fun () ->
+          let open Js_of_ocaml.Js.Unsafe in
+            obj
+              ((([|(Option.map (fun raw -> ("ref", (inject raw))) ref);(
+                   Option.map
+                     (fun raw ->
+                        ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
+                   Some ("children", (inject children)))|] |> Array.to_list)
+                  |> (List.filter_map (fun x -> x)))
+                 |> Array.of_list)
+let make =
+  ((fun ~children ->
+      ((fun ref ->
+          ((React.Dom.createDOMElementVariadic "button"
+              ~props:(Js_of_ocaml.Js.Unsafe.obj
+                        [|("ref",
+                            (Js_of_ocaml.Js.Unsafe.inject
+                               (ref : React.Dom.domRef)));("className",
+                                                            (Js_of_ocaml.Js.Unsafe.inject
+                                                               (Js_of_ocaml.Js.string
+                                                                  ((("FancyButton")
+                                                                  [@reason.raw_literal
+                                                                    "FancyButton"]) : 
+                                                                  string))))|] : 
+              React.Dom.domProps) children)
+          [@reason.preserve_braces ]))
+      [@warning "-16"]))
+  [@warning "-16"])
+let make =
+  React.Dom.forwardRef
+    (fun
+       (Props :
+         < children: 'children Js_of_ocaml.Js.readonly_prop   > 
+           Js_of_ocaml.Js.t)
+       ->
+       fun ref ->
+         make
+           ~children:(fun (type res) -> fun (type a0) ->
+                        fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                          fun
+                            (_ :
+                              a0 ->
+                                < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                            ->
+                            (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                            res) (Props : < .. >  Js_of_ocaml.Js.t)
+                        (fun x -> x#children)) ref)
+let make ~children  ?key  ?ref  () =
+  React.createElement make (makeProps ?ref ?key ~children ())

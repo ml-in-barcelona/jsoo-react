@@ -220,53 +220,6 @@ type 'a children = ListLiteral of 'a | Exact of 'a
 
 type componentConfig = {propsName: string}
 
-let revAstList ~loc expr =
-  let rec revAstList_ acc = function
-    | [%expr []] ->
-        acc
-    | [%expr [%e? hd] :: [%e? tl]] ->
-        revAstList_ [%expr [%e hd] :: [%e acc]] tl
-    | expr ->
-        expr
-  in
-  revAstList_ [%expr []] expr
-
-(* unlike reason-react ppx, we don't transform to array, just apply mapper to children *)
-let transformChildrenIfListUpper ~loc ~mapper ~ctxt theList =
-  (* unlike reason-react ppx, we don't transform to array as it'd be incompatible with
-     [@js.variadic] gen_js_api attribute, which requires argument to be a list *)
-  let rec transformChildren_ theList accum =
-    (* not in the sense of converting a list to an array; convert the AST
-       reprensentation of a list to the AST reprensentation of an array *)
-    match theList with
-    | [%expr []] -> (
-      match accum with
-      | [%expr [[%e? singleElement]]] ->
-          Exact singleElement
-      | accum ->
-          ListLiteral (revAstList ~loc accum) )
-    | [%expr [%e? v] :: [%e? acc]] ->
-        transformChildren_ acc
-          [%expr [%e mapper#expression ctxt v] :: [%e accum]]
-    | notAList ->
-        Exact (mapper#expression ctxt notAList)
-  in
-  transformChildren_ theList [%expr []]
-
-(* unlike reason-react ppx, we don't transform to array, just apply mapper to children *)
-let transformChildrenIfList ~loc ~mapper ~ctxt theList =
-  let rec transformChildren_ theList accum =
-    match theList with
-    | [%expr []] ->
-        revAstList ~loc accum
-    | [%expr [%e? v] :: [%e? acc]] ->
-        transformChildren_ acc
-          [%expr [%e mapper#expression ctxt v] :: [%e accum]]
-    | notAList ->
-        mapper#expression ctxt notAList
-  in
-  transformChildren_ theList [%expr []]
-
 let extractChildren ?(removeLastPositionUnit = false) ~loc propsAndChildren =
   let rec allButLast_ lst acc =
     match lst with
@@ -320,6 +273,12 @@ let hasAttrOnBinding {pvb_attributes} = find_opt hasAttr pvb_attributes <> None
 let filterAttrOnBinding binding =
   { binding with
     pvb_attributes= List.filter otherAttrsPure binding.pvb_attributes }
+
+let not_jsx {attr_name; _} = attr_name.txt <> "JSX"
+
+let filter_attr_create_element expression =
+  { expression with
+    pexp_attributes= List.filter not_jsx expression.pexp_attributes }
 
 let used_attributes_tbl = Hashtbl.create 16
 
@@ -626,39 +585,30 @@ let makePropsDecl fnName loc namedArgListWithKeyAndRef namedTypeList =
     (makePropsType ~loc namedTypeList)
 
 (* Builds the args list for elements like <Foo bar=2 />, or for React.Fragment: <> <div /> <p /> </> *)
-let uppercase_element_args ~is_user_element ~loc callArguments mapper ctxt =
+let uppercase_element_args ~loc callArguments =
   let children, argsWithLabels =
     extractChildren ~loc ~removeLastPositionUnit:true callArguments
   in
   let argsForMake = argsWithLabels in
-  let children_expr =
-    transformChildrenIfListUpper ~loc ~mapper ~ctxt children
-  in
   let recursivelyTransformedArgsForMake =
-    argsForMake
-    |> List.map (fun (label, expression) ->
-           (label, mapper#expression ctxt expression) )
+    argsForMake |> List.map (fun (label, expression) -> (label, expression))
   in
   let filtered_children =
-    match (children_expr, is_user_element) with
-    | ListLiteral [%expr []], _ ->
+    match children with
+    | [%expr []] ->
         []
-    | Exact children, _ | ListLiteral children, true ->
+    | children ->
         [(labelled "children", children)]
-    | ListLiteral _expression, false ->
-        [ ( labelled "children"
-          , Exp.ident ~loc {loc; txt= Ldot (Lident "React", "null")} ) ]
   in
-  ( children_expr
+  ( children
   , recursivelyTransformedArgsForMake @ filtered_children
     @ [(nolabel, Exp.construct ~loc {loc; txt= Lident "()"} None)] )
 
 (* TODO: some line number might still be wrong *)
 let jsxMapper () =
-  let transformLowercaseCall mapper ctxt loc attrs callArguments id =
+  let transformLowercaseCall loc attrs callArguments id =
     let children, nonChildrenProps = extractChildren ~loc callArguments in
     let componentNameExpr = constantString ~loc id in
-    let childrenExpr = transformChildrenIfList ~loc ~mapper ~ctxt children in
     let args =
       match nonChildrenProps with
       | [_justTheUnitArgumentAtTheEnd] ->
@@ -667,7 +617,7 @@ let jsxMapper () =
           ; (* React.Dom.props(~className=blabla, ~foo=bar, ()) *)
             (labelled "props", [%expr Js_of_ocaml.Js.Unsafe.obj [||]])
           ; (* [|moreCreateElementCallsHere|] *)
-            (nolabel, childrenExpr) ]
+            (nolabel, children) ]
       | nonEmptyProps ->
           (* Filtering out the props that don't have a label, not sure how's possible *)
           let propsWithName =
@@ -694,7 +644,7 @@ let jsxMapper () =
           ; (* props: Js_of_ocaml.Js.Unsafe.obj ... *)
             (labelled "props", propsObj)
           ; (* [|moreCreateElementCallsHere|] *)
-            (nolabel, childrenExpr) ]
+            (nolabel, children) ]
     in
     Exp.apply
       ~loc (* throw away the [@JSX] attribute and keep the others, if any *)
@@ -1309,8 +1259,16 @@ let jsxMapper () =
   let reactComponentTransform mapper ctxt structures =
     List.fold_right (transformComponentDefinition mapper ctxt) structures []
   in
-  let transformJsxCall mapper ctxt callExpression callArguments attrs pexp_loc
+  let transformJsxCall callExpression callArguments attrs pexp_loc
       pexp_loc_stack =
+    (* let callExpression = filter_attr_create_element callExpression in *)
+    (* let callExpression = mapper#expression ctxt callExpression in *)
+    (* let callExpression = filter_attr_create_element callExpression in *)
+    (* let callArguments =
+       List.map
+         (fun (arg, expr) -> (arg, mapper#expression ctxt expr))
+         callArguments *)
+    (* in *)
     match callExpression.pexp_desc with
     | Pexp_ident caller -> (
       match caller with
@@ -1321,8 +1279,7 @@ let jsxMapper () =
       (* Foo.createElement(~prop1=foo, ~prop2=bar, ~children=[], ()) *)
       | {loc; txt= Ldot (modulePath, "createElement")} ->
           let _children_expr, args =
-            uppercase_element_args ~is_user_element:true ~loc callArguments
-              mapper ctxt
+            uppercase_element_args ~loc callArguments
           in
           { pexp_desc=
               Pexp_apply
@@ -1337,7 +1294,7 @@ let jsxMapper () =
       (* turn that into
          React.Dom.createElement(~props=React.Dom.props(~props1=foo, ~props2=bar, ()), [|bla|]) *)
       | {loc; txt= Lident id} ->
-          transformLowercaseCall mapper ctxt loc attrs callArguments id
+          transformLowercaseCall loc attrs callArguments id
       | {txt= Ldot (_, anythingNotCreateElementOrMake)} ->
           raise
             (Invalid_argument
@@ -1370,6 +1327,7 @@ let jsxMapper () =
           super#structure c (reactComponentTransform self c structures)
 
     method! expression c expression =
+      let expression = super#expression c expression in
       match expression with
       | { pexp_desc= Pexp_apply (callExpression, callArguments)
         ; pexp_attributes
@@ -1380,10 +1338,10 @@ let jsxMapper () =
           match callExpression with
           | {pexp_desc= Pexp_ident {txt= Lident id; _}}
             when List.mem id dom_tags ->
-              transformJsxCall self c callExpression callArguments
-                pexp_attributes pexp_loc pexp_loc_stack
+              transformJsxCall callExpression callArguments pexp_attributes
+                pexp_loc pexp_loc_stack
           | _ ->
-              super#expression c expression )
+              expression )
         | {react_dom= false} -> (
             (* Does the function application have the @JSX attribute? *)
             let jsxAttribute, nonJSXAttributes =
@@ -1394,10 +1352,10 @@ let jsxMapper () =
             match (jsxAttribute, nonJSXAttributes) with
             (* no JSX attribute *)
             | [], _ ->
-                super#expression c expression
+                expression
             | _, nonJSXAttributes ->
-                transformJsxCall self c callExpression callArguments
-                  nonJSXAttributes pexp_loc pexp_loc_stack ) )
+                transformJsxCall callExpression callArguments nonJSXAttributes
+                  pexp_loc pexp_loc_stack ) )
       (* is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo]*)
       | { pexp_desc=
             ( Pexp_construct
@@ -1414,15 +1372,15 @@ let jsxMapper () =
           match (jsxAttribute, nonJSXAttributes) with
           (* no JSX attribute *)
           | [], _ ->
-              super#expression c expression
+              expression
           | _, nonJSXAttributes ->
               let callExpression = [%expr React.Fragment.createElement] in
-              transformJsxCall self c callExpression
-                [(Labelled "children", listItems)]
+              transformJsxCall callExpression
+                [(Labelled "children", filter_attr_create_element listItems)]
                 nonJSXAttributes pexp_loc pexp_loc_stack )
       (* Delegate to the default mapper, a deep identity traversal *)
-      | e ->
-          super#expression c e
+      | _e ->
+          expression
 
     method! module_binding c module_binding =
       let _ =

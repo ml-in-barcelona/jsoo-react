@@ -1,3 +1,3 @@
 let make:
-  (~title: string, ~children: React.element, ~key: string=?, unit) =>
+  (~title: string, ~children: list(React.element), ~key: string=?, unit) =>
   React.element;

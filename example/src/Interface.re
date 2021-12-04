@@ -2,5 +2,5 @@ let s = React.string;
 
 [@react.component]
 let make = (~title, ~children) => {
-  <div> <span> {title |> s} </span> children </div>;
+  <div> ...{[<span> {title |> s} </span>, ...children]} </div>;
 };

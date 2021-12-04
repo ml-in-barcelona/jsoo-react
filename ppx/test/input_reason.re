@@ -158,5 +158,17 @@ let nestedElement = <Foo.Bar a=1 b="1" />;
 // TODO: fix this test (are these components deprecated??)
 // let nestedElementCustomName = <Foo.component a=1 b="1" />;
 
-// This throws exception (expected)
-// let lowerSpread = value => <lower> ...value </lower>;
+[@react.component]
+let make = (~title, ~children) => {
+  <div> ...{[<span> {title |> s} </span>, ...children]} </div>;
+};
+
+let t = <FancyButton ref=buttonRef> <div /> </FancyButton>;
+
+let t = <button ref className="FancyButton"> ...children </button>;
+
+[@react.component]
+let make =
+  React.Dom.forwardRef((~children, ref) => {
+    <button ref className="FancyButton"> ...children </button>
+  });

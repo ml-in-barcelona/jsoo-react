@@ -568,7 +568,7 @@ let testForwardRef = () => {
     [@react.component]
     let make =
       React.Dom.forwardRef((~children, ref) => {
-        <button ref className="FancyButton"> children </button>
+        <button ref className="FancyButton"> ...children </button>
       });
   };
 
@@ -704,7 +704,7 @@ let testNonListChildren = () => {
     act(() => {
       React.Dom.render(
         <NonListChildrenComponent>
-          {(<div> {React.int(1)} </div>, <div> {React.int(3)} </div>)}
+          ...(<div> {React.int(1)} </div>, <div> {React.int(3)} </div>)
         </NonListChildrenComponent>,
         Html.element(c),
       )
