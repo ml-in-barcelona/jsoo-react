@@ -295,7 +295,8 @@ val createFragment : element list -> element
 module Context : sig
   type 'props t
 
-  val provider : 'props t -> value:'props -> children:element list -> unit -> element
+  val provider :
+    'props t -> value:'props -> children:element list -> unit -> element
     [@@js.custom
       external of_ojs :
            Ojs.t
@@ -306,13 +307,12 @@ module Context : sig
       val providerInternal : 'props t -> Ojs.t [@@js.get "Provider"]
 
       let makeProps ~value () =
-        Js_of_ocaml.Js.Unsafe.(
-          obj [|("value", inject value);|])
+        Js_of_ocaml.Js.Unsafe.(obj [|("value", inject value)|])
 
       let provider c ~value ~children () =
-          createElementVariadic
-            (of_ojs (providerInternal c))
-            (makeProps ~value ()) children]
+        createElementVariadic
+          (of_ojs (providerInternal c))
+          (makeProps ~value ()) children]
 end
 
 val createContext : 'a -> 'a Context.t [@@js.global "React.createContext"]
@@ -352,8 +352,7 @@ module Fragment : sig
       let makeProps ?key () =
         match key with
         | Some k ->
-            Js_of_ocaml.Js.Unsafe.(
-              obj [|("key", inject k);|])
+            Js_of_ocaml.Js.Unsafe.(obj [|("key", inject k)|])
         | None ->
             Js_of_ocaml.Js.Unsafe.(obj [||])
 
