@@ -64,12 +64,6 @@ let getLabel str =
 
 let optionIdent = Lident "option"
 
-let argIsKeyRef = function
-  | Labelled ("key" | "ref"), _ | Optional ("key" | "ref"), _ ->
-      true
-  | _ ->
-      false
-
 let dom_tags =
   (* html *)
   [ "a"
@@ -216,8 +210,6 @@ let keyType loc =
 
 let refType loc = [%type: React.Dom.domRef]
 
-type 'a children = ListLiteral of 'a | Exact of 'a
-
 type componentConfig = {propsName: string}
 
 let extractChildren ?(removeLastPositionUnit = false) ~loc propsAndChildren =
@@ -269,13 +261,9 @@ let otherAttrsPure {attr_name; _} = attr_name.txt <> "react.component"
 (* Iterate over the attributes and try to find the [@react.component] attribute *)
 let hasAttrOnBinding {pvb_attributes} = find_opt hasAttr pvb_attributes <> None
 
-(* Filter the [@react.component] attribute and immutably replace them on the binding *)
-let filterAttrOnBinding binding =
-  { binding with
-    pvb_attributes= List.filter otherAttrsPure binding.pvb_attributes }
-
 let not_jsx {attr_name; _} = attr_name.txt <> "JSX"
 
+(* Filter the [@JSX] attribute and immutably replace them on the expression *)
 let filter_attr_create_element expression =
   { expression with
     pexp_attributes= List.filter not_jsx expression.pexp_attributes }
@@ -1261,14 +1249,6 @@ let jsxMapper () =
   in
   let transformJsxCall callExpression callArguments attrs pexp_loc
       pexp_loc_stack =
-    (* let callExpression = filter_attr_create_element callExpression in *)
-    (* let callExpression = mapper#expression ctxt callExpression in *)
-    (* let callExpression = filter_attr_create_element callExpression in *)
-    (* let callArguments =
-       List.map
-         (fun (arg, expr) -> (arg, mapper#expression ctxt expr))
-         callArguments *)
-    (* in *)
     match callExpression.pexp_desc with
     | Pexp_ident caller -> (
       match caller with
