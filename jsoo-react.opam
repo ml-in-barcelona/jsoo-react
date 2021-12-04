@@ -4,8 +4,8 @@ synopsis: "Bindings to ReactJS for js_of_ocaml, including JSX ppx"
 maintainer: ["Javier Chávarri <javier.chavarri@gmail.com>"]
 authors: ["Javier Chávarri <javier.chavarri@gmail.com>"]
 license: "MIT"
-homepage: "https://github.com/reason-in-barcelona/jsoo-react"
-bug-reports: "https://github.com/reason-in-barcelona/jsoo-react/issues"
+homepage: "https://github.com/ml-in-barcelona/jsoo-react"
+bug-reports: "https://github.com/ml-in-barcelona/jsoo-react/issues"
 depends: [
   "dune" {>= "2.7" & >= "2" & < "3"}
   "ocaml" {>= "4.10.0" & < "4.14.0"}
@@ -36,4 +36,4 @@ build: [
     "@doc" {with-doc}
   ]
 ]
-dev-repo: "git+https://github.com/reason-in-barcelona/jsoo-react.git"
+dev-repo: "git+https://github.com/ml-in-barcelona/jsoo-react.git"

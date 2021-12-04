@@ -15,7 +15,7 @@ Some notes on how interop in BuckleScript and gen_js_api relate:
 | Feature                      | BuckleScript interop  | gen_js_api interface files               |
 | ---------------------------- | ----------------- | ---------------------------------------- |
 | Use JS data types            | `array`, `string` | No work needed, conversions will be added in generated code automatically            |
-| Require JS modules           | `[@bs.module]`    | Add `require("my-lib")` statement in `.js` file ([example](https://github.com/jchavarri/jsoo-react/blob/3a69759eaf7a777b8b006422b829c8e0fdcc94cf/lib/ReactJs.js)), include it in Dune ([example](https://github.com/jchavarri/jsoo-react/blob/3a69759eaf7a777b8b006422b829c8e0fdcc94cf/lib/dune#L5)) |
+| Require JS modules           | `[@bs.module]`    | Add `require("my-lib")` statement in `.js` file ([example](https://github.com/ml-in-barcelona/jsoo-react/blob/3a69759eaf7a777b8b006422b829c8e0fdcc94cf/lib/ReactJs.js)), include it in Dune ([example](https://github.com/ml-in-barcelona/jsoo-react/blob/3a69759eaf7a777b8b006422b829c8e0fdcc94cf/lib/dune#L5)) |
 | Bind to JS values            | `[@bs.val]`       | `[@js.global]`                           |
 | Variadic params              | `[@bs.splice]`    | `[@js.variadic]`                         |
 | Raw expressions              | `[%bs.raw]`       | `Js.Unsafe.js_expr();`                   |
