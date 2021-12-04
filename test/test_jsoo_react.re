@@ -709,7 +709,6 @@ let testNonListChildren = () => {
         Html.element(c),
       )
     });
-    printInnerHTML(c);
     assert_equal(
       c##.innerHTML,
       Js.string("<div><div>1</div><div>3</div></div>"),
@@ -734,7 +733,6 @@ let testAliasedChildren = () => {
         Html.element(c),
       )
     });
-    printInnerHTML(c);
     assert_equal(
       c##.innerHTML,
       Js.string("<div><div>1</div><div>3</div></div>"),

@@ -59,12 +59,6 @@ let nolabel = Nolabel
 
 let labelled str = Labelled str
 
-let optional str = Optional str
-
-let isOptional str = match str with Optional _ -> true | _ -> false
-
-let isLabelled str = match str with Labelled _ -> true | _ -> false
-
 let getLabel str =
   match str with Optional str | Labelled str -> str | Nolabel -> ""
 
@@ -392,9 +386,6 @@ let getPropsAttr payload =
 (* Plucks the label, loc, and type_ from an AST node *)
 let pluckLabelDefaultLocType (label, default, _, _, loc, type_) =
   (label, default, loc, type_)
-
-let with_arg_label (name, default, noLabelName, alias, loc, type_) =
-  (Str_label.to_arg_label name, default, noLabelName, alias, loc, type_)
 
 (* Lookup the filename from the location information on the AST node and turn it into a valid module identifier *)
 let filenameFromLoc (pstr_loc : Location.t) =
@@ -735,8 +726,8 @@ let jsxMapper () =
         , pattern
         , expression ) ->
         let () =
-          match (isOptional arg, pattern, default) with
-          | true, {ppat_desc= Ppat_constraint (_, {ptyp_desc})}, None -> (
+          match (arg, pattern, default) with
+          | Optional _, {ppat_desc= Ppat_constraint (_, {ptyp_desc})}, None -> (
             match ptyp_desc with
             | Ptyp_constr ({txt= Lident "option"}, [_]) ->
                 ()
@@ -1001,19 +992,6 @@ let jsxMapper () =
               | None ->
                   namedArgListWithKeyAndRef
             in
-            let namedArgListWithKeyAndRefForNew =
-              match forwardRef with
-              | Some txt ->
-                  List.map with_arg_label namedArgList
-                  @ [ ( nolabel
-                      , None
-                      , Pat.var {txt; loc= emptyLoc}
-                      , txt
-                      , emptyLoc
-                      , None ) ]
-              | None ->
-                  List.map with_arg_label namedArgList
-            in
             let outerMake expression =
               Vb.mk ~loc:bindingLoc
                 ~attrs:(List.filter otherAttrsPure binding.pvb_attributes)
@@ -1171,38 +1149,28 @@ let jsxMapper () =
                   (emptyLoc, None)
             in
             let props = getPropsAttr payload in
-            let pluckArg (label, _, _, alias, loc, _) =
-              let labelString =
-                match label with
-                | label when isOptional label || isLabelled label ->
-                    getLabel label
-                | _ ->
-                    ""
+            let pluck_arg (label, _, _, _, loc, _) =
+              let label_str = Str_label.str label in
+              let props_name_id =
+                Exp.ident ~loc {txt= Lident props.propsName; loc}
               in
-              ( label
-              , match labelString with
-                | "" ->
-                    Exp.ident ~loc {txt= Lident alias; loc}
-                | labelString ->
-                    let propsNameId =
-                      Exp.ident ~loc {txt= Lident props.propsName; loc}
-                    in
-                    let labelStringConst =
-                      Exp.constant ~loc (Const.string labelString)
-                    in
-                    let send =
-                      Exp.send ~loc
-                        (Exp.ident ~loc {txt= Lident "x"; loc})
-                        {txt= labelString; loc}
-                    in
-                    (* https://github.com/ocsigen/js_of_ocaml/blob/b1c807eaa40fa17b04c7d8e7e24306a03a46681d/ppx/ppx_js/lib_internal/ppx_js_internal.ml#L322-L332 *)
-                    [%expr
-                      (fun (type res a0) (a0 : a0 Js_of_ocaml.Js.t)
-                           (_ : a0 -> < get: res ; .. > Js_of_ocaml.Js.gen_prop)
-                           : res ->
-                        Js_of_ocaml.Js.Unsafe.get a0 [%e labelStringConst] )
-                        ([%e propsNameId] : < .. > Js_of_ocaml.Js.t)
-                        (fun x -> [%e send])] )
+              let label_const = Exp.constant ~loc (Const.string label_str) in
+              let send =
+                Exp.send ~loc
+                  (Exp.ident ~loc {txt= Lident "x"; loc})
+                  {txt= label_str; loc}
+              in
+              (* https://github.com/ocsigen/js_of_ocaml/blob/b1c807eaa40fa17b04c7d8e7e24306a03a46681d/ppx/ppx_js/lib_internal/ppx_js_internal.ml#L322-L332 *)
+              let expr =
+                [%expr
+                  (fun (type res a0) (a0 : a0 Js_of_ocaml.Js.t)
+                       (_ : a0 -> < get: res ; .. > Js_of_ocaml.Js.gen_prop) :
+                       res ->
+                    Js_of_ocaml.Js.Unsafe.get a0 [%e label_const] )
+                    ([%e props_name_id] : < .. > Js_of_ocaml.Js.t)
+                    (fun x -> [%e send])]
+              in
+              (Str_label.to_arg_label label, expr)
             in
             let namedTypeList = List.fold_left argToType [] namedArgList in
             let loc = emptyLoc in
@@ -1210,7 +1178,12 @@ let jsxMapper () =
               makePropsDecl fnName loc namedArgListWithKeyAndRef namedTypeList
             in
             let innerExpressionArgs =
-              List.map pluckArg namedArgListWithKeyAndRefForNew
+              List.map pluck_arg namedArgList
+              @ ( match forwardRef with
+                | Some txt ->
+                    [(Nolabel, Exp.ident ~loc {txt= Lident txt; loc= emptyLoc})]
+                | None ->
+                    [] )
               @
               if hasUnit then
                 [(Nolabel, Exp.construct {loc; txt= Lident "()"} None)]
