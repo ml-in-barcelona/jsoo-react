@@ -46,182 +46,170 @@ let attributeAnchorTarget = String
    | Top
    | Custom of String *)
 
-let commonDOMAttributes =
+let domAttributes =
   [ (* Clipboard Events *)
-    {name= "onCopy"; type_= Clipboard}
-  ; {name= "onCopyCapture"; type_= Clipboard}
-  ; {name= "onCut"; type_= Clipboard}
-  ; {name= "onCutCapture"; type_= Clipboard}
-  ; {name= "onPaste"; type_= Clipboard}
-  ; {name= "onPasteCapture"; type_= Clipboard}
-  ; (* Composition Events *)
-    {name= "onCompositionEnd"; type_= Composition}
-  ; {name= "onCompositionEndCapture"; type_= Composition}
-  ; {name= "onCompositionStart"; type_= Composition}
-  ; {name= "onCompositionStartCapture"; type_= Composition}
-  ; {name= "onCompositionUpdate"; type_= Composition}
-  ; {name= "onCompositionUpdateCapture"; type_= Composition}
-  ; (* Focus Events *)
-    {name= "onFocus"; type_= Focus}
-  ; {name= "onFocusCapture"; type_= Focus}
-  ; {name= "onBlur"; type_= Focus}
-  ; {name= "onBlurCapture"; type_= Focus}
-  ; (* Form Events *)
-    {name= "onChange"; type_= Form}
-  ; {name= "onChangeCapture"; type_= Form}
-  ; {name= "onBeforeInput"; type_= Form}
-  ; {name= "onBeforeInputCapture"; type_= Form}
-  ; {name= "onInput"; type_= Form}
-  ; {name= "onInputCapture"; type_= Form}
-  ; {name= "onReset"; type_= Form}
-  ; {name= "onResetCapture"; type_= Form}
-  ; {name= "onSubmit"; type_= Form}
-  ; {name= "onSubmitCapture"; type_= Form}
-  ; {name= "onInvalid"; type_= Form}
-  ; {name= "onInvalidCapture"; type_= Form}
-  ; (* Image Events *)
-    {name= "onLoad"; type_= Media}
-  ; {name= "onLoadCapture"; type_= Media}
-  ; {name= "onError"; type_= Media}
-  ; {name= "onErrorCapture"; type_= Media}
-  ; (* Keyboard Events *)
-    {name= "onKeyDown"; type_= Keyboard}
-  ; {name= "onKeyDownCapture"; type_= Keyboard}
-  ; {name= "onKeyPress"; type_= Keyboard}
-  ; {name= "onKeyPressCapture"; type_= Keyboard}
-  ; {name= "onKeyUp"; type_= Keyboard}
-  ; {name= "onKeyUpCapture"; type_= Keyboard}
-  ; (* Media Events *)
-    {name= "onAbort"; type_= Media}
-  ; {name= "onAbortCapture"; type_= Media}
-  ; {name= "onCanPlay"; type_= Media}
-  ; {name= "onCanPlayCapture"; type_= Media}
-  ; {name= "onCanPlayThrough"; type_= Media}
-  ; {name= "onCanPlayThroughCapture"; type_= Media}
-  ; {name= "onDurationChange"; type_= Media}
-  ; {name= "onDurationChangeCapture"; type_= Media}
-  ; {name= "onEmptied"; type_= Media}
-  ; {name= "onEmptiedCapture"; type_= Media}
-  ; {name= "onEncrypted"; type_= Media}
-  ; {name= "onEncryptedCapture"; type_= Media}
-  ; {name= "onEnded"; type_= Media}
-  ; {name= "onEndedCapture"; type_= Media}
-  ; {name= "onLoadedData"; type_= Media}
-  ; {name= "onLoadedDataCapture"; type_= Media}
-  ; {name= "onLoadedMetadata"; type_= Media}
-  ; {name= "onLoadedMetadataCapture"; type_= Media}
-  ; {name= "onLoadStart"; type_= Media}
-  ; {name= "onLoadStartCapture"; type_= Media}
-  ; {name= "onPause"; type_= Media}
-  ; {name= "onPauseCapture"; type_= Media}
-  ; {name= "onPlay"; type_= Media}
-  ; {name= "onPlayCapture"; type_= Media}
-  ; {name= "onPlaying"; type_= Media}
-  ; {name= "onPlayingCapture"; type_= Media}
-  ; {name= "onProgress"; type_= Media}
-  ; {name= "onProgressCapture"; type_= Media}
-  ; {name= "onRateChange"; type_= Media}
-  ; {name= "onRateChangeCapture"; type_= Media}
-  ; {name= "onSeeked"; type_= Media}
-  ; {name= "onSeekedCapture"; type_= Media}
-  ; {name= "onSeeking"; type_= Media}
-  ; {name= "onSeekingCapture"; type_= Media}
-  ; {name= "onStalled"; type_= Media}
-  ; {name= "onStalledCapture"; type_= Media}
-  ; {name= "onSuspend"; type_= Media}
-  ; {name= "onSuspendCapture"; type_= Media}
-  ; {name= "onTimeUpdate"; type_= Media}
-  ; {name= "onTimeUpdateCapture"; type_= Media}
-  ; {name= "onVolumeChange"; type_= Media}
-  ; {name= "onVolumeChangeCapture"; type_= Media}
-  ; {name= "onWaiting"; type_= Media}
-  ; {name= "onWaitingCapture"; type_= Media}
-  ; (* MouseEvents *)
-    {name= "onAuxClick"; type_= Mouse}
-  ; {name= "onAuxClickCapture"; type_= Mouse}
-  ; {name= "onClick"; type_= Mouse}
-  ; {name= "onClickCapture"; type_= Mouse}
-  ; {name= "onContextMenu"; type_= Mouse}
-  ; {name= "onContextMenuCapture"; type_= Mouse}
-  ; {name= "onDoubleClick"; type_= Mouse}
-  ; {name= "onDoubleClickCapture"; type_= Mouse}
-  ; {name= "onDrag"; type_= Drag}
-  ; {name= "onDragCapture"; type_= Drag}
-  ; {name= "onDragEnd"; type_= Drag}
-  ; {name= "onDragEndCapture"; type_= Drag}
-  ; {name= "onDragEnter"; type_= Drag}
-  ; {name= "onDragEnterCapture"; type_= Drag}
-  ; {name= "onDragExit"; type_= Drag}
-  ; {name= "onDragExitCapture"; type_= Drag}
-  ; {name= "onDragLeave"; type_= Drag}
-  ; {name= "onDragLeaveCapture"; type_= Drag}
-  ; {name= "onDragOver"; type_= Drag}
-  ; {name= "onDragOverCapture"; type_= Drag}
-  ; {name= "onDragStart"; type_= Drag}
-  ; {name= "onDragStartCapture"; type_= Drag}
-  ; {name= "onDrop"; type_= Drag}
-  ; {name= "onDropCapture"; type_= Drag}
-  ; {name= "onMouseDown"; type_= Mouse}
-  ; {name= "onMouseDownCapture"; type_= Mouse}
-  ; {name= "onMouseEnter"; type_= Mouse}
-  ; {name= "onMouseLeave"; type_= Mouse}
-  ; {name= "onMouseMove"; type_= Mouse}
-  ; {name= "onMouseMoveCapture"; type_= Mouse}
-  ; {name= "onMouseOut"; type_= Mouse}
-  ; {name= "onMouseOutCapture"; type_= Mouse}
-  ; {name= "onMouseOver"; type_= Mouse}
-  ; {name= "onMouseOverCapture"; type_= Mouse}
-  ; {name= "onMouseUp"; type_= Mouse}
-  ; {name= "onMouseUpCapture"; type_= Mouse}
-  ; (* Selection Events *)
-    {name= "onSelect"; type_= Selection}
-  ; {name= "onSelectCapture"; type_= Selection}
-  ; (* Touch Events *)
-    {name= "onTouchCancel"; type_= Touch}
-  ; {name= "onTouchCancelCapture"; type_= Touch}
-  ; {name= "onTouchEnd"; type_= Touch}
-  ; {name= "onTouchEndCapture"; type_= Touch}
-  ; {name= "onTouchMove"; type_= Touch}
-  ; {name= "onTouchMoveCapture"; type_= Touch}
-  ; {name= "onTouchStart"; type_= Touch}
-  ; {name= "onTouchStartCapture"; type_= Touch}
-  ; (* Pointer Events *)
-    {name= "onPointerDown"; type_= Pointer}
-  ; {name= "onPointerDownCapture"; type_= Pointer}
-  ; {name= "onPointerMove"; type_= Pointer}
-  ; {name= "onPointerMoveCapture"; type_= Pointer}
-  ; {name= "onPointerUp"; type_= Pointer}
-  ; {name= "onPointerUpCapture"; type_= Pointer}
-  ; {name= "onPointerCancel"; type_= Pointer}
-  ; {name= "onPointerCancelCapture"; type_= Pointer}
-  ; {name= "onPointerEnter"; type_= Pointer}
-  ; {name= "onPointerEnterCapture"; type_= Pointer}
-  ; {name= "onPointerLeave"; type_= Pointer}
-  ; {name= "onPointerLeaveCapture"; type_= Pointer}
-  ; {name= "onPointerOver"; type_= Pointer}
-  ; {name= "onPointerOverCapture"; type_= Pointer}
-  ; {name= "onPointerOut"; type_= Pointer}
-  ; {name= "onPointerOutCapture"; type_= Pointer}
-  ; {name= "onGotPointerCapture"; type_= Pointer}
-  ; {name= "onGotPointerCaptureCapture"; type_= Pointer}
-  ; {name= "onLostPointerCapture"; type_= Pointer}
-  ; {name= "onLostPointerCaptureCapture"; type_= Pointer}
-  ; (* UI Events *)
-    {name= "onScroll"; type_= UI}
-  ; {name= "onScrollCapture"; type_= UI}
-  ; (* Wheel Events *)
-    {name= "onWheel"; type_= Wheel}
-  ; {name= "onWheelCapture"; type_= Wheel}
-  ; (* Animation Events *)
-    {name= "onAnimationStart"; type_= Animation}
-  ; {name= "onAnimationStartCapture"; type_= Animation}
-  ; {name= "onAnimationEnd"; type_= Animation}
-  ; {name= "onAnimationEndCapture"; type_= Animation}
-  ; {name= "onAnimationIteration"; type_= Animation}
-  ; {name= "onAnimationIterationCapture"; type_= Animation}
-  ; (* Transition Events *)
-    {name= "onTransitionEnd"; type_= Transition}
-  ; {name= "onTransitionEndCapture"; type_= Transition} ]
+    Event {name= "onCopy"; type_= Clipboard}
+  ; Event {name= "onCopyCapture"; type_= Clipboard}
+  ; Event {name= "onCut"; type_= Clipboard}
+  ; Event {name= "onCutCapture"; type_= Clipboard}
+  ; Event {name= "onPaste"; type_= Clipboard}
+  ; Event {name= "onPasteCapture"; type_= Clipboard} (* Composition Events *)
+  ; Event {name= "onCompositionEnd"; type_= Composition}
+  ; Event {name= "onCompositionEndCapture"; type_= Composition}
+  ; Event {name= "onCompositionStart"; type_= Composition}
+  ; Event {name= "onCompositionStartCapture"; type_= Composition}
+  ; Event {name= "onCompositionUpdate"; type_= Composition}
+  ; Event {name= "onCompositionUpdateCapture"; type_= Composition}
+    (* Focus Events *)
+  ; Event {name= "onFocus"; type_= Focus}
+  ; Event {name= "onFocusCapture"; type_= Focus}
+  ; Event {name= "onBlur"; type_= Focus}
+  ; Event {name= "onBlurCapture"; type_= Focus} (* Form Events *)
+  ; Event {name= "onChange"; type_= Form}
+  ; Event {name= "onChangeCapture"; type_= Form}
+  ; Event {name= "onBeforeInput"; type_= Form}
+  ; Event {name= "onBeforeInputCapture"; type_= Form}
+  ; Event {name= "onInput"; type_= Form}
+  ; Event {name= "onInputCapture"; type_= Form}
+  ; Event {name= "onReset"; type_= Form}
+  ; Event {name= "onResetCapture"; type_= Form}
+  ; Event {name= "onSubmit"; type_= Form}
+  ; Event {name= "onSubmitCapture"; type_= Form}
+  ; Event {name= "onInvalid"; type_= Form}
+  ; Event {name= "onInvalidCapture"; type_= Form} (* Image Events *)
+  ; Event {name= "onLoad"; type_= Media}
+  ; Event {name= "onLoadCapture"; type_= Media}
+  ; Event {name= "onError"; type_= Media}
+  ; Event {name= "onErrorCapture"; type_= Media} (* Keyboard Events *)
+  ; Event {name= "onKeyDown"; type_= Keyboard}
+  ; Event {name= "onKeyDownCapture"; type_= Keyboard}
+  ; Event {name= "onKeyPress"; type_= Keyboard}
+  ; Event {name= "onKeyPressCapture"; type_= Keyboard}
+  ; Event {name= "onKeyUp"; type_= Keyboard}
+  ; Event {name= "onKeyUpCapture"; type_= Keyboard} (* Media Events *)
+  ; Event {name= "onAbort"; type_= Media}
+  ; Event {name= "onAbortCapture"; type_= Media}
+  ; Event {name= "onCanPlay"; type_= Media}
+  ; Event {name= "onCanPlayCapture"; type_= Media}
+  ; Event {name= "onCanPlayThrough"; type_= Media}
+  ; Event {name= "onCanPlayThroughCapture"; type_= Media}
+  ; Event {name= "onDurationChange"; type_= Media}
+  ; Event {name= "onDurationChangeCapture"; type_= Media}
+  ; Event {name= "onEmptied"; type_= Media}
+  ; Event {name= "onEmptiedCapture"; type_= Media}
+  ; Event {name= "onEncrypted"; type_= Media}
+  ; Event {name= "onEncryptedCapture"; type_= Media}
+  ; Event {name= "onEnded"; type_= Media}
+  ; Event {name= "onEndedCapture"; type_= Media}
+  ; Event {name= "onLoadedData"; type_= Media}
+  ; Event {name= "onLoadedDataCapture"; type_= Media}
+  ; Event {name= "onLoadedMetadata"; type_= Media}
+  ; Event {name= "onLoadedMetadataCapture"; type_= Media}
+  ; Event {name= "onLoadStart"; type_= Media}
+  ; Event {name= "onLoadStartCapture"; type_= Media}
+  ; Event {name= "onPause"; type_= Media}
+  ; Event {name= "onPauseCapture"; type_= Media}
+  ; Event {name= "onPlay"; type_= Media}
+  ; Event {name= "onPlayCapture"; type_= Media}
+  ; Event {name= "onPlaying"; type_= Media}
+  ; Event {name= "onPlayingCapture"; type_= Media}
+  ; Event {name= "onProgress"; type_= Media}
+  ; Event {name= "onProgressCapture"; type_= Media}
+  ; Event {name= "onRateChange"; type_= Media}
+  ; Event {name= "onRateChangeCapture"; type_= Media}
+  ; Event {name= "onSeeked"; type_= Media}
+  ; Event {name= "onSeekedCapture"; type_= Media}
+  ; Event {name= "onSeeking"; type_= Media}
+  ; Event {name= "onSeekingCapture"; type_= Media}
+  ; Event {name= "onStalled"; type_= Media}
+  ; Event {name= "onStalledCapture"; type_= Media}
+  ; Event {name= "onSuspend"; type_= Media}
+  ; Event {name= "onSuspendCapture"; type_= Media}
+  ; Event {name= "onTimeUpdate"; type_= Media}
+  ; Event {name= "onTimeUpdateCapture"; type_= Media}
+  ; Event {name= "onVolumeChange"; type_= Media}
+  ; Event {name= "onVolumeChangeCapture"; type_= Media}
+  ; Event {name= "onWaiting"; type_= Media}
+  ; Event {name= "onWaitingCapture"; type_= Media} (* MouseEvents *)
+  ; Event {name= "onAuxClick"; type_= Mouse}
+  ; Event {name= "onAuxClickCapture"; type_= Mouse}
+  ; Event {name= "onClick"; type_= Mouse}
+  ; Event {name= "onClickCapture"; type_= Mouse}
+  ; Event {name= "onContextMenu"; type_= Mouse}
+  ; Event {name= "onContextMenuCapture"; type_= Mouse}
+  ; Event {name= "onDoubleClick"; type_= Mouse}
+  ; Event {name= "onDoubleClickCapture"; type_= Mouse}
+  ; Event {name= "onDrag"; type_= Drag}
+  ; Event {name= "onDragCapture"; type_= Drag}
+  ; Event {name= "onDragEnd"; type_= Drag}
+  ; Event {name= "onDragEndCapture"; type_= Drag}
+  ; Event {name= "onDragEnter"; type_= Drag}
+  ; Event {name= "onDragEnterCapture"; type_= Drag}
+  ; Event {name= "onDragExit"; type_= Drag}
+  ; Event {name= "onDragExitCapture"; type_= Drag}
+  ; Event {name= "onDragLeave"; type_= Drag}
+  ; Event {name= "onDragLeaveCapture"; type_= Drag}
+  ; Event {name= "onDragOver"; type_= Drag}
+  ; Event {name= "onDragOverCapture"; type_= Drag}
+  ; Event {name= "onDragStart"; type_= Drag}
+  ; Event {name= "onDragStartCapture"; type_= Drag}
+  ; Event {name= "onDrop"; type_= Drag}
+  ; Event {name= "onDropCapture"; type_= Drag}
+  ; Event {name= "onMouseDown"; type_= Mouse}
+  ; Event {name= "onMouseDownCapture"; type_= Mouse}
+  ; Event {name= "onMouseEnter"; type_= Mouse}
+  ; Event {name= "onMouseLeave"; type_= Mouse}
+  ; Event {name= "onMouseMove"; type_= Mouse}
+  ; Event {name= "onMouseMoveCapture"; type_= Mouse}
+  ; Event {name= "onMouseOut"; type_= Mouse}
+  ; Event {name= "onMouseOutCapture"; type_= Mouse}
+  ; Event {name= "onMouseOver"; type_= Mouse}
+  ; Event {name= "onMouseOverCapture"; type_= Mouse}
+  ; Event {name= "onMouseUp"; type_= Mouse}
+  ; Event {name= "onMouseUpCapture"; type_= Mouse} (* Selection Events *)
+  ; Event {name= "onSelect"; type_= Selection}
+  ; Event {name= "onSelectCapture"; type_= Selection} (* Touch Events *)
+  ; Event {name= "onTouchCancel"; type_= Touch}
+  ; Event {name= "onTouchCancelCapture"; type_= Touch}
+  ; Event {name= "onTouchEnd"; type_= Touch}
+  ; Event {name= "onTouchEndCapture"; type_= Touch}
+  ; Event {name= "onTouchMove"; type_= Touch}
+  ; Event {name= "onTouchMoveCapture"; type_= Touch}
+  ; Event {name= "onTouchStart"; type_= Touch}
+  ; Event {name= "onTouchStartCapture"; type_= Touch} (* Pointer Events *)
+  ; Event {name= "onPointerDown"; type_= Pointer}
+  ; Event {name= "onPointerDownCapture"; type_= Pointer}
+  ; Event {name= "onPointerMove"; type_= Pointer}
+  ; Event {name= "onPointerMoveCapture"; type_= Pointer}
+  ; Event {name= "onPointerUp"; type_= Pointer}
+  ; Event {name= "onPointerUpCapture"; type_= Pointer}
+  ; Event {name= "onPointerCancel"; type_= Pointer}
+  ; Event {name= "onPointerCancelCapture"; type_= Pointer}
+  ; Event {name= "onPointerEnter"; type_= Pointer}
+  ; Event {name= "onPointerEnterCapture"; type_= Pointer}
+  ; Event {name= "onPointerLeave"; type_= Pointer}
+  ; Event {name= "onPointerLeaveCapture"; type_= Pointer}
+  ; Event {name= "onPointerOver"; type_= Pointer}
+  ; Event {name= "onPointerOverCapture"; type_= Pointer}
+  ; Event {name= "onPointerOut"; type_= Pointer}
+  ; Event {name= "onPointerOutCapture"; type_= Pointer}
+  ; Event {name= "onGotPointerCapture"; type_= Pointer}
+  ; Event {name= "onGotPointerCaptureCapture"; type_= Pointer}
+  ; Event {name= "onLostPointerCapture"; type_= Pointer}
+  ; Event {name= "onLostPointerCaptureCapture"; type_= Pointer} (* UI Events *)
+  ; Event {name= "onScroll"; type_= UI}
+  ; Event {name= "onScrollCapture"; type_= UI} (* Wheel Events *)
+  ; Event {name= "onWheel"; type_= Wheel}
+  ; Event {name= "onWheelCapture"; type_= Wheel} (* Animation Events *)
+  ; Event {name= "onAnimationStart"; type_= Animation}
+  ; Event {name= "onAnimationStartCapture"; type_= Animation}
+  ; Event {name= "onAnimationEnd"; type_= Animation}
+  ; Event {name= "onAnimationEndCapture"; type_= Animation}
+  ; Event {name= "onAnimationIteration"; type_= Animation}
+  ; Event {name= "onAnimationIterationCapture"; type_= Animation}
+    (* Transition Events *)
+  ; Event {name= "onTransitionEnd"; type_= Transition}
+  ; Event {name= "onTransitionEndCapture"; type_= Transition} ]
 
 (* All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/ *)
 let ariaAttributes =
@@ -230,277 +218,277 @@ let ariaAttributes =
       { name= "ariaActivedescendant"
       ; htmlName= "aria-activedescendant"
       ; type_= String }
-  ; (* Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. *)
-    Attribute
+    (* Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. *)
+  ; Attribute
       { name= "ariaAtomic"
       ; htmlName= "aria-atomic"
       ; type_= String (* Bool | 'false' | 'true' *) }
-  ; (*
+    (*
      * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
      * presented if they are made.
      *)
-    Attribute
+  ; Attribute
       { name= "ariaAutocomplete"
       ; htmlName= "aria-autocomplete"
       ; type_= String (* 'none' | 'inline' | 'list' | 'both' *) }
-  ; (* Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. *)
-    Attribute
+    (* Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. *)
+  ; Attribute
       { name= "ariaBusy"
       ; htmlName= "aria-busy"
       ; type_= String (* Bool | 'false' | 'true' *) }
-  ; (*
+    (*
      * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
      * @see aria-pressed @see aria-selected.
      *)
-    Attribute
+  ; Attribute
       { name= "ariaChecked"
       ; htmlName= "aria-checked"
       ; type_= String (* Bool | 'false' | 'mixed' | 'true' *) }
-  ; (*
+    (*
      * Defines the total number of columns in a table, grid, or treegrid.
      * @see aria-colindex.
      *)
-    Attribute {name= "ariaColcount"; htmlName= "aria-colcount"; type_= Int}
-  ; (*
+  ; Attribute {name= "ariaColcount"; htmlName= "aria-colcount"; type_= Int}
+    (*
      * Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
      * @see aria-colcount @see aria-colspan.
      *)
-    Attribute {name= "ariaColindex"; htmlName= "aria-colindex"; type_= Int}
-  ; (*
+  ; Attribute {name= "ariaColindex"; htmlName= "aria-colindex"; type_= Int}
+    (*
      * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
      * @see aria-colindex @see aria-rowspan.
      *)
-    Attribute {name= "ariaColspan"; htmlName= "aria-colspan"; type_= Int}
-  ; (*
+  ; Attribute {name= "ariaColspan"; htmlName= "aria-colspan"; type_= Int}
+    (*
      * Identifies the element (or elements) whose contents or presence are controlled by the current element.
      * @see aria-owns.
      *)
-    Attribute {name= "ariaControls"; htmlName= "aria-controls"; type_= String}
-  ; (* Indicates the element that represents the current item within a container or set of related elements. *)
-    Attribute
+  ; Attribute {name= "ariaControls"; htmlName= "aria-controls"; type_= String}
+    (* Indicates the element that represents the current item within a container or set of related elements. *)
+  ; Attribute
       { name= "ariaCurrent"
       ; htmlName= "aria-current"
       ; type_=
           String
           (* Bool | 'false' | 'true' |  'page' | 'step' | 'location' | 'date' | 'time' *)
       }
-  ; (*
+    (*
      * Identifies the element (or elements) that describes the object.
      * @see aria-labelledby
      *)
-    Attribute
+  ; Attribute
       {name= "ariaDescribedby"; htmlName= "aria-describedby"; type_= String}
-  ; (*
+    (*
      * Identifies the element that provides a detailed, extended description for the object.
      * @see aria-describedby.
      *)
-    Attribute {name= "ariaDetails"; htmlName= "aria-details"; type_= String}
-  ; (*
+  ; Attribute {name= "ariaDetails"; htmlName= "aria-details"; type_= String}
+    (*
      * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
      * @see aria-hidden @see aria-readonly.
      *)
-    Attribute
+  ; Attribute
       { name= "ariaDisabled"
       ; htmlName= "aria-disabled"
       ; type_= String (* Bool | 'false' | 'true' *) }
-  ; (*
+    (*
      * Indicates what functions can be performed when a dragged object is released on the drop target.
      * @deprecated in ARIA 1.1
      *)
-    Attribute
+  ; Attribute
       { name= "ariaDropeffect"
       ; htmlName= "aria-dropeffect"
       ; type_=
           String (* 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup' *)
       }
-  ; (*
+    (*
      * Identifies the element that provides an error message for the object.
      * @see aria-invalid @see aria-describedby.
      *)
-    Attribute
+  ; Attribute
       {name= "ariaErrormessage"; htmlName= "aria-errormessage"; type_= String}
-  ; (* Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. *)
-    Attribute
+    (* Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. *)
+  ; Attribute
       { name= "ariaExpanded"
       ; htmlName= "aria-expanded"
       ; type_= String (* Bool | 'false' | 'true' *) }
-  ; (*
+    (*
      * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
      * allows assistive technology to override the general default of reading in document source order.
      *)
-    Attribute {name= "ariaFlowto"; htmlName= "aria-flowto"; type_= String}
-  ; (*
+  ; Attribute {name= "ariaFlowto"; htmlName= "aria-flowto"; type_= String}
+    (*
      * Indicates an element's "grabbed" state in a drag-and-drop operation.
      * @deprecated in ARIA 1.1
      *)
-    Attribute
+  ; Attribute
       { name= "ariaGrabbed"
       ; htmlName= "aria-grabbed"
       ; type_= String (* Bool | 'false' | 'true' *) }
-  ; (* Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. *)
-    Attribute
+    (* Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. *)
+  ; Attribute
       { name= "ariaHaspopup"
       ; htmlName= "aria-haspopup"
       ; type_=
           String
           (* Bool | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'; *)
       }
-  ; (*
+    (*
      * Indicates whether the element is exposed to an accessibility API.
      * @see aria-disabled.
      *)
-    Attribute
+  ; Attribute
       { name= "ariaHidden"
       ; htmlName= "aria-hidden"
       ; type_= String (* Bool | 'false' | 'true' *) }
-  ; (*
+    (*
      * Indicates the entered value does not conform to the format expected by the application.
      * @see aria-errormessage.
      *)
-    Attribute
+  ; Attribute
       { name= "ariaInvalid"
       ; htmlName= "aria-invalid"
       ; type_= String (* Bool | 'false' | 'true' |  'grammar' | 'spelling'; *)
       }
-  ; (* Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. *)
-    Attribute
+    (* Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. *)
+  ; Attribute
       {name= "ariaKeyshortcuts"; htmlName= "aria-keyshortcuts"; type_= String}
-  ; (*
+    (*
      * Defines a String value that labels the current element.
      * @see aria-labelledby.
      *)
-    Attribute {name= "ariaLabel"; htmlName= "aria-label"; type_= String}
-  ; (*
+  ; Attribute {name= "ariaLabel"; htmlName= "aria-label"; type_= String}
+    (*
      * Identifies the element (or elements) that labels the current element.
      * @see aria-describedby.
      *)
-    Attribute
+  ; Attribute
       {name= "ariaLabelledby"; htmlName= "aria-labelledby"; type_= String}
-  ; (*Defines the hierarchical level of an element within a structure. *)
-    Attribute {name= "ariaLevel"; htmlName= "aria-level"; type_= Int}
-  ; (* Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. *)
-    Attribute
+    (* Defines the hierarchical level of an element within a structure. *)
+  ; Attribute {name= "ariaLevel"; htmlName= "aria-level"; type_= Int}
+    (* Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect ;rom the live region. *)
+  ; Attribute
       { name= "ariaLive"
       ; htmlName= "aria-live"
       ; type_= String (* 'off' | 'assertive' | 'polite' *) }
-  ; (* Indicates whether an element is modal when displayed. *)
-    Attribute
+    (* Indicates whether an element is modal when displayed. *)
+  ; Attribute
       { name= "ariaModal"
       ; htmlName= "aria-modal"
       ; type_= String (* Bool | 'false' | 'true' *) }
-  ; (* Indicates whether a text box accepts multiple lines of input or only a single line. *)
-    Attribute
+    (* Indicates whether a text box accepts multiple lines of input or only a single line. *)
+  ; Attribute
       { name= "ariaMultiline"
       ; htmlName= "aria-multiline"
       ; type_= String (* Bool | 'false' | 'true' *) }
-  ; (* Indicates that the user may select more than one item from the current selectable descendants. *)
-    Attribute
+    (* Indicates that the user may select more than one item from the current selectable descendants. *)
+  ; Attribute
       { name= "ariaMultiselectable"
       ; htmlName= "aria-multiselectable"
       ; type_= String (* Bool |  'false' | 'true' *) }
-  ; (* Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. *)
-    Attribute
+    (* Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. *)
+  ; Attribute
       { name= "ariaOrientation"
       ; htmlName= "aria-orientation"
       ; type_= String (* 'horizontal' | 'vertical' *) }
-  ; (*
+    (*
      * Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
      * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
      * @see aria-controls.
      *)
-    Attribute {name= "ariaOwns"; htmlName= "aria-owns"; type_= String}
-  ; (*
+  ; Attribute {name= "ariaOwns"; htmlName= "aria-owns"; type_= String}
+    (*
      * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
      * A hint could be a sample value or a brief description of the expected format.
      *)
-    Attribute
+  ; Attribute
       {name= "ariaPlaceholder"; htmlName= "aria-placeholder"; type_= String}
-  ; (*
+    (*
      * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
      * @see aria-setsize.
      *)
-    Attribute {name= "ariaPosinset"; htmlName= "aria-posinset"; type_= Int}
-  ; (*
+  ; Attribute {name= "ariaPosinset"; htmlName= "aria-posinset"; type_= Int}
+    (*
      * Indicates the current "pressed" state of toggle buttons.
      * @see aria-checked @see aria-selected.
      *)
-    Attribute
+  ; Attribute
       { name= "ariaPressed"
       ; htmlName= "aria-pressed"
       ; type_= String (* Bool | 'false' | 'mixed' | 'true' *) }
-  ; (*
+    (*
      * Indicates that the element is not editable, but is otherwise operable.
      * @see aria-disabled.
      *)
-    Attribute
+  ; Attribute
       { name= "ariaReadonly"
       ; htmlName= "aria-readonly"
       ; type_= String (* Bool | 'false' | 'true' *) }
-  ; (*
+    (*
      * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
      * @see aria-atomic.
      *)
-    Attribute
+  ; Attribute
       { name= "ariaRelevant"
       ; htmlName= "aria-relevant"
       ; type_=
           String
           (* 'additions' | 'additions removals' | 'additions text' | 'all' | 'removals' | 'removals additions' | 'removals text' | 'text' | 'text additions' | 'text removals' *)
       }
-  ; (* Indicates that user input is required on the element before a form may be submitted. *)
-    Attribute
+    (* Indicates that user input is required on the element before a form may be submitted. *)
+  ; Attribute
       { name= "ariaRequired"
       ; htmlName= "aria-required"
       ; type_= String (* Bool | 'false' | 'true' *) }
-  ; (*Defines a human-readable, author-localized description for the role of an element. *)
-    Attribute
+    (* Defines a human-readable, author-localized description for the role of an element. *)
+  ; Attribute
       { name= "ariaRoledescription"
       ; htmlName= "aria-roledescription"
       ; type_= String }
-  ; (*
+    (*
      * Defines the total number of rows in a table, grid, or treegrid.
      * @see aria-rowindex.
      *)
-    Attribute {name= "ariaRowcount"; htmlName= "aria-rowcount"; type_= Int}
-  ; (*
+  ; Attribute {name= "ariaRowcount"; htmlName= "aria-rowcount"; type_= Int}
+    (*
      * Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.
      * @see aria-rowcount @see aria-rowspan.
      *)
-    Attribute {name= "ariaRowindex"; htmlName= "aria-rowindex"; type_= Int}
-  ; (*
+  ; Attribute {name= "ariaRowindex"; htmlName= "aria-rowindex"; type_= Int}
+    (*
      * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
      * @see aria-rowindex @see aria-colspan.
      *)
-    Attribute {name= "ariaRowspan"; htmlName= "aria-rowspan"; type_= Int}
-  ; (*
+  ; Attribute {name= "ariaRowspan"; htmlName= "aria-rowspan"; type_= Int}
+    (*
      * Indicates the current "selected" state of various widgets.
      * @see aria-checked @see aria-pressed.
      *)
-    Attribute
+  ; Attribute
       { name= "ariaSelected"
       ; htmlName= "aria-selected"
       ; type_= String (* Bool | 'false' | 'true' *) }
-  ; (*
+    (*
      * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
      * @see aria-posinset.
      *)
-    Attribute {name= "ariaSetsize"; htmlName= "aria-setsize"; type_= Int}
-  ; (* Indicates if items in a table or grid are sorted in ascending or descending order. *)
-    Attribute
+  ; Attribute {name= "ariaSetsize"; htmlName= "aria-setsize"; type_= Int}
+    (* Indicates if items in a table or grid are sorted in ascending or descending order. *)
+  ; Attribute
       { name= "ariaSort"
       ; htmlName= "aria-sort"
       ; type_= String (* 'none' | 'ascending' | 'descending' | 'other' *) }
-  ; (*Defines the maximum allowed value for a range widget. *)
-    Attribute {name= "ariaValuemax"; htmlName= "aria-valuemax"; type_= Int}
-  ; (*Defines the minimum allowed value for a range widget. *)
-    Attribute {name= "ariaValuemin"; htmlName= "aria-valuemin"; type_= Int}
-  ; (*
+    (* Defines the maximum allowed value for a range widget. *)
+  ; Attribute {name= "ariaValuemax"; htmlName= "aria-valuemax"; type_= Int}
+    (* Defines the minimum allowed value for a range widget. *)
+  ; Attribute {name= "ariaValuemin"; htmlName= "aria-valuemin"; type_= Int}
+    (*
      * Defines the current value for a range widget.
      * @see aria-valuetext.
      *)
-    Attribute {name= "ariaValuenow"; htmlName= "aria-valuenow"; type_= Int}
-  ; (*Defines the human readable text alternative of aria-valuenow for a range widget. *)
-    Attribute {name= "ariaValuetext"; htmlName= "aria-valuetext"; type_= String}
+  ; Attribute {name= "ariaValuenow"; htmlName= "aria-valuenow"; type_= Int}
+    (* Defines the human readable text alternative of aria-valuenow for a range widget. *)
+  ; Attribute {name= "ariaValuetext"; htmlName= "aria-valuetext"; type_= String}
   ]
 
 (* All the WAI-ARIA 1.1 role attribute values from https://www.w3.org/TR/wai-aria-1.1/#role_definitions *)
@@ -581,334 +569,368 @@ let attributesHTML =
   [ (* React-specific Attributes *)
     Attribute
       { name= "dangerouslySetInnerHTML"
-      ; type_= InnerHtml
-      ; htmlName= "dangerouslySetInnerHTML" }
-  ; Attribute {name= "defaultChecked"; type_= Bool; htmlName= ""}
+      ; htmlName= "dangerouslySetInnerHTML"
+      ; type_= InnerHtml }
+  ; Attribute {name= "defaultChecked"; htmlName= "defaultChecked"; type_= Bool}
   ; Attribute
       { name= "defaultValue"
-      ; type_= String (* | number | ReadonlyArray<String> *)
-      ; htmlName= "" }
-  ; Attribute {name= "suppressContentEditableWarning"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "suppressHydrationWarning"; type_= Bool; htmlName= ""}
-  ; (* Standard HTML Attributes *)
-    Attribute {name= "accessKey"; type_= String; htmlName= ""}
-  ; Attribute {name= "className"; type_= String; htmlName= ""}
-  ; Attribute {name= "contextMenu"; type_= String; htmlName= ""}
-  ; Attribute {name= "dir"; type_= String; htmlName= ""}
-  ; Attribute {name= "draggable"; type_= String (* Booleanish *); htmlName= ""}
-  ; Attribute {name= "hidden"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "id"; type_= String; htmlName= ""}
-  ; Attribute {name= "lang"; type_= String; htmlName= ""}
-  ; Attribute {name= "placeholder"; type_= String; htmlName= ""}
-  ; Attribute {name= "slot"; type_= String; htmlName= ""}
-  ; Attribute {name= "spellCheck"; type_= String (* Booleanish *); htmlName= ""}
-  ; Attribute {name= "style"; type_= Style; htmlName= ""}
-  ; Attribute {name= "tabIndex"; type_= Int; htmlName= ""}
-  ; Attribute {name= "title"; type_= String; htmlName= ""}
-  ; Attribute {name= "translate"; type_= String (* 'yes' | 'no' *); htmlName= ""}
-  ; (* Unknown *)
-    Attribute {name= "radioGroup"; type_= String; htmlName= ""}
-  ; (* <command>, <menuitem> *)
-
+      ; htmlName= "defaultValue"
+      ; type_= String (* | number | ReadonlyArray<String> *) }
+  ; Attribute
+      { name= "suppressContentEditableWarning"
+      ; htmlName= "suppressContentEditableWarning"
+      ; type_= Bool }
+  ; Attribute
+      { name= "suppressHydrationWarning"
+      ; htmlName= "suppressHydrationWarning"
+      ; type_= Bool }
+    (* Standard HTML Attributes *)
+  ; Attribute {name= "accessKey"; htmlName= "accesskey"; type_= String}
+  ; Attribute {name= "className"; htmlName= "classname"; type_= String}
+  ; Attribute {name= "contextMenu"; htmlName= "contextmenu"; type_= String}
+  ; Attribute {name= "dir"; htmlName= "dir"; type_= String}
+  ; Attribute
+      {name= "draggable"; htmlName= "draggable"; type_= String (* Booleanish *)}
+  ; Attribute {name= "hidden"; htmlName= "hidden"; type_= Bool}
+  ; Attribute {name= "id"; htmlName= "id"; type_= String}
+  ; Attribute {name= "lang"; htmlName= "lang"; type_= String}
+  ; Attribute {name= "placeholder"; htmlName= "placeholder"; type_= String}
+  ; Attribute {name= "slot"; htmlName= "slot"; type_= String}
+  ; Attribute
+      { name= "spellCheck"
+      ; htmlName= "spellcheck"
+      ; type_= String (* Booleanish *) }
+  ; Attribute {name= "style"; htmlName= "style"; type_= Style}
+  ; Attribute {name= "tabIndex"; htmlName= "tabindex"; type_= Int}
+  ; Attribute {name= "title"; htmlName= "title"; type_= String}
+  ; Attribute
+      { name= "translate"
+      ; htmlName= "translate"
+      ; type_= String (* 'yes' | 'no' *) }
+  ; Attribute {name= "radioGroup"; htmlName= "radiogroup"; type_= String}
+    (* Unknown *)
+    (* <command>, <menuitem> *)
     (* WAI-ARIA *)
-    Attribute {name= "role"; type_= ariaRole; htmlName= ""}
-  ; (* RDFa Attributes *)
-    Attribute {name= "about"; type_= String; htmlName= ""}
-  ; Attribute {name= "datatype"; type_= String; htmlName= ""}
-  ; Attribute {name= "inlist"; type_= String (* any *); htmlName= ""}
-  ; Attribute {name= "prefix"; type_= String; htmlName= ""}
-  ; Attribute {name= "property"; type_= String; htmlName= ""}
-  ; Attribute {name= "resource"; type_= String; htmlName= ""}
-  ; Attribute {name= "typeof"; type_= String; htmlName= ""}
-  ; Attribute {name= "vocab"; type_= String; htmlName= ""}
-  ; (* Non-standard Attributes *)
-    Attribute {name= "autoCapitalize"; type_= String; htmlName= ""}
-  ; Attribute {name= "autoCorrect"; type_= String; htmlName= ""}
-  ; Attribute {name= "autoSave"; type_= String; htmlName= ""}
-  ; Attribute {name= "color"; type_= String; htmlName= ""}
-  ; Attribute {name= "itemProp"; type_= String; htmlName= ""}
-  ; Attribute {name= "itemScope"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "itemType"; type_= String; htmlName= ""}
-  ; Attribute {name= "itemID"; type_= String; htmlName= ""}
-  ; Attribute {name= "itemRef"; type_= String; htmlName= ""}
-  ; Attribute {name= "results"; type_= Int; htmlName= ""}
-  ; Attribute {name= "security"; type_= String; htmlName= ""}
+  ; Attribute {name= "role"; htmlName= "role"; type_= ariaRole}
+    (* RDFa Attributes *)
+  ; Attribute {name= "about"; htmlName= "about"; type_= String}
+  ; Attribute {name= "datatype"; htmlName= "datatype"; type_= String}
+  ; Attribute {name= "inlist"; htmlName= "inlist"; type_= String (* any *)}
+  ; Attribute {name= "prefix"; htmlName= "prefix"; type_= String}
+  ; Attribute {name= "property"; htmlName= "property"; type_= String}
+  ; Attribute {name= "resource"; htmlName= "resource"; type_= String}
+  ; Attribute {name= "typeof"; htmlName= "typeof"; type_= String}
+  ; Attribute {name= "vocab"; htmlName= "vocab"; type_= String}
+    (* Non-standard Attributes *)
+  ; Attribute {name= "autoCapitalize"; htmlName= "autocapitalize"; type_= String}
+  ; Attribute {name= "autoCorrect"; htmlName= "autocorrect"; type_= String}
+  ; Attribute {name= "autoSave"; htmlName= "autosave"; type_= String}
+  ; Attribute {name= "color"; htmlName= "color"; type_= String}
+  ; Attribute {name= "itemProp"; htmlName= "itemprop"; type_= String}
+  ; Attribute {name= "itemScope"; htmlName= "itemscope"; type_= Bool}
+  ; Attribute {name= "itemType"; htmlName= "itemtype"; type_= String}
+  ; Attribute {name= "itemID"; htmlName= "itemid"; type_= String}
+  ; Attribute {name= "itemRef"; htmlName= "itemref"; type_= String}
+  ; Attribute {name= "results"; htmlName= "results"; type_= Int}
+  ; Attribute {name= "security"; htmlName= "security"; type_= String}
     (* Living Standard
-
-         * Hints at the type of data that might be entered by the user while editing the element or its contents
-         * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute *)
+     * Hints at the type of data that might be entered by the user while editing the element or its contents
+     * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute *)
   ; Attribute
       { name= "inputMode"
+      ; htmlName= "inputmode"
       ; type_=
           String
           (* 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' *)
-      ; htmlName= "" }
-  ; (* * Specify that a standard HTML element should behave like a defined custom built-in element
-       * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is *)
-    Attribute {name= "is"; type_= String; htmlName= ""} ]
+      }
+    (* Specify that a standard HTML element should behave like a defined custom built-in element
+        * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is *)
+  ; Attribute {name= "is"; htmlName= "is"; type_= String} ]
 
 let allHTMLAttributes =
   [ (* Standard HTML Attributes *)
-    Attribute {name= "accept"; type_= String; htmlName= ""}
-  ; Attribute {name= "acceptCharset"; type_= String; htmlName= ""}
-  ; Attribute {name= "action"; type_= String; htmlName= ""}
-  ; Attribute {name= "allowFullScreen"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "allowTransparency"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "alt"; type_= String; htmlName= ""}
-  ; Attribute {name= "as"; type_= String; htmlName= ""}
-  ; Attribute {name= "async"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "autoComplete"; type_= String; htmlName= ""}
-  ; Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "autoPlay"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "capture"; type_= (* Bool |  *) String; htmlName= ""}
-  ; Attribute {name= "cellPadding"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "cellSpacing"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "charSet"; type_= String; htmlName= ""}
-  ; Attribute {name= "challenge"; type_= String; htmlName= ""}
-  ; Attribute {name= "checked"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "cite"; type_= String; htmlName= ""}
-  ; Attribute {name= "classID"; type_= String; htmlName= ""}
-  ; Attribute {name= "cols"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "colSpan"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "content"; type_= String; htmlName= ""}
-  ; Attribute {name= "controls"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "coords"; type_= String; htmlName= ""}
-  ; Attribute {name= "crossOrigin"; type_= String; htmlName= ""}
-  ; Attribute {name= "data"; type_= String; htmlName= ""}
-  ; Attribute {name= "dateTime"; type_= String; htmlName= ""}
-  ; Attribute {name= "default"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "defer"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "disabled"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "download"; type_= String (* any *); htmlName= ""}
-  ; Attribute {name= "encType"; type_= String; htmlName= ""}
-  ; Attribute {name= "form"; type_= String; htmlName= ""}
-  ; Attribute {name= "formAction"; type_= String; htmlName= ""}
-  ; Attribute {name= "formEncType"; type_= String; htmlName= ""}
-  ; Attribute {name= "formMethod"; type_= String; htmlName= ""}
-  ; Attribute {name= "formNoValidate"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "formTarget"; type_= String; htmlName= ""}
-  ; Attribute {name= "frameBorder"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "headers"; type_= String; htmlName= ""}
-  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "high"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "href"; type_= String; htmlName= ""}
-  ; Attribute {name= "hrefLang"; type_= String; htmlName= ""}
-  ; Attribute {name= "htmlFor"; type_= String; htmlName= ""}
-  ; Attribute {name= "httpEquiv"; type_= String; htmlName= ""}
-  ; Attribute {name= "integrity"; type_= String; htmlName= ""}
-  ; Attribute {name= "keyParams"; type_= String; htmlName= ""}
-  ; Attribute {name= "keyType"; type_= String; htmlName= ""}
-  ; Attribute {name= "kind"; type_= String; htmlName= ""}
-  ; Attribute {name= "label"; type_= String; htmlName= ""}
-  ; Attribute {name= "list"; type_= String; htmlName= ""}
-  ; Attribute {name= "loop"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "low"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "manifest"; type_= String; htmlName= ""}
-  ; Attribute {name= "marginHeight"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "marginWidth"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "max"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "maxLength"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "media"; type_= String; htmlName= ""}
-  ; Attribute {name= "mediaGroup"; type_= String; htmlName= ""}
-  ; Attribute {name= "method"; type_= String; htmlName= ""}
-  ; Attribute {name= "min"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "minLength"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "multiple"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "muted"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "name"; type_= String; htmlName= ""}
-  ; Attribute {name= "nonce"; type_= String; htmlName= ""}
-  ; Attribute {name= "noValidate"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "open"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "optimum"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "pattern"; type_= String; htmlName= ""}
-  ; Attribute {name= "placeholder"; type_= String; htmlName= ""}
-  ; Attribute {name= "playsInline"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "poster"; type_= String; htmlName= ""}
-  ; Attribute {name= "preload"; type_= String; htmlName= ""}
-  ; Attribute {name= "readOnly"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "rel"; type_= String; htmlName= ""}
-  ; Attribute {name= "required"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "reversed"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "rows"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "rowSpan"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "sandbox"; type_= String; htmlName= ""}
-  ; Attribute {name= "scope"; type_= String; htmlName= ""}
-  ; Attribute {name= "scoped"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "scrolling"; type_= String; htmlName= ""}
-  ; Attribute {name= "seamless"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "selected"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "shape"; type_= String; htmlName= ""}
-  ; Attribute {name= "size"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "sizes"; type_= String; htmlName= ""}
-  ; Attribute {name= "span"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "src"; type_= String; htmlName= ""}
-  ; Attribute {name= "srcDoc"; type_= String; htmlName= ""}
-  ; Attribute {name= "srcLang"; type_= String; htmlName= ""}
-  ; Attribute {name= "srcSet"; type_= String; htmlName= ""}
-  ; Attribute {name= "start"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "step"; type_= (* number | *) String; htmlName= ""}
-  ; Attribute {name= "summary"; type_= String; htmlName= ""}
-  ; Attribute {name= "target"; type_= String; htmlName= ""}
-  ; Attribute {name= "type"; type_= String; htmlName= ""}
-  ; Attribute {name= "useMap"; type_= String; htmlName= ""}
+    Attribute {name= "accept"; htmlName= "accept"; type_= String}
+  ; Attribute {name= "acceptCharset"; htmlName= "acceptcharset"; type_= String}
+  ; Attribute {name= "action"; htmlName= "action"; type_= String}
+  ; Attribute {name= "allowFullScreen"; htmlName= "allowfullscreen"; type_= Bool}
+  ; Attribute
+      {name= "allowTransparency"; htmlName= "allowtransparency"; type_= Bool}
+  ; Attribute {name= "alt"; htmlName= "alt"; type_= String}
+  ; Attribute {name= "as"; htmlName= "as"; type_= String}
+  ; Attribute {name= "async"; htmlName= "async"; type_= Bool}
+  ; Attribute {name= "autoComplete"; htmlName= "autocomplete"; type_= String}
+  ; Attribute {name= "autoFocus"; htmlName= "autofocus"; type_= Bool}
+  ; Attribute {name= "autoPlay"; htmlName= "autoplay"; type_= Bool}
+  ; Attribute {name= "capture"; htmlName= "capture"; type_= (* Bool |  *) String}
+  ; Attribute
+      { name= "cellPadding"
+      ; htmlName= "cellpadding"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      { name= "cellSpacing"
+      ; htmlName= "cellspacing"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "charSet"; htmlName= "charset"; type_= String}
+  ; Attribute {name= "challenge"; htmlName= "challenge"; type_= String}
+  ; Attribute {name= "checked"; htmlName= "checked"; type_= Bool}
+  ; Attribute {name= "cite"; htmlName= "cite"; type_= String}
+  ; Attribute {name= "classID"; htmlName= "classid"; type_= String}
+  ; Attribute {name= "cols"; htmlName= "cols"; type_= Int (* number *)}
+  ; Attribute {name= "colSpan"; htmlName= "colspan"; type_= Int (* number *)}
+  ; Attribute {name= "content"; htmlName= "content"; type_= String}
+  ; Attribute {name= "controls"; htmlName= "controls"; type_= Bool}
+  ; Attribute {name= "coords"; htmlName= "coords"; type_= String}
+  ; Attribute {name= "crossOrigin"; htmlName= "crossorigin"; type_= String}
+  ; Attribute {name= "data"; htmlName= "data"; type_= String}
+  ; Attribute {name= "dateTime"; htmlName= "datetime"; type_= String}
+  ; Attribute {name= "default"; htmlName= "default"; type_= Bool}
+  ; Attribute {name= "defer"; htmlName= "defer"; type_= Bool}
+  ; Attribute {name= "disabled"; htmlName= "disabled"; type_= Bool}
+  ; Attribute {name= "download"; htmlName= "download"; type_= String (* any *)}
+  ; Attribute {name= "encType"; htmlName= "enctype"; type_= String}
+  ; Attribute {name= "form"; htmlName= "form"; type_= String}
+  ; Attribute {name= "formAction"; htmlName= "formaction"; type_= String}
+  ; Attribute {name= "formEncType"; htmlName= "formenctype"; type_= String}
+  ; Attribute {name= "formMethod"; htmlName= "formmethod"; type_= String}
+  ; Attribute {name= "formNoValidate"; htmlName= "formnovalidate"; type_= Bool}
+  ; Attribute {name= "formTarget"; htmlName= "formtarget"; type_= String}
+  ; Attribute
+      { name= "frameBorder"
+      ; htmlName= "frameborder"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "headers"; htmlName= "headers"; type_= String}
+  ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
+  ; Attribute {name= "high"; htmlName= "high"; type_= Int (* number *)}
+  ; Attribute {name= "href"; htmlName= "href"; type_= String}
+  ; Attribute {name= "hrefLang"; htmlName= "hreflang"; type_= String}
+  ; Attribute {name= "htmlFor"; htmlName= "htmlfor"; type_= String}
+  ; Attribute {name= "httpEquiv"; htmlName= "httpequiv"; type_= String}
+  ; Attribute {name= "integrity"; htmlName= "integrity"; type_= String}
+  ; Attribute {name= "keyParams"; htmlName= "keyparams"; type_= String}
+  ; Attribute {name= "keyType"; htmlName= "keytype"; type_= String}
+  ; Attribute {name= "kind"; htmlName= "kind"; type_= String}
+  ; Attribute {name= "label"; htmlName= "label"; type_= String}
+  ; Attribute {name= "list"; htmlName= "list"; type_= String}
+  ; Attribute {name= "loop"; htmlName= "loop"; type_= Bool}
+  ; Attribute {name= "low"; htmlName= "low"; type_= Int (* number *)}
+  ; Attribute {name= "manifest"; htmlName= "manifest"; type_= String}
+  ; Attribute
+      {name= "marginHeight"; htmlName= "marginheight"; type_= Int (* number *)}
+  ; Attribute
+      {name= "marginWidth"; htmlName= "marginwidth"; type_= Int (* number *)}
+  ; Attribute {name= "max"; htmlName= "max"; type_= String (* number |  *)}
+  ; Attribute {name= "maxLength"; htmlName= "maxlength"; type_= Int (* number *)}
+  ; Attribute {name= "media"; htmlName= "media"; type_= String}
+  ; Attribute {name= "mediaGroup"; htmlName= "mediagroup"; type_= String}
+  ; Attribute {name= "method"; htmlName= "method"; type_= String}
+  ; Attribute {name= "min"; htmlName= "min"; type_= String (* number |  *)}
+  ; Attribute {name= "minLength"; htmlName= "minlength"; type_= Int (* number *)}
+  ; Attribute {name= "multiple"; htmlName= "multiple"; type_= Bool}
+  ; Attribute {name= "muted"; htmlName= "muted"; type_= Bool}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String}
+  ; Attribute {name= "nonce"; htmlName= "nonce"; type_= String}
+  ; Attribute {name= "noValidate"; htmlName= "novalidate"; type_= Bool}
+  ; Attribute {name= "open"; htmlName= "open"; type_= Bool}
+  ; Attribute {name= "optimum"; htmlName= "optimum"; type_= Int (* number *)}
+  ; Attribute {name= "pattern"; htmlName= "pattern"; type_= String}
+  ; Attribute {name= "placeholder"; htmlName= "placeholder"; type_= String}
+  ; Attribute {name= "playsInline"; htmlName= "playsinline"; type_= Bool}
+  ; Attribute {name= "poster"; htmlName= "poster"; type_= String}
+  ; Attribute {name= "preload"; htmlName= "preload"; type_= String}
+  ; Attribute {name= "readOnly"; htmlName= "readonly"; type_= Bool}
+  ; Attribute {name= "rel"; htmlName= "rel"; type_= String}
+  ; Attribute {name= "required"; htmlName= "required"; type_= Bool}
+  ; Attribute {name= "reversed"; htmlName= "reversed"; type_= Bool}
+  ; Attribute {name= "rows"; htmlName= "rows"; type_= Int (* number *)}
+  ; Attribute {name= "rowSpan"; htmlName= "rowspan"; type_= Int (* number *)}
+  ; Attribute {name= "sandbox"; htmlName= "sandbox"; type_= String}
+  ; Attribute {name= "scope"; htmlName= "scope"; type_= String}
+  ; Attribute {name= "scoped"; htmlName= "scoped"; type_= Bool}
+  ; Attribute {name= "scrolling"; htmlName= "scrolling"; type_= String}
+  ; Attribute {name= "seamless"; htmlName= "seamless"; type_= Bool}
+  ; Attribute {name= "selected"; htmlName= "selected"; type_= Bool}
+  ; Attribute {name= "shape"; htmlName= "shape"; type_= String}
+  ; Attribute {name= "size"; htmlName= "size"; type_= Int (* number *)}
+  ; Attribute {name= "sizes"; htmlName= "sizes"; type_= String}
+  ; Attribute {name= "span"; htmlName= "span"; type_= Int (* number *)}
+  ; Attribute {name= "src"; htmlName= "src"; type_= String}
+  ; Attribute {name= "srcDoc"; htmlName= "srcdoc"; type_= String}
+  ; Attribute {name= "srcLang"; htmlName= "srclang"; type_= String}
+  ; Attribute {name= "srcSet"; htmlName= "srcset"; type_= String}
+  ; Attribute {name= "start"; htmlName= "start"; type_= Int (* number *)}
+  ; Attribute {name= "step"; htmlName= "step"; type_= (* number | *) String}
+  ; Attribute {name= "summary"; htmlName= "summary"; type_= String}
+  ; Attribute {name= "target"; htmlName= "target"; type_= String}
+  ; Attribute {name= "type"; htmlName= "type"; type_= String}
+  ; Attribute {name= "useMap"; htmlName= "usemap"; type_= String}
   ; Attribute
       { name= "value"
-      ; type_= String (* | ReadonlyArray<String> | number *)
-      ; htmlName= "" }
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "wmode"; type_= String; htmlName= ""}
-  ; Attribute {name= "wrap"; type_= String; htmlName= ""} ]
+      ; htmlName= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *) }
+  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
+  ; Attribute {name= "wmode"; htmlName= "wmode"; type_= String}
+  ; Attribute {name= "wrap"; htmlName= "wrap"; type_= String} ]
 
 let anchorHTMLAttributes =
-  [ Attribute {name= "download"; type_= String (* any; *); htmlName= "download"}
-  ; Attribute {name= "href"; type_= String; htmlName= "href"}
-  ; Attribute {name= "hrefLang"; type_= String; htmlName= "hrefLang"}
-  ; Attribute {name= "media"; type_= String; htmlName= "media"}
-  ; Attribute {name= "ping"; type_= String; htmlName= "ping"}
-  ; Attribute {name= "rel"; type_= String; htmlName= "rel"}
-  ; Attribute {name= "target"; type_= attributeAnchorTarget; htmlName= "target"}
-  ; Attribute {name= "type"; type_= String; htmlName= "type"}
+  [ Attribute {name= "download"; htmlName= "download"; type_= String (* any; *)}
+  ; Attribute {name= "href"; htmlName= "href"; type_= String}
+  ; Attribute {name= "hrefLang"; htmlName= "hreflang"; type_= String}
+  ; Attribute {name= "media"; htmlName= "media"; type_= String}
+  ; Attribute {name= "ping"; htmlName= "ping"; type_= String}
+  ; Attribute {name= "rel"; htmlName= "rel"; type_= String}
+  ; Attribute {name= "target"; htmlName= "target"; type_= attributeAnchorTarget}
+  ; Attribute {name= "type"; htmlName= "type"; type_= String}
   ; Attribute
       { name= "referrerPolicy"
-      ; type_= attributeReferrerPolicy
-      ; htmlName= "referrerPolicy" } ]
+      ; htmlName= "referrerpolicy"
+      ; type_= attributeReferrerPolicy } ]
 
-let audioHTMLAttributes = [] (* MediaHTMLAttributes*)
+let audioHTMLAttributes = []
 
 let areaHTMLAttributes =
-  [ Attribute {name= "alt"; type_= String; htmlName= "alt"}
-  ; Attribute {name= "coords"; type_= String; htmlName= "coords"}
-  ; Attribute {name= "download"; type_= String (* any *); htmlName= "download"}
-  ; Attribute {name= "href"; type_= String; htmlName= "href"}
-  ; Attribute {name= "hrefLang"; type_= String; htmlName= "hrefLang"}
-  ; Attribute {name= "media"; type_= String; htmlName= "media"}
+  [ Attribute {name= "alt"; htmlName= "alt"; type_= String}
+  ; Attribute {name= "coords"; htmlName= "coords"; type_= String}
+  ; Attribute {name= "download"; htmlName= "download"; type_= String (* any *)}
+  ; Attribute {name= "href"; htmlName= "href"; type_= String}
+  ; Attribute {name= "hrefLang"; htmlName= "hreflang"; type_= String}
+  ; Attribute {name= "media"; htmlName= "media"; type_= String}
   ; Attribute
       { name= "referrerPolicy"
-      ; type_= attributeReferrerPolicy
-      ; htmlName= "referrerPolicy" }
-  ; Attribute {name= "rel"; type_= String; htmlName= "rel"}
-  ; Attribute {name= "shape"; type_= String; htmlName= "shape"}
-  ; Attribute {name= "target"; type_= String; htmlName= "target"} ]
+      ; htmlName= "referrerpolicy"
+      ; type_= attributeReferrerPolicy }
+  ; Attribute {name= "rel"; htmlName= "rel"; type_= String}
+  ; Attribute {name= "shape"; htmlName= "shape"; type_= String}
+  ; Attribute {name= "target"; htmlName= "target"; type_= String} ]
 
 let baseHTMLAttributes =
-  [ Attribute {name= "href"; type_= String; htmlName= ""}
-  ; Attribute {name= "target"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "href"; htmlName= "href"; type_= String}
+  ; Attribute {name= "target"; htmlName= "target"; type_= String} ]
 
 let blockquoteHTMLAttributes =
-  [Attribute {name= "cite"; type_= String; htmlName= ""}]
+  [Attribute {name= "cite"; htmlName= "cite"; type_= String}]
 
 let buttonHTMLAttributes =
-  [ Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "disabled"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "form"; type_= String; htmlName= ""}
-  ; Attribute {name= "formAction"; type_= String; htmlName= ""}
-  ; Attribute {name= "formEncType"; type_= String; htmlName= ""}
-  ; Attribute {name= "formMethod"; type_= String; htmlName= ""}
-  ; Attribute {name= "formNoValidate"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "formTarget"; type_= String; htmlName= ""}
-  ; Attribute {name= "name"; type_= String; htmlName= ""}
+  [ Attribute {name= "autoFocus"; htmlName= "autofocus"; type_= Bool}
+  ; Attribute {name= "disabled"; htmlName= "disabled"; type_= Bool}
+  ; Attribute {name= "form"; htmlName= "form"; type_= String}
+  ; Attribute {name= "formAction"; htmlName= "formaction"; type_= String}
+  ; Attribute {name= "formEncType"; htmlName= "formenctype"; type_= String}
+  ; Attribute {name= "formMethod"; htmlName= "formmethod"; type_= String}
+  ; Attribute {name= "formNoValidate"; htmlName= "formnovalidate"; type_= Bool}
+  ; Attribute {name= "formTarget"; htmlName= "formtarget"; type_= String}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String}
   ; Attribute
-      { name= "type"
-      ; type_= String (* 'submit' | 'reset' | 'button' *)
-      ; htmlName= "" }
+      { name= "type_"
+      ; htmlName= "type"
+      ; type_= String (* 'submit' | 'reset' | 'button' *) }
   ; Attribute
       { name= "value"
-      ; type_= String (* | ReadonlyArray<String> | number *)
-      ; htmlName= "" } ]
+      ; htmlName= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *) } ]
 
 let canvasHTMLAttributes =
-  [ Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+  [ Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
+  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
+  ]
 
 let colHTMLAttributes =
-  [ Attribute {name= "span"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+  [ Attribute {name= "span"; htmlName= "span"; type_= Int (* number *)}
+  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
+  ]
 
 let colgroupHTMLAttributes =
-  [Attribute {name= "span"; type_= Int (* number *); htmlName= ""}]
+  [Attribute {name= "span"; htmlName= "span"; type_= Int (* number *)}]
 
 let dataHTMLAttributes =
   [ Attribute
       { name= "value"
-      ; type_= String (* | ReadonlyArray<String> | number *)
-      ; htmlName= "" } ]
+      ; htmlName= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *) } ]
 
 let detailsHTMLAttributes =
-  [ Attribute {name= "open"; type_= Bool; htmlName= "open"}
+  [ Attribute {name= "open"; htmlName= "open"; type_= Bool}
   ; Event {name= "onToggle"; type_= Media} ]
 
 let delHTMLAttributes =
   [ Attribute {name= "cite"; type_= String; htmlName= "cite"}
-  ; Attribute {name= "dateTime"; type_= String; htmlName= "dateTime"} ]
+  ; Attribute {name= "dateTime"; type_= String; htmlName= "datetime"} ]
 
 let dialogHTMLAttributes =
-  [Attribute {name= "open"; type_= Bool; htmlName= "open"}]
+  [Attribute {name= "open"; htmlName= "open"; type_= Bool}]
 
 let embedHTMLAttributes =
-  [ Attribute {name= "height"; type_= (* number |  *) String; htmlName= "height"}
+  [ Attribute {name= "height"; type_= String (* number |  *); htmlName= "height"}
   ; Attribute {name= "src"; type_= String; htmlName= "src"}
   ; Attribute {name= "type"; type_= String; htmlName= "type"}
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= "width"}
+  ; Attribute {name= "width"; type_= String (* number |  *); htmlName= "width"}
   ]
 
 let fieldsetHTMLAttributes =
-  [ Attribute {name= "disabled"; type_= Bool; htmlName= "disabled"}
-  ; Attribute {name= "form"; type_= String; htmlName= "form"}
-  ; Attribute {name= "name"; type_= String; htmlName= "name"} ]
+  [ Attribute {name= "disabled"; htmlName= "disabled"; type_= Bool}
+  ; Attribute {name= "form"; htmlName= "form"; type_= String}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String} ]
 
 let formHTMLAttributes =
-  [ Attribute {name= "acceptCharset"; type_= String; htmlName= "acceptCharset"}
-  ; Attribute {name= "action"; type_= String; htmlName= "action"}
-  ; Attribute {name= "autoComplete"; type_= String; htmlName= "autoComplete"}
-  ; Attribute {name= "encType"; type_= String; htmlName= "encType"}
-  ; Attribute {name= "method"; type_= String; htmlName= "method"}
-  ; Attribute {name= "name"; type_= String; htmlName= "name"}
-  ; Attribute {name= "noValidate"; type_= Bool; htmlName= "noValidate"}
-  ; Attribute {name= "target"; type_= String; htmlName= "target"} ]
+  [ Attribute {name= "acceptCharset"; htmlName= "acceptcharset"; type_= String}
+  ; Attribute {name= "action"; htmlName= "action"; type_= String}
+  ; Attribute {name= "autoComplete"; htmlName= "autocomplete"; type_= String}
+  ; Attribute {name= "encType"; htmlName= "enctype"; type_= String}
+  ; Attribute {name= "method"; htmlName= "method"; type_= String}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String}
+  ; Attribute {name= "noValidate"; htmlName= "novalidate"; type_= Bool}
+  ; Attribute {name= "target"; htmlName= "target"; type_= String} ]
 
 let htmlHTMLAttributes =
-  [Attribute {name= "manifest"; type_= String; htmlName= ""}]
+  [Attribute {name= "manifest"; htmlName= "manifest"; type_= String}]
 
 let iframeHTMLAttributes =
-  [ Attribute {name= "allow"; type_= String; htmlName= ""}
-  ; Attribute {name= "allowFullScreen"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "allowTransparency"; type_= Bool; htmlName= ""}
-  ; (* @deprecated *)
-    Attribute {name= "frameBorder"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; (* @deprecated *)
-    Attribute {name= "marginHeight"; type_= Int (* number *); htmlName= ""}
-  ; (* @deprecated *)
-    Attribute {name= "marginWidth"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "name"; type_= String; htmlName= ""}
-  ; Attribute {name= "sandbox"; type_= String; htmlName= ""}
-  ; (* @deprecated *)
-    Attribute {name= "scrolling"; type_= String; htmlName= ""}
-  ; Attribute {name= "seamless"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "src"; type_= String; htmlName= ""}
-  ; Attribute {name= "srcDoc"; type_= String; htmlName= ""}
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+  [ Attribute {name= "allow"; htmlName= "allow"; type_= String}
+  ; Attribute {name= "allowFullScreen"; htmlName= "allowfullscreen"; type_= Bool}
+  ; Attribute
+      {name= "allowTransparency"; htmlName= "allowtransparency"; type_= Bool}
+    (* @deprecated *)
+  ; Attribute
+      { name= "frameBorder"
+      ; htmlName= "frameborder"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
+    (* @deprecated *)
+  ; Attribute
+      {name= "marginHeight"; htmlName= "marginheight"; type_= Int (* number *)}
+    (* @deprecated *)
+  ; Attribute
+      {name= "marginWidth"; htmlName= "marginwidth"; type_= Int (* number *)}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String}
+  ; Attribute {name= "sandbox"; htmlName= "sandbox"; type_= String}
+    (* @deprecated *)
+  ; Attribute {name= "scrolling"; htmlName= "scrolling"; type_= String}
+  ; Attribute {name= "seamless"; htmlName= "seamless"; type_= Bool}
+  ; Attribute {name= "src"; htmlName= "src"; type_= String}
+  ; Attribute {name= "srcDoc"; htmlName= "srcdoc"; type_= String}
+  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
+  ]
 
 let imgHTMLAttributes =
-  [ Attribute {name= "alt"; type_= String; htmlName= ""}
+  [ Attribute {name= "alt"; htmlName= "alt"; type_= String}
   ; Attribute
       { name= "crossOrigin"
-      ; type_= String (* "anonymous" | "use-credentials" | "" *)
-      ; htmlName= "" }
+      ; htmlName= "crossorigin"
+      ; type_= String (* "anonymous" | "use-credentials" | "" *) }
   ; Attribute
       { name= "decoding"
-      ; type_= String (* "async" | "auto" | "sync" *)
-      ; htmlName= "" }
-  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "sizes"; type_= String; htmlName= ""}
-  ; Attribute {name= "src"; type_= String; htmlName= ""}
-  ; Attribute {name= "srcSet"; type_= String; htmlName= ""}
-  ; Attribute {name= "useMap"; type_= String; htmlName= ""}
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+      ; htmlName= "decoding"
+      ; type_= String (* "async" | "auto" | "sync" *) }
+  ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
+  ; Attribute {name= "sizes"; htmlName= "sizes"; type_= String}
+  ; Attribute {name= "src"; htmlName= "src"; type_= String}
+  ; Attribute {name= "srcSet"; htmlName= "srcset"; type_= String}
+  ; Attribute {name= "useMap"; htmlName= "usemap"; type_= String}
+  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
+  ]
 
 let insHTMLAttributes =
-  [ Attribute {name= "cite"; type_= String; htmlName= ""}
-  ; Attribute {name= "dateTime"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "cite"; htmlName= "cite"; type_= String}
+  ; Attribute {name= "dateTime"; htmlName= "datetime"; type_= String} ]
 
 let inputTypeAttribute = String
 (*
@@ -937,283 +959,300 @@ let inputTypeAttribute = String
         | (String & {});  *)
 
 let inputHTMLAttributes =
-  [ Attribute {name= "accept"; type_= String; htmlName= ""}
-  ; Attribute {name= "alt"; type_= String; htmlName= ""}
-  ; Attribute {name= "autoComplete"; type_= String; htmlName= ""}
-  ; Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
+  [ Attribute {name= "accept"; htmlName= "accept"; type_= String}
+  ; Attribute {name= "alt"; htmlName= "alt"; type_= String}
+  ; Attribute {name= "autoComplete"; htmlName= "autocomplete"; type_= String}
+  ; Attribute {name= "autoFocus"; htmlName= "autofocus"; type_= Bool}
   ; Attribute
       { name= "capture"
-      ; type_= (* Bool | *) String
-      ; (* https://www.w3.org/TR/html-media-capture/ *) htmlName= "" }
-  ; Attribute {name= "checked"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "crossOrigin"; type_= String; htmlName= ""}
-  ; Attribute {name= "disabled"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "form"; type_= String; htmlName= ""}
-  ; Attribute {name= "formAction"; type_= String; htmlName= ""}
-  ; Attribute {name= "formEncType"; type_= String; htmlName= ""}
-  ; Attribute {name= "formMethod"; type_= String; htmlName= ""}
-  ; Attribute {name= "formNoValidate"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "formTarget"; type_= String; htmlName= ""}
-  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "list"; type_= String; htmlName= ""}
-  ; Attribute {name= "max"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "maxLength"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "min"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "minLength"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "multiple"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "name"; type_= String; htmlName= ""}
-  ; Attribute {name= "pattern"; type_= String; htmlName= ""}
-  ; Attribute {name= "placeholder"; type_= String; htmlName= ""}
-  ; Attribute {name= "readOnly"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "required"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "size"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "src"; type_= String; htmlName= ""}
-  ; Attribute {name= "step"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "type"; type_= inputTypeAttribute; htmlName= ""}
+      ; htmlName= "capture"
+      ; type_=
+          String
+          (* Bool | *)
+          (* https://www.w3.org/TR/html-media-capture/ *) }
+  ; Attribute {name= "checked"; htmlName= "checked"; type_= Bool}
+  ; Attribute {name= "crossOrigin"; htmlName= "crossorigin"; type_= String}
+  ; Attribute {name= "disabled"; htmlName= "disabled"; type_= Bool}
+  ; Attribute {name= "form"; htmlName= "form"; type_= String}
+  ; Attribute {name= "formAction"; htmlName= "formaction"; type_= String}
+  ; Attribute {name= "formEncType"; htmlName= "formenctype"; type_= String}
+  ; Attribute {name= "formMethod"; htmlName= "formmethod"; type_= String}
+  ; Attribute {name= "formNoValidate"; htmlName= "formnovalidate"; type_= Bool}
+  ; Attribute {name= "formTarget"; htmlName= "formtarget"; type_= String}
+  ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
+  ; Attribute {name= "list"; htmlName= "list"; type_= String}
+  ; Attribute {name= "max"; htmlName= "max"; type_= String (* number |  *)}
+  ; Attribute {name= "maxLength"; htmlName= "maxlength"; type_= Int (* number *)}
+  ; Attribute {name= "min"; htmlName= "min"; type_= String (* number |  *)}
+  ; Attribute {name= "minLength"; htmlName= "minlength"; type_= Int (* number *)}
+  ; Attribute {name= "multiple"; htmlName= "multiple"; type_= Bool}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String}
+  ; Attribute {name= "pattern"; htmlName= "pattern"; type_= String}
+  ; Attribute {name= "placeholder"; htmlName= "placeholder"; type_= String}
+  ; Attribute {name= "readOnly"; htmlName= "readonly"; type_= Bool}
+  ; Attribute {name= "required"; htmlName= "required"; type_= Bool}
+  ; Attribute {name= "size"; htmlName= "size"; type_= Int (* number *)}
+  ; Attribute {name= "src"; htmlName= "src"; type_= String}
+  ; Attribute {name= "step"; htmlName= "step"; type_= String (* number |  *)}
+  ; Attribute {name= "type"; htmlName= "type"; type_= inputTypeAttribute}
   ; Attribute
       { name= "value"
-      ; type_= String (* | ReadonlyArray<String> | number *)
-      ; htmlName= "" }
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
+      ; htmlName= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *) }
+  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
   ; Event {name= "onChange"; type_= Form} ]
 
 let keygenHTMLAttributes =
-  [ Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "challenge"; type_= String; htmlName= ""}
-  ; Attribute {name= "disabled"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "form"; type_= String; htmlName= ""}
-  ; Attribute {name= "keyType"; type_= String; htmlName= ""}
-  ; Attribute {name= "keyParams"; type_= String; htmlName= ""}
-  ; Attribute {name= "name"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "autoFocus"; htmlName= "autofocus"; type_= Bool}
+  ; Attribute {name= "challenge"; htmlName= "challenge"; type_= String}
+  ; Attribute {name= "disabled"; htmlName= "disabled"; type_= Bool}
+  ; Attribute {name= "form"; htmlName= "form"; type_= String}
+  ; Attribute {name= "keyType"; htmlName= "keytype"; type_= String}
+  ; Attribute {name= "keyParams"; htmlName= "keyparams"; type_= String}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String} ]
 
 let labelHTMLAttributes =
-  [ Attribute {name= "form"; type_= String; htmlName= ""}
-  ; Attribute {name= "htmlFor"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "form"; htmlName= "form"; type_= String}
+  ; Attribute {name= "htmlFor"; htmlName= "htmlfor"; type_= String} ]
 
 let liHTMLAttributes =
   [ Attribute
       { name= "value"
-      ; type_= String (* | ReadonlyArray<String> | number *)
-      ; htmlName= "" } ]
+      ; htmlName= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *) } ]
 
 let linkHTMLAttributes =
-  [ Attribute {name= "as"; type_= String; htmlName= ""}
-  ; Attribute {name= "crossOrigin"; type_= String; htmlName= ""}
-  ; Attribute {name= "href"; type_= String; htmlName= ""}
-  ; Attribute {name= "hrefLang"; type_= String; htmlName= ""}
-  ; Attribute {name= "integrity"; type_= String; htmlName= ""}
-  ; Attribute {name= "imageSrcSet"; type_= String; htmlName= ""}
-  ; Attribute {name= "media"; type_= String; htmlName= ""}
-  ; Attribute {name= "rel"; type_= String; htmlName= ""}
-  ; Attribute {name= "sizes"; type_= String; htmlName= ""}
-  ; Attribute {name= "type"; type_= String; htmlName= ""}
-  ; Attribute {name= "charSet"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "as"; htmlName= "as"; type_= String}
+  ; Attribute {name= "crossOrigin"; htmlName= "crossorigin"; type_= String}
+  ; Attribute {name= "href"; htmlName= "href"; type_= String}
+  ; Attribute {name= "hrefLang"; htmlName= "hreflang"; type_= String}
+  ; Attribute {name= "integrity"; htmlName= "integrity"; type_= String}
+  ; Attribute {name= "imageSrcSet"; htmlName= "imagesrcset"; type_= String}
+  ; Attribute {name= "media"; htmlName= "media"; type_= String}
+  ; Attribute {name= "rel"; htmlName= "rel"; type_= String}
+  ; Attribute {name= "sizes"; htmlName= "sizes"; type_= String}
+  ; Attribute {name= "type"; htmlName= "type"; type_= String}
+  ; Attribute {name= "charSet"; htmlName= "charset"; type_= String} ]
 
-let mapHTMLAttributes = [Attribute {name= "name"; type_= String; htmlName= ""}]
+let mapHTMLAttributes =
+  [Attribute {name= "name"; htmlName= "name"; type_= String}]
 
-let menuHTMLAttributes = [Attribute {name= "type"; type_= String; htmlName= ""}]
+let menuHTMLAttributes =
+  [Attribute {name= "type"; htmlName= "type"; type_= String}]
 
 let mediaHTMLAttributes =
-  [ Attribute {name= "autoPlay"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "controls"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "controlsList"; type_= String; htmlName= ""}
-  ; Attribute {name= "crossOrigin"; type_= String; htmlName= ""}
-  ; Attribute {name= "loop"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "mediaGroup"; type_= String; htmlName= ""}
-  ; Attribute {name= "muted"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "playsInline"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "preload"; type_= String; htmlName= ""}
-  ; Attribute {name= "src"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "autoPlay"; htmlName= "autoplay"; type_= Bool}
+  ; Attribute {name= "controls"; htmlName= "controls"; type_= Bool}
+  ; Attribute {name= "controlsList"; htmlName= "controlslist"; type_= String}
+  ; Attribute {name= "crossOrigin"; htmlName= "crossorigin"; type_= String}
+  ; Attribute {name= "loop"; htmlName= "loop"; type_= Bool}
+  ; Attribute {name= "mediaGroup"; htmlName= "mediagroup"; type_= String}
+  ; Attribute {name= "muted"; htmlName= "muted"; type_= Bool}
+  ; Attribute {name= "playsInline"; htmlName= "playsinline"; type_= Bool}
+  ; Attribute {name= "preload"; htmlName= "preload"; type_= String}
+  ; Attribute {name= "src"; htmlName= "src"; type_= String} ]
 
 let metaHTMLAttributes =
-  [ Attribute {name= "charSet"; type_= String; htmlName= ""}
-  ; Attribute {name= "content"; type_= String; htmlName= ""}
-  ; Attribute {name= "httpEquiv"; type_= String; htmlName= ""}
-  ; Attribute {name= "name"; type_= String; htmlName= ""}
-  ; Attribute {name= "media"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "charSet"; htmlName= "charset"; type_= String}
+  ; Attribute {name= "content"; htmlName= "content"; type_= String}
+  ; Attribute {name= "httpEquiv"; htmlName= "httpequiv"; type_= String}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String}
+  ; Attribute {name= "media"; htmlName= "media"; type_= String} ]
 
 let meterHTMLAttributes =
-  [ Attribute {name= "form"; type_= String; htmlName= ""}
-  ; Attribute {name= "high"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "low"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "max"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "min"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "optimum"; type_= Int (* number *); htmlName= ""}
+  [ Attribute {name= "form"; htmlName= "form"; type_= String}
+  ; Attribute {name= "high"; htmlName= "high"; type_= Int (* number *)}
+  ; Attribute {name= "low"; htmlName= "low"; type_= Int (* number *)}
+  ; Attribute {name= "max"; htmlName= "max"; type_= String (* number |  *)}
+  ; Attribute {name= "min"; htmlName= "min"; type_= String (* number |  *)}
+  ; Attribute {name= "optimum"; htmlName= "optimum"; type_= Int (* number *)}
   ; Attribute
       { name= "value"
-      ; type_= String (* | ReadonlyArray<String> | number *)
-      ; htmlName= "" } ]
+      ; htmlName= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *) } ]
 
-let quoteHTMLAttributes = [Attribute {name= "cite"; type_= String; htmlName= ""}]
+let quoteHTMLAttributes =
+  [Attribute {name= "cite"; htmlName= "cite"; type_= String}]
 
 let objectHTMLAttributes =
-  [ Attribute {name= "classID"; type_= String; htmlName= ""}
-  ; Attribute {name= "data"; type_= String; htmlName= ""}
-  ; Attribute {name= "form"; type_= String; htmlName= ""}
-  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "name"; type_= String; htmlName= ""}
-  ; Attribute {name= "type"; type_= String; htmlName= ""}
-  ; Attribute {name= "useMap"; type_= String; htmlName= ""}
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "wmode"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "classID"; htmlName= "classid"; type_= String}
+  ; Attribute {name= "data"; htmlName= "data"; type_= String}
+  ; Attribute {name= "form"; htmlName= "form"; type_= String}
+  ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String}
+  ; Attribute {name= "type"; htmlName= "type"; type_= String}
+  ; Attribute {name= "useMap"; htmlName= "usemap"; type_= String}
+  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
+  ; Attribute {name= "wmode"; htmlName= "wmode"; type_= String} ]
 
 let olHTMLAttributes =
-  [ Attribute {name= "reversed"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "start"; type_= Int (* number *); htmlName= ""}
+  [ Attribute {name= "reversed"; htmlName= "reversed"; type_= Bool}
+  ; Attribute {name= "start"; htmlName= "start"; type_= Int (* number *)}
   ; Attribute
-      { name= "type"
-      ; type_= String (* '1' | 'a' | 'A' | 'i' | 'I' *)
-      ; htmlName= "" } ]
+      { name= "type_"
+      ; htmlName= "type"
+      ; type_= String (* '1' | 'a' | 'A' | 'i' | 'I' *) } ]
 
 let optgroupHTMLAttributes =
-  [ Attribute {name= "disabled"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "label"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "disabled"; htmlName= "disabled"; type_= Bool}
+  ; Attribute {name= "label"; htmlName= "label"; type_= String} ]
 
 let optionHTMLAttributes =
-  [ Attribute {name= "disabled"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "label"; type_= String; htmlName= ""}
-  ; Attribute {name= "selected"; type_= Bool; htmlName= ""}
+  [ Attribute {name= "disabled"; htmlName= "disabled"; type_= Bool}
+  ; Attribute {name= "label"; htmlName= "label"; type_= String}
+  ; Attribute {name= "selected"; htmlName= "selected"; type_= Bool}
   ; Attribute
       { name= "value"
-      ; type_= String (* | ReadonlyArray<String> | number *)
-      ; htmlName= "" } ]
+      ; htmlName= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *) } ]
 
 let outputHTMLAttributes =
-  [ Attribute {name= "form"; type_= String; htmlName= ""}
-  ; Attribute {name= "htmlFor"; type_= String; htmlName= ""}
-  ; Attribute {name= "name"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "form"; htmlName= "form"; type_= String}
+  ; Attribute {name= "htmlFor"; htmlName= "htmlfor"; type_= String}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String} ]
 
 let paramHTMLAttributes =
-  [ Attribute {name= "name"; type_= String; htmlName= ""}
+  [ Attribute {name= "name"; htmlName= "name"; type_= String}
   ; Attribute
       { name= "value"
-      ; type_= String (* | ReadonlyArray<String> | number *)
-      ; htmlName= "" } ]
+      ; htmlName= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *) } ]
 
 let progressHTMLAttributes =
-  [ Attribute {name= "max"; type_= (* number |  *) String; htmlName= ""}
+  [ Attribute {name= "max"; htmlName= "max"; type_= String (* number |  *)}
   ; Attribute
       { name= "value"
-      ; type_= String (* | ReadonlyArray<String> | number *)
-      ; htmlName= "" } ]
+      ; htmlName= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *) } ]
 
-let slotHTMLAttributes = [Attribute {name= "name"; type_= String; htmlName= ""}]
+let slotHTMLAttributes =
+  [Attribute {name= "name"; htmlName= "name"; type_= String}]
 
 let scriptHTMLAttributes =
-  [ Attribute {name= "async"; type_= Bool; htmlName= ""}
-  ; (* @deprecated *)
-    Attribute {name= "charSet"; type_= String; htmlName= ""}
-  ; Attribute {name= "crossOrigin"; type_= String; htmlName= ""}
-  ; Attribute {name= "defer"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "integrity"; type_= String; htmlName= ""}
-  ; Attribute {name= "noModule"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "nonce"; type_= String; htmlName= ""}
-  ; Attribute {name= "src"; type_= String; htmlName= ""}
-  ; Attribute {name= "type"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "async"; htmlName= "async"; type_= Bool} (* @deprecated *)
+  ; Attribute {name= "charSet"; htmlName= "charset"; type_= String}
+  ; Attribute {name= "crossOrigin"; htmlName= "crossorigin"; type_= String}
+  ; Attribute {name= "defer"; htmlName= "defer"; type_= Bool}
+  ; Attribute {name= "integrity"; htmlName= "integrity"; type_= String}
+  ; Attribute {name= "noModule"; htmlName= "nomodule"; type_= Bool}
+  ; Attribute {name= "nonce"; htmlName= "nonce"; type_= String}
+  ; Attribute {name= "src"; htmlName= "src"; type_= String}
+  ; Attribute {name= "type"; htmlName= "type"; type_= String} ]
 
 let selectHTMLAttributes =
-  [ Attribute {name= "autoComplete"; type_= String; htmlName= ""}
-  ; Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "disabled"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "form"; type_= String; htmlName= ""}
-  ; Attribute {name= "multiple"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "name"; type_= String; htmlName= ""}
-  ; Attribute {name= "required"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "size"; type_= Int (* number *); htmlName= ""}
+  [ Attribute {name= "autoComplete"; htmlName= "autocomplete"; type_= String}
+  ; Attribute {name= "autoFocus"; htmlName= "autofocus"; type_= Bool}
+  ; Attribute {name= "disabled"; htmlName= "disabled"; type_= Bool}
+  ; Attribute {name= "form"; htmlName= "form"; type_= String}
+  ; Attribute {name= "multiple"; htmlName= "multiple"; type_= Bool}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String}
+  ; Attribute {name= "required"; htmlName= "required"; type_= Bool}
+  ; Attribute {name= "size"; htmlName= "size"; type_= Int (* number *)}
   ; Attribute
       { name= "value"
-      ; type_= String (* | ReadonlyArray<String> | number *)
-      ; htmlName= "" }
+      ; htmlName= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *) }
   ; Event {name= "onChange"; type_= Form} ]
 
 let sourceHTMLAttributes =
-  [ Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "media"; type_= String; htmlName= ""}
-  ; Attribute {name= "sizes"; type_= String; htmlName= ""}
-  ; Attribute {name= "src"; type_= String; htmlName= ""}
-  ; Attribute {name= "srcSet"; type_= String; htmlName= ""}
-  ; Attribute {name= "type"; type_= String; htmlName= ""}
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+  [ Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
+  ; Attribute {name= "media"; htmlName= "media"; type_= String}
+  ; Attribute {name= "sizes"; htmlName= "sizes"; type_= String}
+  ; Attribute {name= "src"; htmlName= "src"; type_= String}
+  ; Attribute {name= "srcSet"; htmlName= "srcset"; type_= String}
+  ; Attribute {name= "type"; htmlName= "type"; type_= String}
+  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
+  ]
 
 let styleHTMLAttributes =
-  [ Attribute {name= "media"; type_= String; htmlName= ""}
-  ; Attribute {name= "nonce"; type_= String; htmlName= ""}
-  ; Attribute {name= "scoped"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "type"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "media"; htmlName= "media"; type_= String}
+  ; Attribute {name= "nonce"; htmlName= "nonce"; type_= String}
+  ; Attribute {name= "scoped"; htmlName= "scoped"; type_= Bool}
+  ; Attribute {name= "type"; htmlName= "type"; type_= String} ]
 
 let tableHTMLAttributes =
-  [ Attribute {name= "cellPadding"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "cellSpacing"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "summary"; type_= String; htmlName= ""}
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+  [ Attribute
+      { name= "cellPadding"
+      ; htmlName= "cellpadding"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      { name= "cellSpacing"
+      ; htmlName= "cellspacing"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "summary"; htmlName= "summary"; type_= String}
+  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
+  ]
 
 let textareaHTMLAttributes =
-  [ Attribute {name= "autoComplete"; type_= String; htmlName= ""}
-  ; Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "cols"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "dirName"; type_= String; htmlName= ""}
-  ; Attribute {name= "disabled"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "form"; type_= String; htmlName= ""}
-  ; Attribute {name= "maxLength"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "minLength"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "name"; type_= String; htmlName= ""}
-  ; Attribute {name= "placeholder"; type_= String; htmlName= ""}
-  ; Attribute {name= "readOnly"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "required"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "rows"; type_= Int (* number *); htmlName= ""}
+  [ Attribute {name= "autoComplete"; htmlName= "autocomplete"; type_= String}
+  ; Attribute {name= "autoFocus"; htmlName= "autofocus"; type_= Bool}
+  ; Attribute {name= "cols"; htmlName= "cols"; type_= Int (* number *)}
+  ; Attribute {name= "dirName"; htmlName= "dirname"; type_= String}
+  ; Attribute {name= "disabled"; htmlName= "disabled"; type_= Bool}
+  ; Attribute {name= "form"; htmlName= "form"; type_= String}
+  ; Attribute {name= "maxLength"; htmlName= "maxlength"; type_= Int (* number *)}
+  ; Attribute {name= "minLength"; htmlName= "minlength"; type_= Int (* number *)}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String}
+  ; Attribute {name= "placeholder"; htmlName= "placeholder"; type_= String}
+  ; Attribute {name= "readOnly"; htmlName= "readonly"; type_= Bool}
+  ; Attribute {name= "required"; htmlName= "required"; type_= Bool}
+  ; Attribute {name= "rows"; htmlName= "rows"; type_= Int (* number *)}
   ; Attribute
       { name= "value"
-      ; type_= String (* | ReadonlyArray<String> | number *)
-      ; htmlName= "" }
-  ; Attribute {name= "wrap"; type_= String; htmlName= ""}
+      ; htmlName= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *) }
+  ; Attribute {name= "wrap"; htmlName= "wrap"; type_= String}
   ; Event {name= "onChange"; type_= Form} ]
 
 let tdHTMLAttributes =
   [ Attribute
       { name= "align"
+      ; htmlName= "align"
       ; type_=
           String (* type_= "left" | "center" | "right" | "justify" | "char" *)
-      ; htmlName= "" }
-  ; Attribute {name= "colSpan"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "headers"; type_= String; htmlName= ""}
-  ; Attribute {name= "rowSpan"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "scope"; type_= String; htmlName= ""}
-  ; Attribute {name= "abbr"; type_= String; htmlName= ""}
-  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
+      }
+  ; Attribute {name= "colSpan"; htmlName= "colspan"; type_= Int (* number *)}
+  ; Attribute {name= "headers"; htmlName= "headers"; type_= String}
+  ; Attribute {name= "rowSpan"; htmlName= "rowspan"; type_= Int (* number *)}
+  ; Attribute {name= "scope"; htmlName= "scope"; type_= String}
+  ; Attribute {name= "abbr"; htmlName= "abbr"; type_= String}
+  ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
+  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
   ; Attribute
       { name= "valign"
-      ; type_= String (* "top" | "middle" | "bottom" | "baseline" *)
-      ; htmlName= "" } ]
+      ; htmlName= "valign"
+      ; type_= String (* "top" | "middle" | "bottom" | "baseline" *) } ]
 
 let thHTMLAttributes =
   [ Attribute
       { name= "align"
-      ; type_= String (* "left" | "center" | "right" | "justify" | "char" *)
-      ; htmlName= "" }
-  ; Attribute {name= "colSpan"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "headers"; type_= String; htmlName= ""}
-  ; Attribute {name= "rowSpan"; type_= Int (* number *); htmlName= ""}
-  ; Attribute {name= "scope"; type_= String; htmlName= ""}
-  ; Attribute {name= "abbr"; type_= String; htmlName= ""} ]
+      ; htmlName= "align"
+      ; type_= String (* "left" | "center" | "right" | "justify" | "char" *) }
+  ; Attribute {name= "colSpan"; htmlName= "colspan"; type_= Int (* number *)}
+  ; Attribute {name= "headers"; htmlName= "headers"; type_= String}
+  ; Attribute {name= "rowSpan"; htmlName= "rowspan"; type_= Int (* number *)}
+  ; Attribute {name= "scope"; htmlName= "scope"; type_= String}
+  ; Attribute {name= "abbr"; htmlName= "abbr"; type_= String} ]
 
 let timeHTMLAttributes =
-  [Attribute {name= "dateTime"; type_= String; htmlName= ""}]
+  [Attribute {name= "dateTime"; htmlName= "datetime"; type_= String}]
 
 let trackHTMLAttributes =
-  [ Attribute {name= "default"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "kind"; type_= String; htmlName= ""}
-  ; Attribute {name= "label"; type_= String; htmlName= ""}
-  ; Attribute {name= "src"; type_= String; htmlName= ""}
-  ; Attribute {name= "srcLang"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "default"; htmlName= "default"; type_= Bool}
+  ; Attribute {name= "kind"; htmlName= "kind"; type_= String}
+  ; Attribute {name= "label"; htmlName= "label"; type_= String}
+  ; Attribute {name= "src"; htmlName= "src"; type_= String}
+  ; Attribute {name= "srcLang"; htmlName= "srclang"; type_= String} ]
 
-(* MediaHTMLAttributes*)
 let videoHTMLAttributes =
-  [ Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "playsInline"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "poster"; type_= String; htmlName= ""}
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "disablePictureInPicture"; type_= Bool; htmlName= ""} ]
+  [ Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
+  ; Attribute {name= "playsInline"; htmlName= "playsinline"; type_= Bool}
+  ; Attribute {name= "poster"; htmlName= "poster"; type_= String}
+  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "disablePictureInPicture"
+      ; htmlName= "disablepictureinpicture"
+      ; type_= Bool } ]
 
 (* (* this list is "complete" in that it contains every SVG attribute *)
    // that React supports, but the types can be improved.
@@ -1223,293 +1262,464 @@ let videoHTMLAttributes =
    //   - "(* number |  *)String"
    //   - "String"
    //   - union of String literals *)
-(* AriaAttributes, DOMAttributes*)
 let svgAttributes =
   [ (* Attributes which also defined in HTMLAttributes *)
     (* See comment in SVGDOMPropertyConfig.js *)
-    Attribute {name= "className"; type_= String; htmlName= ""}
-  ; Attribute {name= "color"; type_= String; htmlName= ""}
-  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "id"; type_= String; htmlName= ""}
-  ; Attribute {name= "lang"; type_= String; htmlName= ""}
-  ; Attribute {name= "max"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "media"; type_= String; htmlName= ""}
-  ; Attribute {name= "method"; type_= String; htmlName= ""}
-  ; Attribute {name= "min"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "name"; type_= String; htmlName= ""}
-  ; Attribute {name= "style"; type_= Style; htmlName= ""}
-  ; Attribute {name= "target"; type_= String; htmlName= ""}
-  ; Attribute {name= "type"; type_= String; htmlName= ""}
-  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
-  ; (* Other HTML properties supported by SVG elements in browsers *)
-    Attribute {name= "role"; type_= ariaRole; htmlName= ""}
-  ; Attribute {name= "tabIndex"; type_= Int (* number *); htmlName= ""}
+    Attribute {name= "className"; htmlName= "className"; type_= String}
+  ; Attribute {name= "color"; htmlName= "color"; type_= String}
+  ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
+  ; Attribute {name= "id"; htmlName= "id"; type_= String}
+  ; Attribute {name= "lang"; htmlName= "lang"; type_= String}
+  ; Attribute {name= "max"; htmlName= "max"; type_= String (* number |  *)}
+  ; Attribute {name= "media"; htmlName= "media"; type_= String}
+  ; Attribute {name= "method"; htmlName= "method"; type_= String}
+  ; Attribute {name= "min"; htmlName= "min"; type_= String (* number |  *)}
+  ; Attribute {name= "name"; htmlName= "name"; type_= String}
+  ; Attribute {name= "style"; htmlName= "style"; type_= Style}
+  ; Attribute {name= "target"; htmlName= "target"; type_= String}
+  ; Attribute {name= "type"; htmlName= "type"; type_= String}
+  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
+    (* Other HTML properties supported by SVG elements in browsers *)
+  ; Attribute {name= "role"; htmlName= "role"; type_= ariaRole}
+  ; Attribute {name= "tabIndex"; htmlName= "tabIndex"; type_= Int (* number *)}
   ; Attribute
       { name= "crossOrigin"
-      ; type_= String (* "anonymous" | "use-credentials" | "" *)
-      ; htmlName= "" }
-  ; (* SVG Specific attributes *)
-    Attribute {name= "accentHeight"; type_= (* number |  *) String; htmlName= ""}
+      ; htmlName= "crossOrigin"
+      ; type_= String (* "anonymous" | "use-credentials" | "" *) }
+    (* SVG Specific attributes *)
+  ; Attribute
+      { name= "accentHeight"
+      ; htmlName= "accentHeight"
+      ; type_= String (* number |  *) }
   ; Attribute
       { name= "accumulate"
-      ; type_= String (* type_= "none" | "sum" *)
-      ; htmlName= "" }
+      ; htmlName= "accumulate"
+      ; type_= String (* type_= "none" | "sum" *) }
   ; Attribute
       { name= "additive"
-      ; type_= String (* type_= "replace" | "sum" *)
-      ; htmlName= "" }
+      ; htmlName= "additive"
+      ; type_= String (* type_= "replace" | "sum" *) }
   ; Attribute
       { name= "alignmentBaseline"
-      ; type_= String
-      ; (* type_= "auto" | "baseline" | "before-edge" | "text-before-edge" | "middle" | "central" | "after-edge"
-           "text-after-edge" | "ideographic" | "alphabetic" | "hanging" | "mathematical" | "inherit"; *)
-        htmlName= "" }
+      ; htmlName= "alignmentBaseline"
+      ; type_=
+          String
+          (* "auto" | "baseline" | "before-edge" | "text-before-edge" | "middle" | "central" | "after-edge" "text-after-edge" | "ideographic" | "alphabetic" | "hanging" | "mathematical" | "inherit" *)
+      }
   ; Attribute
       { name= "allowReorder"
-      ; type_= String (* type_= "no" | "yes" *)
-      ; htmlName= "" }
-  ; Attribute {name= "alphabetic"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "amplitude"; type_= (* number |  *) String; htmlName= ""}
+      ; htmlName= "allowReorder"
+      ; type_= String (* type_= "no" | "yes" *) }
+  ; Attribute
+      {name= "alphabetic"; htmlName= "alphabetic"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "amplitude"; htmlName= "amplitude"; type_= String (* number |  *)}
   ; Attribute
       { name= "arabicForm"
+      ; htmlName= "arabicForm"
       ; type_=
-          String (* type_= "initial" | "medial" | "terminal" | "isolated" *)
-      ; htmlName= "" }
-  ; Attribute {name= "ascent"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "attributeName"; type_= String; htmlName= ""}
-  ; Attribute {name= "attributeType"; type_= String; htmlName= ""}
-  ; Attribute {name= "autoReverse"; type_= String (* Booleanish *); htmlName= ""}
-  ; Attribute {name= "azimuth"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "baseProfile"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "bbox"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "begin"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "bias"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "by"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "calcMode"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "capHeight"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "clip"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "clipPath"; type_= String; htmlName= ""}
+          String (* type_= "initial" | "medial" | "terminal" | "isolated" *) }
+  ; Attribute {name= "ascent"; htmlName= "ascent"; type_= String (* number |  *)}
+  ; Attribute {name= "attributeName"; htmlName= "attributeName"; type_= String}
+  ; Attribute {name= "attributeType"; htmlName= "attributeType"; type_= String}
+  ; Attribute
+      { name= "autoReverse"
+      ; htmlName= "autoReverse"
+      ; type_= String (* Booleanish *) }
+  ; Attribute
+      {name= "azimuth"; htmlName= "azimuth"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "baseProfile"
+      ; htmlName= "baseProfile"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "bbox"; htmlName= "bbox"; type_= String (* number |  *)}
+  ; Attribute {name= "begin"; htmlName= "begin"; type_= String (* number |  *)}
+  ; Attribute {name= "bias"; htmlName= "bias"; type_= String (* number |  *)}
+  ; Attribute {name= "by"; htmlName= "by"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "calcMode"; htmlName= "calcMode"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "capHeight"; htmlName= "capHeight"; type_= String (* number |  *)}
+  ; Attribute {name= "clip"; htmlName= "clip"; type_= String (* number |  *)}
+  ; Attribute {name= "clipPath"; htmlName= "clipPath"; type_= String}
   ; Attribute
       { name= "clipRule"
-      ; type_= (* number | "linearRGB" | "inherit" *) String
-      ; htmlName= "" }
-  ; Attribute {name= "colorProfile"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "cursor"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "cx"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "cy"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "d"; type_= String; htmlName= ""}
-  ; Attribute {name= "decelerate"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "descent"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "direction"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "display"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "divisor"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "dur"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "dx"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "dy"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "edgeMode"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "elevation"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "end"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "exponent"; type_= (* number |  *) String; htmlName= ""}
+      ; htmlName= "clipRule"
+      ; type_= (* number | "linearRGB" | "inherit" *) String }
+  ; Attribute
+      { name= "colorProfile"
+      ; htmlName= "colorProfile"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "cursor"; htmlName= "cursor"; type_= String (* number |  *)}
+  ; Attribute {name= "cx"; htmlName= "cx"; type_= String (* number |  *)}
+  ; Attribute {name= "cy"; htmlName= "cy"; type_= String (* number |  *)}
+  ; Attribute {name= "d"; htmlName= "d"; type_= String}
+  ; Attribute
+      {name= "decelerate"; htmlName= "decelerate"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "descent"; htmlName= "descent"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "direction"; htmlName= "direction"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "display"; htmlName= "display"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "divisor"; htmlName= "divisor"; type_= String (* number |  *)}
+  ; Attribute {name= "dur"; htmlName= "dur"; type_= String (* number |  *)}
+  ; Attribute {name= "dx"; htmlName= "dx"; type_= String (* number |  *)}
+  ; Attribute {name= "dy"; htmlName= "dy"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "edgeMode"; htmlName= "edgeMode"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "elevation"; htmlName= "elevation"; type_= String (* number |  *)}
+  ; Attribute {name= "end"; htmlName= "end"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "exponent"; htmlName= "exponent"; type_= String (* number |  *)}
   ; Attribute
       { name= "externalResourcesRequired"
-      ; type_= String (* Booleanish *)
-      ; htmlName= "" }
-  ; Attribute {name= "fill"; type_= String; htmlName= ""}
-  ; Attribute {name= "fillOpacity"; type_= (* number |  *) String; htmlName= ""}
+      ; htmlName= "externalResourcesRequired"
+      ; type_= String (* Booleanish *) }
+  ; Attribute {name= "fill"; htmlName= "fill"; type_= String}
+  ; Attribute
+      { name= "fillOpacity"
+      ; htmlName= "fillOpacity"
+      ; type_= String (* number |  *) }
   ; Attribute
       { name= "fillRule"
-      ; type_= String (* type_= "nonzero" | "evenodd" | "inherit" *)
-      ; htmlName= "" }
-  ; Attribute {name= "filter"; type_= String; htmlName= ""}
-  ; Attribute {name= "filterRes"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "filterUnits"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "floodColor"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "floodOpacity"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "fontFamily"; type_= String; htmlName= ""}
-  ; Attribute {name= "fontSize"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "fontStretch"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "fontStyle"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "fontVariant"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "fontWeight"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "format"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "fr"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "from"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "fx"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "fy"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "g1"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "g2"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "glyphName"; type_= (* number |  *) String; htmlName= ""}
+      ; htmlName= "fillRule"
+      ; type_= String (* type_= "nonzero" | "evenodd" | "inherit" *) }
+  ; Attribute {name= "filter"; htmlName= "filter"; type_= String}
+  ; Attribute
+      {name= "filterRes"; htmlName= "filterRes"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "filterUnits"
+      ; htmlName= "filterUnits"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      {name= "floodColor"; htmlName= "floodColor"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "floodOpacity"
+      ; htmlName= "floodOpacity"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "fontFamily"; htmlName= "fontFamily"; type_= String}
+  ; Attribute
+      {name= "fontSize"; htmlName= "fontSize"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "fontStretch"
+      ; htmlName= "fontStretch"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      {name= "fontStyle"; htmlName= "fontStyle"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "fontVariant"
+      ; htmlName= "fontVariant"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      {name= "fontWeight"; htmlName= "fontWeight"; type_= String (* number |  *)}
+  ; Attribute {name= "format"; htmlName= "format"; type_= String (* number |  *)}
+  ; Attribute {name= "fr"; htmlName= "fr"; type_= String (* number |  *)}
+  ; Attribute {name= "from"; htmlName= "from"; type_= String (* number |  *)}
+  ; Attribute {name= "fx"; htmlName= "fx"; type_= String (* number |  *)}
+  ; Attribute {name= "fy"; htmlName= "fy"; type_= String (* number |  *)}
+  ; Attribute {name= "g1"; htmlName= "g1"; type_= String (* number |  *)}
+  ; Attribute {name= "g2"; htmlName= "g2"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "glyphName"; htmlName= "glyphName"; type_= String (* number |  *)}
   ; Attribute
       { name= "glyphOrientationHorizontal"
-      ; type_= (* number |  *) String
-      ; htmlName= "" }
+      ; htmlName= "glyphOrientationHorizontal"
+      ; type_= String (* number |  *) }
   ; Attribute
       { name= "glyphOrientationVertical"
-      ; type_= (* number |  *) String
-      ; htmlName= "" }
-  ; Attribute {name= "glyphRef"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "gradientTransform"; type_= String; htmlName= ""}
-  ; Attribute {name= "gradientUnits"; type_= String; htmlName= ""}
-  ; Attribute {name= "hanging"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "horizAdvX"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "horizOriginX"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "href"; type_= String; htmlName= ""}
-  ; Attribute {name= "ideographic"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "in2"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "in"; type_= String; htmlName= ""}
-  ; Attribute {name= "intercept"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "k1"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "k2"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "k3"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "k4"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "k"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "kernelMatrix"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "kerning"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "keyPoints"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "keySplines"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "keyTimes"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "lengthAdjust"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "local"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "markerEnd"; type_= String; htmlName= ""}
-  ; Attribute {name= "markerHeight"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "markerMid"; type_= String; htmlName= ""}
-  ; Attribute {name= "markerStart"; type_= String; htmlName= ""}
-  ; Attribute {name= "markerUnits"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "markerWidth"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "mask"; type_= String; htmlName= ""}
-  ; Attribute {name= "maskUnits"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "mathematical"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "mode"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "numOctaves"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "offset"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "opacity"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "operator"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "order"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "orient"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "orientation"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "origin"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "overflow"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "paintOrder"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "panose1"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "path"; type_= String; htmlName= ""}
-  ; Attribute {name= "pathLength"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "patternContentUnits"; type_= String; htmlName= ""}
-  ; Attribute {name= "patternUnits"; type_= String; htmlName= ""}
-  ; Attribute {name= "points"; type_= String; htmlName= ""}
-  ; Attribute {name= "pointsAtX"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "pointsAtY"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "pointsAtZ"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "preserveAspectRatio"; type_= String; htmlName= ""}
-  ; Attribute {name= "r"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "radius"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "refX"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "refY"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "repeatCount"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "repeatDur"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "restart"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "result"; type_= String; htmlName= ""}
-  ; Attribute {name= "rotate"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "rx"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "ry"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "scale"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "seed"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "slope"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "spacing"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "speed"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "spreadMethod"; type_= String; htmlName= ""}
-  ; Attribute {name= "startOffset"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "stdDeviation"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "stemh"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "stemv"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "stitchTiles"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "stopColor"; type_= String; htmlName= ""}
-  ; Attribute {name= "stopOpacity"; type_= (* number |  *) String; htmlName= ""}
+      ; htmlName= "glyphOrientationVertical"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      {name= "glyphRef"; htmlName= "glyphRef"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "gradientTransform"; htmlName= "gradientTransform"; type_= String}
+  ; Attribute {name= "gradientUnits"; htmlName= "gradientUnits"; type_= String}
+  ; Attribute
+      {name= "hanging"; htmlName= "hanging"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "horizAdvX"; htmlName= "horizAdvX"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "horizOriginX"
+      ; htmlName= "horizOriginX"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "href"; htmlName= "href"; type_= String}
+  ; Attribute
+      { name= "ideographic"
+      ; htmlName= "ideographic"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "in2"; htmlName= "in2"; type_= String (* number |  *)}
+  ; Attribute {name= "in"; htmlName= "in"; type_= String}
+  ; Attribute
+      {name= "intercept"; htmlName= "intercept"; type_= String (* number |  *)}
+  ; Attribute {name= "k1"; htmlName= "k1"; type_= String (* number |  *)}
+  ; Attribute {name= "k2"; htmlName= "k2"; type_= String (* number |  *)}
+  ; Attribute {name= "k3"; htmlName= "k3"; type_= String (* number |  *)}
+  ; Attribute {name= "k4"; htmlName= "k4"; type_= String (* number |  *)}
+  ; Attribute {name= "k"; htmlName= "k"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "kernelMatrix"
+      ; htmlName= "kernelMatrix"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      {name= "kerning"; htmlName= "kerning"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "keyPoints"; htmlName= "keyPoints"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "keySplines"; htmlName= "keySplines"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "keyTimes"; htmlName= "keyTimes"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "lengthAdjust"
+      ; htmlName= "lengthAdjust"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "local"; htmlName= "local"; type_= String (* number |  *)}
+  ; Attribute {name= "markerEnd"; htmlName= "markerEnd"; type_= String}
+  ; Attribute
+      { name= "markerHeight"
+      ; htmlName= "markerHeight"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "markerMid"; htmlName= "markerMid"; type_= String}
+  ; Attribute {name= "markerStart"; htmlName= "markerStart"; type_= String}
+  ; Attribute
+      { name= "markerUnits"
+      ; htmlName= "markerUnits"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      { name= "markerWidth"
+      ; htmlName= "markerWidth"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "mask"; htmlName= "mask"; type_= String}
+  ; Attribute
+      {name= "maskUnits"; htmlName= "maskUnits"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "mathematical"
+      ; htmlName= "mathematical"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "mode"; htmlName= "mode"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "numOctaves"; htmlName= "numOctaves"; type_= String (* number |  *)}
+  ; Attribute {name= "offset"; htmlName= "offset"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "opacity"; htmlName= "opacity"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "operator"; htmlName= "operator"; type_= String (* number |  *)}
+  ; Attribute {name= "order"; htmlName= "order"; type_= String (* number |  *)}
+  ; Attribute {name= "orient"; htmlName= "orient"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "orientation"
+      ; htmlName= "orientation"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "origin"; htmlName= "origin"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "overflow"; htmlName= "overflow"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "paintOrder"; htmlName= "paintOrder"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "panose1"; htmlName= "panose1"; type_= String (* number |  *)}
+  ; Attribute {name= "path"; htmlName= "path"; type_= String}
+  ; Attribute
+      {name= "pathLength"; htmlName= "pathLength"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "patternContentUnits"
+      ; htmlName= "patternContentUnits"
+      ; type_= String }
+  ; Attribute {name= "patternUnits"; htmlName= "patternUnits"; type_= String}
+  ; Attribute {name= "points"; htmlName= "points"; type_= String}
+  ; Attribute
+      {name= "pointsAtX"; htmlName= "pointsAtX"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "pointsAtY"; htmlName= "pointsAtY"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "pointsAtZ"; htmlName= "pointsAtZ"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "preserveAspectRatio"
+      ; htmlName= "preserveAspectRatio"
+      ; type_= String }
+  ; Attribute {name= "r"; htmlName= "r"; type_= String (* number |  *)}
+  ; Attribute {name= "radius"; htmlName= "radius"; type_= String (* number |  *)}
+  ; Attribute {name= "refX"; htmlName= "refX"; type_= String (* number |  *)}
+  ; Attribute {name= "refY"; htmlName= "refY"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "repeatCount"
+      ; htmlName= "repeatCount"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      {name= "repeatDur"; htmlName= "repeatDur"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "restart"; htmlName= "restart"; type_= String (* number |  *)}
+  ; Attribute {name= "result"; htmlName= "result"; type_= String}
+  ; Attribute {name= "rotate"; htmlName= "rotate"; type_= String (* number |  *)}
+  ; Attribute {name= "rx"; htmlName= "rx"; type_= String (* number |  *)}
+  ; Attribute {name= "ry"; htmlName= "ry"; type_= String (* number |  *)}
+  ; Attribute {name= "scale"; htmlName= "scale"; type_= String (* number |  *)}
+  ; Attribute {name= "seed"; htmlName= "seed"; type_= String (* number |  *)}
+  ; Attribute {name= "slope"; htmlName= "slope"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "spacing"; htmlName= "spacing"; type_= String (* number |  *)}
+  ; Attribute {name= "speed"; htmlName= "speed"; type_= String (* number |  *)}
+  ; Attribute {name= "spreadMethod"; htmlName= "spreadMethod"; type_= String}
+  ; Attribute
+      { name= "startOffset"
+      ; htmlName= "startOffset"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      { name= "stdDeviation"
+      ; htmlName= "stdDeviation"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "stemh"; htmlName= "stemh"; type_= String (* number |  *)}
+  ; Attribute {name= "stemv"; htmlName= "stemv"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "stitchTiles"
+      ; htmlName= "stitchTiles"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "stopColor"; htmlName= "stopColor"; type_= String}
+  ; Attribute
+      { name= "stopOpacity"
+      ; htmlName= "stopOpacity"
+      ; type_= String (* number |  *) }
   ; Attribute
       { name= "strikethroughPosition"
-      ; type_= (* number |  *) String
-      ; htmlName= "" }
+      ; htmlName= "strikethroughPosition"
+      ; type_= String (* number |  *) }
   ; Attribute
       { name= "strikethroughThickness"
-      ; type_= (* number |  *) String
-      ; htmlName= "" }
-  ; Attribute {name= "String"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "stroke"; type_= String; htmlName= ""}
+      ; htmlName= "strikethroughThickness"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "String"; htmlName= "String"; type_= String (* number |  *)}
+  ; Attribute {name= "stroke"; htmlName= "stroke"; type_= String}
   ; Attribute
       { name= "strokeLinecap"
-      ; type_= String (* type_= "butt" | "round" | "square" | "inherit" *)
-      ; htmlName= "" }
-  ; Attribute {name= "strokeWidth"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "surfaceScale"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "tableValues"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "targetX"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "targetY"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "textAnchor"; type_= String; htmlName= ""}
-  ; Attribute {name= "textLength"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "to"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "transform"; type_= String; htmlName= ""}
-  ; Attribute {name= "u1"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "u2"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "unicode"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "unicodeBidi"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "unicodeRange"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "unitsPerEm"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "vAlphabetic"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "values"; type_= String; htmlName= ""}
-  ; Attribute {name= "vectorEffect"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "version"; type_= String; htmlName= ""}
-  ; Attribute {name= "vertAdvY"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "vertOriginX"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "vertOriginY"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "vHanging"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "vIdeographic"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "viewBox"; type_= String; htmlName= ""}
-  ; Attribute {name= "viewTarget"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "visibility"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "widths"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "wordSpacing"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "writingMode"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "x1"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "x2"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "x"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "xChannelSelector"; type_= String; htmlName= ""}
-  ; Attribute {name= "xHeight"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "xlinkActuate"; type_= String; htmlName= ""}
-  ; Attribute {name= "xlinkArcrole"; type_= String; htmlName= ""}
-  ; Attribute {name= "xlinkHref"; type_= String; htmlName= ""}
-  ; Attribute {name= "xlinkRole"; type_= String; htmlName= ""}
-  ; Attribute {name= "xlinkShow"; type_= String; htmlName= ""}
-  ; Attribute {name= "xlinkTitle"; type_= String; htmlName= ""}
-  ; Attribute {name= "xlinkType"; type_= String; htmlName= ""}
-  ; Attribute {name= "xmlBase"; type_= String; htmlName= ""}
-  ; Attribute {name= "xmlLang"; type_= String; htmlName= ""}
-  ; Attribute {name= "xmlns"; type_= String; htmlName= ""}
-  ; Attribute {name= "xmlnsXlink"; type_= String; htmlName= ""}
-  ; Attribute {name= "xmlSpace"; type_= String; htmlName= ""}
-  ; Attribute {name= "y1"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "y2"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "y"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "yChannelSelector"; type_= String; htmlName= ""}
-  ; Attribute {name= "z"; type_= (* number |  *) String; htmlName= ""}
-  ; Attribute {name= "zoomAndPan"; type_= String; htmlName= ""} ]
+      ; htmlName= "strokeLinecap"
+      ; type_= String (* type_= "butt" | "round" | "square" | "inherit" *) }
+  ; Attribute
+      { name= "strokeWidth"
+      ; htmlName= "strokeWidth"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      { name= "surfaceScale"
+      ; htmlName= "surfaceScale"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      { name= "tableValues"
+      ; htmlName= "tableValues"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      {name= "targetX"; htmlName= "targetX"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "targetY"; htmlName= "targetY"; type_= String (* number |  *)}
+  ; Attribute {name= "textAnchor"; htmlName= "textAnchor"; type_= String}
+  ; Attribute
+      {name= "textLength"; htmlName= "textLength"; type_= String (* number |  *)}
+  ; Attribute {name= "to"; htmlName= "to"; type_= String (* number |  *)}
+  ; Attribute {name= "transform"; htmlName= "transform"; type_= String}
+  ; Attribute {name= "u1"; htmlName= "u1"; type_= String (* number |  *)}
+  ; Attribute {name= "u2"; htmlName= "u2"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "unicode"; htmlName= "unicode"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "unicodeBidi"
+      ; htmlName= "unicodeBidi"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      { name= "unicodeRange"
+      ; htmlName= "unicodeRange"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      {name= "unitsPerEm"; htmlName= "unitsPerEm"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "vAlphabetic"
+      ; htmlName= "vAlphabetic"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "values"; htmlName= "values"; type_= String}
+  ; Attribute
+      { name= "vectorEffect"
+      ; htmlName= "vectorEffect"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "version"; htmlName= "version"; type_= String}
+  ; Attribute
+      {name= "vertAdvY"; htmlName= "vertAdvY"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "vertOriginX"
+      ; htmlName= "vertOriginX"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      { name= "vertOriginY"
+      ; htmlName= "vertOriginY"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      {name= "vHanging"; htmlName= "vHanging"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "vIdeographic"
+      ; htmlName= "vIdeographic"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "viewBox"; htmlName= "viewBox"; type_= String}
+  ; Attribute
+      {name= "viewTarget"; htmlName= "viewTarget"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "visibility"; htmlName= "visibility"; type_= String (* number |  *)}
+  ; Attribute {name= "widths"; htmlName= "widths"; type_= String (* number |  *)}
+  ; Attribute
+      { name= "wordSpacing"
+      ; htmlName= "wordSpacing"
+      ; type_= String (* number |  *) }
+  ; Attribute
+      { name= "writingMode"
+      ; htmlName= "writingMode"
+      ; type_= String (* number |  *) }
+  ; Attribute {name= "x1"; htmlName= "x1"; type_= String (* number |  *)}
+  ; Attribute {name= "x2"; htmlName= "x2"; type_= String (* number |  *)}
+  ; Attribute {name= "x"; htmlName= "x"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "xChannelSelector"; htmlName= "xChannelSelector"; type_= String}
+  ; Attribute
+      {name= "xHeight"; htmlName= "xHeight"; type_= String (* number |  *)}
+  ; Attribute {name= "xlinkActuate"; htmlName= "xlinkActuate"; type_= String}
+  ; Attribute {name= "xlinkArcrole"; htmlName= "xlinkArcrole"; type_= String}
+  ; Attribute {name= "xlinkHref"; htmlName= "xlinkHref"; type_= String}
+  ; Attribute {name= "xlinkRole"; htmlName= "xlinkRole"; type_= String}
+  ; Attribute {name= "xlinkShow"; htmlName= "xlinkShow"; type_= String}
+  ; Attribute {name= "xlinkTitle"; htmlName= "xlinkTitle"; type_= String}
+  ; Attribute {name= "xlinkType"; htmlName= "xlinkType"; type_= String}
+  ; Attribute {name= "xmlBase"; htmlName= "xmlBase"; type_= String}
+  ; Attribute {name= "xmlLang"; htmlName= "xmlLang"; type_= String}
+  ; Attribute {name= "xmlns"; htmlName= "xmlns"; type_= String}
+  ; Attribute {name= "xmlnsXlink"; htmlName= "xmlnsXlink"; type_= String}
+  ; Attribute {name= "xmlSpace"; htmlName= "xmlSpace"; type_= String}
+  ; Attribute {name= "y1"; htmlName= "y1"; type_= String (* number |  *)}
+  ; Attribute {name= "y2"; htmlName= "y2"; type_= String (* number |  *)}
+  ; Attribute {name= "y"; htmlName= "y"; type_= String (* number |  *)}
+  ; Attribute
+      {name= "yChannelSelector"; htmlName= "yChannelSelector"; type_= String}
+  ; Attribute {name= "z"; htmlName= "z"; type_= String (* number |  *)}
+  ; Attribute {name= "zoomAndPan"; htmlName= "zoomAndPan"; type_= String} ]
 
 let webViewHTMLAttributes =
-  [ Attribute {name= "allowFullScreen"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "allowpopups"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "autosize"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "blinkfeatures"; type_= String; htmlName= ""}
-  ; Attribute {name= "disableblinkfeatures"; type_= String; htmlName= ""}
-  ; Attribute {name= "disableguestresize"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "disablewebsecurity"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "guestinstance"; type_= String; htmlName= ""}
-  ; Attribute {name= "httpreferrer"; type_= String; htmlName= ""}
-  ; Attribute {name= "nodeintegration"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "partition"; type_= String; htmlName= ""}
-  ; Attribute {name= "plugins"; type_= Bool; htmlName= ""}
-  ; Attribute {name= "preload"; type_= String; htmlName= ""}
-  ; Attribute {name= "src"; type_= String; htmlName= ""}
-  ; Attribute {name= "useragent"; type_= String; htmlName= ""}
-  ; Attribute {name= "webpreferences"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "allowFullScreen"; htmlName= "allowfullscreen"; type_= Bool}
+  ; Attribute {name= "allowpopups"; htmlName= "allowpopups"; type_= Bool}
+  ; Attribute {name= "autoFocus"; htmlName= "autofocus"; type_= Bool}
+  ; Attribute {name= "autosize"; htmlName= "autosize"; type_= Bool}
+  ; Attribute {name= "blinkfeatures"; htmlName= "blinkfeatures"; type_= String}
+  ; Attribute
+      { name= "disableblinkfeatures"
+      ; htmlName= "disableblinkfeatures"
+      ; type_= String }
+  ; Attribute
+      {name= "disableguestresize"; htmlName= "disableguestresize"; type_= Bool}
+  ; Attribute
+      {name= "disablewebsecurity"; htmlName= "disablewebsecurity"; type_= Bool}
+  ; Attribute {name= "guestinstance"; htmlName= "guestinstance"; type_= String}
+  ; Attribute {name= "httpreferrer"; htmlName= "httpreferrer"; type_= String}
+  ; Attribute {name= "nodeintegration"; htmlName= "nodeintegration"; type_= Bool}
+  ; Attribute {name= "partition"; htmlName= "partition"; type_= String}
+  ; Attribute {name= "plugins"; htmlName= "plugins"; type_= Bool}
+  ; Attribute {name= "preload"; htmlName= "preload"; type_= String}
+  ; Attribute {name= "src"; htmlName= "src"; type_= String}
+  ; Attribute {name= "useragent"; htmlName= "useragent"; type_= String}
+  ; Attribute {name= "webpreferences"; htmlName= "webpreferences"; type_= String}
+  ]
 
 (* Browser Interfaces https://github.com/nikeee/2048-typescript/blob/master/2048/js/touch.d.ts *)
 let abstractView = []
@@ -1548,295 +1758,343 @@ let errorInfo = []
       componentStack: string; *)
 
 let htmlElements =
-  [ {tag= "a"; attributes= anchorHTMLAttributes & attributesHTML}
-  ; {tag= "abbr"; attributes= attributesHTML}
-  ; {tag= "address"; attributes= attributesHTML}
-  ; {tag= "area"; attributes= areaHTMLAttributes}
-  ; {tag= "article"; attributes= attributesHTML}
-  ; {tag= "aside"; attributes= attributesHTML}
-  ; {tag= "audio"; attributes= audioHTMLAttributes}
-  ; {tag= "b"; attributes= attributesHTML}
-  ; {tag= "base"; attributes= baseHTMLAttributes}
-  ; {tag= "bdi"; attributes= attributesHTML}
-  ; {tag= "bdo"; attributes= attributesHTML}
-  ; {tag= "big"; attributes= attributesHTML}
+  [ {tag= "a"; attributes= domAttributes & anchorHTMLAttributes & attributesHTML}
+  ; {tag= "abbr"; attributes= domAttributes & attributesHTML}
+  ; {tag= "address"; attributes= domAttributes & attributesHTML}
+  ; {tag= "area"; attributes= domAttributes & areaHTMLAttributes}
+  ; {tag= "article"; attributes= domAttributes & attributesHTML}
+  ; {tag= "aside"; attributes= domAttributes & attributesHTML}
+  ; {tag= "audio"; attributes= domAttributes & audioHTMLAttributes}
+  ; {tag= "b"; attributes= domAttributes & attributesHTML}
+  ; {tag= "base"; attributes= domAttributes & baseHTMLAttributes}
+  ; {tag= "bdi"; attributes= domAttributes & attributesHTML}
+  ; {tag= "bdo"; attributes= domAttributes & attributesHTML}
+  ; {tag= "big"; attributes= domAttributes & attributesHTML}
   ; {tag= "blockquote"; attributes= blockquoteHTMLAttributes}
-  ; {tag= "body"; attributes= attributesHTML}
-  ; {tag= "br"; attributes= attributesHTML}
+  ; {tag= "body"; attributes= domAttributes & attributesHTML}
+  ; {tag= "br"; attributes= domAttributes & attributesHTML}
   ; {tag= "button"; attributes= buttonHTMLAttributes}
   ; {tag= "canvas"; attributes= canvasHTMLAttributes}
-  ; {tag= "caption"; attributes= attributesHTML}
-  ; {tag= "cite"; attributes= attributesHTML}
-  ; {tag= "code"; attributes= attributesHTML}
-  ; {tag= "col"; attributes= colHTMLAttributes}
+  ; {tag= "caption"; attributes= domAttributes & attributesHTML}
+  ; {tag= "cite"; attributes= domAttributes & attributesHTML}
+  ; {tag= "code"; attributes= domAttributes & attributesHTML}
+  ; {tag= "col"; attributes= domAttributes & colHTMLAttributes}
   ; {tag= "colgroup"; attributes= colgroupHTMLAttributes}
-  ; {tag= "data"; attributes= dataHTMLAttributes}
-  ; {tag= "datalist"; attributes= attributesHTML}
-  ; {tag= "dd"; attributes= attributesHTML}
-  ; {tag= "del"; attributes= delHTMLAttributes}
-  ; {tag= "details"; attributes= detailsHTMLAttributes}
-  ; {tag= "dfn"; attributes= attributesHTML}
-  ; {tag= "dialog"; attributes= dialogHTMLAttributes}
-  ; {tag= "div"; attributes= attributesHTML}
-  ; {tag= "dl"; attributes= attributesHTML}
-  ; {tag= "dt"; attributes= attributesHTML}
-  ; {tag= "em"; attributes= attributesHTML}
-  ; {tag= "embed"; attributes= embedHTMLAttributes}
-  ; {tag= "fieldset"; attributes= fieldsetHTMLAttributes}
-  ; {tag= "figcaption"; attributes= attributesHTML}
-  ; {tag= "figure"; attributes= attributesHTML}
-  ; {tag= "footer"; attributes= attributesHTML}
-  ; {tag= "form"; attributes= formHTMLAttributes}
-  ; {tag= "h1"; attributes= attributesHTML}
-  ; {tag= "h2"; attributes= attributesHTML}
-  ; {tag= "h3"; attributes= attributesHTML}
-  ; {tag= "h4"; attributes= attributesHTML}
-  ; {tag= "h5"; attributes= attributesHTML}
-  ; {tag= "h6"; attributes= attributesHTML}
-  ; {tag= "head"; attributes= attributesHTML}
-  ; {tag= "header"; attributes= attributesHTML}
-  ; {tag= "hgroup"; attributes= attributesHTML}
-  ; {tag= "hr"; attributes= attributesHTML}
-  ; {tag= "html"; attributes= htmlHTMLAttributes}
-  ; {tag= "i"; attributes= attributesHTML}
-  ; {tag= "iframe"; attributes= iframeHTMLAttributes}
-  ; {tag= "img"; attributes= imgHTMLAttributes}
-  ; {tag= "input"; attributes= inputHTMLAttributes}
-  ; {tag= "ins"; attributes= insHTMLAttributes}
-  ; {tag= "kbd"; attributes= attributesHTML}
+  ; {tag= "data"; attributes= domAttributes & dataHTMLAttributes}
+  ; {tag= "datalist"; attributes= domAttributes & attributesHTML}
+  ; {tag= "dd"; attributes= domAttributes & attributesHTML}
+  ; {tag= "del"; attributes= domAttributes & delHTMLAttributes}
+  ; {tag= "details"; attributes= domAttributes & detailsHTMLAttributes}
+  ; {tag= "dfn"; attributes= domAttributes & attributesHTML}
+  ; {tag= "dialog"; attributes= domAttributes & dialogHTMLAttributes}
+  ; {tag= "div"; attributes= domAttributes & attributesHTML}
+  ; {tag= "dl"; attributes= domAttributes & attributesHTML}
+  ; {tag= "dt"; attributes= domAttributes & attributesHTML}
+  ; {tag= "em"; attributes= domAttributes & attributesHTML}
+  ; {tag= "embed"; attributes= domAttributes & embedHTMLAttributes}
+  ; {tag= "fieldset"; attributes= domAttributes & fieldsetHTMLAttributes}
+  ; {tag= "figcaption"; attributes= domAttributes & attributesHTML}
+  ; {tag= "figure"; attributes= domAttributes & attributesHTML}
+  ; {tag= "footer"; attributes= domAttributes & attributesHTML}
+  ; {tag= "form"; attributes= domAttributes & formHTMLAttributes}
+  ; {tag= "h1"; attributes= domAttributes & attributesHTML}
+  ; {tag= "h2"; attributes= domAttributes & attributesHTML}
+  ; {tag= "h3"; attributes= domAttributes & attributesHTML}
+  ; {tag= "h4"; attributes= domAttributes & attributesHTML}
+  ; {tag= "h5"; attributes= domAttributes & attributesHTML}
+  ; {tag= "h6"; attributes= domAttributes & attributesHTML}
+  ; {tag= "head"; attributes= domAttributes & attributesHTML}
+  ; {tag= "header"; attributes= domAttributes & attributesHTML}
+  ; {tag= "hgroup"; attributes= domAttributes & attributesHTML}
+  ; {tag= "hr"; attributes= domAttributes & attributesHTML}
+  ; {tag= "html"; attributes= domAttributes & htmlHTMLAttributes}
+  ; {tag= "i"; attributes= domAttributes & attributesHTML}
+  ; {tag= "iframe"; attributes= domAttributes & iframeHTMLAttributes}
+  ; {tag= "img"; attributes= domAttributes & imgHTMLAttributes}
+  ; {tag= "input"; attributes= domAttributes & inputHTMLAttributes}
+  ; {tag= "ins"; attributes= domAttributes & insHTMLAttributes}
+  ; {tag= "kbd"; attributes= domAttributes & attributesHTML}
   ; {tag= "keygen"; attributes= keygenHTMLAttributes}
   ; {tag= "label"; attributes= labelHTMLAttributes}
-  ; {tag= "legend"; attributes= attributesHTML}
-  ; {tag= "li"; attributes= liHTMLAttributes}
+  ; {tag= "legend"; attributes= domAttributes & attributesHTML}
+  ; {tag= "li"; attributes= domAttributes & liHTMLAttributes}
   ; {tag= "link"; attributes= linkHTMLAttributes}
-  ; {tag= "main"; attributes= attributesHTML}
-  ; {tag= "map"; attributes= mapHTMLAttributes}
-  ; {tag= "mark"; attributes= attributesHTML}
-  ; {tag= "menu"; attributes= menuHTMLAttributes}
-  ; {tag= "menuitem"; attributes= attributesHTML}
-  ; {tag= "meta"; attributes= metaHTMLAttributes}
-  ; {tag= "meter"; attributes= meterHTMLAttributes}
-  ; {tag= "nav"; attributes= attributesHTML}
-  ; {tag= "noscript"; attributes= attributesHTML}
-  ; {tag= "object"; attributes= objectHTMLAttributes}
-  ; {tag= "ol"; attributes= olHTMLAttributes}
-  ; {tag= "optgroup"; attributes= optgroupHTMLAttributes}
-  ; {tag= "option"; attributes= optionHTMLAttributes}
-  ; {tag= "output"; attributes= outputHTMLAttributes}
-  ; {tag= "p"; attributes= attributesHTML}
-  ; {tag= "param"; attributes= paramHTMLAttributes}
-  ; {tag= "picture"; attributes= attributesHTML}
-  ; {tag= "pre"; attributes= attributesHTML}
+  ; {tag= "main"; attributes= domAttributes & attributesHTML}
+  ; {tag= "map"; attributes= domAttributes & mapHTMLAttributes}
+  ; {tag= "mark"; attributes= domAttributes & attributesHTML}
+  ; {tag= "menu"; attributes= domAttributes & menuHTMLAttributes}
+  ; {tag= "menuitem"; attributes= domAttributes & attributesHTML}
+  ; {tag= "meta"; attributes= domAttributes & metaHTMLAttributes}
+  ; {tag= "meter"; attributes= domAttributes & meterHTMLAttributes}
+  ; {tag= "nav"; attributes= domAttributes & attributesHTML}
+  ; {tag= "noscript"; attributes= domAttributes & attributesHTML}
+  ; {tag= "object"; attributes= domAttributes & objectHTMLAttributes}
+  ; {tag= "ol"; attributes= domAttributes & olHTMLAttributes}
+  ; {tag= "optgroup"; attributes= domAttributes & optgroupHTMLAttributes}
+  ; {tag= "option"; attributes= domAttributes & optionHTMLAttributes}
+  ; {tag= "output"; attributes= domAttributes & outputHTMLAttributes}
+  ; {tag= "p"; attributes= domAttributes & attributesHTML}
+  ; {tag= "param"; attributes= domAttributes & paramHTMLAttributes}
+  ; {tag= "picture"; attributes= domAttributes & attributesHTML}
+  ; {tag= "pre"; attributes= domAttributes & attributesHTML}
   ; {tag= "progress"; attributes= progressHTMLAttributes}
-  ; {tag= "q"; attributes= quoteHTMLAttributes}
-  ; {tag= "rp"; attributes= attributesHTML}
-  ; {tag= "rt"; attributes= attributesHTML}
-  ; {tag= "ruby"; attributes= attributesHTML}
-  ; {tag= "s"; attributes= attributesHTML}
-  ; {tag= "samp"; attributes= attributesHTML}
-  ; {tag= "slot"; attributes= slotHTMLAttributes}
-  ; {tag= "script"; attributes= scriptHTMLAttributes}
-  ; {tag= "section"; attributes= attributesHTML}
-  ; {tag= "select"; attributes= selectHTMLAttributes}
-  ; {tag= "small"; attributes= attributesHTML}
-  ; {tag= "source"; attributes= sourceHTMLAttributes}
-  ; {tag= "span"; attributes= attributesHTML}
-  ; {tag= "strong"; attributes= attributesHTML}
-  ; {tag= "style"; attributes= styleHTMLAttributes}
-  ; {tag= "sub"; attributes= attributesHTML}
-  ; {tag= "summary"; attributes= attributesHTML}
-  ; {tag= "sup"; attributes= attributesHTML}
-  ; {tag= "table"; attributes= tableHTMLAttributes}
-  ; {tag= "template"; attributes= attributesHTML}
-  ; {tag= "tbody"; attributes= attributesHTML}
-  ; {tag= "td"; attributes= tdHTMLAttributes}
-  ; {tag= "textarea"; attributes= textareaHTMLAttributes}
-  ; {tag= "tfoot"; attributes= attributesHTML}
-  ; {tag= "th"; attributes= thHTMLAttributes}
-  ; {tag= "thead"; attributes= attributesHTML}
-  ; {tag= "time"; attributes= timeHTMLAttributes}
-  ; {tag= "title"; attributes= attributesHTML}
-  ; {tag= "tr"; attributes= attributesHTML}
-  ; {tag= "track"; attributes= trackHTMLAttributes}
-  ; {tag= "u"; attributes= attributesHTML}
-  ; {tag= "ul"; attributes= attributesHTML}
-  ; {tag= "var"; attributes= attributesHTML}
-  ; {tag= "video"; attributes= videoHTMLAttributes}
-  ; {tag= "wbr"; attributes= attributesHTML}
-  ; {tag= "webview"; attributes= webViewHTMLAttributes}
-  ; {tag= "abbr"; attributes= attributesHTML}
-  ; {tag= "address"; attributes= attributesHTML}
+  ; {tag= "q"; attributes= domAttributes & quoteHTMLAttributes}
+  ; {tag= "rp"; attributes= domAttributes & attributesHTML}
+  ; {tag= "rt"; attributes= domAttributes & attributesHTML}
+  ; {tag= "ruby"; attributes= domAttributes & attributesHTML}
+  ; {tag= "s"; attributes= domAttributes & attributesHTML}
+  ; {tag= "samp"; attributes= domAttributes & attributesHTML}
+  ; {tag= "slot"; attributes= domAttributes & slotHTMLAttributes}
+  ; {tag= "script"; attributes= domAttributes & scriptHTMLAttributes}
+  ; {tag= "section"; attributes= domAttributes & attributesHTML}
+  ; {tag= "select"; attributes= domAttributes & selectHTMLAttributes}
+  ; {tag= "small"; attributes= domAttributes & attributesHTML}
+  ; {tag= "source"; attributes= domAttributes & sourceHTMLAttributes}
+  ; {tag= "span"; attributes= domAttributes & attributesHTML}
+  ; {tag= "strong"; attributes= domAttributes & attributesHTML}
+  ; {tag= "style"; attributes= domAttributes & styleHTMLAttributes}
+  ; {tag= "sub"; attributes= domAttributes & attributesHTML}
+  ; {tag= "summary"; attributes= domAttributes & attributesHTML}
+  ; {tag= "sup"; attributes= domAttributes & attributesHTML}
+  ; {tag= "table"; attributes= domAttributes & tableHTMLAttributes}
+  ; {tag= "template"; attributes= domAttributes & attributesHTML}
+  ; {tag= "tbody"; attributes= domAttributes & attributesHTML}
+  ; {tag= "td"; attributes= domAttributes & tdHTMLAttributes}
+  ; {tag= "textarea"; attributes= domAttributes & textareaHTMLAttributes}
+  ; {tag= "tfoot"; attributes= domAttributes & attributesHTML}
+  ; {tag= "th"; attributes= domAttributes & thHTMLAttributes}
+  ; {tag= "thead"; attributes= domAttributes & attributesHTML}
+  ; {tag= "time"; attributes= domAttributes & timeHTMLAttributes}
+  ; {tag= "title"; attributes= domAttributes & attributesHTML}
+  ; {tag= "tr"; attributes= domAttributes & attributesHTML}
+  ; {tag= "track"; attributes= domAttributes & trackHTMLAttributes}
+  ; {tag= "u"; attributes= domAttributes & attributesHTML}
+  ; {tag= "ul"; attributes= domAttributes & attributesHTML}
+  ; {tag= "var"; attributes= domAttributes & attributesHTML}
+  ; {tag= "video"; attributes= domAttributes & videoHTMLAttributes}
+  ; {tag= "wbr"; attributes= domAttributes & attributesHTML}
+  ; {tag= "webview"; attributes= domAttributes & webViewHTMLAttributes}
+  ; {tag= "abbr"; attributes= domAttributes & attributesHTML}
+  ; {tag= "address"; attributes= domAttributes & attributesHTML}
   ; {tag= "area"; attributes= attributesHTML & areaHTMLAttributes}
-  ; {tag= "article"; attributes= attributesHTML}
-  ; {tag= "aside"; attributes= attributesHTML}
+  ; {tag= "article"; attributes= domAttributes & attributesHTML}
+  ; {tag= "aside"; attributes= domAttributes & attributesHTML}
   ; {tag= "audio"; attributes= attributesHTML & audioHTMLAttributes}
-  ; {tag= "b"; attributes= attributesHTML}
+  ; {tag= "b"; attributes= domAttributes & attributesHTML}
   ; {tag= "base"; attributes= attributesHTML & baseHTMLAttributes}
-  ; {tag= "bdi"; attributes= attributesHTML}
-  ; {tag= "bdo"; attributes= attributesHTML}
-  ; {tag= "big"; attributes= attributesHTML}
+  ; {tag= "bdi"; attributes= domAttributes & attributesHTML}
+  ; {tag= "bdo"; attributes= domAttributes & attributesHTML}
+  ; {tag= "big"; attributes= domAttributes & attributesHTML}
   ; {tag= "blockquote"; attributes= attributesHTML & blockquoteHTMLAttributes}
-  ; {tag= "body"; attributes= attributesHTML}
-  ; {tag= "br"; attributes= attributesHTML}
+  ; {tag= "body"; attributes= domAttributes & attributesHTML}
+  ; {tag= "br"; attributes= domAttributes & attributesHTML}
   ; {tag= "button"; attributes= attributesHTML & buttonHTMLAttributes}
   ; {tag= "canvas"; attributes= attributesHTML & canvasHTMLAttributes}
-  ; {tag= "caption"; attributes= attributesHTML}
-  ; {tag= "cite"; attributes= attributesHTML}
-  ; {tag= "code"; attributes= attributesHTML}
+  ; {tag= "caption"; attributes= domAttributes & attributesHTML}
+  ; {tag= "cite"; attributes= domAttributes & attributesHTML}
+  ; {tag= "code"; attributes= domAttributes & attributesHTML}
   ; {tag= "col"; attributes= attributesHTML & colHTMLAttributes}
   ; {tag= "colgroup"; attributes= attributesHTML & colgroupHTMLAttributes}
   ; {tag= "data"; attributes= attributesHTML & dataHTMLAttributes}
-  ; {tag= "datalist"; attributes= attributesHTML}
-  ; {tag= "dd"; attributes= attributesHTML}
+  ; {tag= "datalist"; attributes= domAttributes & attributesHTML}
+  ; {tag= "dd"; attributes= domAttributes & attributesHTML}
   ; {tag= "del"; attributes= attributesHTML & delHTMLAttributes}
   ; {tag= "details"; attributes= attributesHTML & detailsHTMLAttributes}
-  ; {tag= "dfn"; attributes= attributesHTML}
+  ; {tag= "dfn"; attributes= domAttributes & attributesHTML}
   ; {tag= "dialog"; attributes= attributesHTML & dialogHTMLAttributes}
-  ; {tag= "div"; attributes= attributesHTML}
-  ; {tag= "dl"; attributes= attributesHTML}
-  ; {tag= "dt"; attributes= attributesHTML}
-  ; {tag= "em"; attributes= attributesHTML}
-  ; {tag= "embed"; attributes= attributesHTML & embedHTMLAttributes}
-  ; {tag= "fieldset"; attributes= attributesHTML & fieldsetHTMLAttributes}
-  ; {tag= "figcaption"; attributes= attributesHTML}
-  ; {tag= "figure"; attributes= attributesHTML}
-  ; {tag= "footer"; attributes= attributesHTML}
-  ; {tag= "form"; attributes= attributesHTML & formHTMLAttributes}
-  ; {tag= "h1"; attributes= attributesHTML}
-  ; {tag= "h2"; attributes= attributesHTML}
-  ; {tag= "h3"; attributes= attributesHTML}
-  ; {tag= "h4"; attributes= attributesHTML}
-  ; {tag= "h5"; attributes= attributesHTML}
-  ; {tag= "h6"; attributes= attributesHTML}
-  ; {tag= "head"; attributes= attributesHTML}
-  ; {tag= "header"; attributes= attributesHTML}
-  ; {tag= "hgroup"; attributes= attributesHTML}
-  ; {tag= "hr"; attributes= attributesHTML}
-  ; {tag= "html"; attributes= attributesHTML & htmlHTMLAttributes}
-  ; {tag= "i"; attributes= attributesHTML}
-  ; {tag= "iframe"; attributes= attributesHTML & iframeHTMLAttributes}
-  ; {tag= "img"; attributes= attributesHTML & imgHTMLAttributes}
-  ; {tag= "input"; attributes= attributesHTML & inputHTMLAttributes}
-  ; {tag= "ins"; attributes= attributesHTML & insHTMLAttributes}
-  ; {tag= "kbd"; attributes= attributesHTML}
-  ; {tag= "keygen"; attributes= attributesHTML & keygenHTMLAttributes}
-  ; {tag= "label"; attributes= attributesHTML & labelHTMLAttributes}
-  ; {tag= "legend"; attributes= attributesHTML}
-  ; {tag= "li"; attributes= attributesHTML & liHTMLAttributes}
-  ; {tag= "link"; attributes= attributesHTML & linkHTMLAttributes}
-  ; {tag= "main"; attributes= attributesHTML}
-  ; {tag= "map"; attributes= attributesHTML & mapHTMLAttributes}
-  ; {tag= "mark"; attributes= attributesHTML}
-  ; {tag= "menu"; attributes= attributesHTML & menuHTMLAttributes}
-  ; {tag= "menuitem"; attributes= attributesHTML}
-  ; {tag= "meta"; attributes= attributesHTML & metaHTMLAttributes}
-  ; {tag= "meter"; attributes= attributesHTML & meterHTMLAttributes}
-  ; {tag= "nav"; attributes= attributesHTML}
-  ; {tag= "noindex"; attributes= attributesHTML}
-  ; {tag= "noscript"; attributes= attributesHTML}
-  ; {tag= "object_"; attributes= attributesHTML & objectHTMLAttributes}
-  ; {tag= "ol"; attributes= attributesHTML & olHTMLAttributes}
-  ; {tag= "optgroup"; attributes= attributesHTML & optgroupHTMLAttributes}
-  ; {tag= "option"; attributes= attributesHTML & optionHTMLAttributes}
-  ; {tag= "output"; attributes= attributesHTML & outputHTMLAttributes}
-  ; {tag= "p"; attributes= attributesHTML}
-  ; {tag= "param"; attributes= attributesHTML & paramHTMLAttributes}
-  ; {tag= "picture"; attributes= attributesHTML}
-  ; {tag= "pre"; attributes= attributesHTML}
-  ; {tag= "progress"; attributes= attributesHTML & progressHTMLAttributes}
-  ; {tag= "q"; attributes= attributesHTML & quoteHTMLAttributes}
-  ; {tag= "rp"; attributes= attributesHTML}
-  ; {tag= "rt"; attributes= attributesHTML}
-  ; {tag= "ruby"; attributes= attributesHTML}
-  ; {tag= "s"; attributes= attributesHTML}
-  ; {tag= "samp"; attributes= attributesHTML}
-  ; {tag= "slot"; attributes= attributesHTML & slotHTMLAttributes}
-  ; {tag= "script"; attributes= attributesHTML & scriptHTMLAttributes}
-  ; {tag= "section"; attributes= attributesHTML}
-  ; {tag= "select"; attributes= attributesHTML & selectHTMLAttributes}
-  ; {tag= "small"; attributes= attributesHTML}
-  ; {tag= "source"; attributes= attributesHTML & sourceHTMLAttributes}
-  ; {tag= "span"; attributes= attributesHTML}
-  ; {tag= "strong"; attributes= attributesHTML}
-  ; {tag= "style"; attributes= attributesHTML & styleHTMLAttributes}
-  ; {tag= "sub"; attributes= attributesHTML}
-  ; {tag= "summary"; attributes= attributesHTML}
-  ; {tag= "sup"; attributes= attributesHTML}
+  ; {tag= "div"; attributes= domAttributes & attributesHTML}
+  ; {tag= "dl"; attributes= domAttributes & attributesHTML}
+  ; {tag= "dt"; attributes= domAttributes & attributesHTML}
+  ; {tag= "em"; attributes= domAttributes & attributesHTML}
+  ; { tag= "embed"
+    ; attributes= domAttributes & attributesHTML & embedHTMLAttributes }
+  ; { tag= "fieldset"
+    ; attributes= domAttributes & attributesHTML & fieldsetHTMLAttributes }
+  ; {tag= "figcaption"; attributes= domAttributes & attributesHTML}
+  ; {tag= "figure"; attributes= domAttributes & attributesHTML}
+  ; {tag= "footer"; attributes= domAttributes & attributesHTML}
+  ; { tag= "form"
+    ; attributes= domAttributes & attributesHTML & formHTMLAttributes }
+  ; {tag= "h1"; attributes= domAttributes & attributesHTML}
+  ; {tag= "h2"; attributes= domAttributes & attributesHTML}
+  ; {tag= "h3"; attributes= domAttributes & attributesHTML}
+  ; {tag= "h4"; attributes= domAttributes & attributesHTML}
+  ; {tag= "h5"; attributes= domAttributes & attributesHTML}
+  ; {tag= "h6"; attributes= domAttributes & attributesHTML}
+  ; {tag= "head"; attributes= domAttributes & attributesHTML}
+  ; {tag= "header"; attributes= domAttributes & attributesHTML}
+  ; {tag= "hgroup"; attributes= domAttributes & attributesHTML}
+  ; {tag= "hr"; attributes= domAttributes & attributesHTML}
+  ; { tag= "html"
+    ; attributes= domAttributes & attributesHTML & htmlHTMLAttributes }
+  ; {tag= "i"; attributes= domAttributes & attributesHTML}
+  ; { tag= "iframe"
+    ; attributes= domAttributes & attributesHTML & iframeHTMLAttributes }
+  ; {tag= "img"; attributes= domAttributes & attributesHTML & imgHTMLAttributes}
+  ; { tag= "input"
+    ; attributes= domAttributes & attributesHTML & inputHTMLAttributes }
+  ; {tag= "ins"; attributes= domAttributes & attributesHTML & insHTMLAttributes}
+  ; {tag= "kbd"; attributes= domAttributes & attributesHTML & domAttributes}
+  ; { tag= "keygen"
+    ; attributes= domAttributes & attributesHTML & keygenHTMLAttributes }
+  ; { tag= "label"
+    ; attributes= domAttributes & attributesHTML & labelHTMLAttributes }
+  ; {tag= "legend"; attributes= domAttributes & attributesHTML}
+  ; {tag= "li"; attributes= domAttributes & attributesHTML & liHTMLAttributes}
+  ; { tag= "link"
+    ; attributes= domAttributes & attributesHTML & linkHTMLAttributes }
+  ; {tag= "main"; attributes= domAttributes & attributesHTML}
+  ; {tag= "map"; attributes= domAttributes & attributesHTML & mapHTMLAttributes}
+  ; {tag= "mark"; attributes= domAttributes & attributesHTML}
+  ; { tag= "menu"
+    ; attributes= domAttributes & attributesHTML & menuHTMLAttributes }
+  ; {tag= "menuitem"; attributes= domAttributes & attributesHTML}
+  ; { tag= "meta"
+    ; attributes= domAttributes & attributesHTML & metaHTMLAttributes }
+  ; { tag= "meter"
+    ; attributes= domAttributes & attributesHTML & meterHTMLAttributes }
+  ; {tag= "nav"; attributes= domAttributes & attributesHTML & domAttributes}
+  ; {tag= "noindex"; attributes= domAttributes & attributesHTML}
+  ; {tag= "noscript"; attributes= domAttributes & attributesHTML}
+  ; { tag= "object_"
+    ; attributes= domAttributes & attributesHTML & objectHTMLAttributes }
+  ; {tag= "ol"; attributes= domAttributes & attributesHTML & olHTMLAttributes}
+  ; { tag= "optgroup"
+    ; attributes= domAttributes & attributesHTML & optgroupHTMLAttributes }
+  ; { tag= "option"
+    ; attributes= domAttributes & attributesHTML & optionHTMLAttributes }
+  ; { tag= "output"
+    ; attributes= domAttributes & attributesHTML & outputHTMLAttributes }
+  ; {tag= "p"; attributes= domAttributes & attributesHTML}
+  ; { tag= "param"
+    ; attributes= domAttributes & attributesHTML & paramHTMLAttributes }
+  ; {tag= "picture"; attributes= domAttributes & attributesHTML}
+  ; {tag= "pre"; attributes= domAttributes & attributesHTML}
+  ; { tag= "progress"
+    ; attributes= domAttributes & attributesHTML & progressHTMLAttributes }
+  ; {tag= "q"; attributes= domAttributes & attributesHTML & quoteHTMLAttributes}
+  ; {tag= "rp"; attributes= domAttributes & attributesHTML}
+  ; {tag= "rt"; attributes= domAttributes & attributesHTML}
+  ; {tag= "ruby"; attributes= domAttributes & attributesHTML}
+  ; {tag= "s"; attributes= domAttributes & attributesHTML}
+  ; {tag= "samp"; attributes= domAttributes & attributesHTML}
+  ; { tag= "slot"
+    ; attributes= domAttributes & attributesHTML & slotHTMLAttributes }
+  ; { tag= "script"
+    ; attributes= domAttributes & attributesHTML & scriptHTMLAttributes }
+  ; {tag= "section"; attributes= domAttributes & attributesHTML}
+  ; { tag= "select"
+    ; attributes= domAttributes & attributesHTML & selectHTMLAttributes }
+  ; {tag= "small"; attributes= domAttributes & attributesHTML}
+  ; { tag= "source"
+    ; attributes= domAttributes & attributesHTML & sourceHTMLAttributes }
+  ; {tag= "span"; attributes= domAttributes & attributesHTML}
+  ; {tag= "strong"; attributes= domAttributes & attributesHTML}
+  ; { tag= "style"
+    ; attributes= domAttributes & attributesHTML & styleHTMLAttributes }
+  ; {tag= "sub"; attributes= domAttributes & attributesHTML}
+  ; {tag= "summary"; attributes= domAttributes & attributesHTML}
+  ; {tag= "sup"; attributes= domAttributes & attributesHTML}
   ; {tag= "table"; attributes= attributesHTML & tableHTMLAttributes}
-  ; {tag= "template"; attributes= attributesHTML}
-  ; {tag= "tbody"; attributes= attributesHTML}
-  ; {tag= "td"; attributes= attributesHTML & tdHTMLAttributes}
-  ; {tag= "textarea"; attributes= attributesHTML & textareaHTMLAttributes}
-  ; {tag= "tfoot"; attributes= attributesHTML}
-  ; {tag= "th"; attributes= attributesHTML & thHTMLAttributes}
-  ; {tag= "thead"; attributes= attributesHTML}
-  ; {tag= "time"; attributes= attributesHTML & timeHTMLAttributes}
-  ; {tag= "title"; attributes= attributesHTML}
-  ; {tag= "tr"; attributes= attributesHTML}
-  ; {tag= "track"; attributes= attributesHTML & trackHTMLAttributes}
-  ; {tag= "u"; attributes= attributesHTML}
-  ; {tag= "ul"; attributes= attributesHTML}
-  ; {tag= "var"; attributes= attributesHTML}
-  ; {tag= "video"; attributes= attributesHTML & videoHTMLAttributes}
-  ; {tag= "wbr"; attributes= attributesHTML}
-  ; {tag= "webview"; attributes= attributesHTML & webViewHTMLAttributes} ]
+  ; {tag= "template"; attributes= domAttributes & attributesHTML}
+  ; {tag= "tbody"; attributes= domAttributes & attributesHTML}
+  ; {tag= "td"; attributes= domAttributes & attributesHTML & tdHTMLAttributes}
+  ; { tag= "textarea"
+    ; attributes= domAttributes & attributesHTML & textareaHTMLAttributes }
+  ; {tag= "tfoot"; attributes= domAttributes & attributesHTML}
+  ; {tag= "th"; attributes= domAttributes & attributesHTML & thHTMLAttributes}
+  ; {tag= "thead"; attributes= domAttributes & attributesHTML}
+  ; { tag= "time"
+    ; attributes= domAttributes & attributesHTML & timeHTMLAttributes }
+  ; {tag= "title"; attributes= domAttributes & attributesHTML}
+  ; {tag= "tr"; attributes= domAttributes & attributesHTML}
+  ; { tag= "track"
+    ; attributes= domAttributes & attributesHTML & trackHTMLAttributes }
+  ; {tag= "u"; attributes= domAttributes & attributesHTML}
+  ; {tag= "ul"; attributes= domAttributes & attributesHTML}
+  ; {tag= "var"; attributes= domAttributes & attributesHTML}
+  ; { tag= "video"
+    ; attributes= domAttributes & attributesHTML & videoHTMLAttributes }
+  ; {tag= "wbr"; attributes= domAttributes & attributesHTML}
+  ; { tag= "webview"
+    ; attributes= domAttributes & attributesHTML & webViewHTMLAttributes } ]
 
 let svgElements =
-  [ {tag= "svg"; attributes= svgAttributes}
-  ; {tag= "animate"; attributes= svgAttributes}
-  ; {tag= "animateMotion"; attributes= svgAttributes}
-  ; {tag= "animateTransform"; attributes= svgAttributes}
-  ; {tag= "circle"; attributes= svgAttributes}
-  ; {tag= "clipPath"; attributes= svgAttributes}
-  ; {tag= "defs"; attributes= svgAttributes}
-  ; {tag= "desc"; attributes= svgAttributes}
-  ; {tag= "ellipse"; attributes= svgAttributes}
-  ; {tag= "feBlend"; attributes= svgAttributes}
-  ; {tag= "feColorMatrix"; attributes= svgAttributes}
-  ; {tag= "feComponentTransfer"; attributes= svgAttributes}
-  ; {tag= "feComposite"; attributes= svgAttributes}
-  ; {tag= "feConvolveMatrix"; attributes= svgAttributes}
-  ; {tag= "feDiffuseLighting"; attributes= svgAttributes}
-  ; {tag= "feDisplacementMap"; attributes= svgAttributes}
-  ; {tag= "feDistantLight"; attributes= svgAttributes}
-  ; {tag= "feDropShadow"; attributes= svgAttributes}
-  ; {tag= "feFlood"; attributes= svgAttributes}
-  ; {tag= "feFuncA"; attributes= svgAttributes}
-  ; {tag= "feFuncB"; attributes= svgAttributes}
-  ; {tag= "feFuncG"; attributes= svgAttributes}
-  ; {tag= "feFuncR"; attributes= svgAttributes}
-  ; {tag= "feGaussianBlur"; attributes= svgAttributes}
-  ; {tag= "feImage"; attributes= svgAttributes}
-  ; {tag= "feMerge"; attributes= svgAttributes}
-  ; {tag= "feMergeNode"; attributes= svgAttributes}
-  ; {tag= "feMorphology"; attributes= svgAttributes}
-  ; {tag= "feOffset"; attributes= svgAttributes}
-  ; {tag= "fePointLight"; attributes= svgAttributes}
-  ; {tag= "feSpecularLighting"; attributes= svgAttributes}
-  ; {tag= "feSpotLight"; attributes= svgAttributes}
-  ; {tag= "feTile"; attributes= svgAttributes}
-  ; {tag= "feTurbulence"; attributes= svgAttributes}
-  ; {tag= "filter"; attributes= svgAttributes}
-  ; {tag= "foreignObject"; attributes= svgAttributes}
-  ; {tag= "g"; attributes= svgAttributes}
-  ; {tag= "image"; attributes= svgAttributes}
-  ; {tag= "line"; attributes= svgAttributes}
-  ; {tag= "linearGradient"; attributes= svgAttributes}
-  ; {tag= "marker"; attributes= svgAttributes}
-  ; {tag= "mask"; attributes= svgAttributes}
-  ; {tag= "metadata"; attributes= svgAttributes}
-  ; {tag= "mpath"; attributes= svgAttributes}
-  ; {tag= "path"; attributes= svgAttributes}
-  ; {tag= "pattern"; attributes= svgAttributes}
-  ; {tag= "polygon"; attributes= svgAttributes}
-  ; {tag= "polyline"; attributes= svgAttributes}
-  ; {tag= "radialGradient"; attributes= svgAttributes}
-  ; {tag= "rect"; attributes= svgAttributes}
-  ; {tag= "stop"; attributes= svgAttributes}
-  ; {tag= "switch"; attributes= svgAttributes}
-  ; {tag= "symbol"; attributes= svgAttributes}
-  ; {tag= "text"; attributes= svgAttributes}
-  ; {tag= "textPath"; attributes= svgAttributes}
-  ; {tag= "tspan"; attributes= svgAttributes}
-  ; {tag= "use"; attributes= svgAttributes}
-  ; {tag= "view"; attributes= svgAttributes} ]
+  [ {tag= "svg"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "animate"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; { tag= "animateMotion"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; { tag= "animateTransform"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; {tag= "circle"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "clipPath"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "defs"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "desc"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "ellipse"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "feBlend"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; { tag= "feColorMatrix"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; { tag= "feComponentTransfer"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; { tag= "feComposite"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; { tag= "feConvolveMatrix"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; { tag= "feDiffuseLighting"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; { tag= "feDisplacementMap"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; { tag= "feDistantLight"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; { tag= "feDropShadow"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; {tag= "feFlood"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "feFuncA"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "feFuncB"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "feFuncG"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "feFuncR"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; { tag= "feGaussianBlur"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; {tag= "feImage"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "feMerge"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; { tag= "feMergeNode"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; { tag= "feMorphology"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; {tag= "feOffset"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; { tag= "fePointLight"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; { tag= "feSpecularLighting"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; { tag= "feSpotLight"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; {tag= "feTile"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; { tag= "feTurbulence"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; {tag= "filter"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; { tag= "foreignObject"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; {tag= "g"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "image"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "line"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; { tag= "linearGradient"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; {tag= "marker"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "mask"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "metadata"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "mpath"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "path"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "pattern"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "polygon"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "polyline"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; { tag= "radialGradient"
+    ; attributes= domAttributes & svgAttributes & ariaAttributes }
+  ; {tag= "rect"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "stop"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "switch"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "symbol"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "text"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "textPath"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "tspan"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "use"; attributes= domAttributes & svgAttributes & ariaAttributes}
+  ; {tag= "view"; attributes= domAttributes & svgAttributes & ariaAttributes} ]
