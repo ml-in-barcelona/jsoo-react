@@ -24,7 +24,7 @@ type event = {type_: eventType; name: string}
 
 type prop = Attribute of attribute | Event of event
 
-type element = {tag: string; attributes: attribute list}
+type element = {tag: string; attributes: prop list}
 
 let attributeReferrerPolicy = String
 (* | Empty
@@ -45,10 +45,7 @@ let attributeAnchorTarget = String
    | Custom of String *)
 
 let commonDOMAttributes =
-  [ (* dangerouslySetInnerHTML?: {
-           __html: String;
-       };
-
+  [ (*
        // Clipboard Events
        onCopy?: ClipboardEventHandler<T>;
        onCopyCapture?: ClipboardEventHandler<T>;
@@ -242,249 +239,282 @@ let commonDOMAttributes =
 (* All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/ *)
 let ariaAttributes =
   [ (* Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. *)
-    { name= "ariaActivedescendant"
-    ; htmlName= "aria-activedescendant"
-    ; type_= String }
+    Attribute
+      { name= "ariaActivedescendant"
+      ; htmlName= "aria-activedescendant"
+      ; type_= String }
   ; (* Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. *)
-    { name= "ariaAtomic"
-    ; htmlName= "aria-atomic"
-    ; type_= String (* Bool | 'false' | 'true' *) }
+    Attribute
+      { name= "ariaAtomic"
+      ; htmlName= "aria-atomic"
+      ; type_= String (* Bool | 'false' | 'true' *) }
   ; (*
      * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
      * presented if they are made.
      *)
-    { name= "ariaAutocomplete"
-    ; htmlName= "aria-autocomplete"
-    ; type_= String (* 'none' | 'inline' | 'list' | 'both' *) }
+    Attribute
+      { name= "ariaAutocomplete"
+      ; htmlName= "aria-autocomplete"
+      ; type_= String (* 'none' | 'inline' | 'list' | 'both' *) }
   ; (* Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. *)
-    { name= "ariaBusy"
-    ; htmlName= "aria-busy"
-    ; type_= String (* Bool | 'false' | 'true' *) }
+    Attribute
+      { name= "ariaBusy"
+      ; htmlName= "aria-busy"
+      ; type_= String (* Bool | 'false' | 'true' *) }
   ; (*
      * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
      * @see aria-pressed @see aria-selected.
      *)
-    { name= "ariaChecked"
-    ; htmlName= "aria-checked"
-    ; type_= String (* Bool | 'false' | 'mixed' | 'true' *) }
+    Attribute
+      { name= "ariaChecked"
+      ; htmlName= "aria-checked"
+      ; type_= String (* Bool | 'false' | 'mixed' | 'true' *) }
   ; (*
      * Defines the total number of columns in a table, grid, or treegrid.
      * @see aria-colindex.
      *)
-    {name= "ariaColcount"; htmlName= "aria-colcount"; type_= Int}
+    Attribute {name= "ariaColcount"; htmlName= "aria-colcount"; type_= Int}
   ; (*
      * Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
      * @see aria-colcount @see aria-colspan.
      *)
-    {name= "ariaColindex"; htmlName= "aria-colindex"; type_= Int}
+    Attribute {name= "ariaColindex"; htmlName= "aria-colindex"; type_= Int}
   ; (*
      * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
      * @see aria-colindex @see aria-rowspan.
      *)
-    {name= "ariaColspan"; htmlName= "aria-colspan"; type_= Int}
+    Attribute {name= "ariaColspan"; htmlName= "aria-colspan"; type_= Int}
   ; (*
      * Identifies the element (or elements) whose contents or presence are controlled by the current element.
      * @see aria-owns.
      *)
-    {name= "ariaControls"; htmlName= "aria-controls"; type_= String}
+    Attribute {name= "ariaControls"; htmlName= "aria-controls"; type_= String}
   ; (* Indicates the element that represents the current item within a container or set of related elements. *)
-    { name= "ariaCurrent"
-    ; htmlName= "aria-current"
-    ; type_=
-        String
-        (* Bool | 'false' | 'true' |  'page' | 'step' | 'location' | 'date' | 'time' *)
-    }
+    Attribute
+      { name= "ariaCurrent"
+      ; htmlName= "aria-current"
+      ; type_=
+          String
+          (* Bool | 'false' | 'true' |  'page' | 'step' | 'location' | 'date' | 'time' *)
+      }
   ; (*
      * Identifies the element (or elements) that describes the object.
      * @see aria-labelledby
      *)
-    {name= "ariaDescribedby"; htmlName= "aria-describedby"; type_= String}
+    Attribute
+      {name= "ariaDescribedby"; htmlName= "aria-describedby"; type_= String}
   ; (*
      * Identifies the element that provides a detailed, extended description for the object.
      * @see aria-describedby.
      *)
-    {name= "ariaDetails"; htmlName= "aria-details"; type_= String}
+    Attribute {name= "ariaDetails"; htmlName= "aria-details"; type_= String}
   ; (*
      * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
      * @see aria-hidden @see aria-readonly.
      *)
-    { name= "ariaDisabled"
-    ; htmlName= "aria-disabled"
-    ; type_= String (* Bool | 'false' | 'true' *) }
+    Attribute
+      { name= "ariaDisabled"
+      ; htmlName= "aria-disabled"
+      ; type_= String (* Bool | 'false' | 'true' *) }
   ; (*
      * Indicates what functions can be performed when a dragged object is released on the drop target.
      * @deprecated in ARIA 1.1
      *)
-    { name= "ariaDropeffect"
-    ; htmlName= "aria-dropeffect"
-    ; type_=
-        String (* 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup' *) }
+    Attribute
+      { name= "ariaDropeffect"
+      ; htmlName= "aria-dropeffect"
+      ; type_=
+          String (* 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup' *)
+      }
   ; (*
      * Identifies the element that provides an error message for the object.
      * @see aria-invalid @see aria-describedby.
      *)
-    {name= "ariaErrormessage"; htmlName= "aria-errormessage"; type_= String}
+    Attribute
+      {name= "ariaErrormessage"; htmlName= "aria-errormessage"; type_= String}
   ; (* Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. *)
-    { name= "ariaExpanded"
-    ; htmlName= "aria-expanded"
-    ; type_= String (* Bool | 'false' | 'true' *) }
+    Attribute
+      { name= "ariaExpanded"
+      ; htmlName= "aria-expanded"
+      ; type_= String (* Bool | 'false' | 'true' *) }
   ; (*
      * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
      * allows assistive technology to override the general default of reading in document source order.
      *)
-    {name= "ariaFlowto"; htmlName= "aria-flowto"; type_= String}
+    Attribute {name= "ariaFlowto"; htmlName= "aria-flowto"; type_= String}
   ; (*
      * Indicates an element's "grabbed" state in a drag-and-drop operation.
      * @deprecated in ARIA 1.1
      *)
-    { name= "ariaGrabbed"
-    ; htmlName= "aria-grabbed"
-    ; type_= String (* Bool | 'false' | 'true' *) }
+    Attribute
+      { name= "ariaGrabbed"
+      ; htmlName= "aria-grabbed"
+      ; type_= String (* Bool | 'false' | 'true' *) }
   ; (* Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. *)
-    { name= "ariaHaspopup"
-    ; htmlName= "aria-haspopup"
-    ; type_=
-        String
-        (* Bool | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'; *)
-    }
+    Attribute
+      { name= "ariaHaspopup"
+      ; htmlName= "aria-haspopup"
+      ; type_=
+          String
+          (* Bool | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'; *)
+      }
   ; (*
      * Indicates whether the element is exposed to an accessibility API.
      * @see aria-disabled.
      *)
-    { name= "ariaHidden"
-    ; htmlName= "aria-hidden"
-    ; type_= String (* Bool | 'false' | 'true' *) }
+    Attribute
+      { name= "ariaHidden"
+      ; htmlName= "aria-hidden"
+      ; type_= String (* Bool | 'false' | 'true' *) }
   ; (*
      * Indicates the entered value does not conform to the format expected by the application.
      * @see aria-errormessage.
      *)
-    { name= "ariaInvalid"
-    ; htmlName= "aria-invalid"
-    ; type_= String (* Bool | 'false' | 'true' |  'grammar' | 'spelling'; *) }
+    Attribute
+      { name= "ariaInvalid"
+      ; htmlName= "aria-invalid"
+      ; type_= String (* Bool | 'false' | 'true' |  'grammar' | 'spelling'; *)
+      }
   ; (* Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. *)
-    {name= "ariaKeyshortcuts"; htmlName= "aria-keyshortcuts"; type_= String}
+    Attribute
+      {name= "ariaKeyshortcuts"; htmlName= "aria-keyshortcuts"; type_= String}
   ; (*
      * Defines a String value that labels the current element.
      * @see aria-labelledby.
      *)
-    {name= "ariaLabel"; htmlName= "aria-label"; type_= String}
+    Attribute {name= "ariaLabel"; htmlName= "aria-label"; type_= String}
   ; (*
      * Identifies the element (or elements) that labels the current element.
      * @see aria-describedby.
      *)
-    {name= "ariaLabelledby"; htmlName= "aria-labelledby"; type_= String}
+    Attribute
+      {name= "ariaLabelledby"; htmlName= "aria-labelledby"; type_= String}
   ; (*Defines the hierarchical level of an element within a structure. *)
-    {name= "ariaLevel"; htmlName= "aria-level"; type_= Int}
+    Attribute {name= "ariaLevel"; htmlName= "aria-level"; type_= Int}
   ; (* Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. *)
-    { name= "ariaLive"
-    ; htmlName= "aria-live"
-    ; type_= String (* 'off' | 'assertive' | 'polite' *) }
+    Attribute
+      { name= "ariaLive"
+      ; htmlName= "aria-live"
+      ; type_= String (* 'off' | 'assertive' | 'polite' *) }
   ; (* Indicates whether an element is modal when displayed. *)
-    { name= "ariaModal"
-    ; htmlName= "aria-modal"
-    ; type_= String (* Bool | 'false' | 'true' *) }
+    Attribute
+      { name= "ariaModal"
+      ; htmlName= "aria-modal"
+      ; type_= String (* Bool | 'false' | 'true' *) }
   ; (* Indicates whether a text box accepts multiple lines of input or only a single line. *)
-    { name= "ariaMultiline"
-    ; htmlName= "aria-multiline"
-    ; type_= String (* Bool | 'false' | 'true' *) }
+    Attribute
+      { name= "ariaMultiline"
+      ; htmlName= "aria-multiline"
+      ; type_= String (* Bool | 'false' | 'true' *) }
   ; (* Indicates that the user may select more than one item from the current selectable descendants. *)
-    { name= "ariaMultiselectable"
-    ; htmlName= "aria-multiselectable"
-    ; type_= String (* Bool |  'false' | 'true' *) }
+    Attribute
+      { name= "ariaMultiselectable"
+      ; htmlName= "aria-multiselectable"
+      ; type_= String (* Bool |  'false' | 'true' *) }
   ; (* Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. *)
-    { name= "ariaOrientation"
-    ; htmlName= "aria-orientation"
-    ; type_= String (* 'horizontal' | 'vertical' *) }
+    Attribute
+      { name= "ariaOrientation"
+      ; htmlName= "aria-orientation"
+      ; type_= String (* 'horizontal' | 'vertical' *) }
   ; (*
      * Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
      * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
      * @see aria-controls.
      *)
-    {name= "ariaOwns"; htmlName= "aria-owns"; type_= String}
+    Attribute {name= "ariaOwns"; htmlName= "aria-owns"; type_= String}
   ; (*
      * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
      * A hint could be a sample value or a brief description of the expected format.
      *)
-    {name= "ariaPlaceholder"; htmlName= "aria-placeholder"; type_= String}
+    Attribute
+      {name= "ariaPlaceholder"; htmlName= "aria-placeholder"; type_= String}
   ; (*
      * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
      * @see aria-setsize.
      *)
-    {name= "ariaPosinset"; htmlName= "aria-posinset"; type_= Int}
+    Attribute {name= "ariaPosinset"; htmlName= "aria-posinset"; type_= Int}
   ; (*
      * Indicates the current "pressed" state of toggle buttons.
      * @see aria-checked @see aria-selected.
      *)
-    { name= "ariaPressed"
-    ; htmlName= "aria-pressed"
-    ; type_= String (* Bool | 'false' | 'mixed' | 'true' *) }
+    Attribute
+      { name= "ariaPressed"
+      ; htmlName= "aria-pressed"
+      ; type_= String (* Bool | 'false' | 'mixed' | 'true' *) }
   ; (*
      * Indicates that the element is not editable, but is otherwise operable.
      * @see aria-disabled.
      *)
-    { name= "ariaReadonly"
-    ; htmlName= "aria-readonly"
-    ; type_= String (* Bool | 'false' | 'true' *) }
+    Attribute
+      { name= "ariaReadonly"
+      ; htmlName= "aria-readonly"
+      ; type_= String (* Bool | 'false' | 'true' *) }
   ; (*
      * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
      * @see aria-atomic.
      *)
-    { name= "ariaRelevant"
-    ; htmlName= "aria-relevant"
-    ; type_=
-        String
-        (* 'additions' | 'additions removals' | 'additions text' | 'all' | 'removals' | 'removals additions' | 'removals text' | 'text' | 'text additions' | 'text removals' *)
-    }
+    Attribute
+      { name= "ariaRelevant"
+      ; htmlName= "aria-relevant"
+      ; type_=
+          String
+          (* 'additions' | 'additions removals' | 'additions text' | 'all' | 'removals' | 'removals additions' | 'removals text' | 'text' | 'text additions' | 'text removals' *)
+      }
   ; (* Indicates that user input is required on the element before a form may be submitted. *)
-    { name= "ariaRequired"
-    ; htmlName= "aria-required"
-    ; type_= String (* Bool | 'false' | 'true' *) }
+    Attribute
+      { name= "ariaRequired"
+      ; htmlName= "aria-required"
+      ; type_= String (* Bool | 'false' | 'true' *) }
   ; (*Defines a human-readable, author-localized description for the role of an element. *)
-    { name= "ariaRoledescription"
-    ; htmlName= "aria-roledescription"
-    ; type_= String }
+    Attribute
+      { name= "ariaRoledescription"
+      ; htmlName= "aria-roledescription"
+      ; type_= String }
   ; (*
      * Defines the total number of rows in a table, grid, or treegrid.
      * @see aria-rowindex.
      *)
-    {name= "ariaRowcount"; htmlName= "aria-rowcount"; type_= Int}
+    Attribute {name= "ariaRowcount"; htmlName= "aria-rowcount"; type_= Int}
   ; (*
      * Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.
      * @see aria-rowcount @see aria-rowspan.
      *)
-    {name= "ariaRowindex"; htmlName= "aria-rowindex"; type_= Int}
+    Attribute {name= "ariaRowindex"; htmlName= "aria-rowindex"; type_= Int}
   ; (*
      * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
      * @see aria-rowindex @see aria-colspan.
      *)
-    {name= "ariaRowspan"; htmlName= "aria-rowspan"; type_= Int}
+    Attribute {name= "ariaRowspan"; htmlName= "aria-rowspan"; type_= Int}
   ; (*
      * Indicates the current "selected" state of various widgets.
      * @see aria-checked @see aria-pressed.
      *)
-    { name= "ariaSelected"
-    ; htmlName= "aria-selected"
-    ; type_= String (* Bool | 'false' | 'true' *) }
+    Attribute
+      { name= "ariaSelected"
+      ; htmlName= "aria-selected"
+      ; type_= String (* Bool | 'false' | 'true' *) }
   ; (*
      * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
      * @see aria-posinset.
      *)
-    {name= "ariaSetsize"; htmlName= "aria-setsize"; type_= Int}
+    Attribute {name= "ariaSetsize"; htmlName= "aria-setsize"; type_= Int}
   ; (* Indicates if items in a table or grid are sorted in ascending or descending order. *)
-    { name= "ariaSort"
-    ; htmlName= "aria-sort"
-    ; type_= String (* 'none' | 'ascending' | 'descending' | 'other' *) }
+    Attribute
+      { name= "ariaSort"
+      ; htmlName= "aria-sort"
+      ; type_= String (* 'none' | 'ascending' | 'descending' | 'other' *) }
   ; (*Defines the maximum allowed value for a range widget. *)
-    {name= "ariaValuemax"; htmlName= "aria-valuemax"; type_= Int}
+    Attribute {name= "ariaValuemax"; htmlName= "aria-valuemax"; type_= Int}
   ; (*Defines the minimum allowed value for a range widget. *)
-    {name= "ariaValuemin"; htmlName= "aria-valuemin"; type_= Int}
+    Attribute {name= "ariaValuemin"; htmlName= "aria-valuemin"; type_= Int}
   ; (*
      * Defines the current value for a range widget.
      * @see aria-valuetext.
      *)
-    {name= "ariaValuenow"; htmlName= "aria-valuenow"; type_= Int}
+    Attribute {name= "ariaValuenow"; htmlName= "aria-valuenow"; type_= Int}
   ; (*Defines the human readable text alternative of aria-valuenow for a range widget. *)
-    {name= "ariaValuetext"; htmlName= "aria-valuetext"; type_= String} ]
+    Attribute {name= "ariaValuetext"; htmlName= "aria-valuetext"; type_= String}
+  ]
 
 (* All the WAI-ARIA 1.1 role attribute values from https://www.w3.org/TR/wai-aria-1.1/#role_definitions *)
 let ariaRole = String
@@ -562,324 +592,336 @@ let ariaRole = String
 (* AriaAttributes, DOMAttributes*)
 let attributesHTML =
   [ (* React-specific Attributes *)
-    {name= "defaultChecked"; type_= Bool; htmlName= ""}
-  ; { name= "defaultValue"
-    ; type_= String (* | number | ReadonlyArray<String> *)
-    ; htmlName= "" }
-  ; {name= "suppressContentEditableWarning"; type_= Bool; htmlName= ""}
-  ; {name= "suppressHydrationWarning"; type_= Bool; htmlName= ""}
+    Attribute
+      { name= "dangerouslySetInnerHTML"
+      ; type_= InnerHtml
+      ; htmlName= "dangerouslySetInnerHTML" }
+  ; Attribute {name= "defaultChecked"; type_= Bool; htmlName= ""}
+  ; Attribute
+      { name= "defaultValue"
+      ; type_= String (* | number | ReadonlyArray<String> *)
+      ; htmlName= "" }
+  ; Attribute {name= "suppressContentEditableWarning"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "suppressHydrationWarning"; type_= Bool; htmlName= ""}
   ; (* Standard HTML Attributes *)
-    {name= "accessKey"; type_= String; htmlName= ""}
-  ; {name= "className"; type_= String; htmlName= ""}
-  ; {name= "contentEditable"; type_= String (* | "inherit" *); htmlName= ""}
-  ; {name= "contextMenu"; type_= String; htmlName= ""}
-  ; {name= "dir"; type_= String; htmlName= ""}
-  ; {name= "draggable"; type_= String (* Booleanish *); htmlName= ""}
-  ; {name= "hidden"; type_= Bool; htmlName= ""}
-  ; {name= "id"; type_= String; htmlName= ""}
-  ; {name= "lang"; type_= String; htmlName= ""}
-  ; {name= "placeholder"; type_= String; htmlName= ""}
-  ; {name= "slot"; type_= String; htmlName= ""}
-  ; {name= "spellCheck"; type_= String (* Booleanish *); htmlName= ""}
-  ; {name= "style"; type_= Style; htmlName= ""}
-  ; {name= "tabIndex"; type_= Int; htmlName= ""}
-  ; {name= "title"; type_= String; htmlName= ""}
-  ; {name= "translate"; type_= String (* 'yes' | 'no' *); htmlName= ""}
+    Attribute {name= "accessKey"; type_= String; htmlName= ""}
+  ; Attribute {name= "className"; type_= String; htmlName= ""}
+  ; Attribute {name= "contextMenu"; type_= String; htmlName= ""}
+  ; Attribute {name= "dir"; type_= String; htmlName= ""}
+  ; Attribute {name= "draggable"; type_= String (* Booleanish *); htmlName= ""}
+  ; Attribute {name= "hidden"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "id"; type_= String; htmlName= ""}
+  ; Attribute {name= "lang"; type_= String; htmlName= ""}
+  ; Attribute {name= "placeholder"; type_= String; htmlName= ""}
+  ; Attribute {name= "slot"; type_= String; htmlName= ""}
+  ; Attribute {name= "spellCheck"; type_= String (* Booleanish *); htmlName= ""}
+  ; Attribute {name= "style"; type_= Style; htmlName= ""}
+  ; Attribute {name= "tabIndex"; type_= Int; htmlName= ""}
+  ; Attribute {name= "title"; type_= String; htmlName= ""}
+  ; Attribute {name= "translate"; type_= String (* 'yes' | 'no' *); htmlName= ""}
   ; (* Unknown *)
-    {name= "radioGroup"; type_= String; htmlName= ""}
+    Attribute {name= "radioGroup"; type_= String; htmlName= ""}
   ; (* <command>, <menuitem> *)
 
     (* WAI-ARIA *)
-    {name= "role"; type_= ariaRole; htmlName= ""}
+    Attribute {name= "role"; type_= ariaRole; htmlName= ""}
   ; (* RDFa Attributes *)
-    {name= "about"; type_= String; htmlName= ""}
-  ; {name= "datatype"; type_= String; htmlName= ""}
-  ; {name= "inlist"; type_= String (* any *); htmlName= ""}
-  ; {name= "prefix"; type_= String; htmlName= ""}
-  ; {name= "property"; type_= String; htmlName= ""}
-  ; {name= "resource"; type_= String; htmlName= ""}
-  ; {name= "typeof"; type_= String; htmlName= ""}
-  ; {name= "vocab"; type_= String; htmlName= ""}
+    Attribute {name= "about"; type_= String; htmlName= ""}
+  ; Attribute {name= "datatype"; type_= String; htmlName= ""}
+  ; Attribute {name= "inlist"; type_= String (* any *); htmlName= ""}
+  ; Attribute {name= "prefix"; type_= String; htmlName= ""}
+  ; Attribute {name= "property"; type_= String; htmlName= ""}
+  ; Attribute {name= "resource"; type_= String; htmlName= ""}
+  ; Attribute {name= "typeof"; type_= String; htmlName= ""}
+  ; Attribute {name= "vocab"; type_= String; htmlName= ""}
   ; (* Non-standard Attributes *)
-    {name= "autoCapitalize"; type_= String; htmlName= ""}
-  ; {name= "autoCorrect"; type_= String; htmlName= ""}
-  ; {name= "autoSave"; type_= String; htmlName= ""}
-  ; {name= "color"; type_= String; htmlName= ""}
-  ; {name= "itemProp"; type_= String; htmlName= ""}
-  ; {name= "itemScope"; type_= Bool; htmlName= ""}
-  ; {name= "itemType"; type_= String; htmlName= ""}
-  ; {name= "itemID"; type_= String; htmlName= ""}
-  ; {name= "itemRef"; type_= String; htmlName= ""}
-  ; {name= "results"; type_= Int; htmlName= ""}
-  ; {name= "security"; type_= String; htmlName= ""}
-  ; {name= "unselectable"; type_= String (* 'on' | 'off' *); htmlName= ""}
-  ; (* Living Standard
+    Attribute {name= "autoCapitalize"; type_= String; htmlName= ""}
+  ; Attribute {name= "autoCorrect"; type_= String; htmlName= ""}
+  ; Attribute {name= "autoSave"; type_= String; htmlName= ""}
+  ; Attribute {name= "color"; type_= String; htmlName= ""}
+  ; Attribute {name= "itemProp"; type_= String; htmlName= ""}
+  ; Attribute {name= "itemScope"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "itemType"; type_= String; htmlName= ""}
+  ; Attribute {name= "itemID"; type_= String; htmlName= ""}
+  ; Attribute {name= "itemRef"; type_= String; htmlName= ""}
+  ; Attribute {name= "results"; type_= Int; htmlName= ""}
+  ; Attribute {name= "security"; type_= String; htmlName= ""}
+    (* Living Standard
 
-       * Hints at the type of data that might be entered by the user while editing the element or its contents
-       * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute *)
-    { name= "inputMode"
-    ; type_=
-        String
-        (* 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' *)
-    ; htmlName= "" }
+         * Hints at the type of data that might be entered by the user while editing the element or its contents
+         * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute *)
+  ; Attribute
+      { name= "inputMode"
+      ; type_=
+          String
+          (* 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' *)
+      ; htmlName= "" }
   ; (* * Specify that a standard HTML element should behave like a defined custom built-in element
        * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is *)
-    {name= "is"; type_= String; htmlName= ""} ]
+    Attribute {name= "is"; type_= String; htmlName= ""} ]
 
 let allHTMLAttributes =
   [ (* Standard HTML Attributes *)
-    {name= "accept"; type_= String; htmlName= ""}
-  ; {name= "acceptCharset"; type_= String; htmlName= ""}
-  ; {name= "action"; type_= String; htmlName= ""}
-  ; {name= "allowFullScreen"; type_= Bool; htmlName= ""}
-  ; {name= "allowTransparency"; type_= Bool; htmlName= ""}
-  ; {name= "alt"; type_= String; htmlName= ""}
-  ; {name= "as"; type_= String; htmlName= ""}
-  ; {name= "async"; type_= Bool; htmlName= ""}
-  ; {name= "autoComplete"; type_= String; htmlName= ""}
-  ; {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; {name= "autoPlay"; type_= Bool; htmlName= ""}
-  ; {name= "capture"; type_= (* Bool |  *) String; htmlName= ""}
-  ; {name= "cellPadding"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "cellSpacing"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "charSet"; type_= String; htmlName= ""}
-  ; {name= "challenge"; type_= String; htmlName= ""}
-  ; {name= "checked"; type_= Bool; htmlName= ""}
-  ; {name= "cite"; type_= String; htmlName= ""}
-  ; {name= "classID"; type_= String; htmlName= ""}
-  ; {name= "cols"; type_= Int (* number *); htmlName= ""}
-  ; {name= "colSpan"; type_= Int (* number *); htmlName= ""}
-  ; {name= "content"; type_= String; htmlName= ""}
-  ; {name= "controls"; type_= Bool; htmlName= ""}
-  ; {name= "coords"; type_= String; htmlName= ""}
-  ; {name= "crossOrigin"; type_= String; htmlName= ""}
-  ; {name= "data"; type_= String; htmlName= ""}
-  ; {name= "dateTime"; type_= String; htmlName= ""}
-  ; {name= "default"; type_= Bool; htmlName= ""}
-  ; {name= "defer"; type_= Bool; htmlName= ""}
-  ; {name= "disabled"; type_= Bool; htmlName= ""}
-  ; {name= "download"; type_= String (* any *); htmlName= ""}
-  ; {name= "encType"; type_= String; htmlName= ""}
-  ; {name= "form"; type_= String; htmlName= ""}
-  ; {name= "formAction"; type_= String; htmlName= ""}
-  ; {name= "formEncType"; type_= String; htmlName= ""}
-  ; {name= "formMethod"; type_= String; htmlName= ""}
-  ; {name= "formNoValidate"; type_= Bool; htmlName= ""}
-  ; {name= "formTarget"; type_= String; htmlName= ""}
-  ; {name= "frameBorder"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "headers"; type_= String; htmlName= ""}
-  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "high"; type_= Int (* number *); htmlName= ""}
-  ; {name= "href"; type_= String; htmlName= ""}
-  ; {name= "hrefLang"; type_= String; htmlName= ""}
-  ; {name= "htmlFor"; type_= String; htmlName= ""}
-  ; {name= "httpEquiv"; type_= String; htmlName= ""}
-  ; {name= "integrity"; type_= String; htmlName= ""}
-  ; {name= "keyParams"; type_= String; htmlName= ""}
-  ; {name= "keyType"; type_= String; htmlName= ""}
-  ; {name= "kind"; type_= String; htmlName= ""}
-  ; {name= "label"; type_= String; htmlName= ""}
-  ; {name= "list"; type_= String; htmlName= ""}
-  ; {name= "loop"; type_= Bool; htmlName= ""}
-  ; {name= "low"; type_= Int (* number *); htmlName= ""}
-  ; {name= "manifest"; type_= String; htmlName= ""}
-  ; {name= "marginHeight"; type_= Int (* number *); htmlName= ""}
-  ; {name= "marginWidth"; type_= Int (* number *); htmlName= ""}
-  ; {name= "max"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "maxLength"; type_= Int (* number *); htmlName= ""}
-  ; {name= "media"; type_= String; htmlName= ""}
-  ; {name= "mediaGroup"; type_= String; htmlName= ""}
-  ; {name= "method"; type_= String; htmlName= ""}
-  ; {name= "min"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "minLength"; type_= Int (* number *); htmlName= ""}
-  ; {name= "multiple"; type_= Bool; htmlName= ""}
-  ; {name= "muted"; type_= Bool; htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""}
-  ; {name= "nonce"; type_= String; htmlName= ""}
-  ; {name= "noValidate"; type_= Bool; htmlName= ""}
-  ; {name= "open"; type_= Bool; htmlName= ""}
-  ; {name= "optimum"; type_= Int (* number *); htmlName= ""}
-  ; {name= "pattern"; type_= String; htmlName= ""}
-  ; {name= "placeholder"; type_= String; htmlName= ""}
-  ; {name= "playsInline"; type_= Bool; htmlName= ""}
-  ; {name= "poster"; type_= String; htmlName= ""}
-  ; {name= "preload"; type_= String; htmlName= ""}
-  ; {name= "readOnly"; type_= Bool; htmlName= ""}
-  ; {name= "rel"; type_= String; htmlName= ""}
-  ; {name= "required"; type_= Bool; htmlName= ""}
-  ; {name= "reversed"; type_= Bool; htmlName= ""}
-  ; {name= "rows"; type_= Int (* number *); htmlName= ""}
-  ; {name= "rowSpan"; type_= Int (* number *); htmlName= ""}
-  ; {name= "sandbox"; type_= String; htmlName= ""}
-  ; {name= "scope"; type_= String; htmlName= ""}
-  ; {name= "scoped"; type_= Bool; htmlName= ""}
-  ; {name= "scrolling"; type_= String; htmlName= ""}
-  ; {name= "seamless"; type_= Bool; htmlName= ""}
-  ; {name= "selected"; type_= Bool; htmlName= ""}
-  ; {name= "shape"; type_= String; htmlName= ""}
-  ; {name= "size"; type_= Int (* number *); htmlName= ""}
-  ; {name= "sizes"; type_= String; htmlName= ""}
-  ; {name= "span"; type_= Int (* number *); htmlName= ""}
-  ; {name= "src"; type_= String; htmlName= ""}
-  ; {name= "srcDoc"; type_= String; htmlName= ""}
-  ; {name= "srcLang"; type_= String; htmlName= ""}
-  ; {name= "srcSet"; type_= String; htmlName= ""}
-  ; {name= "start"; type_= Int (* number *); htmlName= ""}
-  ; {name= "step"; type_= (* number | *) String; htmlName= ""}
-  ; {name= "summary"; type_= String; htmlName= ""}
-  ; {name= "target"; type_= String; htmlName= ""}
-  ; {name= "type"; type_= String; htmlName= ""}
-  ; {name= "useMap"; type_= String; htmlName= ""}
-  ; { name= "value"
-    ; type_= String (* | ReadonlyArray<String> | number *)
-    ; htmlName= "" }
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "wmode"; type_= String; htmlName= ""}
-  ; {name= "wrap"; type_= String; htmlName= ""} ]
+    Attribute {name= "accept"; type_= String; htmlName= ""}
+  ; Attribute {name= "acceptCharset"; type_= String; htmlName= ""}
+  ; Attribute {name= "action"; type_= String; htmlName= ""}
+  ; Attribute {name= "allowFullScreen"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "allowTransparency"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "alt"; type_= String; htmlName= ""}
+  ; Attribute {name= "as"; type_= String; htmlName= ""}
+  ; Attribute {name= "async"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "autoComplete"; type_= String; htmlName= ""}
+  ; Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "autoPlay"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "capture"; type_= (* Bool |  *) String; htmlName= ""}
+  ; Attribute {name= "cellPadding"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "cellSpacing"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "charSet"; type_= String; htmlName= ""}
+  ; Attribute {name= "challenge"; type_= String; htmlName= ""}
+  ; Attribute {name= "checked"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "cite"; type_= String; htmlName= ""}
+  ; Attribute {name= "classID"; type_= String; htmlName= ""}
+  ; Attribute {name= "cols"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "colSpan"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "content"; type_= String; htmlName= ""}
+  ; Attribute {name= "controls"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "coords"; type_= String; htmlName= ""}
+  ; Attribute {name= "crossOrigin"; type_= String; htmlName= ""}
+  ; Attribute {name= "data"; type_= String; htmlName= ""}
+  ; Attribute {name= "dateTime"; type_= String; htmlName= ""}
+  ; Attribute {name= "default"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "defer"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "disabled"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "download"; type_= String (* any *); htmlName= ""}
+  ; Attribute {name= "encType"; type_= String; htmlName= ""}
+  ; Attribute {name= "form"; type_= String; htmlName= ""}
+  ; Attribute {name= "formAction"; type_= String; htmlName= ""}
+  ; Attribute {name= "formEncType"; type_= String; htmlName= ""}
+  ; Attribute {name= "formMethod"; type_= String; htmlName= ""}
+  ; Attribute {name= "formNoValidate"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "formTarget"; type_= String; htmlName= ""}
+  ; Attribute {name= "frameBorder"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "headers"; type_= String; htmlName= ""}
+  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "high"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "href"; type_= String; htmlName= ""}
+  ; Attribute {name= "hrefLang"; type_= String; htmlName= ""}
+  ; Attribute {name= "htmlFor"; type_= String; htmlName= ""}
+  ; Attribute {name= "httpEquiv"; type_= String; htmlName= ""}
+  ; Attribute {name= "integrity"; type_= String; htmlName= ""}
+  ; Attribute {name= "keyParams"; type_= String; htmlName= ""}
+  ; Attribute {name= "keyType"; type_= String; htmlName= ""}
+  ; Attribute {name= "kind"; type_= String; htmlName= ""}
+  ; Attribute {name= "label"; type_= String; htmlName= ""}
+  ; Attribute {name= "list"; type_= String; htmlName= ""}
+  ; Attribute {name= "loop"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "low"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "manifest"; type_= String; htmlName= ""}
+  ; Attribute {name= "marginHeight"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "marginWidth"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "max"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "maxLength"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "media"; type_= String; htmlName= ""}
+  ; Attribute {name= "mediaGroup"; type_= String; htmlName= ""}
+  ; Attribute {name= "method"; type_= String; htmlName= ""}
+  ; Attribute {name= "min"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "minLength"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "multiple"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "muted"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "name"; type_= String; htmlName= ""}
+  ; Attribute {name= "nonce"; type_= String; htmlName= ""}
+  ; Attribute {name= "noValidate"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "open"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "optimum"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "pattern"; type_= String; htmlName= ""}
+  ; Attribute {name= "placeholder"; type_= String; htmlName= ""}
+  ; Attribute {name= "playsInline"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "poster"; type_= String; htmlName= ""}
+  ; Attribute {name= "preload"; type_= String; htmlName= ""}
+  ; Attribute {name= "readOnly"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "rel"; type_= String; htmlName= ""}
+  ; Attribute {name= "required"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "reversed"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "rows"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "rowSpan"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "sandbox"; type_= String; htmlName= ""}
+  ; Attribute {name= "scope"; type_= String; htmlName= ""}
+  ; Attribute {name= "scoped"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "scrolling"; type_= String; htmlName= ""}
+  ; Attribute {name= "seamless"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "selected"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "shape"; type_= String; htmlName= ""}
+  ; Attribute {name= "size"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "sizes"; type_= String; htmlName= ""}
+  ; Attribute {name= "span"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "src"; type_= String; htmlName= ""}
+  ; Attribute {name= "srcDoc"; type_= String; htmlName= ""}
+  ; Attribute {name= "srcLang"; type_= String; htmlName= ""}
+  ; Attribute {name= "srcSet"; type_= String; htmlName= ""}
+  ; Attribute {name= "start"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "step"; type_= (* number | *) String; htmlName= ""}
+  ; Attribute {name= "summary"; type_= String; htmlName= ""}
+  ; Attribute {name= "target"; type_= String; htmlName= ""}
+  ; Attribute {name= "type"; type_= String; htmlName= ""}
+  ; Attribute {name= "useMap"; type_= String; htmlName= ""}
+  ; Attribute
+      { name= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *)
+      ; htmlName= "" }
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "wmode"; type_= String; htmlName= ""}
+  ; Attribute {name= "wrap"; type_= String; htmlName= ""} ]
 
 let anchorHTMLAttributes =
-  [ {name= "download"; type_= String (* any; *); htmlName= "download"}
-  ; {name= "href"; type_= String; htmlName= "href"}
-  ; {name= "hrefLang"; type_= String; htmlName= "hrefLang"}
-  ; {name= "media"; type_= String; htmlName= "media"}
-  ; {name= "ping"; type_= String; htmlName= "ping"}
-  ; {name= "rel"; type_= String; htmlName= "rel"}
-  ; {name= "target"; type_= attributeAnchorTarget; htmlName= "target"}
-  ; {name= "type"; type_= String; htmlName= "type"}
-  ; { name= "referrerPolicy"
-    ; type_= attributeReferrerPolicy
-    ; htmlName= "referrerPolicy" } ]
+  [ Attribute {name= "download"; type_= String (* any; *); htmlName= "download"}
+  ; Attribute {name= "href"; type_= String; htmlName= "href"}
+  ; Attribute {name= "hrefLang"; type_= String; htmlName= "hrefLang"}
+  ; Attribute {name= "media"; type_= String; htmlName= "media"}
+  ; Attribute {name= "ping"; type_= String; htmlName= "ping"}
+  ; Attribute {name= "rel"; type_= String; htmlName= "rel"}
+  ; Attribute {name= "target"; type_= attributeAnchorTarget; htmlName= "target"}
+  ; Attribute {name= "type"; type_= String; htmlName= "type"}
+  ; Attribute
+      { name= "referrerPolicy"
+      ; type_= attributeReferrerPolicy
+      ; htmlName= "referrerPolicy" } ]
 
 let audioHTMLAttributes = [] (* MediaHTMLAttributes*)
 
 let areaHTMLAttributes =
-  [ {name= "alt"; type_= String; htmlName= "alt"}
-  ; {name= "coords"; type_= String; htmlName= "coords"}
-  ; {name= "download"; type_= String (* any *); htmlName= "download"}
-  ; {name= "href"; type_= String; htmlName= "href"}
-  ; {name= "hrefLang"; type_= String; htmlName= "hrefLang"}
-  ; {name= "media"; type_= String; htmlName= "media"}
-  ; { name= "referrerPolicy"
-    ; type_= attributeReferrerPolicy
-    ; htmlName= "referrerPolicy" }
-  ; {name= "rel"; type_= String; htmlName= "rel"}
-  ; {name= "shape"; type_= String; htmlName= "shape"}
-  ; {name= "target"; type_= String; htmlName= "target"} ]
+  [ Attribute {name= "alt"; type_= String; htmlName= "alt"}
+  ; Attribute {name= "coords"; type_= String; htmlName= "coords"}
+  ; Attribute {name= "download"; type_= String (* any *); htmlName= "download"}
+  ; Attribute {name= "href"; type_= String; htmlName= "href"}
+  ; Attribute {name= "hrefLang"; type_= String; htmlName= "hrefLang"}
+  ; Attribute {name= "media"; type_= String; htmlName= "media"}
+  ; Attribute
+      { name= "referrerPolicy"
+      ; type_= attributeReferrerPolicy
+      ; htmlName= "referrerPolicy" }
+  ; Attribute {name= "rel"; type_= String; htmlName= "rel"}
+  ; Attribute {name= "shape"; type_= String; htmlName= "shape"}
+  ; Attribute {name= "target"; type_= String; htmlName= "target"} ]
 
 let baseHTMLAttributes =
-  [ {name= "href"; type_= String; htmlName= ""}
-  ; {name= "target"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "href"; type_= String; htmlName= ""}
+  ; Attribute {name= "target"; type_= String; htmlName= ""} ]
 
-let blockquoteHTMLAttributes = [{name= "cite"; type_= String; htmlName= ""}]
+let blockquoteHTMLAttributes =
+  [Attribute {name= "cite"; type_= String; htmlName= ""}]
 
 let buttonHTMLAttributes =
-  [ {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; {name= "disabled"; type_= Bool; htmlName= ""}
-  ; {name= "form"; type_= String; htmlName= ""}
-  ; {name= "formAction"; type_= String; htmlName= ""}
-  ; {name= "formEncType"; type_= String; htmlName= ""}
-  ; {name= "formMethod"; type_= String; htmlName= ""}
-  ; {name= "formNoValidate"; type_= Bool; htmlName= ""}
-  ; {name= "formTarget"; type_= String; htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""}
-  ; { name= "type"
-    ; type_= String (* 'submit' | 'reset' | 'button' *)
-    ; htmlName= "" }
-  ; { name= "value"
-    ; type_= String (* | ReadonlyArray<String> | number *)
-    ; htmlName= "" } ]
+  [ Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "disabled"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "form"; type_= String; htmlName= ""}
+  ; Attribute {name= "formAction"; type_= String; htmlName= ""}
+  ; Attribute {name= "formEncType"; type_= String; htmlName= ""}
+  ; Attribute {name= "formMethod"; type_= String; htmlName= ""}
+  ; Attribute {name= "formNoValidate"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "formTarget"; type_= String; htmlName= ""}
+  ; Attribute {name= "name"; type_= String; htmlName= ""}
+  ; Attribute
+      { name= "type"
+      ; type_= String (* 'submit' | 'reset' | 'button' *)
+      ; htmlName= "" }
+  ; Attribute
+      { name= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *)
+      ; htmlName= "" } ]
 
 let canvasHTMLAttributes =
-  [ {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+  [ Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
 let colHTMLAttributes =
-  [ {name= "span"; type_= Int (* number *); htmlName= ""}
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+  [ Attribute {name= "span"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
 let colgroupHTMLAttributes =
-  [{name= "span"; type_= Int (* number *); htmlName= ""}]
+  [Attribute {name= "span"; type_= Int (* number *); htmlName= ""}]
 
 let dataHTMLAttributes =
-  [ { name= "value"
-    ; type_= String (* | ReadonlyArray<String> | number *)
-    ; htmlName= "" } ]
+  [ Attribute
+      { name= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *)
+      ; htmlName= "" } ]
 
 let detailsHTMLAttributes =
-  [ {name= "open"; type_= Bool; htmlName= ""}
+  [ Attribute {name= "open"; type_= Bool; htmlName= "open"}
     (* { name="onToggle"; type_= ReactEventHandler<T>; htmlName="" }; *) ]
 
 let delHTMLAttributes =
-  [ {name= "cite"; type_= String; htmlName= ""}
-  ; {name= "dateTime"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "cite"; type_= String; htmlName= "cite"}
+  ; Attribute {name= "dateTime"; type_= String; htmlName= "dateTime"} ]
 
-let dialogHTMLAttributes = [{name= "open"; type_= Bool; htmlName= ""}]
+let dialogHTMLAttributes =
+  [Attribute {name= "open"; type_= Bool; htmlName= "open"}]
 
 let embedHTMLAttributes =
-  [ {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "src"; type_= String; htmlName= ""}
-  ; {name= "type"; type_= String; htmlName= ""}
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+  [ Attribute {name= "height"; type_= (* number |  *) String; htmlName= "height"}
+  ; Attribute {name= "src"; type_= String; htmlName= "src"}
+  ; Attribute {name= "type"; type_= String; htmlName= "type"}
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= "width"}
+  ]
 
 let fieldsetHTMLAttributes =
-  [ {name= "disabled"; type_= Bool; htmlName= ""}
-  ; {name= "form"; type_= String; htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "disabled"; type_= Bool; htmlName= "disabled"}
+  ; Attribute {name= "form"; type_= String; htmlName= "form"}
+  ; Attribute {name= "name"; type_= String; htmlName= "name"} ]
 
 let formHTMLAttributes =
-  [ {name= "acceptCharset"; type_= String; htmlName= ""}
-  ; {name= "action"; type_= String; htmlName= ""}
-  ; {name= "autoComplete"; type_= String; htmlName= ""}
-  ; {name= "encType"; type_= String; htmlName= ""}
-  ; {name= "method"; type_= String; htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""}
-  ; {name= "noValidate"; type_= Bool; htmlName= ""}
-  ; {name= "target"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "acceptCharset"; type_= String; htmlName= "acceptCharset"}
+  ; Attribute {name= "action"; type_= String; htmlName= "action"}
+  ; Attribute {name= "autoComplete"; type_= String; htmlName= "autoComplete"}
+  ; Attribute {name= "encType"; type_= String; htmlName= "encType"}
+  ; Attribute {name= "method"; type_= String; htmlName= "method"}
+  ; Attribute {name= "name"; type_= String; htmlName= "name"}
+  ; Attribute {name= "noValidate"; type_= Bool; htmlName= "noValidate"}
+  ; Attribute {name= "target"; type_= String; htmlName= "target"} ]
 
-let htmlHTMLAttributes = [{name= "manifest"; type_= String; htmlName= ""}]
+let htmlHTMLAttributes =
+  [Attribute {name= "manifest"; type_= String; htmlName= ""}]
 
 let iframeHTMLAttributes =
-  [ {name= "allow"; type_= String; htmlName= ""}
-  ; {name= "allowFullScreen"; type_= Bool; htmlName= ""}
-  ; {name= "allowTransparency"; type_= Bool; htmlName= ""}
+  [ Attribute {name= "allow"; type_= String; htmlName= ""}
+  ; Attribute {name= "allowFullScreen"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "allowTransparency"; type_= Bool; htmlName= ""}
   ; (* @deprecated *)
-    {name= "frameBorder"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "loading"; type_= String (* "eager" | "lazy" *); htmlName= ""}
+    Attribute {name= "frameBorder"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
   ; (* @deprecated *)
-    {name= "marginHeight"; type_= Int (* number *); htmlName= ""}
+    Attribute {name= "marginHeight"; type_= Int (* number *); htmlName= ""}
   ; (* @deprecated *)
-    {name= "marginWidth"; type_= Int (* number *); htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""}
-  ; {name= "referrerPolicy"; type_= attributeReferrerPolicy; htmlName= ""}
-  ; {name= "sandbox"; type_= String; htmlName= ""}
+    Attribute {name= "marginWidth"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "name"; type_= String; htmlName= ""}
+  ; Attribute {name= "sandbox"; type_= String; htmlName= ""}
   ; (* @deprecated *)
-    {name= "scrolling"; type_= String; htmlName= ""}
-  ; {name= "seamless"; type_= Bool; htmlName= ""}
-  ; {name= "src"; type_= String; htmlName= ""}
-  ; {name= "srcDoc"; type_= String; htmlName= ""}
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+    Attribute {name= "scrolling"; type_= String; htmlName= ""}
+  ; Attribute {name= "seamless"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "src"; type_= String; htmlName= ""}
+  ; Attribute {name= "srcDoc"; type_= String; htmlName= ""}
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
 let imgHTMLAttributes =
-  [ {name= "alt"; type_= String; htmlName= ""}
-  ; { name= "crossOrigin"
-    ; type_= String (* "anonymous" | "use-credentials" | "" *)
-    ; htmlName= "" }
-  ; { name= "decoding"
-    ; type_= String (* "async" | "auto" | "sync" *)
-    ; htmlName= "" }
-  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "loading"; type_= String (* "eager" | "lazy" *); htmlName= ""}
-  ; {name= "referrerPolicy"; type_= attributeReferrerPolicy; htmlName= ""}
-  ; {name= "sizes"; type_= String; htmlName= ""}
-  ; {name= "src"; type_= String; htmlName= ""}
-  ; {name= "srcSet"; type_= String; htmlName= ""}
-  ; {name= "useMap"; type_= String; htmlName= ""}
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+  [ Attribute {name= "alt"; type_= String; htmlName= ""}
+  ; Attribute
+      { name= "crossOrigin"
+      ; type_= String (* "anonymous" | "use-credentials" | "" *)
+      ; htmlName= "" }
+  ; Attribute
+      { name= "decoding"
+      ; type_= String (* "async" | "auto" | "sync" *)
+      ; htmlName= "" }
+  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "sizes"; type_= String; htmlName= ""}
+  ; Attribute {name= "src"; type_= String; htmlName= ""}
+  ; Attribute {name= "srcSet"; type_= String; htmlName= ""}
+  ; Attribute {name= "useMap"; type_= String; htmlName= ""}
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
 let insHTMLAttributes =
-  [ {name= "cite"; type_= String; htmlName= ""}
-  ; {name= "dateTime"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "cite"; type_= String; htmlName= ""}
+  ; Attribute {name= "dateTime"; type_= String; htmlName= ""} ]
 
 let inputTypeAttribute = String
 (*
@@ -908,270 +950,283 @@ let inputTypeAttribute = String
         | (String & {});  *)
 
 let inputHTMLAttributes =
-  [ {name= "accept"; type_= String; htmlName= ""}
-  ; {name= "alt"; type_= String; htmlName= ""}
-  ; {name= "autoComplete"; type_= String; htmlName= ""}
-  ; {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; { name= "capture"
-    ; type_= (* Bool | *) String
-    ; (* https://www.w3.org/TR/html-media-capture/ *) htmlName= "" }
-  ; {name= "checked"; type_= Bool; htmlName= ""}
-  ; {name= "crossOrigin"; type_= String; htmlName= ""}
-  ; {name= "disabled"; type_= Bool; htmlName= ""}
-  ; {name= "form"; type_= String; htmlName= ""}
-  ; {name= "formAction"; type_= String; htmlName= ""}
-  ; {name= "formEncType"; type_= String; htmlName= ""}
-  ; {name= "formMethod"; type_= String; htmlName= ""}
-  ; {name= "formNoValidate"; type_= Bool; htmlName= ""}
-  ; {name= "formTarget"; type_= String; htmlName= ""}
-  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "list"; type_= String; htmlName= ""}
-  ; {name= "max"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "maxLength"; type_= Int (* number *); htmlName= ""}
-  ; {name= "min"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "minLength"; type_= Int (* number *); htmlName= ""}
-  ; {name= "multiple"; type_= Bool; htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""}
-  ; {name= "pattern"; type_= String; htmlName= ""}
-  ; {name= "placeholder"; type_= String; htmlName= ""}
-  ; {name= "readOnly"; type_= Bool; htmlName= ""}
-  ; {name= "required"; type_= Bool; htmlName= ""}
-  ; {name= "size"; type_= Int (* number *); htmlName= ""}
-  ; {name= "src"; type_= String; htmlName= ""}
-  ; {name= "step"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "type"; type_= inputTypeAttribute; htmlName= ""}
-  ; { name= "value"
-    ; type_= String (* | ReadonlyArray<String> | number *)
-    ; htmlName= "" }
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
+  [ Attribute {name= "accept"; type_= String; htmlName= ""}
+  ; Attribute {name= "alt"; type_= String; htmlName= ""}
+  ; Attribute {name= "autoComplete"; type_= String; htmlName= ""}
+  ; Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; Attribute
+      { name= "capture"
+      ; type_= (* Bool | *) String
+      ; (* https://www.w3.org/TR/html-media-capture/ *) htmlName= "" }
+  ; Attribute {name= "checked"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "crossOrigin"; type_= String; htmlName= ""}
+  ; Attribute {name= "disabled"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "form"; type_= String; htmlName= ""}
+  ; Attribute {name= "formAction"; type_= String; htmlName= ""}
+  ; Attribute {name= "formEncType"; type_= String; htmlName= ""}
+  ; Attribute {name= "formMethod"; type_= String; htmlName= ""}
+  ; Attribute {name= "formNoValidate"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "formTarget"; type_= String; htmlName= ""}
+  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "list"; type_= String; htmlName= ""}
+  ; Attribute {name= "max"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "maxLength"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "min"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "minLength"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "multiple"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "name"; type_= String; htmlName= ""}
+  ; Attribute {name= "pattern"; type_= String; htmlName= ""}
+  ; Attribute {name= "placeholder"; type_= String; htmlName= ""}
+  ; Attribute {name= "readOnly"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "required"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "size"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "src"; type_= String; htmlName= ""}
+  ; Attribute {name= "step"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "type"; type_= inputTypeAttribute; htmlName= ""}
+  ; Attribute
+      { name= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *)
+      ; htmlName= "" }
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
     (* { name="onChange"; type_= ChangeEventHandler<T>; htmlName="" }; *) ]
 
 let keygenHTMLAttributes =
-  [ {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; {name= "challenge"; type_= String; htmlName= ""}
-  ; {name= "disabled"; type_= Bool; htmlName= ""}
-  ; {name= "form"; type_= String; htmlName= ""}
-  ; {name= "keyType"; type_= String; htmlName= ""}
-  ; {name= "keyParams"; type_= String; htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "challenge"; type_= String; htmlName= ""}
+  ; Attribute {name= "disabled"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "form"; type_= String; htmlName= ""}
+  ; Attribute {name= "keyType"; type_= String; htmlName= ""}
+  ; Attribute {name= "keyParams"; type_= String; htmlName= ""}
+  ; Attribute {name= "name"; type_= String; htmlName= ""} ]
 
 let labelHTMLAttributes =
-  [ {name= "form"; type_= String; htmlName= ""}
-  ; {name= "htmlFor"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "form"; type_= String; htmlName= ""}
+  ; Attribute {name= "htmlFor"; type_= String; htmlName= ""} ]
 
 let liHTMLAttributes =
-  [ { name= "value"
-    ; type_= String (* | ReadonlyArray<String> | number *)
-    ; htmlName= "" } ]
+  [ Attribute
+      { name= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *)
+      ; htmlName= "" } ]
 
 let linkHTMLAttributes =
-  [ {name= "as"; type_= String; htmlName= ""}
-  ; {name= "crossOrigin"; type_= String; htmlName= ""}
-  ; {name= "href"; type_= String; htmlName= ""}
-  ; {name= "hrefLang"; type_= String; htmlName= ""}
-  ; {name= "integrity"; type_= String; htmlName= ""}
-  ; {name= "imageSrcSet"; type_= String; htmlName= ""}
-  ; {name= "media"; type_= String; htmlName= ""}
-  ; {name= "referrerPolicy"; type_= attributeReferrerPolicy; htmlName= ""}
-  ; {name= "rel"; type_= String; htmlName= ""}
-  ; {name= "sizes"; type_= String; htmlName= ""}
-  ; {name= "type"; type_= String; htmlName= ""}
-  ; {name= "charSet"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "as"; type_= String; htmlName= ""}
+  ; Attribute {name= "crossOrigin"; type_= String; htmlName= ""}
+  ; Attribute {name= "href"; type_= String; htmlName= ""}
+  ; Attribute {name= "hrefLang"; type_= String; htmlName= ""}
+  ; Attribute {name= "integrity"; type_= String; htmlName= ""}
+  ; Attribute {name= "imageSrcSet"; type_= String; htmlName= ""}
+  ; Attribute {name= "media"; type_= String; htmlName= ""}
+  ; Attribute {name= "rel"; type_= String; htmlName= ""}
+  ; Attribute {name= "sizes"; type_= String; htmlName= ""}
+  ; Attribute {name= "type"; type_= String; htmlName= ""}
+  ; Attribute {name= "charSet"; type_= String; htmlName= ""} ]
 
-let mapHTMLAttributes = [{name= "name"; type_= String; htmlName= ""}]
+let mapHTMLAttributes = [Attribute {name= "name"; type_= String; htmlName= ""}]
 
-let menuHTMLAttributes = [{name= "type"; type_= String; htmlName= ""}]
+let menuHTMLAttributes = [Attribute {name= "type"; type_= String; htmlName= ""}]
 
 let mediaHTMLAttributes =
-  [ {name= "autoPlay"; type_= Bool; htmlName= ""}
-  ; {name= "controls"; type_= Bool; htmlName= ""}
-  ; {name= "controlsList"; type_= String; htmlName= ""}
-  ; {name= "crossOrigin"; type_= String; htmlName= ""}
-  ; {name= "loop"; type_= Bool; htmlName= ""}
-  ; {name= "mediaGroup"; type_= String; htmlName= ""}
-  ; {name= "muted"; type_= Bool; htmlName= ""}
-  ; {name= "playsInline"; type_= Bool; htmlName= ""}
-  ; {name= "preload"; type_= String; htmlName= ""}
-  ; {name= "src"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "autoPlay"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "controls"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "controlsList"; type_= String; htmlName= ""}
+  ; Attribute {name= "crossOrigin"; type_= String; htmlName= ""}
+  ; Attribute {name= "loop"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "mediaGroup"; type_= String; htmlName= ""}
+  ; Attribute {name= "muted"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "playsInline"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "preload"; type_= String; htmlName= ""}
+  ; Attribute {name= "src"; type_= String; htmlName= ""} ]
 
 let metaHTMLAttributes =
-  [ {name= "charSet"; type_= String; htmlName= ""}
-  ; {name= "content"; type_= String; htmlName= ""}
-  ; {name= "httpEquiv"; type_= String; htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""}
-  ; {name= "media"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "charSet"; type_= String; htmlName= ""}
+  ; Attribute {name= "content"; type_= String; htmlName= ""}
+  ; Attribute {name= "httpEquiv"; type_= String; htmlName= ""}
+  ; Attribute {name= "name"; type_= String; htmlName= ""}
+  ; Attribute {name= "media"; type_= String; htmlName= ""} ]
 
 let meterHTMLAttributes =
-  [ {name= "form"; type_= String; htmlName= ""}
-  ; {name= "high"; type_= Int (* number *); htmlName= ""}
-  ; {name= "low"; type_= Int (* number *); htmlName= ""}
-  ; {name= "max"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "min"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "optimum"; type_= Int (* number *); htmlName= ""}
-  ; { name= "value"
-    ; type_= String (* | ReadonlyArray<String> | number *)
-    ; htmlName= "" } ]
+  [ Attribute {name= "form"; type_= String; htmlName= ""}
+  ; Attribute {name= "high"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "low"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "max"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "min"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "optimum"; type_= Int (* number *); htmlName= ""}
+  ; Attribute
+      { name= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *)
+      ; htmlName= "" } ]
 
-let quoteHTMLAttributes = [{name= "cite"; type_= String; htmlName= ""}]
+let quoteHTMLAttributes = [Attribute {name= "cite"; type_= String; htmlName= ""}]
 
 let objectHTMLAttributes =
-  [ {name= "classID"; type_= String; htmlName= ""}
-  ; {name= "data"; type_= String; htmlName= ""}
-  ; {name= "form"; type_= String; htmlName= ""}
-  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""}
-  ; {name= "type"; type_= String; htmlName= ""}
-  ; {name= "useMap"; type_= String; htmlName= ""}
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "wmode"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "classID"; type_= String; htmlName= ""}
+  ; Attribute {name= "data"; type_= String; htmlName= ""}
+  ; Attribute {name= "form"; type_= String; htmlName= ""}
+  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "name"; type_= String; htmlName= ""}
+  ; Attribute {name= "type"; type_= String; htmlName= ""}
+  ; Attribute {name= "useMap"; type_= String; htmlName= ""}
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "wmode"; type_= String; htmlName= ""} ]
 
 let olHTMLAttributes =
-  [ {name= "reversed"; type_= Bool; htmlName= ""}
-  ; {name= "start"; type_= Int (* number *); htmlName= ""}
-  ; {name= "type"; type_= String (* '1' | 'a' | 'A' | 'i' | 'I' *); htmlName= ""}
-  ]
+  [ Attribute {name= "reversed"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "start"; type_= Int (* number *); htmlName= ""}
+  ; Attribute
+      { name= "type"
+      ; type_= String (* '1' | 'a' | 'A' | 'i' | 'I' *)
+      ; htmlName= "" } ]
 
 let optgroupHTMLAttributes =
-  [ {name= "disabled"; type_= Bool; htmlName= ""}
-  ; {name= "label"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "disabled"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "label"; type_= String; htmlName= ""} ]
 
 let optionHTMLAttributes =
-  [ {name= "disabled"; type_= Bool; htmlName= ""}
-  ; {name= "label"; type_= String; htmlName= ""}
-  ; {name= "selected"; type_= Bool; htmlName= ""}
-  ; { name= "value"
-    ; type_= String (* | ReadonlyArray<String> | number *)
-    ; htmlName= "" } ]
+  [ Attribute {name= "disabled"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "label"; type_= String; htmlName= ""}
+  ; Attribute {name= "selected"; type_= Bool; htmlName= ""}
+  ; Attribute
+      { name= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *)
+      ; htmlName= "" } ]
 
 let outputHTMLAttributes =
-  [ {name= "form"; type_= String; htmlName= ""}
-  ; {name= "htmlFor"; type_= String; htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "form"; type_= String; htmlName= ""}
+  ; Attribute {name= "htmlFor"; type_= String; htmlName= ""}
+  ; Attribute {name= "name"; type_= String; htmlName= ""} ]
 
 let paramHTMLAttributes =
-  [ {name= "name"; type_= String; htmlName= ""}
-  ; { name= "value"
-    ; type_= String (* | ReadonlyArray<String> | number *)
-    ; htmlName= "" } ]
+  [ Attribute {name= "name"; type_= String; htmlName= ""}
+  ; Attribute
+      { name= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *)
+      ; htmlName= "" } ]
 
 let progressHTMLAttributes =
-  [ {name= "max"; type_= (* number |  *) String; htmlName= ""}
-  ; { name= "value"
-    ; type_= String (* | ReadonlyArray<String> | number *)
-    ; htmlName= "" } ]
+  [ Attribute {name= "max"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute
+      { name= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *)
+      ; htmlName= "" } ]
 
-let slotHTMLAttributes = [{name= "name"; type_= String; htmlName= ""}]
+let slotHTMLAttributes = [Attribute {name= "name"; type_= String; htmlName= ""}]
 
 let scriptHTMLAttributes =
-  [ {name= "async"; type_= Bool; htmlName= ""}
+  [ Attribute {name= "async"; type_= Bool; htmlName= ""}
   ; (* @deprecated *)
-    {name= "charSet"; type_= String; htmlName= ""}
-  ; {name= "crossOrigin"; type_= String; htmlName= ""}
-  ; {name= "defer"; type_= Bool; htmlName= ""}
-  ; {name= "integrity"; type_= String; htmlName= ""}
-  ; {name= "noModule"; type_= Bool; htmlName= ""}
-  ; {name= "nonce"; type_= String; htmlName= ""}
-  ; {name= "referrerPolicy"; type_= attributeReferrerPolicy; htmlName= ""}
-  ; {name= "src"; type_= String; htmlName= ""}
-  ; {name= "type"; type_= String; htmlName= ""} ]
+    Attribute {name= "charSet"; type_= String; htmlName= ""}
+  ; Attribute {name= "crossOrigin"; type_= String; htmlName= ""}
+  ; Attribute {name= "defer"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "integrity"; type_= String; htmlName= ""}
+  ; Attribute {name= "noModule"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "nonce"; type_= String; htmlName= ""}
+  ; Attribute {name= "src"; type_= String; htmlName= ""}
+  ; Attribute {name= "type"; type_= String; htmlName= ""} ]
 
 let selectHTMLAttributes =
-  [ {name= "autoComplete"; type_= String; htmlName= ""}
-  ; {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; {name= "disabled"; type_= Bool; htmlName= ""}
-  ; {name= "form"; type_= String; htmlName= ""}
-  ; {name= "multiple"; type_= Bool; htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""}
-  ; {name= "required"; type_= Bool; htmlName= ""}
-  ; {name= "size"; type_= Int (* number *); htmlName= ""}
-  ; { name= "value"
-    ; type_= String (* | ReadonlyArray<String> | number *)
-    ; htmlName= "" }
+  [ Attribute {name= "autoComplete"; type_= String; htmlName= ""}
+  ; Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "disabled"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "form"; type_= String; htmlName= ""}
+  ; Attribute {name= "multiple"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "name"; type_= String; htmlName= ""}
+  ; Attribute {name= "required"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "size"; type_= Int (* number *); htmlName= ""}
+  ; Attribute
+      { name= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *)
+      ; htmlName= "" }
     (* { name="onChange"; type_= ChangeEventHandler<T>; htmlName="" }; *) ]
 
 let sourceHTMLAttributes =
-  [ {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "media"; type_= String; htmlName= ""}
-  ; {name= "sizes"; type_= String; htmlName= ""}
-  ; {name= "src"; type_= String; htmlName= ""}
-  ; {name= "srcSet"; type_= String; htmlName= ""}
-  ; {name= "type"; type_= String; htmlName= ""}
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+  [ Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "media"; type_= String; htmlName= ""}
+  ; Attribute {name= "sizes"; type_= String; htmlName= ""}
+  ; Attribute {name= "src"; type_= String; htmlName= ""}
+  ; Attribute {name= "srcSet"; type_= String; htmlName= ""}
+  ; Attribute {name= "type"; type_= String; htmlName= ""}
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
 let styleHTMLAttributes =
-  [ {name= "media"; type_= String; htmlName= ""}
-  ; {name= "nonce"; type_= String; htmlName= ""}
-  ; {name= "scoped"; type_= Bool; htmlName= ""}
-  ; {name= "type"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "media"; type_= String; htmlName= ""}
+  ; Attribute {name= "nonce"; type_= String; htmlName= ""}
+  ; Attribute {name= "scoped"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "type"; type_= String; htmlName= ""} ]
 
 let tableHTMLAttributes =
-  [ {name= "cellPadding"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "cellSpacing"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "summary"; type_= String; htmlName= ""}
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
+  [ Attribute {name= "cellPadding"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "cellSpacing"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "summary"; type_= String; htmlName= ""}
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
 let textareaHTMLAttributes =
-  [ {name= "autoComplete"; type_= String; htmlName= ""}
-  ; {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; {name= "cols"; type_= Int (* number *); htmlName= ""}
-  ; {name= "dirName"; type_= String; htmlName= ""}
-  ; {name= "disabled"; type_= Bool; htmlName= ""}
-  ; {name= "form"; type_= String; htmlName= ""}
-  ; {name= "maxLength"; type_= Int (* number *); htmlName= ""}
-  ; {name= "minLength"; type_= Int (* number *); htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""}
-  ; {name= "placeholder"; type_= String; htmlName= ""}
-  ; {name= "readOnly"; type_= Bool; htmlName= ""}
-  ; {name= "required"; type_= Bool; htmlName= ""}
-  ; {name= "rows"; type_= Int (* number *); htmlName= ""}
-  ; { name= "value"
-    ; type_= String (* | ReadonlyArray<String> | number *)
-    ; htmlName= "" }
-  ; {name= "wrap"; type_= String; htmlName= ""}
+  [ Attribute {name= "autoComplete"; type_= String; htmlName= ""}
+  ; Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "cols"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "dirName"; type_= String; htmlName= ""}
+  ; Attribute {name= "disabled"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "form"; type_= String; htmlName= ""}
+  ; Attribute {name= "maxLength"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "minLength"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "name"; type_= String; htmlName= ""}
+  ; Attribute {name= "placeholder"; type_= String; htmlName= ""}
+  ; Attribute {name= "readOnly"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "required"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "rows"; type_= Int (* number *); htmlName= ""}
+  ; Attribute
+      { name= "value"
+      ; type_= String (* | ReadonlyArray<String> | number *)
+      ; htmlName= "" }
+  ; Attribute {name= "wrap"; type_= String; htmlName= ""}
     (* { name="onChange"; type_= ChangeEventHandler<T>; htmlName="" }; *) ]
 
 let tdHTMLAttributes =
-  [ { name= "align"
-    ; type_=
-        String (* type_= "left" | "center" | "right" | "justify" | "char" *)
-    ; htmlName= "" }
-  ; {name= "colSpan"; type_= Int (* number *); htmlName= ""}
-  ; {name= "headers"; type_= String; htmlName= ""}
-  ; {name= "rowSpan"; type_= Int (* number *); htmlName= ""}
-  ; {name= "scope"; type_= String; htmlName= ""}
-  ; {name= "abbr"; type_= String; htmlName= ""}
-  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
-  ; { name= "valign"
-    ; type_= String (* "top" | "middle" | "bottom" | "baseline" *)
-    ; htmlName= "" } ]
+  [ Attribute
+      { name= "align"
+      ; type_=
+          String (* type_= "left" | "center" | "right" | "justify" | "char" *)
+      ; htmlName= "" }
+  ; Attribute {name= "colSpan"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "headers"; type_= String; htmlName= ""}
+  ; Attribute {name= "rowSpan"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "scope"; type_= String; htmlName= ""}
+  ; Attribute {name= "abbr"; type_= String; htmlName= ""}
+  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute
+      { name= "valign"
+      ; type_= String (* "top" | "middle" | "bottom" | "baseline" *)
+      ; htmlName= "" } ]
 
 let thHTMLAttributes =
-  [ { name= "align"
-    ; type_= String (* "left" | "center" | "right" | "justify" | "char" *)
-    ; htmlName= "" }
-  ; {name= "colSpan"; type_= Int (* number *); htmlName= ""}
-  ; {name= "headers"; type_= String; htmlName= ""}
-  ; {name= "rowSpan"; type_= Int (* number *); htmlName= ""}
-  ; {name= "scope"; type_= String; htmlName= ""}
-  ; {name= "abbr"; type_= String; htmlName= ""} ]
+  [ Attribute
+      { name= "align"
+      ; type_= String (* "left" | "center" | "right" | "justify" | "char" *)
+      ; htmlName= "" }
+  ; Attribute {name= "colSpan"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "headers"; type_= String; htmlName= ""}
+  ; Attribute {name= "rowSpan"; type_= Int (* number *); htmlName= ""}
+  ; Attribute {name= "scope"; type_= String; htmlName= ""}
+  ; Attribute {name= "abbr"; type_= String; htmlName= ""} ]
 
-let timeHTMLAttributes = [{name= "dateTime"; type_= String; htmlName= ""}]
+let timeHTMLAttributes =
+  [Attribute {name= "dateTime"; type_= String; htmlName= ""}]
 
 let trackHTMLAttributes =
-  [ {name= "default"; type_= Bool; htmlName= ""}
-  ; {name= "kind"; type_= String; htmlName= ""}
-  ; {name= "label"; type_= String; htmlName= ""}
-  ; {name= "src"; type_= String; htmlName= ""}
-  ; {name= "srcLang"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "default"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "kind"; type_= String; htmlName= ""}
+  ; Attribute {name= "label"; type_= String; htmlName= ""}
+  ; Attribute {name= "src"; type_= String; htmlName= ""}
+  ; Attribute {name= "srcLang"; type_= String; htmlName= ""} ]
 
 (* MediaHTMLAttributes*)
 let videoHTMLAttributes =
-  [ {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "playsInline"; type_= Bool; htmlName= ""}
-  ; {name= "poster"; type_= String; htmlName= ""}
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "disablePictureInPicture"; type_= Bool; htmlName= ""} ]
+  [ Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "playsInline"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "poster"; type_= String; htmlName= ""}
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "disablePictureInPicture"; type_= Bool; htmlName= ""} ]
 
 (* (* this list is "complete" in that it contains every SVG attribute *)
    // that React supports, but the types can be improved.
@@ -1185,310 +1240,289 @@ let videoHTMLAttributes =
 let svgAttributes =
   [ (* Attributes which also defined in HTMLAttributes *)
     (* See comment in SVGDOMPropertyConfig.js *)
-    {name= "className"; type_= String; htmlName= ""}
-  ; {name= "color"; type_= String; htmlName= ""}
-  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "id"; type_= String; htmlName= ""}
-  ; {name= "lang"; type_= String; htmlName= ""}
-  ; {name= "max"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "media"; type_= String; htmlName= ""}
-  ; {name= "method"; type_= String; htmlName= ""}
-  ; {name= "min"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "name"; type_= String; htmlName= ""}
-  ; {name= "style"; type_= Style; htmlName= ""}
-  ; {name= "target"; type_= String; htmlName= ""}
-  ; {name= "type"; type_= String; htmlName= ""}
-  ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
+    Attribute {name= "className"; type_= String; htmlName= ""}
+  ; Attribute {name= "color"; type_= String; htmlName= ""}
+  ; Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "id"; type_= String; htmlName= ""}
+  ; Attribute {name= "lang"; type_= String; htmlName= ""}
+  ; Attribute {name= "max"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "media"; type_= String; htmlName= ""}
+  ; Attribute {name= "method"; type_= String; htmlName= ""}
+  ; Attribute {name= "min"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "name"; type_= String; htmlName= ""}
+  ; Attribute {name= "style"; type_= Style; htmlName= ""}
+  ; Attribute {name= "target"; type_= String; htmlName= ""}
+  ; Attribute {name= "type"; type_= String; htmlName= ""}
+  ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
   ; (* Other HTML properties supported by SVG elements in browsers *)
-    {name= "role"; type_= ariaRole; htmlName= ""}
-  ; {name= "tabIndex"; type_= Int (* number *); htmlName= ""}
-  ; { name= "crossOrigin"
-    ; type_= String (* "anonymous" | "use-credentials" | "" *)
-    ; htmlName= "" }
+    Attribute {name= "role"; type_= ariaRole; htmlName= ""}
+  ; Attribute {name= "tabIndex"; type_= Int (* number *); htmlName= ""}
+  ; Attribute
+      { name= "crossOrigin"
+      ; type_= String (* "anonymous" | "use-credentials" | "" *)
+      ; htmlName= "" }
   ; (* SVG Specific attributes *)
-    {name= "accentHeight"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "accumulate"; type_= String (* type_= "none" | "sum" *); htmlName= ""}
-  ; { name= "additive"
-    ; type_= String (* type_= "replace" | "sum" *)
-    ; htmlName= "" }
-  ; { name= "alignmentBaseline"
-    ; type_= String
-    ; (* type_= "auto" | "baseline" | "before-edge" | "text-before-edge" | "middle" | "central" | "after-edge"
-         "text-after-edge" | "ideographic" | "alphabetic" | "hanging" | "mathematical" | "inherit"; *)
-      htmlName= "" }
-  ; {name= "allowReorder"; type_= String (* type_= "no" | "yes" *); htmlName= ""}
-  ; {name= "alphabetic"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "amplitude"; type_= (* number |  *) String; htmlName= ""}
-  ; { name= "arabicForm"
-    ; type_= String (* type_= "initial" | "medial" | "terminal" | "isolated" *)
-    ; htmlName= "" }
-  ; {name= "ascent"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "attributeName"; type_= String; htmlName= ""}
-  ; {name= "attributeType"; type_= String; htmlName= ""}
-  ; {name= "autoReverse"; type_= String (* Booleanish *); htmlName= ""}
-  ; {name= "azimuth"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "baseFrequency"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "baselineShift"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "baseProfile"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "bbox"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "begin"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "bias"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "by"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "calcMode"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "capHeight"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "clip"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "clipPath"; type_= String; htmlName= ""}
-  ; {name= "clipPathUnits"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "clipRule"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "colorInterpolation"; type_= (* number |  *) String; htmlName= ""}
-  ; { name= "colorInterpolationFilters"
-    ; type_= String (* type_= "auto" | "sRGB" | "linearRGB" | "inherit" *)
-    ; htmlName= "" }
-  ; {name= "colorProfile"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "colorRendering"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "contentScriptType"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "contentStyleType"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "cursor"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "cx"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "cy"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "d"; type_= String; htmlName= ""}
-  ; {name= "decelerate"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "descent"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "diffuseConstant"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "direction"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "display"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "divisor"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "dominantBaseline"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "dur"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "dx"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "dy"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "edgeMode"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "elevation"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "enableBackground"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "end"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "exponent"; type_= (* number |  *) String; htmlName= ""}
-  ; { name= "externalResourcesRequired"
-    ; type_= String (* Booleanish *)
-    ; htmlName= "" }
-  ; {name= "fill"; type_= String; htmlName= ""}
-  ; {name= "fillOpacity"; type_= (* number |  *) String; htmlName= ""}
-  ; { name= "fillRule"
-    ; type_= String (* type_= "nonzero" | "evenodd" | "inherit" *)
-    ; htmlName= "" }
-  ; {name= "filter"; type_= String; htmlName= ""}
-  ; {name= "filterRes"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "filterUnits"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "floodColor"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "floodOpacity"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "focusable"; type_= String (* Booleanish | "auto" *); htmlName= ""}
-  ; {name= "fontFamily"; type_= String; htmlName= ""}
-  ; {name= "fontSize"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "fontSizeAdjust"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "fontStretch"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "fontStyle"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "fontVariant"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "fontWeight"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "format"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "fr"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "from"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "fx"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "fy"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "g1"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "g2"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "glyphName"; type_= (* number |  *) String; htmlName= ""}
-  ; { name= "glyphOrientationHorizontal"
-    ; type_= (* number |  *) String
-    ; htmlName= "" }
-  ; { name= "glyphOrientationVertical"
-    ; type_= (* number |  *) String
-    ; htmlName= "" }
-  ; {name= "glyphRef"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "gradientTransform"; type_= String; htmlName= ""}
-  ; {name= "gradientUnits"; type_= String; htmlName= ""}
-  ; {name= "hanging"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "horizAdvX"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "horizOriginX"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "href"; type_= String; htmlName= ""}
-  ; {name= "ideographic"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "imageRendering"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "in2"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "in"; type_= String; htmlName= ""}
-  ; {name= "intercept"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "k1"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "k2"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "k3"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "k4"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "k"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "kernelMatrix"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "kernelUnitLength"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "kerning"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "keyPoints"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "keySplines"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "keyTimes"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "lengthAdjust"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "letterSpacing"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "lightingColor"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "limitingConeAngle"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "local"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "markerEnd"; type_= String; htmlName= ""}
-  ; {name= "markerHeight"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "markerMid"; type_= String; htmlName= ""}
-  ; {name= "markerStart"; type_= String; htmlName= ""}
-  ; {name= "markerUnits"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "markerWidth"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "mask"; type_= String; htmlName= ""}
-  ; {name= "maskContentUnits"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "maskUnits"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "mathematical"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "mode"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "numOctaves"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "offset"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "opacity"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "operator"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "order"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "orient"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "orientation"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "origin"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "overflow"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "overlinePosition"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "overlineThickness"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "paintOrder"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "panose1"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "path"; type_= String; htmlName= ""}
-  ; {name= "pathLength"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "patternContentUnits"; type_= String; htmlName= ""}
-  ; {name= "patternTransform"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "patternUnits"; type_= String; htmlName= ""}
-  ; {name= "pointerEvents"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "points"; type_= String; htmlName= ""}
-  ; {name= "pointsAtX"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "pointsAtY"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "pointsAtZ"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "preserveAlpha"; type_= String (* Booleanish *); htmlName= ""}
-  ; {name= "preserveAspectRatio"; type_= String; htmlName= ""}
-  ; {name= "primitiveUnits"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "r"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "radius"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "refX"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "refY"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "renderingIntent"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "repeatCount"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "repeatDur"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "requiredExtensions"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "requiredFeatures"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "restart"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "result"; type_= String; htmlName= ""}
-  ; {name= "rotate"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "rx"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "ry"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "scale"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "seed"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "shapeRendering"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "slope"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "spacing"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "specularConstant"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "specularExponent"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "speed"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "spreadMethod"; type_= String; htmlName= ""}
-  ; {name= "startOffset"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "stdDeviation"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "stemh"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "stemv"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "stitchTiles"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "stopColor"; type_= String; htmlName= ""}
-  ; {name= "stopOpacity"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "strikethroughPosition"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "strikethroughThickness"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "String"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "stroke"; type_= String; htmlName= ""}
-  ; {name= "strokeDasharray"; type_= String (* | number *); htmlName= ""}
-  ; {name= "strokeDashoffset"; type_= String (* | number *); htmlName= ""}
-  ; { name= "strokeLinecap"
-    ; type_= String (* type_= "butt" | "round" | "square" | "inherit" *)
-    ; htmlName= "" }
-  ; { name= "strokeLinejoin"
-    ; type_= String (* type_= "miter" | "round" | "bevel" | "inherit" *)
-    ; htmlName= "" }
-  ; {name= "strokeMiterlimit"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "strokeOpacity"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "strokeWidth"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "surfaceScale"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "systemLanguage"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "tableValues"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "targetX"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "targetY"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "textAnchor"; type_= String; htmlName= ""}
-  ; {name= "textDecoration"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "textLength"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "textRendering"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "to"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "transform"; type_= String; htmlName= ""}
-  ; {name= "u1"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "u2"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "underlinePosition"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "underlineThickness"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "unicode"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "unicodeBidi"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "unicodeRange"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "unitsPerEm"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "vAlphabetic"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "values"; type_= String; htmlName= ""}
-  ; {name= "vectorEffect"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "version"; type_= String; htmlName= ""}
-  ; {name= "vertAdvY"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "vertOriginX"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "vertOriginY"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "vHanging"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "vIdeographic"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "viewBox"; type_= String; htmlName= ""}
-  ; {name= "viewTarget"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "visibility"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "vMathematical"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "widths"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "wordSpacing"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "writingMode"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "x1"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "x2"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "x"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "xChannelSelector"; type_= String; htmlName= ""}
-  ; {name= "xHeight"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "xlinkActuate"; type_= String; htmlName= ""}
-  ; {name= "xlinkArcrole"; type_= String; htmlName= ""}
-  ; {name= "xlinkHref"; type_= String; htmlName= ""}
-  ; {name= "xlinkRole"; type_= String; htmlName= ""}
-  ; {name= "xlinkShow"; type_= String; htmlName= ""}
-  ; {name= "xlinkTitle"; type_= String; htmlName= ""}
-  ; {name= "xlinkType"; type_= String; htmlName= ""}
-  ; {name= "xmlBase"; type_= String; htmlName= ""}
-  ; {name= "xmlLang"; type_= String; htmlName= ""}
-  ; {name= "xmlns"; type_= String; htmlName= ""}
-  ; {name= "xmlnsXlink"; type_= String; htmlName= ""}
-  ; {name= "xmlSpace"; type_= String; htmlName= ""}
-  ; {name= "y1"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "y2"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "y"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "yChannelSelector"; type_= String; htmlName= ""}
-  ; {name= "z"; type_= (* number |  *) String; htmlName= ""}
-  ; {name= "zoomAndPan"; type_= String; htmlName= ""} ]
+    Attribute {name= "accentHeight"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute
+      { name= "accumulate"
+      ; type_= String (* type_= "none" | "sum" *)
+      ; htmlName= "" }
+  ; Attribute
+      { name= "additive"
+      ; type_= String (* type_= "replace" | "sum" *)
+      ; htmlName= "" }
+  ; Attribute
+      { name= "alignmentBaseline"
+      ; type_= String
+      ; (* type_= "auto" | "baseline" | "before-edge" | "text-before-edge" | "middle" | "central" | "after-edge"
+           "text-after-edge" | "ideographic" | "alphabetic" | "hanging" | "mathematical" | "inherit"; *)
+        htmlName= "" }
+  ; Attribute
+      { name= "allowReorder"
+      ; type_= String (* type_= "no" | "yes" *)
+      ; htmlName= "" }
+  ; Attribute {name= "alphabetic"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "amplitude"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute
+      { name= "arabicForm"
+      ; type_=
+          String (* type_= "initial" | "medial" | "terminal" | "isolated" *)
+      ; htmlName= "" }
+  ; Attribute {name= "ascent"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "attributeName"; type_= String; htmlName= ""}
+  ; Attribute {name= "attributeType"; type_= String; htmlName= ""}
+  ; Attribute {name= "autoReverse"; type_= String (* Booleanish *); htmlName= ""}
+  ; Attribute {name= "azimuth"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "baseProfile"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "bbox"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "begin"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "bias"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "by"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "calcMode"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "capHeight"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "clip"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "clipPath"; type_= String; htmlName= ""}
+  ; Attribute
+      { name= "clipRule"
+      ; type_= (* number | "linearRGB" | "inherit" *) String
+      ; htmlName= "" }
+  ; Attribute {name= "colorProfile"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "cursor"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "cx"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "cy"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "d"; type_= String; htmlName= ""}
+  ; Attribute {name= "decelerate"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "descent"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "direction"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "display"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "divisor"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "dur"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "dx"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "dy"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "edgeMode"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "elevation"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "end"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "exponent"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute
+      { name= "externalResourcesRequired"
+      ; type_= String (* Booleanish *)
+      ; htmlName= "" }
+  ; Attribute {name= "fill"; type_= String; htmlName= ""}
+  ; Attribute {name= "fillOpacity"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute
+      { name= "fillRule"
+      ; type_= String (* type_= "nonzero" | "evenodd" | "inherit" *)
+      ; htmlName= "" }
+  ; Attribute {name= "filter"; type_= String; htmlName= ""}
+  ; Attribute {name= "filterRes"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "filterUnits"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "floodColor"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "floodOpacity"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "fontFamily"; type_= String; htmlName= ""}
+  ; Attribute {name= "fontSize"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "fontStretch"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "fontStyle"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "fontVariant"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "fontWeight"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "format"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "fr"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "from"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "fx"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "fy"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "g1"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "g2"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "glyphName"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute
+      { name= "glyphOrientationHorizontal"
+      ; type_= (* number |  *) String
+      ; htmlName= "" }
+  ; Attribute
+      { name= "glyphOrientationVertical"
+      ; type_= (* number |  *) String
+      ; htmlName= "" }
+  ; Attribute {name= "glyphRef"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "gradientTransform"; type_= String; htmlName= ""}
+  ; Attribute {name= "gradientUnits"; type_= String; htmlName= ""}
+  ; Attribute {name= "hanging"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "horizAdvX"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "horizOriginX"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "href"; type_= String; htmlName= ""}
+  ; Attribute {name= "ideographic"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "in2"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "in"; type_= String; htmlName= ""}
+  ; Attribute {name= "intercept"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "k1"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "k2"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "k3"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "k4"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "k"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "kernelMatrix"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "kerning"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "keyPoints"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "keySplines"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "keyTimes"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "lengthAdjust"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "local"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "markerEnd"; type_= String; htmlName= ""}
+  ; Attribute {name= "markerHeight"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "markerMid"; type_= String; htmlName= ""}
+  ; Attribute {name= "markerStart"; type_= String; htmlName= ""}
+  ; Attribute {name= "markerUnits"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "markerWidth"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "mask"; type_= String; htmlName= ""}
+  ; Attribute {name= "maskUnits"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "mathematical"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "mode"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "numOctaves"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "offset"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "opacity"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "operator"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "order"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "orient"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "orientation"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "origin"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "overflow"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "paintOrder"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "panose1"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "path"; type_= String; htmlName= ""}
+  ; Attribute {name= "pathLength"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "patternContentUnits"; type_= String; htmlName= ""}
+  ; Attribute {name= "patternUnits"; type_= String; htmlName= ""}
+  ; Attribute {name= "points"; type_= String; htmlName= ""}
+  ; Attribute {name= "pointsAtX"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "pointsAtY"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "pointsAtZ"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "preserveAspectRatio"; type_= String; htmlName= ""}
+  ; Attribute {name= "r"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "radius"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "refX"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "refY"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "repeatCount"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "repeatDur"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "restart"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "result"; type_= String; htmlName= ""}
+  ; Attribute {name= "rotate"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "rx"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "ry"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "scale"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "seed"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "slope"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "spacing"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "speed"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "spreadMethod"; type_= String; htmlName= ""}
+  ; Attribute {name= "startOffset"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "stdDeviation"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "stemh"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "stemv"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "stitchTiles"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "stopColor"; type_= String; htmlName= ""}
+  ; Attribute {name= "stopOpacity"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute
+      { name= "strikethroughPosition"
+      ; type_= (* number |  *) String
+      ; htmlName= "" }
+  ; Attribute
+      { name= "strikethroughThickness"
+      ; type_= (* number |  *) String
+      ; htmlName= "" }
+  ; Attribute {name= "String"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "stroke"; type_= String; htmlName= ""}
+  ; Attribute
+      { name= "strokeLinecap"
+      ; type_= String (* type_= "butt" | "round" | "square" | "inherit" *)
+      ; htmlName= "" }
+  ; Attribute {name= "strokeWidth"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "surfaceScale"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "tableValues"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "targetX"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "targetY"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "textAnchor"; type_= String; htmlName= ""}
+  ; Attribute {name= "textLength"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "to"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "transform"; type_= String; htmlName= ""}
+  ; Attribute {name= "u1"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "u2"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "unicode"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "unicodeBidi"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "unicodeRange"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "unitsPerEm"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "vAlphabetic"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "values"; type_= String; htmlName= ""}
+  ; Attribute {name= "vectorEffect"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "version"; type_= String; htmlName= ""}
+  ; Attribute {name= "vertAdvY"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "vertOriginX"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "vertOriginY"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "vHanging"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "vIdeographic"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "viewBox"; type_= String; htmlName= ""}
+  ; Attribute {name= "viewTarget"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "visibility"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "widths"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "wordSpacing"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "writingMode"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "x1"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "x2"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "x"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "xChannelSelector"; type_= String; htmlName= ""}
+  ; Attribute {name= "xHeight"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "xlinkActuate"; type_= String; htmlName= ""}
+  ; Attribute {name= "xlinkArcrole"; type_= String; htmlName= ""}
+  ; Attribute {name= "xlinkHref"; type_= String; htmlName= ""}
+  ; Attribute {name= "xlinkRole"; type_= String; htmlName= ""}
+  ; Attribute {name= "xlinkShow"; type_= String; htmlName= ""}
+  ; Attribute {name= "xlinkTitle"; type_= String; htmlName= ""}
+  ; Attribute {name= "xlinkType"; type_= String; htmlName= ""}
+  ; Attribute {name= "xmlBase"; type_= String; htmlName= ""}
+  ; Attribute {name= "xmlLang"; type_= String; htmlName= ""}
+  ; Attribute {name= "xmlns"; type_= String; htmlName= ""}
+  ; Attribute {name= "xmlnsXlink"; type_= String; htmlName= ""}
+  ; Attribute {name= "xmlSpace"; type_= String; htmlName= ""}
+  ; Attribute {name= "y1"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "y2"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "y"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "yChannelSelector"; type_= String; htmlName= ""}
+  ; Attribute {name= "z"; type_= (* number |  *) String; htmlName= ""}
+  ; Attribute {name= "zoomAndPan"; type_= String; htmlName= ""} ]
 
 let webViewHTMLAttributes =
-  [ {name= "allowFullScreen"; type_= Bool; htmlName= ""}
-  ; {name= "allowpopups"; type_= Bool; htmlName= ""}
-  ; {name= "autoFocus"; type_= Bool; htmlName= ""}
-  ; {name= "autosize"; type_= Bool; htmlName= ""}
-  ; {name= "blinkfeatures"; type_= String; htmlName= ""}
-  ; {name= "disableblinkfeatures"; type_= String; htmlName= ""}
-  ; {name= "disableguestresize"; type_= Bool; htmlName= ""}
-  ; {name= "disablewebsecurity"; type_= Bool; htmlName= ""}
-  ; {name= "guestinstance"; type_= String; htmlName= ""}
-  ; {name= "httpreferrer"; type_= String; htmlName= ""}
-  ; {name= "nodeintegration"; type_= Bool; htmlName= ""}
-  ; {name= "partition"; type_= String; htmlName= ""}
-  ; {name= "plugins"; type_= Bool; htmlName= ""}
-  ; {name= "preload"; type_= String; htmlName= ""}
-  ; {name= "src"; type_= String; htmlName= ""}
-  ; {name= "useragent"; type_= String; htmlName= ""}
-  ; {name= "webpreferences"; type_= String; htmlName= ""} ]
+  [ Attribute {name= "allowFullScreen"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "allowpopups"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "autosize"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "blinkfeatures"; type_= String; htmlName= ""}
+  ; Attribute {name= "disableblinkfeatures"; type_= String; htmlName= ""}
+  ; Attribute {name= "disableguestresize"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "disablewebsecurity"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "guestinstance"; type_= String; htmlName= ""}
+  ; Attribute {name= "httpreferrer"; type_= String; htmlName= ""}
+  ; Attribute {name= "nodeintegration"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "partition"; type_= String; htmlName= ""}
+  ; Attribute {name= "plugins"; type_= Bool; htmlName= ""}
+  ; Attribute {name= "preload"; type_= String; htmlName= ""}
+  ; Attribute {name= "src"; type_= String; htmlName= ""}
+  ; Attribute {name= "useragent"; type_= String; htmlName= ""}
+  ; Attribute {name= "webpreferences"; type_= String; htmlName= ""} ]
 
 (* Browser Interfaces https://github.com/nikeee/2048-typescript/blob/master/2048/js/touch.d.ts *)
 let abstractView = []
