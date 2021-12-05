@@ -1742,20 +1742,17 @@ let touch = []
 *)
 
 let touchList = []
-(* {
-       [index: number]: Touch;
-       length: number;
-       item(index: number): Touch;
-       identifiedTouch(identifier: number): Touch;
-   ] *)
+(*
+   [index: number]: Touch;
+   length: number;
+   item(index: number): Touch;
+   identifiedTouch(identifier: number): Touch;
+*)
 
-(* Error Interfaces *)
 let errorInfo = []
-(* {
-      /**
-       * Captures which component contained the exception, and its ancestors.
-       */
-      componentStack: string; *)
+
+(* Captures which component contained the exception, and its ancestors. *)
+(* componentStack: string; *)
 
 let htmlElements =
   [ {tag= "a"; attributes= domAttributes & anchorHTMLAttributes & attributesHTML}
