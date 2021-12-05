@@ -481,6 +481,10 @@ let makeEventValue ~loc (type_ : Html.eventType) value =
       [%expr ([%e value] : React.Event.Animation.t -> unit)]
   | Transition ->
       [%expr ([%e value] : React.Event.Transition.t -> unit)]
+  | Pointer ->
+      [%expr ([%e value] : React.Event.Syntetic.t -> unit)]
+  | Drag ->
+      [%expr ([%e value] : React.Event.Syntetic.t -> unit)]
 
 let makeValue ~loc prop value =
   match prop with
@@ -1006,13 +1010,17 @@ let jsxMapper () =
         let loc = callLoc in
         let name = getLabel arg_label in
         let prop =
-          match Html.findByName name with
-          | Some p ->
+          match Html.findByName id name with
+          | Ok p ->
               p
-          | None ->
-              raise
-              @@ Location.raise_errorf ~loc "prop '%s' isn't a valid React prop"
-                   name
+          | Error err -> (
+            match err with
+            | `ElementNotFound ->
+                raise @@ Location.raise_errorf ~loc "tag '%s' doesn't exist" id
+            | `AttributeNoMatch ->
+                raise
+                @@ Location.raise_errorf ~loc
+                     "prop '%s' isn't a valid prop for a '%s'" name id )
         in
         let htmlName = Html.getHtmlName prop in
         let objectKey =

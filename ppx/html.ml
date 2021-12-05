@@ -564,13 +564,14 @@ let ariaRole = String
    | Treeitem
    | Custom of String *)
 
-(* AriaAttributes, DOMAttributes*)
-let attributesHTML =
+let reactAttributes =
   [ (* React-specific Attributes *)
     Attribute
       { name= "dangerouslySetInnerHTML"
       ; htmlName= "dangerouslySetInnerHTML"
       ; type_= InnerHtml }
+  ; Attribute {name= "ref"; htmlName= "ref"; type_= Ref}
+  ; Attribute {name= "key"; htmlName= "key"; type_= String}
   ; Attribute {name= "defaultChecked"; htmlName= "defaultChecked"; type_= Bool}
   ; Attribute
       { name= "defaultValue"
@@ -583,193 +584,195 @@ let attributesHTML =
   ; Attribute
       { name= "suppressHydrationWarning"
       ; htmlName= "suppressHydrationWarning"
-      ; type_= Bool }
-    (* Standard HTML Attributes *)
-  ; Attribute {name= "accessKey"; htmlName= "accesskey"; type_= String}
-  ; Attribute {name= "className"; htmlName= "classname"; type_= String}
-  ; Attribute {name= "contextMenu"; htmlName= "contextmenu"; type_= String}
-  ; Attribute {name= "dir"; htmlName= "dir"; type_= String}
-  ; Attribute
-      {name= "draggable"; htmlName= "draggable"; type_= String (* Booleanish *)}
-  ; Attribute {name= "hidden"; htmlName= "hidden"; type_= Bool}
-  ; Attribute {name= "id"; htmlName= "id"; type_= String}
-  ; Attribute {name= "lang"; htmlName= "lang"; type_= String}
-  ; Attribute {name= "placeholder"; htmlName= "placeholder"; type_= String}
-  ; Attribute {name= "slot"; htmlName= "slot"; type_= String}
-  ; Attribute
-      { name= "spellCheck"
-      ; htmlName= "spellcheck"
-      ; type_= String (* Booleanish *) }
-  ; Attribute {name= "style"; htmlName= "style"; type_= Style}
-  ; Attribute {name= "tabIndex"; htmlName= "tabindex"; type_= Int}
-  ; Attribute {name= "title"; htmlName= "title"; type_= String}
-  ; Attribute
-      { name= "translate"
-      ; htmlName= "translate"
-      ; type_= String (* 'yes' | 'no' *) }
-  ; Attribute {name= "radioGroup"; htmlName= "radiogroup"; type_= String}
-    (* Unknown *)
-    (* <command>, <menuitem> *)
-    (* WAI-ARIA *)
-  ; Attribute {name= "role"; htmlName= "role"; type_= ariaRole}
-    (* RDFa Attributes *)
-  ; Attribute {name= "about"; htmlName= "about"; type_= String}
-  ; Attribute {name= "datatype"; htmlName= "datatype"; type_= String}
-  ; Attribute {name= "inlist"; htmlName= "inlist"; type_= String (* any *)}
-  ; Attribute {name= "prefix"; htmlName= "prefix"; type_= String}
-  ; Attribute {name= "property"; htmlName= "property"; type_= String}
-  ; Attribute {name= "resource"; htmlName= "resource"; type_= String}
-  ; Attribute {name= "typeof"; htmlName= "typeof"; type_= String}
-  ; Attribute {name= "vocab"; htmlName= "vocab"; type_= String}
-    (* Non-standard Attributes *)
-  ; Attribute {name= "autoCapitalize"; htmlName= "autocapitalize"; type_= String}
-  ; Attribute {name= "autoCorrect"; htmlName= "autocorrect"; type_= String}
-  ; Attribute {name= "autoSave"; htmlName= "autosave"; type_= String}
-  ; Attribute {name= "color"; htmlName= "color"; type_= String}
-  ; Attribute {name= "itemProp"; htmlName= "itemprop"; type_= String}
-  ; Attribute {name= "itemScope"; htmlName= "itemscope"; type_= Bool}
-  ; Attribute {name= "itemType"; htmlName= "itemtype"; type_= String}
-  ; Attribute {name= "itemID"; htmlName= "itemid"; type_= String}
-  ; Attribute {name= "itemRef"; htmlName= "itemref"; type_= String}
-  ; Attribute {name= "results"; htmlName= "results"; type_= Int}
-  ; Attribute {name= "security"; htmlName= "security"; type_= String}
-    (* Living Standard
-     * Hints at the type of data that might be entered by the user while editing the element or its contents
-     * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute *)
-  ; Attribute
-      { name= "inputMode"
-      ; htmlName= "inputmode"
-      ; type_=
-          String
-          (* 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' *)
-      }
-    (* Specify that a standard HTML element should behave like a defined custom built-in element
-        * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is *)
-  ; Attribute {name= "is"; htmlName= "is"; type_= String} ]
+      ; type_= Bool } ]
 
-let allHTMLAttributes =
-  [ (* Standard HTML Attributes *)
-    Attribute {name= "accept"; htmlName= "accept"; type_= String}
-  ; Attribute {name= "acceptCharset"; htmlName= "acceptcharset"; type_= String}
-  ; Attribute {name= "action"; htmlName= "action"; type_= String}
-  ; Attribute {name= "allowFullScreen"; htmlName= "allowfullscreen"; type_= Bool}
-  ; Attribute
-      {name= "allowTransparency"; htmlName= "allowtransparency"; type_= Bool}
-  ; Attribute {name= "alt"; htmlName= "alt"; type_= String}
-  ; Attribute {name= "as"; htmlName= "as"; type_= String}
-  ; Attribute {name= "async"; htmlName= "async"; type_= Bool}
-  ; Attribute {name= "autoComplete"; htmlName= "autocomplete"; type_= String}
-  ; Attribute {name= "autoFocus"; htmlName= "autofocus"; type_= Bool}
-  ; Attribute {name= "autoPlay"; htmlName= "autoplay"; type_= Bool}
-  ; Attribute {name= "capture"; htmlName= "capture"; type_= (* Bool |  *) String}
-  ; Attribute
-      { name= "cellPadding"
-      ; htmlName= "cellpadding"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "cellSpacing"
-      ; htmlName= "cellspacing"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "charSet"; htmlName= "charset"; type_= String}
-  ; Attribute {name= "challenge"; htmlName= "challenge"; type_= String}
-  ; Attribute {name= "checked"; htmlName= "checked"; type_= Bool}
-  ; Attribute {name= "cite"; htmlName= "cite"; type_= String}
-  ; Attribute {name= "classID"; htmlName= "classid"; type_= String}
-  ; Attribute {name= "cols"; htmlName= "cols"; type_= Int (* number *)}
-  ; Attribute {name= "colSpan"; htmlName= "colspan"; type_= Int (* number *)}
-  ; Attribute {name= "content"; htmlName= "content"; type_= String}
-  ; Attribute {name= "controls"; htmlName= "controls"; type_= Bool}
-  ; Attribute {name= "coords"; htmlName= "coords"; type_= String}
-  ; Attribute {name= "crossOrigin"; htmlName= "crossorigin"; type_= String}
-  ; Attribute {name= "data"; htmlName= "data"; type_= String}
-  ; Attribute {name= "dateTime"; htmlName= "datetime"; type_= String}
-  ; Attribute {name= "default"; htmlName= "default"; type_= Bool}
-  ; Attribute {name= "defer"; htmlName= "defer"; type_= Bool}
-  ; Attribute {name= "disabled"; htmlName= "disabled"; type_= Bool}
-  ; Attribute {name= "download"; htmlName= "download"; type_= String (* any *)}
-  ; Attribute {name= "encType"; htmlName= "enctype"; type_= String}
-  ; Attribute {name= "form"; htmlName= "form"; type_= String}
-  ; Attribute {name= "formAction"; htmlName= "formaction"; type_= String}
-  ; Attribute {name= "formEncType"; htmlName= "formenctype"; type_= String}
-  ; Attribute {name= "formMethod"; htmlName= "formmethod"; type_= String}
-  ; Attribute {name= "formNoValidate"; htmlName= "formnovalidate"; type_= Bool}
-  ; Attribute {name= "formTarget"; htmlName= "formtarget"; type_= String}
-  ; Attribute
-      { name= "frameBorder"
-      ; htmlName= "frameborder"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "headers"; htmlName= "headers"; type_= String}
-  ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
-  ; Attribute {name= "high"; htmlName= "high"; type_= Int (* number *)}
-  ; Attribute {name= "href"; htmlName= "href"; type_= String}
-  ; Attribute {name= "hrefLang"; htmlName= "hreflang"; type_= String}
-  ; Attribute {name= "htmlFor"; htmlName= "htmlfor"; type_= String}
-  ; Attribute {name= "httpEquiv"; htmlName= "httpequiv"; type_= String}
-  ; Attribute {name= "integrity"; htmlName= "integrity"; type_= String}
-  ; Attribute {name= "keyParams"; htmlName= "keyparams"; type_= String}
-  ; Attribute {name= "keyType"; htmlName= "keytype"; type_= String}
-  ; Attribute {name= "kind"; htmlName= "kind"; type_= String}
-  ; Attribute {name= "label"; htmlName= "label"; type_= String}
-  ; Attribute {name= "list"; htmlName= "list"; type_= String}
-  ; Attribute {name= "loop"; htmlName= "loop"; type_= Bool}
-  ; Attribute {name= "low"; htmlName= "low"; type_= Int (* number *)}
-  ; Attribute {name= "manifest"; htmlName= "manifest"; type_= String}
-  ; Attribute
-      {name= "marginHeight"; htmlName= "marginheight"; type_= Int (* number *)}
-  ; Attribute
-      {name= "marginWidth"; htmlName= "marginwidth"; type_= Int (* number *)}
-  ; Attribute {name= "max"; htmlName= "max"; type_= String (* number |  *)}
-  ; Attribute {name= "maxLength"; htmlName= "maxlength"; type_= Int (* number *)}
-  ; Attribute {name= "media"; htmlName= "media"; type_= String}
-  ; Attribute {name= "mediaGroup"; htmlName= "mediagroup"; type_= String}
-  ; Attribute {name= "method"; htmlName= "method"; type_= String}
-  ; Attribute {name= "min"; htmlName= "min"; type_= String (* number |  *)}
-  ; Attribute {name= "minLength"; htmlName= "minlength"; type_= Int (* number *)}
-  ; Attribute {name= "multiple"; htmlName= "multiple"; type_= Bool}
-  ; Attribute {name= "muted"; htmlName= "muted"; type_= Bool}
-  ; Attribute {name= "name"; htmlName= "name"; type_= String}
-  ; Attribute {name= "nonce"; htmlName= "nonce"; type_= String}
-  ; Attribute {name= "noValidate"; htmlName= "novalidate"; type_= Bool}
-  ; Attribute {name= "open"; htmlName= "open"; type_= Bool}
-  ; Attribute {name= "optimum"; htmlName= "optimum"; type_= Int (* number *)}
-  ; Attribute {name= "pattern"; htmlName= "pattern"; type_= String}
-  ; Attribute {name= "placeholder"; htmlName= "placeholder"; type_= String}
-  ; Attribute {name= "playsInline"; htmlName= "playsinline"; type_= Bool}
-  ; Attribute {name= "poster"; htmlName= "poster"; type_= String}
-  ; Attribute {name= "preload"; htmlName= "preload"; type_= String}
-  ; Attribute {name= "readOnly"; htmlName= "readonly"; type_= Bool}
-  ; Attribute {name= "rel"; htmlName= "rel"; type_= String}
-  ; Attribute {name= "required"; htmlName= "required"; type_= Bool}
-  ; Attribute {name= "reversed"; htmlName= "reversed"; type_= Bool}
-  ; Attribute {name= "rows"; htmlName= "rows"; type_= Int (* number *)}
-  ; Attribute {name= "rowSpan"; htmlName= "rowspan"; type_= Int (* number *)}
-  ; Attribute {name= "sandbox"; htmlName= "sandbox"; type_= String}
-  ; Attribute {name= "scope"; htmlName= "scope"; type_= String}
-  ; Attribute {name= "scoped"; htmlName= "scoped"; type_= Bool}
-  ; Attribute {name= "scrolling"; htmlName= "scrolling"; type_= String}
-  ; Attribute {name= "seamless"; htmlName= "seamless"; type_= Bool}
-  ; Attribute {name= "selected"; htmlName= "selected"; type_= Bool}
-  ; Attribute {name= "shape"; htmlName= "shape"; type_= String}
-  ; Attribute {name= "size"; htmlName= "size"; type_= Int (* number *)}
-  ; Attribute {name= "sizes"; htmlName= "sizes"; type_= String}
-  ; Attribute {name= "span"; htmlName= "span"; type_= Int (* number *)}
-  ; Attribute {name= "src"; htmlName= "src"; type_= String}
-  ; Attribute {name= "srcDoc"; htmlName= "srcdoc"; type_= String}
-  ; Attribute {name= "srcLang"; htmlName= "srclang"; type_= String}
-  ; Attribute {name= "srcSet"; htmlName= "srcset"; type_= String}
-  ; Attribute {name= "start"; htmlName= "start"; type_= Int (* number *)}
-  ; Attribute {name= "step"; htmlName= "step"; type_= (* number | *) String}
-  ; Attribute {name= "summary"; htmlName= "summary"; type_= String}
-  ; Attribute {name= "target"; htmlName= "target"; type_= String}
-  ; Attribute {name= "type"; htmlName= "type"; type_= String}
-  ; Attribute {name= "useMap"; htmlName= "usemap"; type_= String}
-  ; Attribute
-      { name= "value"
-      ; htmlName= "value"
-      ; type_= String (* | ReadonlyArray<String> | number *) }
-  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
-  ; Attribute {name= "wmode"; htmlName= "wmode"; type_= String}
-  ; Attribute {name= "wrap"; htmlName= "wrap"; type_= String} ]
+let attributesHTML =
+  reactAttributes
+  & [ (* Standard HTML Attributes *)
+      Attribute {name= "accessKey"; htmlName= "accesskey"; type_= String}
+    ; Attribute {name= "className"; htmlName= "classname"; type_= String}
+    ; Attribute {name= "contextMenu"; htmlName= "contextmenu"; type_= String}
+    ; Attribute {name= "dir"; htmlName= "dir"; type_= String}
+    ; Attribute
+        { name= "draggable"
+        ; htmlName= "draggable"
+        ; type_= String (* Booleanish *) }
+    ; Attribute {name= "hidden"; htmlName= "hidden"; type_= Bool}
+    ; Attribute {name= "id"; htmlName= "id"; type_= String}
+    ; Attribute {name= "lang"; htmlName= "lang"; type_= String}
+    ; Attribute {name= "placeholder"; htmlName= "placeholder"; type_= String}
+    ; Attribute {name= "slot"; htmlName= "slot"; type_= String}
+    ; Attribute
+        { name= "spellCheck"
+        ; htmlName= "spellcheck"
+        ; type_= String (* Booleanish *) }
+    ; Attribute {name= "style"; htmlName= "style"; type_= Style}
+    ; Attribute {name= "tabIndex"; htmlName= "tabindex"; type_= Int}
+    ; Attribute {name= "title"; htmlName= "title"; type_= String}
+    ; Attribute
+        { name= "translate"
+        ; htmlName= "translate"
+        ; type_= String (* 'yes' | 'no' *) }
+    ; Attribute {name= "radioGroup"; htmlName= "radiogroup"; type_= String}
+      (* Unknown *)
+      (* <command>, <menuitem> *)
+      (* WAI-ARIA *)
+    ; Attribute {name= "role"; htmlName= "role"; type_= ariaRole}
+      (* RDFa Attributes *)
+    ; Attribute {name= "about"; htmlName= "about"; type_= String}
+    ; Attribute {name= "datatype"; htmlName= "datatype"; type_= String}
+    ; Attribute {name= "inlist"; htmlName= "inlist"; type_= String (* any *)}
+    ; Attribute {name= "prefix"; htmlName= "prefix"; type_= String}
+    ; Attribute {name= "property"; htmlName= "property"; type_= String}
+    ; Attribute {name= "resource"; htmlName= "resource"; type_= String}
+    ; Attribute {name= "typeof"; htmlName= "typeof"; type_= String}
+    ; Attribute {name= "vocab"; htmlName= "vocab"; type_= String}
+      (* Non-standard Attributes *)
+    ; Attribute
+        {name= "autoCapitalize"; htmlName= "autocapitalize"; type_= String}
+    ; Attribute {name= "autoCorrect"; htmlName= "autocorrect"; type_= String}
+    ; Attribute {name= "autoSave"; htmlName= "autosave"; type_= String}
+    ; Attribute {name= "color"; htmlName= "color"; type_= String}
+    ; Attribute {name= "itemProp"; htmlName= "itemprop"; type_= String}
+    ; Attribute {name= "itemScope"; htmlName= "itemscope"; type_= Bool}
+    ; Attribute {name= "itemType"; htmlName= "itemtype"; type_= String}
+    ; Attribute {name= "itemID"; htmlName= "itemid"; type_= String}
+    ; Attribute {name= "itemRef"; htmlName= "itemref"; type_= String}
+    ; Attribute {name= "results"; htmlName= "results"; type_= Int}
+    ; Attribute {name= "security"; htmlName= "security"; type_= String}
+      (* Living Standard
+       * Hints at the type of data that might be entered by the user while editing the element or its contents
+       * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute *)
+    ; Attribute
+        { name= "inputMode"
+        ; htmlName= "inputmode"
+        ; type_=
+            String
+            (* 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' *)
+        }
+      (* Specify that a standard HTML element should behave like a defined custom built-in element
+          * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is *)
+    ; Attribute {name= "is"; htmlName= "is"; type_= String} ]
+
+(* This should be duplicated across all other attribute list *)
+(* let allHTMLAttributes =
+   [
+   Attribute
+       {name= "allowTransparency"; htmlName= "allowtransparency"; type_= Bool}
+   ; Attribute {name= "as"; htmlName= "as"; type_= String}
+   ; Attribute {name= "async"; htmlName= "async"; type_= Bool}
+   ; Attribute {name= "autoComplete"; htmlName= "autocomplete"; type_= String}
+   ; Attribute {name= "autoFocus"; htmlName= "autofocus"; type_= Bool}
+   ; Attribute {name= "autoPlay"; htmlName= "autoplay"; type_= Bool}
+   ; Attribute {name= "capture"; htmlName= "capture"; type_= (* Bool |  *) String}
+   ; Attribute
+       { name= "cellPadding"
+       ; htmlName= "cellpadding"
+       ; type_= String (* number |  *) }
+   ; Attribute
+       { name= "cellSpacing"
+       ; htmlName= "cellspacing"
+       ; type_= String (* number |  *) }
+   ; Attribute {name= "charSet"; htmlName= "charset"; type_= String}
+   ; Attribute {name= "challenge"; htmlName= "challenge"; type_= String}
+   ; Attribute {name= "checked"; htmlName= "checked"; type_= Bool}
+   ; Attribute {name= "cite"; htmlName= "cite"; type_= String}
+   ; Attribute {name= "classID"; htmlName= "classid"; type_= String}
+   ; Attribute {name= "cols"; htmlName= "cols"; type_= Int (* number *)}
+   ; Attribute {name= "colSpan"; htmlName= "colspan"; type_= Int (* number *)}
+   ; Attribute {name= "content"; htmlName= "content"; type_= String}
+   ; Attribute {name= "controls"; htmlName= "controls"; type_= Bool}
+   ; Attribute {name= "coords"; htmlName= "coords"; type_= String}
+   ; Attribute {name= "crossOrigin"; htmlName= "crossorigin"; type_= String}
+   ; Attribute {name= "data"; htmlName= "data"; type_= String}
+   ; Attribute {name= "dateTime"; htmlName= "datetime"; type_= String}
+   ; Attribute {name= "default"; htmlName= "default"; type_= Bool}
+   ; Attribute {name= "defer"; htmlName= "defer"; type_= Bool}
+   ; Attribute {name= "disabled"; htmlName= "disabled"; type_= Bool}
+   ; Attribute {name= "download"; htmlName= "download"; type_= String (* any *)}
+   ; Attribute {name= "encType"; htmlName= "enctype"; type_= String}
+   ; Attribute {name= "form"; htmlName= "form"; type_= String}
+   ; Attribute {name= "formAction"; htmlName= "formaction"; type_= String}
+   ; Attribute {name= "formEncType"; htmlName= "formenctype"; type_= String}
+   ; Attribute {name= "formMethod"; htmlName= "formmethod"; type_= String}
+   ; Attribute {name= "formNoValidate"; htmlName= "formnovalidate"; type_= Bool}
+   ; Attribute {name= "formTarget"; htmlName= "formtarget"; type_= String}
+   ; Attribute
+       { name= "frameBorder"
+       ; htmlName= "frameborder"
+       ; type_= String (* number |  *) }
+   ; Attribute {name= "headers"; htmlName= "headers"; type_= String}
+   ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
+   ; Attribute {name= "high"; htmlName= "high"; type_= Int (* number *)}
+   ; Attribute {name= "href"; htmlName= "href"; type_= String}
+   ; Attribute {name= "hrefLang"; htmlName= "hreflang"; type_= String}
+   ; Attribute {name= "htmlFor"; htmlName= "htmlfor"; type_= String}
+   ; Attribute {name= "httpEquiv"; htmlName= "httpequiv"; type_= String}
+   ; Attribute {name= "integrity"; htmlName= "integrity"; type_= String}
+   ; Attribute {name= "keyParams"; htmlName= "keyparams"; type_= String}
+   ; Attribute {name= "keyType"; htmlName= "keytype"; type_= String}
+   ; Attribute {name= "kind"; htmlName= "kind"; type_= String}
+   ; Attribute {name= "label"; htmlName= "label"; type_= String}
+   ; Attribute {name= "list"; htmlName= "list"; type_= String}
+   ; Attribute {name= "loop"; htmlName= "loop"; type_= Bool}
+   ; Attribute {name= "low"; htmlName= "low"; type_= Int (* number *)}
+   ; Attribute {name= "manifest"; htmlName= "manifest"; type_= String}
+   ; Attribute
+       {name= "marginHeight"; htmlName= "marginheight"; type_= Int (* number *)}
+   ; Attribute
+       {name= "marginWidth"; htmlName= "marginwidth"; type_= Int (* number *)}
+   ; Attribute {name= "max"; htmlName= "max"; type_= String (* number |  *)}
+   ; Attribute {name= "maxLength"; htmlName= "maxlength"; type_= Int (* number *)}
+   ; Attribute {name= "media"; htmlName= "media"; type_= String}
+   ; Attribute {name= "mediaGroup"; htmlName= "mediagroup"; type_= String}
+   ; Attribute {name= "method"; htmlName= "method"; type_= String}
+   ; Attribute {name= "min"; htmlName= "min"; type_= String (* number |  *)}
+   ; Attribute {name= "minLength"; htmlName= "minlength"; type_= Int (* number *)}
+   ; Attribute {name= "multiple"; htmlName= "multiple"; type_= Bool}
+   ; Attribute {name= "muted"; htmlName= "muted"; type_= Bool}
+   ; Attribute {name= "name"; htmlName= "name"; type_= String}
+   ; Attribute {name= "nonce"; htmlName= "nonce"; type_= String}
+   ; Attribute {name= "noValidate"; htmlName= "novalidate"; type_= Bool}
+   ; Attribute {name= "open"; htmlName= "open"; type_= Bool}
+   ; Attribute {name= "optimum"; htmlName= "optimum"; type_= Int (* number *)}
+   ; Attribute {name= "pattern"; htmlName= "pattern"; type_= String}
+   ; Attribute {name= "placeholder"; htmlName= "placeholder"; type_= String}
+   ; Attribute {name= "playsInline"; htmlName= "playsinline"; type_= Bool}
+   ; Attribute {name= "poster"; htmlName= "poster"; type_= String}
+   ; Attribute {name= "preload"; htmlName= "preload"; type_= String}
+   ; Attribute {name= "readOnly"; htmlName= "readonly"; type_= Bool}
+   ; Attribute {name= "rel"; htmlName= "rel"; type_= String}
+   ; Attribute {name= "required"; htmlName= "required"; type_= Bool}
+   ; Attribute {name= "reversed"; htmlName= "reversed"; type_= Bool}
+   ; Attribute {name= "rows"; htmlName= "rows"; type_= Int (* number *)}
+   ; Attribute {name= "rowSpan"; htmlName= "rowspan"; type_= Int (* number *)}
+   ; Attribute {name= "sandbox"; htmlName= "sandbox"; type_= String}
+   ; Attribute {name= "scope"; htmlName= "scope"; type_= String}
+   ; Attribute {name= "scoped"; htmlName= "scoped"; type_= Bool}
+   ; Attribute {name= "scrolling"; htmlName= "scrolling"; type_= String}
+   ; Attribute {name= "seamless"; htmlName= "seamless"; type_= Bool}
+   ; Attribute {name= "selected"; htmlName= "selected"; type_= Bool}
+   ; Attribute {name= "shape"; htmlName= "shape"; type_= String}
+   ; Attribute {name= "size"; htmlName= "size"; type_= Int (* number *)}
+   ; Attribute {name= "sizes"; htmlName= "sizes"; type_= String}
+   ; Attribute {name= "span"; htmlName= "span"; type_= Int (* number *)}
+   ; Attribute {name= "src"; htmlName= "src"; type_= String}
+   ; Attribute {name= "srcDoc"; htmlName= "srcdoc"; type_= String}
+   ; Attribute {name= "srcLang"; htmlName= "srclang"; type_= String}
+   ; Attribute {name= "srcSet"; htmlName= "srcset"; type_= String}
+   ; Attribute {name= "start"; htmlName= "start"; type_= Int (* number *)}
+   ; Attribute {name= "step"; htmlName= "step"; type_= (* number | *) String}
+   ; Attribute {name= "summary"; htmlName= "summary"; type_= String}
+   ; Attribute {name= "target"; htmlName= "target"; type_= String}
+   ; Attribute {name= "type"; htmlName= "type"; type_= String}
+   ; Attribute {name= "useMap"; htmlName= "usemap"; type_= String}
+   ; Attribute
+       { name= "value"
+       ; htmlName= "value"
+       ; type_= String (* | ReadonlyArray<String> | number *) }
+   ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
+   ; Attribute {name= "wmode"; htmlName= "wmode"; type_= String}
+   ; Attribute {name= "wrap"; htmlName= "wrap"; type_= String} ] *)
 
 let anchorHTMLAttributes =
   [ Attribute {name= "download"; htmlName= "download"; type_= String (* any; *)}
@@ -784,8 +787,6 @@ let anchorHTMLAttributes =
       { name= "referrerPolicy"
       ; htmlName= "referrerpolicy"
       ; type_= attributeReferrerPolicy } ]
-
-let audioHTMLAttributes = []
 
 let areaHTMLAttributes =
   [ Attribute {name= "alt"; htmlName= "alt"; type_= String}
@@ -888,22 +889,22 @@ let iframeHTMLAttributes =
   ; Attribute {name= "allowFullScreen"; htmlName= "allowfullscreen"; type_= Bool}
   ; Attribute
       {name= "allowTransparency"; htmlName= "allowtransparency"; type_= Bool}
-    (* @deprecated *)
-  ; Attribute
+  ; (* deprecated *)
+    Attribute
       { name= "frameBorder"
       ; htmlName= "frameborder"
       ; type_= String (* number |  *) }
   ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
-    (* @deprecated *)
-  ; Attribute
+  ; (* deprecated *)
+    Attribute
       {name= "marginHeight"; htmlName= "marginheight"; type_= Int (* number *)}
-    (* @deprecated *)
-  ; Attribute
+  ; (* deprecated *)
+    Attribute
       {name= "marginWidth"; htmlName= "marginwidth"; type_= Int (* number *)}
   ; Attribute {name= "name"; htmlName= "name"; type_= String}
   ; Attribute {name= "sandbox"; htmlName= "sandbox"; type_= String}
-    (* @deprecated *)
-  ; Attribute {name= "scrolling"; htmlName= "scrolling"; type_= String}
+  ; (* deprecated *)
+    Attribute {name= "scrolling"; htmlName= "scrolling"; type_= String}
   ; Attribute {name= "seamless"; htmlName= "seamless"; type_= Bool}
   ; Attribute {name= "src"; htmlName= "src"; type_= String}
   ; Attribute {name= "srcDoc"; htmlName= "srcdoc"; type_= String}
@@ -1046,7 +1047,8 @@ let mediaHTMLAttributes =
   ; Attribute {name= "controlsList"; htmlName= "controlslist"; type_= String}
   ; Attribute {name= "crossOrigin"; htmlName= "crossorigin"; type_= String}
   ; Attribute {name= "loop"; htmlName= "loop"; type_= Bool}
-  ; Attribute {name= "mediaGroup"; htmlName= "mediagroup"; type_= String}
+  ; (* deprecated *)
+    Attribute {name= "mediaGroup"; htmlName= "mediagroup"; type_= String}
   ; Attribute {name= "muted"; htmlName= "muted"; type_= Bool}
   ; Attribute {name= "playsInline"; htmlName= "playsinline"; type_= Bool}
   ; Attribute {name= "preload"; htmlName= "preload"; type_= String}
@@ -1129,7 +1131,8 @@ let slotHTMLAttributes =
   [Attribute {name= "name"; htmlName= "name"; type_= String}]
 
 let scriptHTMLAttributes =
-  [ Attribute {name= "async"; htmlName= "async"; type_= Bool} (* @deprecated *)
+  [ (* deprecated *)
+    Attribute {name= "async"; htmlName= "async"; type_= Bool}
   ; Attribute {name= "charSet"; htmlName= "charset"; type_= String}
   ; Attribute {name= "crossOrigin"; htmlName= "crossorigin"; type_= String}
   ; Attribute {name= "defer"; htmlName= "defer"; type_= Bool}
@@ -1722,13 +1725,13 @@ let webViewHTMLAttributes =
   ]
 
 (* Browser Interfaces https://github.com/nikeee/2048-typescript/blob/master/2048/js/touch.d.ts *)
-let abstractView = []
+(* let abstractView = [] *)
 (* {
        styleMedia: StyleMedia;
        document: Document;
    ] *)
 
-let touch = []
+(* let touch = [] *)
 (* {
        identifier: number;
        target: EventTarget;
@@ -1741,7 +1744,7 @@ let touch = []
    ]
 *)
 
-let touchList = []
+(* let touchList = [] *)
 (*
    [index: number]: Touch;
    length: number;
@@ -1749,8 +1752,7 @@ let touchList = []
    identifiedTouch(identifier: number): Touch;
 *)
 
-let errorInfo = []
-
+(* let errorInfo = [] *)
 (* Captures which component contained the exception, and its ancestors. *)
 (* componentStack: string; *)
 
@@ -1761,7 +1763,7 @@ let htmlElements =
   ; {tag= "area"; attributes= domAttributes & areaHTMLAttributes}
   ; {tag= "article"; attributes= domAttributes & attributesHTML}
   ; {tag= "aside"; attributes= domAttributes & attributesHTML}
-  ; {tag= "audio"; attributes= domAttributes & audioHTMLAttributes}
+  ; {tag= "audio"; attributes= domAttributes & mediaHTMLAttributes}
   ; {tag= "b"; attributes= domAttributes & attributesHTML}
   ; {tag= "base"; attributes= domAttributes & baseHTMLAttributes}
   ; {tag= "bdi"; attributes= domAttributes & attributesHTML}
@@ -1876,7 +1878,7 @@ let htmlElements =
   ; {tag= "area"; attributes= attributesHTML & areaHTMLAttributes}
   ; {tag= "article"; attributes= domAttributes & attributesHTML}
   ; {tag= "aside"; attributes= domAttributes & attributesHTML}
-  ; {tag= "audio"; attributes= attributesHTML & audioHTMLAttributes}
+  ; {tag= "audio"; attributes= attributesHTML & mediaHTMLAttributes}
   ; {tag= "b"; attributes= domAttributes & attributesHTML}
   ; {tag= "base"; attributes= attributesHTML & baseHTMLAttributes}
   ; {tag= "bdi"; attributes= domAttributes & attributesHTML}
@@ -2010,8 +2012,7 @@ let htmlElements =
   ; {tag= "u"; attributes= domAttributes & attributesHTML}
   ; {tag= "ul"; attributes= domAttributes & attributesHTML}
   ; {tag= "var"; attributes= domAttributes & attributesHTML}
-  ; { tag= "video"
-    ; attributes= domAttributes & attributesHTML & videoHTMLAttributes }
+  ; {tag= "video"; attributes= domAttributes & videoHTMLAttributes}
   ; {tag= "wbr"; attributes= domAttributes & attributesHTML}
   ; { tag= "webview"
     ; attributes= domAttributes & attributesHTML & webViewHTMLAttributes } ]
@@ -2095,3 +2096,27 @@ let svgElements =
   ; {tag= "tspan"; attributes= domAttributes & svgAttributes & ariaAttributes}
   ; {tag= "use"; attributes= domAttributes & svgAttributes & ariaAttributes}
   ; {tag= "view"; attributes= domAttributes & svgAttributes & ariaAttributes} ]
+
+let elements = svgElements & htmlElements
+
+let getName = function Attribute {name; _} -> name | Event {name; _} -> name
+
+let getHtmlName = function
+  | Attribute {htmlName; _} ->
+      htmlName
+  | Event {name; _} ->
+      name
+
+type errors = [`ElementNotFound | `AttributeNoMatch]
+
+let getAttributes tag =
+  List.find_opt (fun element -> element.tag == tag) elements
+  |> Option.to_result ~none:`AttributeNoMatch
+
+let findByName tag name =
+  let byName p = name = getName p in
+  match getAttributes tag with
+  | Ok {attributes} ->
+      List.find_opt byName attributes |> Option.to_result ~none:`ElementNotFound
+  | Error err ->
+      Error err

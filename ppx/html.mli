@@ -15,6 +15,8 @@ type eventType =
   | Image
   | Animation
   | Transition
+  | Pointer
+  | Drag
 
 type attribute = {type_: attributeType; name: string; htmlName: string}
 
@@ -22,6 +24,7 @@ type event = {type_: eventType; name: string}
 
 type prop = Attribute of attribute | Event of event
 
-val getHtmlName : prop -> string
+type errors = [`ElementNotFound | `AttributeNoMatch]
 
-val findByName : string -> prop option
+val getHtmlName : prop -> string
+val findByName : string -> string -> (prop, errors) result
