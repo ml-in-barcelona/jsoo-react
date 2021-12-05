@@ -1,6 +1,6 @@
 # jsoo-react
 
-[![Actions Status](https://github.com/jchavarri/jsoo-react/workflows/CI/badge.svg)](https://github.com/jchavarri/jsoo-react/actions)
+[![Actions Status](https://github.com/ml-in-barcelona/jsoo-react/workflows/CI/badge.svg?branch=master)](https://github.com/ml-in-barcelona/jsoo-react/actions?query=branch%3Amaster)
 
 Bindings to [React](https://reactjs.org/) for [js_of_ocaml](ocsigen.org/js_of_ocaml/), including JSX ppx.
 
@@ -31,7 +31,7 @@ For new projects, the best way to start is by using [Spin](https://github.com/tm
 1. Install the `jsoo-react` package:
 
     ```bash
-    opam pin add -y jsoo-react https://github.com/jchavarri/jsoo-react.git
+    opam pin add -y jsoo-react https://github.com/ml-in-barcelona/jsoo-react.git
     ```
 
 2. Add `jsoo-react` library and ppx to [dune](https://dune.readthedocs.io/en/stable/) file of your executable JavaScript app:

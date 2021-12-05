@@ -198,6 +198,13 @@ let dom_tags =
   ; "text"
   ; "tspan" ]
 
+let isUnit expr =
+  match expr.pexp_desc with
+  | Pexp_construct ({txt= Lident "()"; _}, _) ->
+      true
+  | _ ->
+      false
+
 let constantString ~loc str = Ast_helper.Exp.constant ~loc (Const.string str)
 
 let safeTypeFromValue label =
@@ -594,45 +601,46 @@ let uppercase_element_args ~loc callArguments =
 
 (* TODO: some line number might still be wrong *)
 let jsxMapper () =
-  let transformLowercaseCall loc attrs callArguments id =
+  let transformLowercaseCall loc attrs callArguments id callLoc =
     let children, nonChildrenProps = extractChildren ~loc callArguments in
     let componentNameExpr = constantString ~loc id in
     let args =
-      match nonChildrenProps with
-      | [_justTheUnitArgumentAtTheEnd] ->
-          [ (* "div" *)
-            (nolabel, componentNameExpr)
-          ; (* React.Dom.props(~className=blabla, ~foo=bar, ()) *)
-            (labelled "props", [%expr Js_of_ocaml.Js.Unsafe.obj [||]])
-          ; (* [|moreCreateElementCallsHere|] *)
-            (nolabel, children) ]
-      | nonEmptyProps ->
-          (* Filtering out the props that don't have a label, not sure how's possible *)
-          let propsWithName =
-            List.filter (fun (name, _) -> getLabel name != "") nonEmptyProps
-          in
-          let makePropField (arg_label, value) =
-            let name = getLabel arg_label in
-            let prop = Html.findByName name in
-            [%expr
-              [%e
-                Exp.constant ~loc
-                  (Pconst_string (Html.getHtmlName prop, loc, None))]
-              (* loc here points to the element <div />, we could be more precise and point to the prop *)
-              , Js_of_ocaml.Js.Unsafe.inject [%e makeValue ~loc prop value]]
-          in
-          let propsObj =
-            [%expr
-              ( Js_of_ocaml.Js.Unsafe.obj
-                  [%e Exp.array ~loc (List.map makePropField propsWithName)]
-                : React.Dom.domProps )]
-          in
-          [ (* "div" *)
-            (nolabel, componentNameExpr)
-          ; (* props: Js_of_ocaml.Js.Unsafe.obj ... *)
-            (labelled "props", propsObj)
-          ; (* [|moreCreateElementCallsHere|] *)
-            (nolabel, children) ]
+      (* Filtering out last unit *)
+      let isLabeledArg (name, value) =
+        getLabel name != "" && not (isUnit value)
+      in
+      let labeledProps = List.filter isLabeledArg nonChildrenProps in
+      let makePropField (arg_label, value) =
+        let loc = callLoc in
+        let name = getLabel arg_label in
+        let prop =
+          match Html.findByName name with
+          | Some p ->
+              p
+          | None ->
+              raise
+              @@ Location.raise_errorf ~loc "prop '%s' isn't a valid React prop"
+                   name
+        in
+        let htmlName = Html.getHtmlName prop in
+        let objectKey =
+          Exp.constant ~loc (Pconst_string (htmlName, loc, None))
+        in
+        let objectValue = makeValue ~loc prop value in
+        [%expr [%e objectKey], Js_of_ocaml.Js.Unsafe.inject [%e objectValue]]
+      in
+      let propsObj =
+        [%expr
+          ( Js_of_ocaml.Js.Unsafe.obj
+              [%e Exp.array ~loc (List.map makePropField labeledProps)]
+            : React.Dom.domProps )]
+      in
+      [ (* "div" *)
+        (nolabel, componentNameExpr)
+      ; (* ~props: Js_of_ocaml.Js.Unsafe.obj ... *)
+        (labelled "props", propsObj)
+      ; (* [|moreCreateElementCallsHere|] *)
+        (nolabel, children) ]
     in
     Exp.apply
       ~loc (* throw away the [@JSX] attribute and keep the others, if any *)
@@ -1247,8 +1255,8 @@ let jsxMapper () =
   let reactComponentTransform mapper ctxt structures =
     List.fold_right (transformComponentDefinition mapper ctxt) structures []
   in
-  let transformJsxCall callExpression callArguments attrs pexp_loc
-      pexp_loc_stack =
+  let transformJsxCall callExpression callArguments attrs apply_loc apply_loc_stack
+      =
     match callExpression.pexp_desc with
     | Pexp_ident caller -> (
       match caller with
@@ -1268,13 +1276,13 @@ let jsxMapper () =
                   }
                 , args )
           ; pexp_attributes= attrs
-          ; pexp_loc
-          ; pexp_loc_stack }
+          ; pexp_loc= apply_loc
+          ; pexp_loc_stack= apply_loc_stack }
       (* div(~prop1=foo, ~prop2=bar, ~children=[bla], ()) *)
       (* turn that into
          React.Dom.createElement(~props=React.Dom.props(~props1=foo, ~props2=bar, ()), [|bla|]) *)
       | {loc; txt= Lident id} ->
-          transformLowercaseCall loc attrs callArguments id
+          transformLowercaseCall loc attrs callArguments id apply_loc
       | {txt= Ldot (_, anythingNotCreateElementOrMake)} ->
           raise
             (Invalid_argument
@@ -1311,7 +1319,7 @@ let jsxMapper () =
       match expression with
       | { pexp_desc= Pexp_apply (callExpression, callArguments)
         ; pexp_attributes
-        ; pexp_loc
+        ; pexp_loc= apply_loc
         ; pexp_loc_stack } -> (
         match c with
         | {react_dom= true} -> (
@@ -1319,7 +1327,7 @@ let jsxMapper () =
           | {pexp_desc= Pexp_ident {txt= Lident id; _}}
             when List.mem id dom_tags ->
               transformJsxCall callExpression callArguments pexp_attributes
-                pexp_loc pexp_loc_stack
+              apply_loc pexp_loc_stack
           | _ ->
               expression )
         | {react_dom= false} -> (
@@ -1335,7 +1343,7 @@ let jsxMapper () =
                 expression
             | _, nonJSXAttributes ->
                 transformJsxCall callExpression callArguments nonJSXAttributes
-                  pexp_loc pexp_loc_stack ) )
+                apply_loc pexp_loc_stack ) )
       (* is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo]*)
       | { pexp_desc=
             ( Pexp_construct

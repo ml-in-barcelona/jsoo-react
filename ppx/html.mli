@@ -24,4 +24,4 @@ type prop = Attribute of attribute | Event of event
 
 val getHtmlName : prop -> string
 
-val findByName : string -> prop
+val findByName : string -> prop option

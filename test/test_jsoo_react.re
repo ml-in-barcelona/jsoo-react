@@ -716,6 +716,22 @@ let testNonListChildren = () => {
   });
 };
 
+let testDangerouslySetInnerHTML = () => {
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <div
+          dangerouslySetInnerHTML={React.Dom.createMarkup(
+            ~__html="<lol></lol>",
+          )}
+        />,
+        Html.element(c),
+      )
+    });
+    assert_equal(c##.innerHTML, Js.string("<div><lol></lol></div>"));
+  });
+};
+
 let testAliasedChildren = () => {
   module AliasedChildrenComponent = {
     [@react.component]
@@ -802,6 +818,8 @@ let fragments =
     "fragmentSyntax" >:: testFragmentSyntax,
   ];
 
+let dangerouslySetInnerHTML =
+  "dangerouslySetInnerHTML" >::: ["basic" >:: testDangerouslySetInnerHTML];
 let suite =
   "baseSuite"
   >::: [
@@ -814,6 +832,7 @@ let suite =
     refs,
     children,
     fragments,
+    dangerouslySetInnerHTML,
   ];
 
 let () = Webtest_js.Runner.run(suite);

@@ -17,7 +17,7 @@ See [`interop.md`](interop.md).
 ## Running the example
 
 ```bash
-git clone https://github.com/jchavarri/jsoo-react/
+git clone https://github.com/ml-in-barcelona/jsoo-react/
 cd ./jsoo-react
 make init
 eval $(opam env)

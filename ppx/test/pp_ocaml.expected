@@ -19,7 +19,7 @@ let makeProps
 let make =
   ((fun ?(name= "") ->
       React.Dom.createDOMElementVariadic "div"
-        ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+        ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
         [React.string ("Hello " ^ name)])
   [@warning "-16"])
 let make
@@ -153,7 +153,8 @@ let make =
   ((fun ~children:(first, second) ->
       fun () ->
         React.Dom.createDOMElementVariadic "div"
-          ~props:(Js_of_ocaml.Js.Unsafe.obj [||]) [first; second])
+          ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+          [first; second])
   [@warning "-16"])
 let make
   (Props :

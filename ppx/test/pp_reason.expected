@@ -29,7 +29,7 @@ let make =
   ((fun ?(name= (("")[@reason.raw_literal ""])) ->
       ((React.Fragment.make
           ~children:[React.Dom.createDOMElementVariadic "div"
-                       ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+                       ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
                        [((React.string
                             ((("Hello ")[@reason.raw_literal "Hello "]) ^
                                name))
@@ -84,7 +84,8 @@ let make =
             ((print_endline (("This function should be named `Test`")
                 [@reason.raw_literal "This function should be named `Test`"]);
               React.Dom.createDOMElementVariadic "div"
-                ~props:(Js_of_ocaml.Js.Unsafe.obj [||]) [])
+                ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                [])
             [@reason.preserve_braces ]))
       [@warning "-16"]))
   [@warning "-16"])
@@ -181,7 +182,8 @@ module Bar =
                     [@reason.raw_literal
                       "This function should be named `Test$Bar`"]);
                   React.Dom.createDOMElementVariadic "div"
-                    ~props:(Js_of_ocaml.Js.Unsafe.obj [||]) [])
+                    ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                    [])
                 [@reason.preserve_braces ]))
           [@warning "-16"]))
       [@warning "-16"])
@@ -240,7 +242,8 @@ module Bar =
                     [@reason.raw_literal
                       "This function should be named `Test$Bar$component`"]);
                   React.Dom.createDOMElementVariadic "div"
-                    ~props:(Js_of_ocaml.Js.Unsafe.obj [||]) [])
+                    ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                    [])
                 [@reason.preserve_braces ]))
           [@warning "-16"]))
       [@warning "-16"])
@@ -304,7 +307,8 @@ module Func(M:X_int) =
                     [@reason.raw_literal
                       "This function should be named `Test$Func`"]) M.x;
                   React.Dom.createDOMElementVariadic "div"
-                    ~props:(Js_of_ocaml.Js.Unsafe.obj [||]) [])
+                    ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                    [])
                 [@reason.preserve_braces ]))
           [@warning "-16"]))
       [@warning "-16"])
@@ -389,7 +393,7 @@ module Memo =
     let make =
       ((fun ~a ->
           ((React.Dom.createDOMElementVariadic "div"
-              ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+              ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
               [(((Printf.sprintf (("`a` is %s")
                     [@reason.raw_literal "`a` is %s"]) a)
                    |> React.string)
@@ -434,7 +438,7 @@ module MemoCustomCompareProps =
     let make =
       ((fun ~a ->
           ((React.Dom.createDOMElementVariadic "div"
-              ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+              ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
               [(((Printf.sprintf (("`a` is %d")
                     [@reason.raw_literal "`a` is %d"]) a)
                    |> React.string)
@@ -470,7 +474,7 @@ let upperWithChild foo = Upper.make ~children:[foo] ()
 let upperWithChildren foo bar = Upper.make ~children:[foo; bar] ()
 let lower =
   React.Dom.createDOMElementVariadic "lower"
-    ~props:(Js_of_ocaml.Js.Unsafe.obj [||]) []
+    ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps) []
 let lowerWithChildAndProps foo =
   React.Dom.createDOMElementVariadic "lower"
     ~props:(Js_of_ocaml.Js.Unsafe.obj
@@ -484,7 +488,7 @@ let lowerWithChildAndProps foo =
     React.Dom.domProps) [foo]
 let lowerWithChildren foo bar =
   React.Dom.createDOMElementVariadic "lower"
-    ~props:(Js_of_ocaml.Js.Unsafe.obj [||]) [foo; bar]
+    ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps) [foo; bar]
 let lowerWithChildrenComplex =
   React.Dom.createDOMElementVariadic "div"
     ~props:(Js_of_ocaml.Js.Unsafe.obj
@@ -517,7 +521,7 @@ let lowerWithChildrenComplex =
                              [@reason.raw_literal "menu"]) : string))))|] : 
          React.Dom.domProps)
          [React.Dom.createDOMElementVariadic "ul"
-            ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+            ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
             [(((examples |>
                   (List.map
                      (fun e ->
@@ -584,25 +588,34 @@ let lowerWithChildrenComplex2 =
                       [@reason.preserve_braces ]))))
                |> (Option.value ~default:firstExample) in
            React.Dom.createDOMElementVariadic "div"
-             ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+             ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
              [React.Dom.createDOMElementVariadic "h2"
-                ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+                ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
                 [((example.title |> s)[@reason.preserve_braces ])];
              React.Dom.createDOMElementVariadic "h4"
-               ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+               ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
                [(((("Rendered component")
                     [@reason.raw_literal "Rendered component"]) |> s)
                [@reason.preserve_braces ])];
              ((example.element)
              [@reason.preserve_braces ]);
              React.Dom.createDOMElementVariadic "h4"
-               ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+               ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
                [(((("Code")[@reason.raw_literal "Code"]) |> s)
                [@reason.preserve_braces ])];
              ((example.code)
              [@reason.preserve_braces ])]))
        [@reason.preserve_braces ])]]
 let nestedElement = Foo.Bar.make ~a:1 ~b:(("1")[@reason.raw_literal "1"]) ()
+let innerHTML =
+  React.Dom.createDOMElementVariadic "div"
+    ~props:(Js_of_ocaml.Js.Unsafe.obj
+              [|("dangerouslySetInnerHTML",
+                  (Js_of_ocaml.Js.Unsafe.inject
+                     (((React.Dom.createMarkup ~__html:(("<lol></lol>")
+                          [@reason.raw_literal "<lol></lol>"]))
+                     [@reason.preserve_braces ]) : React.Dom.DangerouslySetInnerHTML.t)))|] : 
+    React.Dom.domProps) []
 let makeProps
   : title:'title ->
       children:'children ->
@@ -634,9 +647,9 @@ let make =
   ((fun ~title ->
       ((fun ~children ->
           ((React.Dom.createDOMElementVariadic "div"
-              ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+              ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
               (((React.Dom.createDOMElementVariadic "span"
-                   ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+                   ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
                    [((title |> s)[@reason.preserve_braces ])]) :: children)
               [@reason.preserve_braces ]))
           [@reason.preserve_braces ]))
@@ -667,7 +680,8 @@ let make ~title  ~children  ?key  () =
 let t =
   FancyButton.make ~ref:buttonRef
     ~children:[React.Dom.createDOMElementVariadic "div"
-                 ~props:(Js_of_ocaml.Js.Unsafe.obj [||]) []] ()
+                 ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                 []] ()
 let t =
   React.Dom.createDOMElementVariadic "button"
     ~props:(Js_of_ocaml.Js.Unsafe.obj
