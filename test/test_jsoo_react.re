@@ -698,14 +698,15 @@ let testDangerouslySetInnerHTML = () => {
   withContainer(c => {
     act(() => {
       React.Dom.render(
-        <div dangerouslySetInnerHTML={React.Dom.createMarkup(~__html="<lol></lol>")} />,
+        <div
+          dangerouslySetInnerHTML={React.Dom.createMarkup(
+            ~__html="<lol></lol>",
+          )}
+        />,
         Html.element(c),
       )
     });
-    assert_equal(
-      c##.innerHTML,
-      Js.string("<div><lol></lol></div>"),
-    );
+    assert_equal(c##.innerHTML, Js.string("<div><lol></lol></div>"));
   });
 };
 
@@ -779,7 +780,7 @@ let suite =
     refs,
     children,
     fragments,
-    dangerouslySetInnerHTML
+    dangerouslySetInnerHTML,
   ];
 
 let () = Webtest_js.Runner.run(suite);
