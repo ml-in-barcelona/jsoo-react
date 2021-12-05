@@ -568,12 +568,8 @@ let testForwardRef = () => {
   module FancyButton = {
     [@react.component]
     let make =
-      React.Dom.forwardRef((~children, theRef) => {
-        <button
-          ref=?{theRef |> Js_of_ocaml.Js.Opt.to_option}
-          className="FancyButton">
-          children
-        </button>
+      React.Dom.forwardRef((~children, ref) => {
+        <button ref className="FancyButton"> children </button>
       });
   };
 
@@ -698,6 +694,22 @@ let testFragmentSyntax = () => {
   });
 };
 
+let testDangerouslySetInnerHTML = () => {
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <div
+          dangerouslySetInnerHTML={React.Dom.createMarkup(
+            ~__html="<lol></lol>",
+          )}
+        />,
+        Html.element(c),
+      )
+    });
+    assert_equal(c##.innerHTML, Js.string("<div><lol></lol></div>"));
+  });
+};
+
 let basic =
   "basic"
   >::: [
@@ -754,6 +766,8 @@ let fragments =
     "fragmentSyntax" >:: testFragmentSyntax,
   ];
 
+let dangerouslySetInnerHTML =
+  "dangerouslySetInnerHTML" >::: ["basic" >:: testDangerouslySetInnerHTML];
 let suite =
   "baseSuite"
   >::: [
@@ -766,6 +780,7 @@ let suite =
     refs,
     children,
     fragments,
+    dangerouslySetInnerHTML,
   ];
 
 let () = Webtest_js.Runner.run(suite);

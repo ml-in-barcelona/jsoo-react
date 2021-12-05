@@ -50,6 +50,13 @@ let argIsKeyRef = function
   | _ ->
       false
 
+let isUnit expr =
+  match expr.pexp_desc with
+  | Pexp_construct ({txt= Lident "()"; _}, _) ->
+      true
+  | _ ->
+      false
+
 let constantString ~loc str = Ast_helper.Exp.constant ~loc (Const.string str)
 
 let safeTypeFromValue valueStr =
@@ -351,6 +358,61 @@ let rec makeFunsForMakePropsBody list args =
   | [] ->
       args
 
+let makeAttributeValue ~loc (type_ : Html.attributeType) value =
+  match type_ with
+  | String ->
+      [%expr Js_of_ocaml.Js.string ([%e value] : string)]
+  | Int ->
+      [%expr ([%e value] : int)]
+  | Float ->
+      [%expr ([%e value] : float)]
+  | Bool ->
+      [%expr ([%e value] : bool)]
+  | Style ->
+      [%expr ([%e value] : React.Dom.Style.t)]
+  | Ref ->
+      [%expr ([%e value] : React.Dom.domRef)]
+  | InnerHtml ->
+      [%expr ([%e value] : React.Dom.DangerouslySetInnerHTML.t)]
+
+let makeEventValue ~loc (type_ : Html.eventType) value =
+  match type_ with
+  | Clipboard ->
+      [%expr ([%e value] : React.Event.Clipboard.t -> unit)]
+  | Composition ->
+      [%expr ([%e value] : React.Event.Composition.t -> unit)]
+  | Keyboard ->
+      [%expr ([%e value] : React.Event.Keyboard.t -> unit)]
+  | Focus ->
+      [%expr ([%e value] : React.Event.Focus.t -> unit)]
+  | Form ->
+      [%expr ([%e value] : React.Event.Form.t -> unit)]
+  | Mouse ->
+      [%expr ([%e value] : React.Event.Mouse.t -> unit)]
+  | Selection ->
+      [%expr ([%e value] : React.Event.Selection.t -> unit)]
+  | Touch ->
+      [%expr ([%e value] : React.Event.Touch.t -> unit)]
+  | UI ->
+      [%expr ([%e value] : React.Event.UI.t -> unit)]
+  | Wheel ->
+      [%expr ([%e value] : React.Event.Wheel.t -> unit)]
+  | Media ->
+      [%expr ([%e value] : React.Event.Media.t -> unit)]
+  | Image ->
+      [%expr ([%e value] : React.Event.Image.t -> unit)]
+  | Animation ->
+      [%expr ([%e value] : React.Event.Animation.t -> unit)]
+  | Transition ->
+      [%expr ([%e value] : React.Event.Transition.t -> unit)]
+
+let makeValue ~loc prop value =
+  match prop with
+  | Html.Attribute attribute ->
+      makeAttributeValue ~loc attribute.type_ value
+  | Html.Event event ->
+      makeEventValue ~loc event.type_ value
+
 let makeJsObj ~loc namedArgListWithKeyAndRef =
   let labelToTuple label =
     let l = getLabel label in
@@ -489,7 +551,7 @@ let jsxMapper () =
           ; (nolabel, props)
           ; (nolabel, children) ]
   in
-  let transformLowercaseCall mapper loc attrs callArguments id =
+  let transformLowercaseCall mapper loc attrs callArguments id callLoc =
     let children, nonChildrenProps = extractChildren ~loc callArguments in
     let componentNameExpr = constantString ~loc id in
     let childrenExpr = transformChildrenIfList ~loc ~mapper children in
@@ -508,29 +570,42 @@ let jsxMapper () =
                 together. You can simply remove the spread." )
     in
     let args =
-      match nonChildrenProps with
-      | [_justTheUnitArgumentAtEnd] ->
-          [ (* "div" *)
-            (nolabel, componentNameExpr)
-          ; (* React.Dom.props(~className=blabla, ~foo=bar, ()) *)
-            (labelled "props", [%expr React.Dom.domProps ()])
-          ; (* [|moreCreateElementCallsHere|] *)
-            (nolabel, childrenExpr) ]
-      | nonEmptyProps ->
-          let propsCall =
-            Exp.apply ~loc
-              (Exp.ident ~loc
-                 {loc; txt= Ldot (Ldot (Lident "React", "Dom"), "domProps")} )
-              ( nonEmptyProps
-              |> List.map (fun (label, expression) ->
-                     (label, mapper#expression expression) ) )
-          in
-          [ (* "div" *)
-            (nolabel, componentNameExpr)
-          ; (* React.Dom.props(~className=blabla, ~foo=bar, ()) *)
-            (labelled "props", propsCall)
-          ; (* [|moreCreateElementCallsHere|] *)
-            (nolabel, childrenExpr) ]
+      (* Filtering out last unit *)
+      let isLabeledArg (name, value) =
+        getLabel name != "" && not (isUnit value)
+      in
+      let labeledProps = List.filter isLabeledArg nonChildrenProps in
+      let makePropField (arg_label, value) =
+        let loc = callLoc in
+        let name = getLabel arg_label in
+        let prop =
+          match Html.findByName name with
+          | Some p ->
+              p
+          | None ->
+              raise
+              @@ Location.raise_errorf ~loc "prop '%s' isn't a valid React prop"
+                   name
+        in
+        let htmlName = Html.getHtmlName prop in
+        let objectKey =
+          Exp.constant ~loc (Pconst_string (htmlName, loc, None))
+        in
+        let objectValue = makeValue ~loc prop value in
+        [%expr [%e objectKey], Js_of_ocaml.Js.Unsafe.inject [%e objectValue]]
+      in
+      let propsObj =
+        [%expr
+          ( Js_of_ocaml.Js.Unsafe.obj
+              [%e Exp.array ~loc (List.map makePropField labeledProps)]
+            : React.Dom.domProps )]
+      in
+      [ (* "div" *)
+        (nolabel, componentNameExpr)
+      ; (* ~props: Js_of_ocaml.Js.Unsafe.obj ... *)
+        (labelled "props", propsObj)
+      ; (* [|moreCreateElementCallsHere|] *)
+        (nolabel, childrenExpr) ]
     in
     Exp.apply
       ~loc (* throw away the [@JSX] attribute and keep the others, if any *)
@@ -1173,7 +1248,7 @@ let jsxMapper () =
   let reactComponentSignatureTransform mapper signatures =
     List.fold_right (transformComponentSignature mapper) signatures []
   in
-  let transformJsxCall mapper callExpression callArguments attrs =
+  let transformJsxCall mapper callExpression callArguments attrs applyLoc =
     match callExpression.pexp_desc with
     | Pexp_ident caller -> (
       match caller with
@@ -1189,7 +1264,7 @@ let jsxMapper () =
       (* turn that into
          React.Dom.createElement(~props=React.Dom.props(~props1=foo, ~props2=bar, ()), [|bla|]) *)
       | {loc; txt= Lident id} ->
-          transformLowercaseCall mapper loc attrs callArguments id
+          transformLowercaseCall mapper loc attrs callArguments id applyLoc
       | {txt= Ldot (_, anythingNotCreateElementOrMake)} ->
           raise
             (Invalid_argument
@@ -1223,8 +1298,9 @@ let jsxMapper () =
     method! expression expression =
       match expression with
       (* Does the function application have the @JSX attribute? *)
-      | {pexp_desc= Pexp_apply (callExpression, callArguments); pexp_attributes}
-        -> (
+      | { pexp_desc= Pexp_apply (callExpression, callArguments)
+        ; pexp_attributes
+        ; pexp_loc= applyLoc } -> (
           let jsxAttribute, nonJSXAttributes =
             List.partition
               (fun attribute -> attribute.attr_name.txt = "JSX")
@@ -1236,7 +1312,7 @@ let jsxMapper () =
               super#expression expression
           | _, nonJSXAttributes ->
               transformJsxCall self callExpression callArguments
-                nonJSXAttributes )
+                nonJSXAttributes applyLoc )
       (* is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo]*)
       | { pexp_desc=
             ( Pexp_construct
@@ -1256,7 +1332,7 @@ let jsxMapper () =
               let callExpression = [%expr React.Fragment.createElement] in
               transformJsxCall self callExpression
                 [(Labelled "children", listItems)]
-                nonJSXAttributes )
+                nonJSXAttributes listItems.pexp_loc )
       (* Delegate to the default mapper, a deep identity traversal *)
       | e ->
           super#expression e

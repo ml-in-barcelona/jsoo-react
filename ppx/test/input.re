@@ -103,7 +103,8 @@ let upperWithChildren = (foo, bar) => <Upper> foo bar </Upper>;
 
 let lower = <lower />;
 
-let lowerWithChildAndProps = foo => <lower a=1 b="1"> foo </lower>;
+let lowerWithChildAndProps = foo =>
+  <lower cols=1 href="https://example.com"> foo </lower>;
 
 let lowerWithChildren = (foo, bar) => <lower> foo bar </lower>;
 
@@ -154,6 +155,10 @@ let lowerWithChildrenComplex2 =
 
 let nestedElement = <Foo.Bar a=1 b="1" />;
 
+let innerHTML =
+  <div
+    dangerouslySetInnerHTML={React.Dom.createMarkup(~__html="<lol></lol>")}
+  />;
 // TODO: fix this test (are these components deprecated??)
 // let nestedElementCustomName = <Foo.component a=1 b="1" />;
 
