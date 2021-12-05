@@ -241,190 +241,250 @@ let commonDOMAttributes =
 
 (* All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/ *)
 let ariaAttributes =
-  [ (* /** Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. */
-        'aria-activedescendant'?: String;
-        /** Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. */
-        'aria-atomic'?: Bool | 'false' | 'true';
-        /**
+  [ (* Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. *)
+    { name= "ariaActivedescendant"
+    ; htmlName= "aria-activedescendant"
+    ; type_= String }
+  ; (* Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. *)
+    { name= "ariaAtomic"
+    ; htmlName= "aria-atomic"
+    ; type_= String (* Bool | 'false' | 'true' *) }
+  ; (*
      * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
      * presented if they are made.
-     */
-        'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both';
-        /** Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. */
-        'aria-busy'?: Bool | 'false' | 'true';
-        /**
+     *)
+    { name= "ariaAutocomplete"
+    ; htmlName= "aria-autocomplete"
+    ; type_= String (* 'none' | 'inline' | 'list' | 'both' *) }
+  ; (* Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. *)
+    { name= "ariaBusy"
+    ; htmlName= "aria-busy"
+    ; type_= String (* Bool | 'false' | 'true' *) }
+  ; (*
      * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
      * @see aria-pressed @see aria-selected.
-     */
-        'aria-checked'?: Bool | 'false' | 'mixed' | 'true';
-        /**
+     *)
+    { name= "ariaChecked"
+    ; htmlName= "aria-checked"
+    ; type_= String (* Bool | 'false' | 'mixed' | 'true' *) }
+  ; (*
      * Defines the total number of columns in a table, grid, or treegrid.
      * @see aria-colindex.
-     */
-        'aria-colcount'?: number;
-        /**
+     *)
+    {name= "ariaColcount"; htmlName= "aria-colcount"; type_= Int}
+  ; (*
      * Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
      * @see aria-colcount @see aria-colspan.
-     */
-        'aria-colindex'?: number;
-        /**
+     *)
+    {name= "ariaColindex"; htmlName= "aria-colindex"; type_= Int}
+  ; (*
      * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
      * @see aria-colindex @see aria-rowspan.
-     */
-        'aria-colspan'?: number;
-        /**
+     *)
+    {name= "ariaColspan"; htmlName= "aria-colspan"; type_= Int}
+  ; (*
      * Identifies the element (or elements) whose contents or presence are controlled by the current element.
      * @see aria-owns.
-     */
-        'aria-controls'?: String;
-        /** Indicates the element that represents the current item within a container or set of related elements. */
-        'aria-current'?: Bool | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time';
-        /**
+     *)
+    {name= "ariaControls"; htmlName= "aria-controls"; type_= String}
+  ; (* Indicates the element that represents the current item within a container or set of related elements. *)
+    { name= "ariaCurrent"
+    ; htmlName= "aria-current"
+    ; type_=
+        String
+        (* Bool | 'false' | 'true' |  'page' | 'step' | 'location' | 'date' | 'time' *)
+    }
+  ; (*
      * Identifies the element (or elements) that describes the object.
      * @see aria-labelledby
-     */
-        'aria-describedby'?: String;
-        /**
+     *)
+    {name= "ariaDescribedby"; htmlName= "aria-describedby"; type_= String}
+  ; (*
      * Identifies the element that provides a detailed, extended description for the object.
      * @see aria-describedby.
-     */
-        'aria-details'?: String;
-        /**
+     *)
+    {name= "ariaDetails"; htmlName= "aria-details"; type_= String}
+  ; (*
      * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
      * @see aria-hidden @see aria-readonly.
-     */
-        'aria-disabled'?: Bool | 'false' | 'true';
-        /**
+     *)
+    { name= "ariaDisabled"
+    ; htmlName= "aria-disabled"
+    ; type_= String (* Bool | 'false' | 'true' *) }
+  ; (*
      * Indicates what functions can be performed when a dragged object is released on the drop target.
      * @deprecated in ARIA 1.1
-     */
-        'aria-dropeffect'?: 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup';
-        /**
+     *)
+    { name= "ariaDropeffect"
+    ; htmlName= "aria-dropeffect"
+    ; type_=
+        String (* 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup' *) }
+  ; (*
      * Identifies the element that provides an error message for the object.
      * @see aria-invalid @see aria-describedby.
-     */
-        'aria-errormessage'?: String;
-        /** Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. */
-        'aria-expanded'?: Bool | 'false' | 'true';
-        /**
+     *)
+    {name= "ariaErrormessage"; htmlName= "aria-errormessage"; type_= String}
+  ; (* Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. *)
+    { name= "ariaExpanded"
+    ; htmlName= "aria-expanded"
+    ; type_= String (* Bool | 'false' | 'true' *) }
+  ; (*
      * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
      * allows assistive technology to override the general default of reading in document source order.
-     */
-        'aria-flowto'?: String;
-        /**
+     *)
+    {name= "ariaFlowto"; htmlName= "aria-flowto"; type_= String}
+  ; (*
      * Indicates an element's "grabbed" state in a drag-and-drop operation.
      * @deprecated in ARIA 1.1
-     */
-        'aria-grabbed'?: Bool | 'false' | 'true';
-        /** Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. */
-        'aria-haspopup'?: Bool | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
-        /**
+     *)
+    { name= "ariaGrabbed"
+    ; htmlName= "aria-grabbed"
+    ; type_= String (* Bool | 'false' | 'true' *) }
+  ; (* Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. *)
+    { name= "ariaHaspopup"
+    ; htmlName= "aria-haspopup"
+    ; type_=
+        String
+        (* Bool | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'; *)
+    }
+  ; (*
      * Indicates whether the element is exposed to an accessibility API.
      * @see aria-disabled.
-     */
-        'aria-hidden'?: Bool | 'false' | 'true';
-        /**
+     *)
+    { name= "ariaHidden"
+    ; htmlName= "aria-hidden"
+    ; type_= String (* Bool | 'false' | 'true' *) }
+  ; (*
      * Indicates the entered value does not conform to the format expected by the application.
      * @see aria-errormessage.
-     */
-        'aria-invalid'?: Bool | 'false' | 'true' | 'grammar' | 'spelling';
-        /** Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. */
-        'aria-keyshortcuts'?: String;
-        /**
+     *)
+    { name= "ariaInvalid"
+    ; htmlName= "aria-invalid"
+    ; type_= String (* Bool | 'false' | 'true' |  'grammar' | 'spelling'; *) }
+  ; (* Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. *)
+    {name= "ariaKeyshortcuts"; htmlName= "aria-keyshortcuts"; type_= String}
+  ; (*
      * Defines a String value that labels the current element.
      * @see aria-labelledby.
-     */
-        'aria-label'?: String;
-        /**
+     *)
+    {name= "ariaLabel"; htmlName= "aria-label"; type_= String}
+  ; (*
      * Identifies the element (or elements) that labels the current element.
      * @see aria-describedby.
-     */
-        'aria-labelledby'?: String;
-        /** Defines the hierarchical level of an element within a structure. */
-        'aria-level'?: number;
-        /** Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. */
-        'aria-live'?: 'off' | 'assertive' | 'polite';
-        /** Indicates whether an element is modal when displayed. */
-        'aria-modal'?: Bool | 'false' | 'true';
-        /** Indicates whether a text box accepts multiple lines of input or only a single line. */
-        'aria-multiline'?: Bool | 'false' | 'true';
-        /** Indicates that the user may select more than one item from the current selectable descendants. */
-        'aria-multiselectable'?: Bool | 'false' | 'true';
-        /** Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. */
-        'aria-orientation'?: 'horizontal' | 'vertical';
-        /**
+     *)
+    {name= "ariaLabelledby"; htmlName= "aria-labelledby"; type_= String}
+  ; (*Defines the hierarchical level of an element within a structure. *)
+    {name= "ariaLevel"; htmlName= "aria-level"; type_= Int}
+  ; (* Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. *)
+    { name= "ariaLive"
+    ; htmlName= "aria-live"
+    ; type_= String (* 'off' | 'assertive' | 'polite' *) }
+  ; (* Indicates whether an element is modal when displayed. *)
+    { name= "ariaModal"
+    ; htmlName= "aria-modal"
+    ; type_= String (* Bool | 'false' | 'true' *) }
+  ; (* Indicates whether a text box accepts multiple lines of input or only a single line. *)
+    { name= "ariaMultiline"
+    ; htmlName= "aria-multiline"
+    ; type_= String (* Bool | 'false' | 'true' *) }
+  ; (* Indicates that the user may select more than one item from the current selectable descendants. *)
+    { name= "ariaMultiselectable"
+    ; htmlName= "aria-multiselectable"
+    ; type_= String (* Bool |  'false' | 'true' *) }
+  ; (* Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. *)
+    { name= "ariaOrientation"
+    ; htmlName= "aria-orientation"
+    ; type_= String (* 'horizontal' | 'vertical' *) }
+  ; (*
      * Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
      * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
      * @see aria-controls.
-     */
-        'aria-owns'?: String;
-        /**
+     *)
+    {name= "ariaOwns"; htmlName= "aria-owns"; type_= String}
+  ; (*
      * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
      * A hint could be a sample value or a brief description of the expected format.
-     */
-        'aria-placeholder'?: String;
-        /**
+     *)
+    {name= "ariaPlaceholder"; htmlName= "aria-placeholder"; type_= String}
+  ; (*
      * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
      * @see aria-setsize.
-     */
-        'aria-posinset'?: number;
-        /**
+     *)
+    {name= "ariaPosinset"; htmlName= "aria-posinset"; type_= Int}
+  ; (*
      * Indicates the current "pressed" state of toggle buttons.
      * @see aria-checked @see aria-selected.
-     */
-        'aria-pressed'?: Bool | 'false' | 'mixed' | 'true';
-        /**
+     *)
+    { name= "ariaPressed"
+    ; htmlName= "aria-pressed"
+    ; type_= String (* Bool | 'false' | 'mixed' | 'true' *) }
+  ; (*
      * Indicates that the element is not editable, but is otherwise operable.
      * @see aria-disabled.
-     */
-        'aria-readonly'?: Bool | 'false' | 'true';
-        /**
+     *)
+    { name= "ariaReadonly"
+    ; htmlName= "aria-readonly"
+    ; type_= String (* Bool | 'false' | 'true' *) }
+  ; (*
      * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
      * @see aria-atomic.
-     */
-        'aria-relevant'?: 'additions' | 'additions removals' | 'additions text' | 'all' | 'removals' | 'removals additions' | 'removals text' | 'text' | 'text additions' | 'text removals';
-        /** Indicates that user input is required on the element before a form may be submitted. */
-        'aria-required'?: Bool | 'false' | 'true';
-        /** Defines a human-readable, author-localized description for the role of an element. */
-        'aria-roledescription'?: String;
-        /**
+     *)
+    { name= "ariaRelevant"
+    ; htmlName= "aria-relevant"
+    ; type_=
+        String
+        (* 'additions' | 'additions removals' | 'additions text' | 'all' | 'removals' | 'removals additions' | 'removals text' | 'text' | 'text additions' | 'text removals' *)
+    }
+  ; (* Indicates that user input is required on the element before a form may be submitted. *)
+    { name= "ariaRequired"
+    ; htmlName= "aria-required"
+    ; type_= String (* Bool | 'false' | 'true' *) }
+  ; (*Defines a human-readable, author-localized description for the role of an element. *)
+    { name= "ariaRoledescription"
+    ; htmlName= "aria-roledescription"
+    ; type_= String }
+  ; (*
      * Defines the total number of rows in a table, grid, or treegrid.
      * @see aria-rowindex.
-     */
-        'aria-rowcount'?: number;
-        /**
+     *)
+    {name= "ariaRowcount"; htmlName= "aria-rowcount"; type_= Int}
+  ; (*
      * Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.
      * @see aria-rowcount @see aria-rowspan.
-     */
-        'aria-rowindex'?: number;
-        /**
+     *)
+    {name= "ariaRowindex"; htmlName= "aria-rowindex"; type_= Int}
+  ; (*
      * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
      * @see aria-rowindex @see aria-colspan.
-     */
-        'aria-rowspan'?: number;
-        /**
+     *)
+    {name= "ariaRowspan"; htmlName= "aria-rowspan"; type_= Int}
+  ; (*
      * Indicates the current "selected" state of various widgets.
      * @see aria-checked @see aria-pressed.
-     */
-        'aria-selected'?: Bool | 'false' | 'true';
-        /**
+     *)
+    { name= "ariaSelected"
+    ; htmlName= "aria-selected"
+    ; type_= String (* Bool | 'false' | 'true' *) }
+  ; (*
      * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
      * @see aria-posinset.
-     */
-        'aria-setsize'?: number;
-        /** Indicates if items in a table or grid are sorted in ascending or descending order. */
-        'aria-sort'?: 'none' | 'ascending' | 'descending' | 'other';
-        /** Defines the maximum allowed value for a range widget. */
-        'aria-valuemax'?: number;
-        /** Defines the minimum allowed value for a range widget. */
-        'aria-valuemin'?: number;
-        /**
+     *)
+    {name= "ariaSetsize"; htmlName= "aria-setsize"; type_= Int}
+  ; (* Indicates if items in a table or grid are sorted in ascending or descending order. *)
+    { name= "ariaSort"
+    ; htmlName= "aria-sort"
+    ; type_= String (* 'none' | 'ascending' | 'descending' | 'other' *) }
+  ; (*Defines the maximum allowed value for a range widget. *)
+    {name= "ariaValuemax"; htmlName= "aria-valuemax"; type_= Int}
+  ; (*Defines the minimum allowed value for a range widget. *)
+    {name= "ariaValuemin"; htmlName= "aria-valuemin"; type_= Int}
+  ; (*
      * Defines the current value for a range widget.
      * @see aria-valuetext.
-     */
-        'aria-valuenow'?: number;
-        /** Defines the human readable text alternative of aria-valuenow for a range widget. */
-        'aria-valuetext'?: String; *) ]
+     *)
+    {name= "ariaValuenow"; htmlName= "aria-valuenow"; type_= Int}
+  ; (*Defines the human readable text alternative of aria-valuenow for a range widget. *)
+    {name= "ariaValuetext"; htmlName= "aria-valuetext"; type_= String} ]
 
 (* All the WAI-ARIA 1.1 role attribute values from https://www.w3.org/TR/wai-aria-1.1/#role_definitions *)
 let ariaRole = String
@@ -530,7 +590,7 @@ let attributesHTML =
   ; (* <command>, <menuitem> *)
 
     (* WAI-ARIA *)
-    {name= "role"; type_= String (* AriaRole *); htmlName= ""}
+    {name= "role"; type_= ariaRole; htmlName= ""}
   ; (* RDFa Attributes *)
     {name= "about"; type_= String; htmlName= ""}
   ; {name= "datatype"; type_= String; htmlName= ""}
@@ -693,16 +753,18 @@ let anchorHTMLAttributes =
 let audioHTMLAttributes = [] (* MediaHTMLAttributes*)
 
 let areaHTMLAttributes =
-  [ {name= "alt"; type_= String; htmlName= ""}
-  ; {name= "coords"; type_= String; htmlName= ""}
-  ; {name= "download"; type_= String (* any *); htmlName= ""}
-  ; {name= "href"; type_= String; htmlName= ""}
-  ; {name= "hrefLang"; type_= String; htmlName= ""}
-  ; {name= "media"; type_= String; htmlName= ""}
-  ; {name= "referrerPolicy"; type_= attributeReferrerPolicy; htmlName= ""}
-  ; {name= "rel"; type_= String; htmlName= ""}
-  ; {name= "shape"; type_= String; htmlName= ""}
-  ; {name= "target"; type_= String; htmlName= ""} ]
+  [ {name= "alt"; type_= String; htmlName= "alt"}
+  ; {name= "coords"; type_= String; htmlName= "coords"}
+  ; {name= "download"; type_= String (* any *); htmlName= "download"}
+  ; {name= "href"; type_= String; htmlName= "href"}
+  ; {name= "hrefLang"; type_= String; htmlName= "hrefLang"}
+  ; {name= "media"; type_= String; htmlName= "media"}
+  ; { name= "referrerPolicy"
+    ; type_= attributeReferrerPolicy
+    ; htmlName= "referrerPolicy" }
+  ; {name= "rel"; type_= String; htmlName= "rel"}
+  ; {name= "shape"; type_= String; htmlName= "shape"}
+  ; {name= "target"; type_= String; htmlName= "target"} ]
 
 let baseHTMLAttributes =
   [ {name= "href"; type_= String; htmlName= ""}
@@ -1428,70 +1490,7 @@ let webViewHTMLAttributes =
   ; {name= "useragent"; type_= String; htmlName= ""}
   ; {name= "webpreferences"; type_= String; htmlName= ""} ]
 
-let reactSVG = []
-(* {
-       animate: SVGFactory;
-       circle: SVGFactory;
-       clipPath: SVGFactory;
-       defs: SVGFactory;
-       desc: SVGFactory;
-       ellipse: SVGFactory;
-       feBlend: SVGFactory;
-       feColorMatrix: SVGFactory;
-       feComponentTransfer: SVGFactory;
-       feComposite: SVGFactory;
-       feConvolveMatrix: SVGFactory;
-       feDiffuseLighting: SVGFactory;
-       feDisplacementMap: SVGFactory;
-       feDistantLight: SVGFactory;
-       feDropShadow: SVGFactory;
-       feFlood: SVGFactory;
-       feFuncA: SVGFactory;
-       feFuncB: SVGFactory;
-       feFuncG: SVGFactory;
-       feFuncR: SVGFactory;
-       feGaussianBlur: SVGFactory;
-       feImage: SVGFactory;
-       feMerge: SVGFactory;
-       feMergeNode: SVGFactory;
-       feMorphology: SVGFactory;
-       feOffset: SVGFactory;
-       fePointLight: SVGFactory;
-       feSpecularLighting: SVGFactory;
-       feSpotLight: SVGFactory;
-       feTile: SVGFactory;
-       feTurbulence: SVGFactory;
-       filter: SVGFactory;
-       foreignObject: SVGFactory;
-       g: SVGFactory;
-       image: SVGFactory;
-       line: SVGFactory;
-       linearGradient: SVGFactory;
-       marker: SVGFactory;
-       mask: SVGFactory;
-       metadata: SVGFactory;
-       path: SVGFactory;
-       pattern: SVGFactory;
-       polygon: SVGFactory;
-       polyline: SVGFactory;
-       radialGradient: SVGFactory;
-       rect: SVGFactory;
-       stop: SVGFactory;
-       svg: SVGFactory;
-       switch: SVGFactory;
-       symbol: SVGFactory;
-       text: SVGFactory;
-       textPath: SVGFactory;
-       tspan: SVGFactory;
-       use: SVGFactory;
-       view: SVGFactory;
-   ] *)
-
-(* //
-   // Browser Interfaces
-   // https://github.com/nikeee/2048-typescript/blob/master/2048/js/touch.d.ts
-   // ---------------------------------------------------------------------- *)
-
+(* Browser Interfaces https://github.com/nikeee/2048-typescript/blob/master/2048/js/touch.d.ts *)
 let abstractView = []
 (* {
        styleMedia: StyleMedia;
@@ -1764,11 +1763,9 @@ let htmlElements =
 let svgElements =
   [ {tag= "svg"; attributes= svgAttributes}
   ; {tag= "animate"; attributes= svgAttributes}
-  ; (* TODO: It is SVGAnimateElement but is not in TypeScript's lib.dom.d.ts for now. *)
-    {tag= "animateMotion"; attributes= svgAttributes}
+  ; {tag= "animateMotion"; attributes= svgAttributes}
   ; {tag= "animateTransform"; attributes= svgAttributes}
-  ; (* TODO: It is SVGAnimateTransformElement but is not in TypeScript's lib.dom.d.ts for now. *)
-    {tag= "circle"; attributes= svgAttributes}
+  ; {tag= "circle"; attributes= svgAttributes}
   ; {tag= "clipPath"; attributes= svgAttributes}
   ; {tag= "defs"; attributes= svgAttributes}
   ; {tag= "desc"; attributes= svgAttributes}
