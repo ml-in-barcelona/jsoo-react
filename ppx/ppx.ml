@@ -1255,8 +1255,8 @@ let jsxMapper () =
   let reactComponentTransform mapper ctxt structures =
     List.fold_right (transformComponentDefinition mapper ctxt) structures []
   in
-  let transformJsxCall callExpression callArguments attrs apply_loc apply_loc_stack
-      =
+  let transformJsxCall callExpression callArguments attrs apply_loc
+      apply_loc_stack =
     match callExpression.pexp_desc with
     | Pexp_ident caller -> (
       match caller with
@@ -1327,7 +1327,7 @@ let jsxMapper () =
           | {pexp_desc= Pexp_ident {txt= Lident id; _}}
             when List.mem id dom_tags ->
               transformJsxCall callExpression callArguments pexp_attributes
-              apply_loc pexp_loc_stack
+                apply_loc pexp_loc_stack
           | _ ->
               expression )
         | {react_dom= false} -> (
@@ -1343,7 +1343,7 @@ let jsxMapper () =
                 expression
             | _, nonJSXAttributes ->
                 transformJsxCall callExpression callArguments nonJSXAttributes
-                apply_loc pexp_loc_stack ) )
+                  apply_loc pexp_loc_stack ) )
       (* is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo]*)
       | { pexp_desc=
             ( Pexp_construct

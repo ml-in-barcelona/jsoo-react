@@ -499,7 +499,7 @@ end
 
 module DangerouslySetInnerHTML : sig
   type t
-
 end
 
-val createMarkup : __html:string -> DangerouslySetInnerHTML.t [@@js.builder][@@js.verbatim_names]
+val createMarkup : __html:string -> DangerouslySetInnerHTML.t
+  [@@js.builder] [@@js.verbatim_names]
