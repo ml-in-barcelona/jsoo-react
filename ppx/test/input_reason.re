@@ -86,10 +86,10 @@ let upperWithChild = foo => <Upper> foo </Upper>;
 
 let upperWithChildren = (foo, bar) => <Upper> foo bar </Upper>;
 
-let lower = <lower />;
+let lower = <div />;
 
 let lowerWithChildAndProps = foo =>
-  <lower cols=1 href="https://example.com"> foo </lower>;
+  <a tabIndex=1 href="https://example.com"> foo </a>;
 
 let lowerWithChildren = (foo, bar) => <lower> foo bar </lower>;
 
