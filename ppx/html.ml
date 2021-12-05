@@ -1,3 +1,5 @@
+let ( & ) = List.append
+
 type attributeType = String | Int | Float | Bool | Style | Ref | InnerHtml
 
 type eventType =
@@ -497,7 +499,7 @@ let ariaRole = String
    | Treeitem
    | Custom of String *)
 
-(* <T> extends AriaAttributes, DOMAttributes<T> { *)
+(* AriaAttributes, DOMAttributes*)
 let attributesHTML =
   [ (* React-specific Attributes *)
     {name= "defaultChecked"; type_= Bool; htmlName= ""}
@@ -564,7 +566,6 @@ let attributesHTML =
        * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is *)
     {name= "is"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let allHTMLAttributes =
   [ (* Standard HTML Attributes *)
     {name= "accept"; type_= String; htmlName= ""}
@@ -689,9 +690,8 @@ let anchorHTMLAttributes =
     ; type_= attributeReferrerPolicy
     ; htmlName= "referrerPolicy" } ]
 
-let audioHTMLAttributes = [] (* <T> extends MediaHTMLAttributes<T> {] *)
+let audioHTMLAttributes = [] (* MediaHTMLAttributes*)
 
-(* <T> extends HTMLAttributes<T> { *)
 let areaHTMLAttributes =
   [ {name= "alt"; type_= String; htmlName= ""}
   ; {name= "coords"; type_= String; htmlName= ""}
@@ -704,15 +704,12 @@ let areaHTMLAttributes =
   ; {name= "shape"; type_= String; htmlName= ""}
   ; {name= "target"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let baseHTMLAttributes =
   [ {name= "href"; type_= String; htmlName= ""}
   ; {name= "target"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let blockquoteHTMLAttributes = [{name= "cite"; type_= String; htmlName= ""}]
 
-(* <T> extends HTMLAttributes<T> { *)
 let buttonHTMLAttributes =
   [ {name= "autoFocus"; type_= Bool; htmlName= ""}
   ; {name= "disabled"; type_= Bool; htmlName= ""}
@@ -730,53 +727,43 @@ let buttonHTMLAttributes =
     ; type_= String (* | ReadonlyArray<String> | number *)
     ; htmlName= "" } ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let canvasHTMLAttributes =
   [ {name= "height"; type_= (* number |  *) String; htmlName= ""}
   ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let colHTMLAttributes =
   [ {name= "span"; type_= Int (* number *); htmlName= ""}
   ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let colgroupHTMLAttributes =
   [{name= "span"; type_= Int (* number *); htmlName= ""}]
 
-(* <T> extends HTMLAttributes<T> { *)
 let dataHTMLAttributes =
   [ { name= "value"
     ; type_= String (* | ReadonlyArray<String> | number *)
     ; htmlName= "" } ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let detailsHTMLAttributes =
   [ {name= "open"; type_= Bool; htmlName= ""}
     (* { name="onToggle"; type_= ReactEventHandler<T>; htmlName="" }; *) ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let delHTMLAttributes =
   [ {name= "cite"; type_= String; htmlName= ""}
   ; {name= "dateTime"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let dialogHTMLAttributes = [{name= "open"; type_= Bool; htmlName= ""}]
 
-(* <T> extends HTMLAttributes<T> { *)
 let embedHTMLAttributes =
   [ {name= "height"; type_= (* number |  *) String; htmlName= ""}
   ; {name= "src"; type_= String; htmlName= ""}
   ; {name= "type"; type_= String; htmlName= ""}
   ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let fieldsetHTMLAttributes =
   [ {name= "disabled"; type_= Bool; htmlName= ""}
   ; {name= "form"; type_= String; htmlName= ""}
   ; {name= "name"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let formHTMLAttributes =
   [ {name= "acceptCharset"; type_= String; htmlName= ""}
   ; {name= "action"; type_= String; htmlName= ""}
@@ -787,10 +774,8 @@ let formHTMLAttributes =
   ; {name= "noValidate"; type_= Bool; htmlName= ""}
   ; {name= "target"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let htmlHTMLAttributes = [{name= "manifest"; type_= String; htmlName= ""}]
 
-(* <T> extends HTMLAttributes<T> { *)
 let iframeHTMLAttributes =
   [ {name= "allow"; type_= String; htmlName= ""}
   ; {name= "allowFullScreen"; type_= Bool; htmlName= ""}
@@ -813,7 +798,6 @@ let iframeHTMLAttributes =
   ; {name= "srcDoc"; type_= String; htmlName= ""}
   ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let imgHTMLAttributes =
   [ {name= "alt"; type_= String; htmlName= ""}
   ; { name= "crossOrigin"
@@ -831,7 +815,6 @@ let imgHTMLAttributes =
   ; {name= "useMap"; type_= String; htmlName= ""}
   ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let insHTMLAttributes =
   [ {name= "cite"; type_= String; htmlName= ""}
   ; {name= "dateTime"; type_= String; htmlName= ""} ]
@@ -862,7 +845,6 @@ let inputTypeAttribute = String
         | 'week'
         | (String & {});  *)
 
-(* <T> extends HTMLAttributes<T> { *)
 let inputHTMLAttributes =
   [ {name= "accept"; type_= String; htmlName= ""}
   ; {name= "alt"; type_= String; htmlName= ""}
@@ -902,7 +884,6 @@ let inputHTMLAttributes =
   ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
     (* { name="onChange"; type_= ChangeEventHandler<T>; htmlName="" }; *) ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let keygenHTMLAttributes =
   [ {name= "autoFocus"; type_= Bool; htmlName= ""}
   ; {name= "challenge"; type_= String; htmlName= ""}
@@ -912,18 +893,15 @@ let keygenHTMLAttributes =
   ; {name= "keyParams"; type_= String; htmlName= ""}
   ; {name= "name"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let labelHTMLAttributes =
   [ {name= "form"; type_= String; htmlName= ""}
   ; {name= "htmlFor"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let liHTMLAttributes =
   [ { name= "value"
     ; type_= String (* | ReadonlyArray<String> | number *)
     ; htmlName= "" } ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let linkHTMLAttributes =
   [ {name= "as"; type_= String; htmlName= ""}
   ; {name= "crossOrigin"; type_= String; htmlName= ""}
@@ -938,13 +916,10 @@ let linkHTMLAttributes =
   ; {name= "type"; type_= String; htmlName= ""}
   ; {name= "charSet"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let mapHTMLAttributes = [{name= "name"; type_= String; htmlName= ""}]
 
-(* <T> extends HTMLAttributes<T> { *)
 let menuHTMLAttributes = [{name= "type"; type_= String; htmlName= ""}]
 
-(* <T> extends HTMLAttributes<T> { *)
 let mediaHTMLAttributes =
   [ {name= "autoPlay"; type_= Bool; htmlName= ""}
   ; {name= "controls"; type_= Bool; htmlName= ""}
@@ -957,7 +932,6 @@ let mediaHTMLAttributes =
   ; {name= "preload"; type_= String; htmlName= ""}
   ; {name= "src"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let metaHTMLAttributes =
   [ {name= "charSet"; type_= String; htmlName= ""}
   ; {name= "content"; type_= String; htmlName= ""}
@@ -965,7 +939,6 @@ let metaHTMLAttributes =
   ; {name= "name"; type_= String; htmlName= ""}
   ; {name= "media"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let meterHTMLAttributes =
   [ {name= "form"; type_= String; htmlName= ""}
   ; {name= "high"; type_= Int (* number *); htmlName= ""}
@@ -977,10 +950,8 @@ let meterHTMLAttributes =
     ; type_= String (* | ReadonlyArray<String> | number *)
     ; htmlName= "" } ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let quoteHTMLAttributes = [{name= "cite"; type_= String; htmlName= ""}]
 
-(* <T> extends HTMLAttributes<T> { *)
 let objectHTMLAttributes =
   [ {name= "classID"; type_= String; htmlName= ""}
   ; {name= "data"; type_= String; htmlName= ""}
@@ -992,19 +963,16 @@ let objectHTMLAttributes =
   ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
   ; {name= "wmode"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let olHTMLAttributes =
   [ {name= "reversed"; type_= Bool; htmlName= ""}
   ; {name= "start"; type_= Int (* number *); htmlName= ""}
   ; {name= "type"; type_= String (* '1' | 'a' | 'A' | 'i' | 'I' *); htmlName= ""}
   ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let optgroupHTMLAttributes =
   [ {name= "disabled"; type_= Bool; htmlName= ""}
   ; {name= "label"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let optionHTMLAttributes =
   [ {name= "disabled"; type_= Bool; htmlName= ""}
   ; {name= "label"; type_= String; htmlName= ""}
@@ -1013,30 +981,25 @@ let optionHTMLAttributes =
     ; type_= String (* | ReadonlyArray<String> | number *)
     ; htmlName= "" } ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let outputHTMLAttributes =
   [ {name= "form"; type_= String; htmlName= ""}
   ; {name= "htmlFor"; type_= String; htmlName= ""}
   ; {name= "name"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let paramHTMLAttributes =
   [ {name= "name"; type_= String; htmlName= ""}
   ; { name= "value"
     ; type_= String (* | ReadonlyArray<String> | number *)
     ; htmlName= "" } ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let progressHTMLAttributes =
   [ {name= "max"; type_= (* number |  *) String; htmlName= ""}
   ; { name= "value"
     ; type_= String (* | ReadonlyArray<String> | number *)
     ; htmlName= "" } ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let slotHTMLAttributes = [{name= "name"; type_= String; htmlName= ""}]
 
-(* <T> extends HTMLAttributes<T> { *)
 let scriptHTMLAttributes =
   [ {name= "async"; type_= Bool; htmlName= ""}
   ; (* @deprecated *)
@@ -1050,7 +1013,6 @@ let scriptHTMLAttributes =
   ; {name= "src"; type_= String; htmlName= ""}
   ; {name= "type"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let selectHTMLAttributes =
   [ {name= "autoComplete"; type_= String; htmlName= ""}
   ; {name= "autoFocus"; type_= Bool; htmlName= ""}
@@ -1065,7 +1027,6 @@ let selectHTMLAttributes =
     ; htmlName= "" }
     (* { name="onChange"; type_= ChangeEventHandler<T>; htmlName="" }; *) ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let sourceHTMLAttributes =
   [ {name= "height"; type_= (* number |  *) String; htmlName= ""}
   ; {name= "media"; type_= String; htmlName= ""}
@@ -1075,21 +1036,18 @@ let sourceHTMLAttributes =
   ; {name= "type"; type_= String; htmlName= ""}
   ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let styleHTMLAttributes =
   [ {name= "media"; type_= String; htmlName= ""}
   ; {name= "nonce"; type_= String; htmlName= ""}
   ; {name= "scoped"; type_= Bool; htmlName= ""}
   ; {name= "type"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let tableHTMLAttributes =
   [ {name= "cellPadding"; type_= (* number |  *) String; htmlName= ""}
   ; {name= "cellSpacing"; type_= (* number |  *) String; htmlName= ""}
   ; {name= "summary"; type_= String; htmlName= ""}
   ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let textareaHTMLAttributes =
   [ {name= "autoComplete"; type_= String; htmlName= ""}
   ; {name= "autoFocus"; type_= Bool; htmlName= ""}
@@ -1110,7 +1068,6 @@ let textareaHTMLAttributes =
   ; {name= "wrap"; type_= String; htmlName= ""}
     (* { name="onChange"; type_= ChangeEventHandler<T>; htmlName="" }; *) ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let tdHTMLAttributes =
   [ { name= "align"
     ; type_=
@@ -1127,7 +1084,6 @@ let tdHTMLAttributes =
     ; type_= String (* "top" | "middle" | "bottom" | "baseline" *)
     ; htmlName= "" } ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let thHTMLAttributes =
   [ { name= "align"
     ; type_= String (* "left" | "center" | "right" | "justify" | "char" *)
@@ -1138,10 +1094,8 @@ let thHTMLAttributes =
   ; {name= "scope"; type_= String; htmlName= ""}
   ; {name= "abbr"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let timeHTMLAttributes = [{name= "dateTime"; type_= String; htmlName= ""}]
 
-(* <T> extends HTMLAttributes<T> { *)
 let trackHTMLAttributes =
   [ {name= "default"; type_= Bool; htmlName= ""}
   ; {name= "kind"; type_= String; htmlName= ""}
@@ -1149,7 +1103,7 @@ let trackHTMLAttributes =
   ; {name= "src"; type_= String; htmlName= ""}
   ; {name= "srcLang"; type_= String; htmlName= ""} ]
 
-(* <T> extends MediaHTMLAttributes<T> { *)
+(* MediaHTMLAttributes*)
 let videoHTMLAttributes =
   [ {name= "height"; type_= (* number |  *) String; htmlName= ""}
   ; {name= "playsInline"; type_= Bool; htmlName= ""}
@@ -1165,8 +1119,8 @@ let videoHTMLAttributes =
    //   - "(* number |  *)String"
    //   - "String"
    //   - union of String literals *)
-(* <T> extends AriaAttributes, DOMAttributes<T> { *)
-let attributesSVG =
+(* AriaAttributes, DOMAttributes*)
+let svgAttributes =
   [ (* Attributes which also defined in HTMLAttributes *)
     (* See comment in SVGDOMPropertyConfig.js *)
     {name= "className"; type_= String; htmlName= ""}
@@ -1455,7 +1409,6 @@ let attributesSVG =
   ; {name= "z"; type_= (* number |  *) String; htmlName= ""}
   ; {name= "zoomAndPan"; type_= String; htmlName= ""} ]
 
-(* <T> extends HTMLAttributes<T> { *)
 let webViewHTMLAttributes =
   [ {name= "allowFullScreen"; type_= Bool; htmlName= ""}
   ; {name= "allowpopups"; type_= Bool; htmlName= ""}
@@ -1572,300 +1525,300 @@ let errorInfo = []
       /**
        * Captures which component contained the exception, and its ancestors.
        */
-      componentStack: String; *)
+      componentStack: string; *)
 
 let htmlElements =
-  [ (* HTML *)
-    {tag= "a"; attributes= (* attributesHTML + *) anchorHTMLAttributes}
-  ; (*
-        abbr: HTMLAttributes<HTMLElement>, HTMLElement;
-        address: HTMLAttributes<HTMLElement>, HTMLElement;
-        area: AreaHTMLAttributes<HTMLAreaElement>, HTMLAreaElement;
-        article: HTMLAttributes<HTMLElement>, HTMLElement;
-        aside: HTMLAttributes<HTMLElement>, HTMLElement;
-        audio: AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement;
-        b: HTMLAttributes<HTMLElement>, HTMLElement;
-        base: BaseHTMLAttributes<HTMLBaseElement>, HTMLBaseElement;
-        bdi: HTMLAttributes<HTMLElement>, HTMLElement;
-        bdo: HTMLAttributes<HTMLElement>, HTMLElement;
-        big: HTMLAttributes<HTMLElement>, HTMLElement;
-        blockquote: BlockquoteHTMLAttributes<HTMLElement>, HTMLElement;
-        body: HTMLAttributes<HTMLBodyElement>, HTMLBodyElement;
-        br: HTMLAttributes<HTMLBRElement>, HTMLBRElement;
-        button: ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement;
-        canvas: CanvasHTMLAttributes<HTMLCanvasElement>, HTMLCanvasElement;
-        caption: HTMLAttributes<HTMLElement>, HTMLElement;
-        cite: HTMLAttributes<HTMLElement>, HTMLElement;
-        code: HTMLAttributes<HTMLElement>, HTMLElement;
-        col: ColHTMLAttributes<HTMLTableColElement>, HTMLTableColElement;
-        colgroup: ColgroupHTMLAttributes<HTMLTableColElement>, HTMLTableColElement;
-        data: DataHTMLAttributes<HTMLDataElement>, HTMLDataElement;
-        datalist: HTMLAttributes<HTMLDataListElement>, HTMLDataListElement;
-        dd: HTMLAttributes<HTMLElement>, HTMLElement;
-        del: DelHTMLAttributes<HTMLElement>, HTMLElement;
-        details: DetailsHTMLAttributes<HTMLElement>, HTMLElement;
-        dfn: HTMLAttributes<HTMLElement>, HTMLElement;
-        dialog: DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement;
-        div: HTMLAttributes<HTMLDivElement>, HTMLDivElement;
-        dl: HTMLAttributes<HTMLDListElement>, HTMLDListElement;
-        dt: HTMLAttributes<HTMLElement>, HTMLElement;
-        em: HTMLAttributes<HTMLElement>, HTMLElement;
-        embed: EmbedHTMLAttributes<HTMLEmbedElement>, HTMLEmbedElement;
-        fieldset: FieldsetHTMLAttributes<HTMLFieldSetElement>, HTMLFieldSetElement;
-        figcaption: HTMLAttributes<HTMLElement>, HTMLElement;
-        figure: HTMLAttributes<HTMLElement>, HTMLElement;
-        footer: HTMLAttributes<HTMLElement>, HTMLElement;
-        form: FormHTMLAttributes<HTMLFormElement>, HTMLFormElement;
-        h1: HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement;
-        h2: HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement;
-        h3: HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement;
-        h4: HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement;
-        h5: HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement;
-        h6: HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement;
-        head: HTMLAttributes<HTMLElement>, HTMLHeadElement;
-        header: HTMLAttributes<HTMLElement>, HTMLElement;
-        hgroup: HTMLAttributes<HTMLElement>, HTMLElement;
-        hr: HTMLAttributes<HTMLHRElement>, HTMLHRElement;
-        html: HtmlHTMLAttributes<HTMLHtmlElement>, HTMLHtmlElement;
-        i: HTMLAttributes<HTMLElement>, HTMLElement;
-        iframe: IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement;
-        img: ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement;
-        input: InputHTMLAttributes<HTMLInputElement>, HTMLInputElement;
-        ins: InsHTMLAttributes<HTMLModElement>, HTMLModElement;
-        kbd: HTMLAttributes<HTMLElement>, HTMLElement;
-        keygen: KeygenHTMLAttributes<HTMLElement>, HTMLElement;
-        label: LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement;
-        legend: HTMLAttributes<HTMLLegendElement>, HTMLLegendElement;
-        li: LiHTMLAttributes<HTMLLIElement>, HTMLLIElement;
-        link: LinkHTMLAttributes<HTMLLinkElement>, HTMLLinkElement;
-        main: HTMLAttributes<HTMLElement>, HTMLElement;
-        map: MapHTMLAttributes<HTMLMapElement>, HTMLMapElement;
-        mark: HTMLAttributes<HTMLElement>, HTMLElement;
-        menu: MenuHTMLAttributes<HTMLElement>, HTMLElement;
-        menuitem: HTMLAttributes<HTMLElement>, HTMLElement;
-        meta: MetaHTMLAttributes<HTMLMetaElement>, HTMLMetaElement;
-        meter: MeterHTMLAttributes<HTMLElement>, HTMLElement;
-        nav: HTMLAttributes<HTMLElement>, HTMLElement;
-        noscript: HTMLAttributes<HTMLElement>, HTMLElement;
-        object: ObjectHTMLAttributes<HTMLObjectElement>, HTMLObjectElement;
-        ol: OlHTMLAttributes<HTMLOListElement>, HTMLOListElement;
-        optgroup: OptgroupHTMLAttributes<HTMLOptGroupElement>, HTMLOptGroupElement;
-        option: OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement;
-        output: OutputHTMLAttributes<HTMLElement>, HTMLElement;
-        p: HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement;
-        param: ParamHTMLAttributes<HTMLParamElement>, HTMLParamElement;
-        picture: HTMLAttributes<HTMLElement>, HTMLElement;
-        pre: HTMLAttributes<HTMLPreElement>, HTMLPreElement;
-        progress: ProgressHTMLAttributes<HTMLProgressElement>, HTMLProgressElement;
-        q: QuoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement;
-        rp: HTMLAttributes<HTMLElement>, HTMLElement;
-        rt: HTMLAttributes<HTMLElement>, HTMLElement;
-        ruby: HTMLAttributes<HTMLElement>, HTMLElement;
-        s: HTMLAttributes<HTMLElement>, HTMLElement;
-        samp: HTMLAttributes<HTMLElement>, HTMLElement;
-        slot: SlotHTMLAttributes<HTMLSlotElement>, HTMLSlotElement;
-        script: ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement;
-        section: HTMLAttributes<HTMLElement>, HTMLElement;
-        select: SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement;
-        small: HTMLAttributes<HTMLElement>, HTMLElement;
-        source: SourceHTMLAttributes<HTMLSourceElement>, HTMLSourceElement;
-        span: HTMLAttributes<HTMLSpanElement>, HTMLSpanElement;
-        strong: HTMLAttributes<HTMLElement>, HTMLElement;
-        style: StyleHTMLAttributes<HTMLStyleElement>, HTMLStyleElement;
-        sub: HTMLAttributes<HTMLElement>, HTMLElement;
-        summary: HTMLAttributes<HTMLElement>, HTMLElement;
-        sup: HTMLAttributes<HTMLElement>, HTMLElement;
-        table: TableHTMLAttributes<HTMLTableElement>, HTMLTableElement;
-        template: HTMLAttributes<HTMLTemplateElement>, HTMLTemplateElement;
-        tbody: HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement;
-        td: TdHTMLAttributes<HTMLTableDataCellElement>, HTMLTableDataCellElement;
-        textarea: TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement;
-        tfoot: HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement;
-        th: ThHTMLAttributes<HTMLTableHeaderCellElement>, HTMLTableHeaderCellElement;
-        thead: HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement;
-        time: TimeHTMLAttributes<HTMLElement>, HTMLElement;
-        title: HTMLAttributes<HTMLTitleElement>, HTMLTitleElement;
-        tr: HTMLAttributes<HTMLTableRowElement>, HTMLTableRowElement;
-        track: TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement;
-        u: HTMLAttributes<HTMLElement>, HTMLElement;
-        ul: HTMLAttributes<HTMLUListElement>, HTMLUListElement;
-        "var": HTMLAttributes<HTMLElement>, HTMLElement;
-        video: VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement;
-        wbr: HTMLAttributes<HTMLElement>, HTMLElement;
-        webview: WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement;
-  abbr: attributesHTML + <HTMLElement>, HTMLElement>;
-       address: attributesHTML + <HTMLElement>, HTMLElement>;
-       area: attributesHTML + <React.AreaHTMLAttributes<HTMLAreaElement>, HTMLAreaElement>;
-       article: attributesHTML + <HTMLElement>, HTMLElement>;
-       aside: attributesHTML + <HTMLElement>, HTMLElement>;
-       audio: attributesHTML + <React.AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement>;
-       b: attributesHTML + <HTMLElement>, HTMLElement>;
-       base: attributesHTML + <React.BaseHTMLAttributes<HTMLBaseElement>, HTMLBaseElement>;
-       bdi: attributesHTML + <HTMLElement>, HTMLElement>;
-       bdo: attributesHTML + <HTMLElement>, HTMLElement>;
-       big: attributesHTML + <HTMLElement>, HTMLElement>;
-       blockquote: attributesHTML + <React.BlockquoteHTMLAttributes<HTMLElement>, HTMLElement>;
-       body: attributesHTML + <HTMLBodyElement>, HTMLBodyElement>;
-       br: attributesHTML + <HTMLBRElement>, HTMLBRElement>;
-       button: attributesHTML + <React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
-       canvas: attributesHTML + <React.CanvasHTMLAttributes<HTMLCanvasElement>, HTMLCanvasElement>;
-       caption: attributesHTML + <HTMLElement>, HTMLElement>;
-       cite: attributesHTML + <HTMLElement>, HTMLElement>;
-       code: attributesHTML + <HTMLElement>, HTMLElement>;
-       col: attributesHTML + <React.ColHTMLAttributes<HTMLTableColElement>, HTMLTableColElement>;
-       colgroup: attributesHTML + <React.ColgroupHTMLAttributes<HTMLTableColElement>, HTMLTableColElement>;
-       data: attributesHTML + <React.DataHTMLAttributes<HTMLDataElement>, HTMLDataElement>;
-       datalist: attributesHTML + <HTMLDataListElement>, HTMLDataListElement>;
-       dd: attributesHTML + <HTMLElement>, HTMLElement>;
-       del: attributesHTML + <React.DelHTMLAttributes<HTMLElement>, HTMLElement>;
-       details: attributesHTML + <React.DetailsHTMLAttributes<HTMLElement>, HTMLElement>;
-       dfn: attributesHTML + <HTMLElement>, HTMLElement>;
-       dialog: attributesHTML + <React.DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>;
-       div: attributesHTML + <HTMLDivElement>, HTMLDivElement>;
-       dl: attributesHTML + <HTMLDListElement>, HTMLDListElement>;
-       dt: attributesHTML + <HTMLElement>, HTMLElement>;
-       em: attributesHTML + <HTMLElement>, HTMLElement>;
-       embed: attributesHTML + <React.EmbedHTMLAttributes<HTMLEmbedElement>, HTMLEmbedElement>;
-       fieldset: attributesHTML + <React.FieldsetHTMLAttributes<HTMLFieldSetElement>, HTMLFieldSetElement>;
-       figcaption: attributesHTML + <HTMLElement>, HTMLElement>;
-       figure: attributesHTML + <HTMLElement>, HTMLElement>;
-       footer: attributesHTML + <HTMLElement>, HTMLElement>;
-       form: attributesHTML + <React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>;
-       h1: attributesHTML + <HTMLHeadingElement>, HTMLHeadingElement>;
-       h2: attributesHTML + <HTMLHeadingElement>, HTMLHeadingElement>;
-       h3: attributesHTML + <HTMLHeadingElement>, HTMLHeadingElement>;
-       h4: attributesHTML + <HTMLHeadingElement>, HTMLHeadingElement>;
-       h5: attributesHTML + <HTMLHeadingElement>, HTMLHeadingElement>;
-       h6: attributesHTML + <HTMLHeadingElement>, HTMLHeadingElement>;
-       head: attributesHTML + <HTMLHeadElement>, HTMLHeadElement>;
-       header: attributesHTML + <HTMLElement>, HTMLElement>;
-       hgroup: attributesHTML + <HTMLElement>, HTMLElement>;
-       hr: attributesHTML + <HTMLHRElement>, HTMLHRElement>;
-       html: attributesHTML + <React.HtmlHTMLAttributes<HTMLHtmlElement>, HTMLHtmlElement>;
-       i: attributesHTML + <HTMLElement>, HTMLElement>;
-       iframe: attributesHTML + <React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
-       img: attributesHTML + <React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
-       input: attributesHTML + <React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
-       ins: attributesHTML + <React.InsHTMLAttributes<HTMLModElement>, HTMLModElement>;
-       kbd: attributesHTML + <HTMLElement>, HTMLElement>;
-       keygen: attributesHTML + <React.KeygenHTMLAttributes<HTMLElement>, HTMLElement>;
-       label: attributesHTML + <React.LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>;
-       legend: attributesHTML + <HTMLLegendElement>, HTMLLegendElement>;
-       li: attributesHTML + <React.LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>;
-       link: attributesHTML + <React.LinkHTMLAttributes<HTMLLinkElement>, HTMLLinkElement>;
-       main: attributesHTML + <HTMLElement>, HTMLElement>;
-       map: attributesHTML + <React.MapHTMLAttributes<HTMLMapElement>, HTMLMapElement>;
-       mark: attributesHTML + <HTMLElement>, HTMLElement>;
-       menu: attributesHTML + <React.MenuHTMLAttributes<HTMLElement>, HTMLElement>;
-       menuitem: attributesHTML + <HTMLElement>, HTMLElement>;
-       meta: attributesHTML + <React.MetaHTMLAttributes<HTMLMetaElement>, HTMLMetaElement>;
-       meter: attributesHTML + <React.MeterHTMLAttributes<HTMLElement>, HTMLElement>;
-       nav: attributesHTML + <HTMLElement>, HTMLElement>;
-       noindex: attributesHTML + <HTMLElement>, HTMLElement>;
-       noscript: attributesHTML + <HTMLElement>, HTMLElement>;
-       object_: attributesHTML + <React.ObjectHTMLAttributes<HTMLObjectElement>, HTMLObjectElement>;
-       ol: attributesHTML + <React.OlHTMLAttributes<HTMLOListElement>, HTMLOListElement>;
-       optgroup: attributesHTML + <React.OptgroupHTMLAttributes<HTMLOptGroupElement>, HTMLOptGroupElement>;
-       option: attributesHTML + <React.OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>;
-       output: attributesHTML + <React.OutputHTMLAttributes<HTMLElement>, HTMLElement>;
-       p: attributesHTML + <HTMLParagraphElement>, HTMLParagraphElement>;
-       param: attributesHTML + <React.ParamHTMLAttributes<HTMLParamElement>, HTMLParamElement>;
-       picture: attributesHTML + <HTMLElement>, HTMLElement>;
-       pre: attributesHTML + <HTMLPreElement>, HTMLPreElement>;
-       progress: attributesHTML + <React.ProgressHTMLAttributes<HTMLProgressElement>, HTMLProgressElement>;
-       q: attributesHTML + <React.QuoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement>;
-       rp: attributesHTML + <HTMLElement>, HTMLElement>;
-       rt: attributesHTML + <HTMLElement>, HTMLElement>;
-       ruby: attributesHTML + <HTMLElement>, HTMLElement>;
-       s: attributesHTML + <HTMLElement>, HTMLElement>;
-       samp: attributesHTML + <HTMLElement>, HTMLElement>;
-       slot: attributesHTML + <React.SlotHTMLAttributes<HTMLSlotElement>, HTMLSlotElement>;
-       script: attributesHTML + <React.ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement>;
-       section: attributesHTML + <HTMLElement>, HTMLElement>;
-       select: attributesHTML + <React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
-       small: attributesHTML + <HTMLElement>, HTMLElement>;
-       source: attributesHTML + <React.SourceHTMLAttributes<HTMLSourceElement>, HTMLSourceElement>;
-       span: attributesHTML + <HTMLSpanElement>, HTMLSpanElement>;
-       strong: attributesHTML + <HTMLElement>, HTMLElement>;
-       style: attributesHTML + <React.StyleHTMLAttributes<HTMLStyleElement>, HTMLStyleElement>;
-       sub: attributesHTML + <HTMLElement>, HTMLElement>;
-       summary: attributesHTML + <HTMLElement>, HTMLElement>;
-       sup: attributesHTML + <HTMLElement>, HTMLElement>;
-       table: attributesHTML + <React.TableHTMLAttributes<HTMLTableElement>, HTMLTableElement>;
-       template: attributesHTML + <HTMLTemplateElement>, HTMLTemplateElement>;
-       tbody: attributesHTML + <HTMLTableSectionElement>, HTMLTableSectionElement>;
-       td: attributesHTML + <React.TdHTMLAttributes<HTMLTableDataCellElement>, HTMLTableDataCellElement>;
-       textarea: attributesHTML + <React.TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
-       tfoot: attributesHTML + <HTMLTableSectionElement>, HTMLTableSectionElement>;
-       th: attributesHTML + <React.ThHTMLAttributes<HTMLTableHeaderCellElement>, HTMLTableHeaderCellElement>;
-       thead: attributesHTML + <HTMLTableSectionElement>, HTMLTableSectionElement>;
-       time: attributesHTML + <React.TimeHTMLAttributes<HTMLElement>, HTMLElement>;
-       title: attributesHTML + <HTMLTitleElement>, HTMLTitleElement>;
-       tr: attributesHTML + <HTMLTableRowElement>, HTMLTableRowElement>;
-       track: attributesHTML + <React.TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement>;
-       u: attributesHTML + <HTMLElement>, HTMLElement>;
-       ul: attributesHTML + <HTMLUListElement>, HTMLUListElement>;
-       "var": attributesHTML + <HTMLElement>, HTMLElement>;
-       video: attributesHTML + <React.VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
-       wbr: attributesHTML + <HTMLElement>, HTMLElement>;
-       webview: attributesHTML + <React.WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement>;
-    *)
-    (* SVG *)
-    {tag= "svg"; attributes= [ (* React.SVGProps<SVGSVGElement> *) ]}
-    (* animate: React.SVGProps<SVGElement>; (* TODO: It is SVGAnimateElement but is not in TypeScript's lib.dom.d.ts for now. *)
-       animateMotion: React.SVGProps<SVGElement>;
-       animateTransform: React.SVGProps<SVGElement>; (* TODO: It is SVGAnimateTransformElement but is not in TypeScript's lib.dom.d.ts for now. *)
-       circle: React.SVGProps<SVGCircleElement>;
-       clipPath: React.SVGProps<SVGClipPathElement>;
-       defs: React.SVGProps<SVGDefsElement>;
-       desc: React.SVGProps<SVGDescElement>;
-       ellipse: React.SVGProps<SVGEllipseElement>;
-       feBlend: React.SVGProps<SVGFEBlendElement>;
-       feColorMatrix: React.SVGProps<SVGFEColorMatrixElement>;
-       feComponentTransfer: React.SVGProps<SVGFEComponentTransferElement>;
-       feComposite: React.SVGProps<SVGFECompositeElement>;
-       feConvolveMatrix: React.SVGProps<SVGFEConvolveMatrixElement>;
-       feDiffuseLighting: React.SVGProps<SVGFEDiffuseLightingElement>;
-       feDisplacementMap: React.SVGProps<SVGFEDisplacementMapElement>;
-       feDistantLight: React.SVGProps<SVGFEDistantLightElement>;
-       feDropShadow: React.SVGProps<SVGFEDropShadowElement>;
-       feFlood: React.SVGProps<SVGFEFloodElement>;
-       feFuncA: React.SVGProps<SVGFEFuncAElement>;
-       feFuncB: React.SVGProps<SVGFEFuncBElement>;
-       feFuncG: React.SVGProps<SVGFEFuncGElement>;
-       feFuncR: React.SVGProps<SVGFEFuncRElement>;
-       feGaussianBlur: React.SVGProps<SVGFEGaussianBlurElement>;
-       feImage: React.SVGProps<SVGFEImageElement>;
-       feMerge: React.SVGProps<SVGFEMergeElement>;
-       feMergeNode: React.SVGProps<SVGFEMergeNodeElement>;
-       feMorphology: React.SVGProps<SVGFEMorphologyElement>;
-       feOffset: React.SVGProps<SVGFEOffsetElement>;
-       fePointLight: React.SVGProps<SVGFEPointLightElement>;
-       feSpecularLighting: React.SVGProps<SVGFESpecularLightingElement>;
-       feSpotLight: React.SVGProps<SVGFESpotLightElement>;
-       feTile: React.SVGProps<SVGFETileElement>;
-       feTurbulence: React.SVGProps<SVGFETurbulenceElement>;
-       filter: React.SVGProps<SVGFilterElement>;
-       foreignObject: React.SVGProps<SVGForeignObjectElement>;
-       g: React.SVGProps<SVGGElement>;
-       image: React.SVGProps<SVGImageElement>;
-       line: React.SVGProps<SVGLineElement>;
-       linearGradient: React.SVGProps<SVGLinearGradientElement>;
-       marker: React.SVGProps<SVGMarkerElement>;
-       mask: React.SVGProps<SVGMaskElement>;
-       metadata: React.SVGProps<SVGMetadataElement>;
-       mpath: React.SVGProps<SVGElement>;
-       path: React.SVGProps<SVGPathElement>;
-       pattern: React.SVGProps<SVGPatternElement>;
-       polygon: React.SVGProps<SVGPolygonElement>;
-       polyline: React.SVGProps<SVGPolylineElement>;
-       radialGradient: React.SVGProps<SVGRadialGradientElement>;
-       rect: React.SVGProps<SVGRectElement>;
-       stop: React.SVGProps<SVGStopElement>;
-       switch: React.SVGProps<SVGSwitchElement>;
-       symbol: React.SVGProps<SVGSymbolElement>;
-       text: React.SVGProps<SVGTextElement>;
-       textPath: React.SVGProps<SVGTextPathElement>;
-       tspan: React.SVGProps<SVGTSpanElement>;
-       use: React.SVGProps<SVGUseElement>;
-       view: React.SVGProps<SVGViewElement>; *) ]
+  [ {tag= "a"; attributes= anchorHTMLAttributes & attributesHTML}
+  ; {tag= "abbr"; attributes= attributesHTML}
+  ; {tag= "address"; attributes= attributesHTML}
+  ; {tag= "area"; attributes= areaHTMLAttributes}
+  ; {tag= "article"; attributes= attributesHTML}
+  ; {tag= "aside"; attributes= attributesHTML}
+  ; {tag= "audio"; attributes= audioHTMLAttributes}
+  ; {tag= "b"; attributes= attributesHTML}
+  ; {tag= "base"; attributes= baseHTMLAttributes}
+  ; {tag= "bdi"; attributes= attributesHTML}
+  ; {tag= "bdo"; attributes= attributesHTML}
+  ; {tag= "big"; attributes= attributesHTML}
+  ; {tag= "blockquote"; attributes= blockquoteHTMLAttributes}
+  ; {tag= "body"; attributes= attributesHTML}
+  ; {tag= "br"; attributes= attributesHTML}
+  ; {tag= "button"; attributes= buttonHTMLAttributes}
+  ; {tag= "canvas"; attributes= canvasHTMLAttributes}
+  ; {tag= "caption"; attributes= attributesHTML}
+  ; {tag= "cite"; attributes= attributesHTML}
+  ; {tag= "code"; attributes= attributesHTML}
+  ; {tag= "col"; attributes= colHTMLAttributes}
+  ; {tag= "colgroup"; attributes= colgroupHTMLAttributes}
+  ; {tag= "data"; attributes= dataHTMLAttributes}
+  ; {tag= "datalist"; attributes= attributesHTML}
+  ; {tag= "dd"; attributes= attributesHTML}
+  ; {tag= "del"; attributes= delHTMLAttributes}
+  ; {tag= "details"; attributes= detailsHTMLAttributes}
+  ; {tag= "dfn"; attributes= attributesHTML}
+  ; {tag= "dialog"; attributes= dialogHTMLAttributes}
+  ; {tag= "div"; attributes= attributesHTML}
+  ; {tag= "dl"; attributes= attributesHTML}
+  ; {tag= "dt"; attributes= attributesHTML}
+  ; {tag= "em"; attributes= attributesHTML}
+  ; {tag= "embed"; attributes= embedHTMLAttributes}
+  ; {tag= "fieldset"; attributes= fieldsetHTMLAttributes}
+  ; {tag= "figcaption"; attributes= attributesHTML}
+  ; {tag= "figure"; attributes= attributesHTML}
+  ; {tag= "footer"; attributes= attributesHTML}
+  ; {tag= "form"; attributes= formHTMLAttributes}
+  ; {tag= "h1"; attributes= attributesHTML}
+  ; {tag= "h2"; attributes= attributesHTML}
+  ; {tag= "h3"; attributes= attributesHTML}
+  ; {tag= "h4"; attributes= attributesHTML}
+  ; {tag= "h5"; attributes= attributesHTML}
+  ; {tag= "h6"; attributes= attributesHTML}
+  ; {tag= "head"; attributes= attributesHTML}
+  ; {tag= "header"; attributes= attributesHTML}
+  ; {tag= "hgroup"; attributes= attributesHTML}
+  ; {tag= "hr"; attributes= attributesHTML}
+  ; {tag= "html"; attributes= htmlHTMLAttributes}
+  ; {tag= "i"; attributes= attributesHTML}
+  ; {tag= "iframe"; attributes= iframeHTMLAttributes}
+  ; {tag= "img"; attributes= imgHTMLAttributes}
+  ; {tag= "input"; attributes= inputHTMLAttributes}
+  ; {tag= "ins"; attributes= insHTMLAttributes}
+  ; {tag= "kbd"; attributes= attributesHTML}
+  ; {tag= "keygen"; attributes= keygenHTMLAttributes}
+  ; {tag= "label"; attributes= labelHTMLAttributes}
+  ; {tag= "legend"; attributes= attributesHTML}
+  ; {tag= "li"; attributes= liHTMLAttributes}
+  ; {tag= "link"; attributes= linkHTMLAttributes}
+  ; {tag= "main"; attributes= attributesHTML}
+  ; {tag= "map"; attributes= mapHTMLAttributes}
+  ; {tag= "mark"; attributes= attributesHTML}
+  ; {tag= "menu"; attributes= menuHTMLAttributes}
+  ; {tag= "menuitem"; attributes= attributesHTML}
+  ; {tag= "meta"; attributes= metaHTMLAttributes}
+  ; {tag= "meter"; attributes= meterHTMLAttributes}
+  ; {tag= "nav"; attributes= attributesHTML}
+  ; {tag= "noscript"; attributes= attributesHTML}
+  ; {tag= "object"; attributes= objectHTMLAttributes}
+  ; {tag= "ol"; attributes= olHTMLAttributes}
+  ; {tag= "optgroup"; attributes= optgroupHTMLAttributes}
+  ; {tag= "option"; attributes= optionHTMLAttributes}
+  ; {tag= "output"; attributes= outputHTMLAttributes}
+  ; {tag= "p"; attributes= attributesHTML}
+  ; {tag= "param"; attributes= paramHTMLAttributes}
+  ; {tag= "picture"; attributes= attributesHTML}
+  ; {tag= "pre"; attributes= attributesHTML}
+  ; {tag= "progress"; attributes= progressHTMLAttributes}
+  ; {tag= "q"; attributes= quoteHTMLAttributes}
+  ; {tag= "rp"; attributes= attributesHTML}
+  ; {tag= "rt"; attributes= attributesHTML}
+  ; {tag= "ruby"; attributes= attributesHTML}
+  ; {tag= "s"; attributes= attributesHTML}
+  ; {tag= "samp"; attributes= attributesHTML}
+  ; {tag= "slot"; attributes= slotHTMLAttributes}
+  ; {tag= "script"; attributes= scriptHTMLAttributes}
+  ; {tag= "section"; attributes= attributesHTML}
+  ; {tag= "select"; attributes= selectHTMLAttributes}
+  ; {tag= "small"; attributes= attributesHTML}
+  ; {tag= "source"; attributes= sourceHTMLAttributes}
+  ; {tag= "span"; attributes= attributesHTML}
+  ; {tag= "strong"; attributes= attributesHTML}
+  ; {tag= "style"; attributes= styleHTMLAttributes}
+  ; {tag= "sub"; attributes= attributesHTML}
+  ; {tag= "summary"; attributes= attributesHTML}
+  ; {tag= "sup"; attributes= attributesHTML}
+  ; {tag= "table"; attributes= tableHTMLAttributes}
+  ; {tag= "template"; attributes= attributesHTML}
+  ; {tag= "tbody"; attributes= attributesHTML}
+  ; {tag= "td"; attributes= tdHTMLAttributes}
+  ; {tag= "textarea"; attributes= textareaHTMLAttributes}
+  ; {tag= "tfoot"; attributes= attributesHTML}
+  ; {tag= "th"; attributes= thHTMLAttributes}
+  ; {tag= "thead"; attributes= attributesHTML}
+  ; {tag= "time"; attributes= timeHTMLAttributes}
+  ; {tag= "title"; attributes= attributesHTML}
+  ; {tag= "tr"; attributes= attributesHTML}
+  ; {tag= "track"; attributes= trackHTMLAttributes}
+  ; {tag= "u"; attributes= attributesHTML}
+  ; {tag= "ul"; attributes= attributesHTML}
+  ; {tag= "var"; attributes= attributesHTML}
+  ; {tag= "video"; attributes= videoHTMLAttributes}
+  ; {tag= "wbr"; attributes= attributesHTML}
+  ; {tag= "webview"; attributes= webViewHTMLAttributes}
+  ; {tag= "abbr"; attributes= attributesHTML}
+  ; {tag= "address"; attributes= attributesHTML}
+  ; {tag= "area"; attributes= attributesHTML & areaHTMLAttributes}
+  ; {tag= "article"; attributes= attributesHTML}
+  ; {tag= "aside"; attributes= attributesHTML}
+  ; {tag= "audio"; attributes= attributesHTML & audioHTMLAttributes}
+  ; {tag= "b"; attributes= attributesHTML}
+  ; {tag= "base"; attributes= attributesHTML & baseHTMLAttributes}
+  ; {tag= "bdi"; attributes= attributesHTML}
+  ; {tag= "bdo"; attributes= attributesHTML}
+  ; {tag= "big"; attributes= attributesHTML}
+  ; {tag= "blockquote"; attributes= attributesHTML & blockquoteHTMLAttributes}
+  ; {tag= "body"; attributes= attributesHTML}
+  ; {tag= "br"; attributes= attributesHTML}
+  ; {tag= "button"; attributes= attributesHTML & buttonHTMLAttributes}
+  ; {tag= "canvas"; attributes= attributesHTML & canvasHTMLAttributes}
+  ; {tag= "caption"; attributes= attributesHTML}
+  ; {tag= "cite"; attributes= attributesHTML}
+  ; {tag= "code"; attributes= attributesHTML}
+  ; {tag= "col"; attributes= attributesHTML & colHTMLAttributes}
+  ; {tag= "colgroup"; attributes= attributesHTML & colgroupHTMLAttributes}
+  ; {tag= "data"; attributes= attributesHTML & dataHTMLAttributes}
+  ; {tag= "datalist"; attributes= attributesHTML}
+  ; {tag= "dd"; attributes= attributesHTML}
+  ; {tag= "del"; attributes= attributesHTML & delHTMLAttributes}
+  ; {tag= "details"; attributes= attributesHTML & detailsHTMLAttributes}
+  ; {tag= "dfn"; attributes= attributesHTML}
+  ; {tag= "dialog"; attributes= attributesHTML & dialogHTMLAttributes}
+  ; {tag= "div"; attributes= attributesHTML}
+  ; {tag= "dl"; attributes= attributesHTML}
+  ; {tag= "dt"; attributes= attributesHTML}
+  ; {tag= "em"; attributes= attributesHTML}
+  ; {tag= "embed"; attributes= attributesHTML & embedHTMLAttributes}
+  ; {tag= "fieldset"; attributes= attributesHTML & fieldsetHTMLAttributes}
+  ; {tag= "figcaption"; attributes= attributesHTML}
+  ; {tag= "figure"; attributes= attributesHTML}
+  ; {tag= "footer"; attributes= attributesHTML}
+  ; {tag= "form"; attributes= attributesHTML & formHTMLAttributes}
+  ; {tag= "h1"; attributes= attributesHTML}
+  ; {tag= "h2"; attributes= attributesHTML}
+  ; {tag= "h3"; attributes= attributesHTML}
+  ; {tag= "h4"; attributes= attributesHTML}
+  ; {tag= "h5"; attributes= attributesHTML}
+  ; {tag= "h6"; attributes= attributesHTML}
+  ; {tag= "head"; attributes= attributesHTML}
+  ; {tag= "header"; attributes= attributesHTML}
+  ; {tag= "hgroup"; attributes= attributesHTML}
+  ; {tag= "hr"; attributes= attributesHTML}
+  ; {tag= "html"; attributes= attributesHTML & htmlHTMLAttributes}
+  ; {tag= "i"; attributes= attributesHTML}
+  ; {tag= "iframe"; attributes= attributesHTML & iframeHTMLAttributes}
+  ; {tag= "img"; attributes= attributesHTML & imgHTMLAttributes}
+  ; {tag= "input"; attributes= attributesHTML & inputHTMLAttributes}
+  ; {tag= "ins"; attributes= attributesHTML & insHTMLAttributes}
+  ; {tag= "kbd"; attributes= attributesHTML}
+  ; {tag= "keygen"; attributes= attributesHTML & keygenHTMLAttributes}
+  ; {tag= "label"; attributes= attributesHTML & labelHTMLAttributes}
+  ; {tag= "legend"; attributes= attributesHTML}
+  ; {tag= "li"; attributes= attributesHTML & liHTMLAttributes}
+  ; {tag= "link"; attributes= attributesHTML & linkHTMLAttributes}
+  ; {tag= "main"; attributes= attributesHTML}
+  ; {tag= "map"; attributes= attributesHTML & mapHTMLAttributes}
+  ; {tag= "mark"; attributes= attributesHTML}
+  ; {tag= "menu"; attributes= attributesHTML & menuHTMLAttributes}
+  ; {tag= "menuitem"; attributes= attributesHTML}
+  ; {tag= "meta"; attributes= attributesHTML & metaHTMLAttributes}
+  ; {tag= "meter"; attributes= attributesHTML & meterHTMLAttributes}
+  ; {tag= "nav"; attributes= attributesHTML}
+  ; {tag= "noindex"; attributes= attributesHTML}
+  ; {tag= "noscript"; attributes= attributesHTML}
+  ; {tag= "object_"; attributes= attributesHTML & objectHTMLAttributes}
+  ; {tag= "ol"; attributes= attributesHTML & olHTMLAttributes}
+  ; {tag= "optgroup"; attributes= attributesHTML & optgroupHTMLAttributes}
+  ; {tag= "option"; attributes= attributesHTML & optionHTMLAttributes}
+  ; {tag= "output"; attributes= attributesHTML & outputHTMLAttributes}
+  ; {tag= "p"; attributes= attributesHTML}
+  ; {tag= "param"; attributes= attributesHTML & paramHTMLAttributes}
+  ; {tag= "picture"; attributes= attributesHTML}
+  ; {tag= "pre"; attributes= attributesHTML}
+  ; {tag= "progress"; attributes= attributesHTML & progressHTMLAttributes}
+  ; {tag= "q"; attributes= attributesHTML & quoteHTMLAttributes}
+  ; {tag= "rp"; attributes= attributesHTML}
+  ; {tag= "rt"; attributes= attributesHTML}
+  ; {tag= "ruby"; attributes= attributesHTML}
+  ; {tag= "s"; attributes= attributesHTML}
+  ; {tag= "samp"; attributes= attributesHTML}
+  ; {tag= "slot"; attributes= attributesHTML & slotHTMLAttributes}
+  ; {tag= "script"; attributes= attributesHTML & scriptHTMLAttributes}
+  ; {tag= "section"; attributes= attributesHTML}
+  ; {tag= "select"; attributes= attributesHTML & selectHTMLAttributes}
+  ; {tag= "small"; attributes= attributesHTML}
+  ; {tag= "source"; attributes= attributesHTML & sourceHTMLAttributes}
+  ; {tag= "span"; attributes= attributesHTML}
+  ; {tag= "strong"; attributes= attributesHTML}
+  ; {tag= "style"; attributes= attributesHTML & styleHTMLAttributes}
+  ; {tag= "sub"; attributes= attributesHTML}
+  ; {tag= "summary"; attributes= attributesHTML}
+  ; {tag= "sup"; attributes= attributesHTML}
+  ; {tag= "table"; attributes= attributesHTML & tableHTMLAttributes}
+  ; {tag= "template"; attributes= attributesHTML}
+  ; {tag= "tbody"; attributes= attributesHTML}
+  ; {tag= "td"; attributes= attributesHTML & tdHTMLAttributes}
+  ; {tag= "textarea"; attributes= attributesHTML & textareaHTMLAttributes}
+  ; {tag= "tfoot"; attributes= attributesHTML}
+  ; {tag= "th"; attributes= attributesHTML & thHTMLAttributes}
+  ; {tag= "thead"; attributes= attributesHTML}
+  ; {tag= "time"; attributes= attributesHTML & timeHTMLAttributes}
+  ; {tag= "title"; attributes= attributesHTML}
+  ; {tag= "tr"; attributes= attributesHTML}
+  ; {tag= "track"; attributes= attributesHTML & trackHTMLAttributes}
+  ; {tag= "u"; attributes= attributesHTML}
+  ; {tag= "ul"; attributes= attributesHTML}
+  ; {tag= "var"; attributes= attributesHTML}
+  ; {tag= "video"; attributes= attributesHTML & videoHTMLAttributes}
+  ; {tag= "wbr"; attributes= attributesHTML}
+  ; {tag= "webview"; attributes= attributesHTML & webViewHTMLAttributes} ]
+
+let svgElements =
+  [ {tag= "svg"; attributes= svgAttributes}
+  ; {tag= "animate"; attributes= svgAttributes}
+  ; (* TODO: It is SVGAnimateElement but is not in TypeScript's lib.dom.d.ts for now. *)
+    {tag= "animateMotion"; attributes= svgAttributes}
+  ; {tag= "animateTransform"; attributes= svgAttributes}
+  ; (* TODO: It is SVGAnimateTransformElement but is not in TypeScript's lib.dom.d.ts for now. *)
+    {tag= "circle"; attributes= svgAttributes}
+  ; {tag= "clipPath"; attributes= svgAttributes}
+  ; {tag= "defs"; attributes= svgAttributes}
+  ; {tag= "desc"; attributes= svgAttributes}
+  ; {tag= "ellipse"; attributes= svgAttributes}
+  ; {tag= "feBlend"; attributes= svgAttributes}
+  ; {tag= "feColorMatrix"; attributes= svgAttributes}
+  ; {tag= "feComponentTransfer"; attributes= svgAttributes}
+  ; {tag= "feComposite"; attributes= svgAttributes}
+  ; {tag= "feConvolveMatrix"; attributes= svgAttributes}
+  ; {tag= "feDiffuseLighting"; attributes= svgAttributes}
+  ; {tag= "feDisplacementMap"; attributes= svgAttributes}
+  ; {tag= "feDistantLight"; attributes= svgAttributes}
+  ; {tag= "feDropShadow"; attributes= svgAttributes}
+  ; {tag= "feFlood"; attributes= svgAttributes}
+  ; {tag= "feFuncA"; attributes= svgAttributes}
+  ; {tag= "feFuncB"; attributes= svgAttributes}
+  ; {tag= "feFuncG"; attributes= svgAttributes}
+  ; {tag= "feFuncR"; attributes= svgAttributes}
+  ; {tag= "feGaussianBlur"; attributes= svgAttributes}
+  ; {tag= "feImage"; attributes= svgAttributes}
+  ; {tag= "feMerge"; attributes= svgAttributes}
+  ; {tag= "feMergeNode"; attributes= svgAttributes}
+  ; {tag= "feMorphology"; attributes= svgAttributes}
+  ; {tag= "feOffset"; attributes= svgAttributes}
+  ; {tag= "fePointLight"; attributes= svgAttributes}
+  ; {tag= "feSpecularLighting"; attributes= svgAttributes}
+  ; {tag= "feSpotLight"; attributes= svgAttributes}
+  ; {tag= "feTile"; attributes= svgAttributes}
+  ; {tag= "feTurbulence"; attributes= svgAttributes}
+  ; {tag= "filter"; attributes= svgAttributes}
+  ; {tag= "foreignObject"; attributes= svgAttributes}
+  ; {tag= "g"; attributes= svgAttributes}
+  ; {tag= "image"; attributes= svgAttributes}
+  ; {tag= "line"; attributes= svgAttributes}
+  ; {tag= "linearGradient"; attributes= svgAttributes}
+  ; {tag= "marker"; attributes= svgAttributes}
+  ; {tag= "mask"; attributes= svgAttributes}
+  ; {tag= "metadata"; attributes= svgAttributes}
+  ; {tag= "mpath"; attributes= svgAttributes}
+  ; {tag= "path"; attributes= svgAttributes}
+  ; {tag= "pattern"; attributes= svgAttributes}
+  ; {tag= "polygon"; attributes= svgAttributes}
+  ; {tag= "polyline"; attributes= svgAttributes}
+  ; {tag= "radialGradient"; attributes= svgAttributes}
+  ; {tag= "rect"; attributes= svgAttributes}
+  ; {tag= "stop"; attributes= svgAttributes}
+  ; {tag= "switch"; attributes= svgAttributes}
+  ; {tag= "symbol"; attributes= svgAttributes}
+  ; {tag= "text"; attributes= svgAttributes}
+  ; {tag= "textPath"; attributes= svgAttributes}
+  ; {tag= "tspan"; attributes= svgAttributes}
+  ; {tag= "use"; attributes= svgAttributes}
+  ; {tag= "view"; attributes= svgAttributes} ]
