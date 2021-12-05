@@ -1,5 +1,16 @@
 # Contributing
 
+## Getting started
+
+- Install opam: https://opam.ocaml.org/doc/Install.html
+- Create local switch by running `make init` (this step will take a few minutes, as it will build whole OCaml compiler)
+- Install deps with `opam install . --deps-only --with-test`
+- Build with `make`
+- Run tests with `make test`
+
+It is recommended to run `git config --local core.hooksPath .githooks/` to make sure git hooks run,
+otherwise you could get CI errors due to formatting.
+
 ## Ideas / decisions
 
 - Abstract over Js_of_ocaml "native" types (`js_string `, `js_array`) as much as
@@ -34,4 +45,3 @@ will not work without server as it relies on history / client-side routing using
 
 - `make test` to run the test against the expected result.
 - `make test-promote` when you want to update the expected results.
-

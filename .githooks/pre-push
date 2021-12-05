@@ -1,0 +1,4 @@
+if ! ( make format-check ); then
+    echo "file $file is not properly formatted, refusing to push"
+    exit 1
+fi
