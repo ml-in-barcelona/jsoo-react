@@ -47,24 +47,22 @@ let attributeAnchorTarget = String
    | Custom of String *)
 
 let domAttributes =
-  [ (* Clipboard Events *)
-    Event {name= "onCopy"; type_= Clipboard}
+  [ Event {name= "onCopy"; type_= Clipboard}
   ; Event {name= "onCopyCapture"; type_= Clipboard}
   ; Event {name= "onCut"; type_= Clipboard}
   ; Event {name= "onCutCapture"; type_= Clipboard}
   ; Event {name= "onPaste"; type_= Clipboard}
-  ; Event {name= "onPasteCapture"; type_= Clipboard} (* Composition Events *)
+  ; Event {name= "onPasteCapture"; type_= Clipboard}
   ; Event {name= "onCompositionEnd"; type_= Composition}
   ; Event {name= "onCompositionEndCapture"; type_= Composition}
   ; Event {name= "onCompositionStart"; type_= Composition}
   ; Event {name= "onCompositionStartCapture"; type_= Composition}
   ; Event {name= "onCompositionUpdate"; type_= Composition}
   ; Event {name= "onCompositionUpdateCapture"; type_= Composition}
-    (* Focus Events *)
   ; Event {name= "onFocus"; type_= Focus}
   ; Event {name= "onFocusCapture"; type_= Focus}
   ; Event {name= "onBlur"; type_= Focus}
-  ; Event {name= "onBlurCapture"; type_= Focus} (* Form Events *)
+  ; Event {name= "onBlurCapture"; type_= Focus}
   ; Event {name= "onChange"; type_= Form}
   ; Event {name= "onChangeCapture"; type_= Form}
   ; Event {name= "onBeforeInput"; type_= Form}
@@ -76,17 +74,17 @@ let domAttributes =
   ; Event {name= "onSubmit"; type_= Form}
   ; Event {name= "onSubmitCapture"; type_= Form}
   ; Event {name= "onInvalid"; type_= Form}
-  ; Event {name= "onInvalidCapture"; type_= Form} (* Image Events *)
+  ; Event {name= "onInvalidCapture"; type_= Form}
   ; Event {name= "onLoad"; type_= Media}
   ; Event {name= "onLoadCapture"; type_= Media}
   ; Event {name= "onError"; type_= Media}
-  ; Event {name= "onErrorCapture"; type_= Media} (* Keyboard Events *)
+  ; Event {name= "onErrorCapture"; type_= Media}
   ; Event {name= "onKeyDown"; type_= Keyboard}
   ; Event {name= "onKeyDownCapture"; type_= Keyboard}
   ; Event {name= "onKeyPress"; type_= Keyboard}
   ; Event {name= "onKeyPressCapture"; type_= Keyboard}
   ; Event {name= "onKeyUp"; type_= Keyboard}
-  ; Event {name= "onKeyUpCapture"; type_= Keyboard} (* Media Events *)
+  ; Event {name= "onKeyUpCapture"; type_= Keyboard}
   ; Event {name= "onAbort"; type_= Media}
   ; Event {name= "onAbortCapture"; type_= Media}
   ; Event {name= "onCanPlay"; type_= Media}
@@ -130,7 +128,7 @@ let domAttributes =
   ; Event {name= "onVolumeChange"; type_= Media}
   ; Event {name= "onVolumeChangeCapture"; type_= Media}
   ; Event {name= "onWaiting"; type_= Media}
-  ; Event {name= "onWaitingCapture"; type_= Media} (* MouseEvents *)
+  ; Event {name= "onWaitingCapture"; type_= Media}
   ; Event {name= "onAuxClick"; type_= Mouse}
   ; Event {name= "onAuxClickCapture"; type_= Mouse}
   ; Event {name= "onClick"; type_= Mouse}
@@ -166,9 +164,9 @@ let domAttributes =
   ; Event {name= "onMouseOver"; type_= Mouse}
   ; Event {name= "onMouseOverCapture"; type_= Mouse}
   ; Event {name= "onMouseUp"; type_= Mouse}
-  ; Event {name= "onMouseUpCapture"; type_= Mouse} (* Selection Events *)
+  ; Event {name= "onMouseUpCapture"; type_= Mouse}
   ; Event {name= "onSelect"; type_= Selection}
-  ; Event {name= "onSelectCapture"; type_= Selection} (* Touch Events *)
+  ; Event {name= "onSelectCapture"; type_= Selection}
   ; Event {name= "onTouchCancel"; type_= Touch}
   ; Event {name= "onTouchCancelCapture"; type_= Touch}
   ; Event {name= "onTouchEnd"; type_= Touch}
@@ -176,7 +174,7 @@ let domAttributes =
   ; Event {name= "onTouchMove"; type_= Touch}
   ; Event {name= "onTouchMoveCapture"; type_= Touch}
   ; Event {name= "onTouchStart"; type_= Touch}
-  ; Event {name= "onTouchStartCapture"; type_= Touch} (* Pointer Events *)
+  ; Event {name= "onTouchStartCapture"; type_= Touch}
   ; Event {name= "onPointerDown"; type_= Pointer}
   ; Event {name= "onPointerDownCapture"; type_= Pointer}
   ; Event {name= "onPointerMove"; type_= Pointer}
@@ -196,18 +194,17 @@ let domAttributes =
   ; Event {name= "onGotPointerCapture"; type_= Pointer}
   ; Event {name= "onGotPointerCaptureCapture"; type_= Pointer}
   ; Event {name= "onLostPointerCapture"; type_= Pointer}
-  ; Event {name= "onLostPointerCaptureCapture"; type_= Pointer} (* UI Events *)
+  ; Event {name= "onLostPointerCaptureCapture"; type_= Pointer}
   ; Event {name= "onScroll"; type_= UI}
-  ; Event {name= "onScrollCapture"; type_= UI} (* Wheel Events *)
+  ; Event {name= "onScrollCapture"; type_= UI}
   ; Event {name= "onWheel"; type_= Wheel}
-  ; Event {name= "onWheelCapture"; type_= Wheel} (* Animation Events *)
+  ; Event {name= "onWheelCapture"; type_= Wheel}
   ; Event {name= "onAnimationStart"; type_= Animation}
   ; Event {name= "onAnimationStartCapture"; type_= Animation}
   ; Event {name= "onAnimationEnd"; type_= Animation}
   ; Event {name= "onAnimationEndCapture"; type_= Animation}
   ; Event {name= "onAnimationIteration"; type_= Animation}
   ; Event {name= "onAnimationIterationCapture"; type_= Animation}
-    (* Transition Events *)
   ; Event {name= "onTransitionEnd"; type_= Transition}
   ; Event {name= "onTransitionEndCapture"; type_= Transition} ]
 
@@ -1760,32 +1757,42 @@ let htmlElements =
   [ {tag= "a"; attributes= domAttributes & anchorHTMLAttributes & attributesHTML}
   ; {tag= "abbr"; attributes= domAttributes & attributesHTML}
   ; {tag= "address"; attributes= domAttributes & attributesHTML}
-  ; {tag= "area"; attributes= attributesHTML & areaHTMLAttributes}
+  ; { tag= "area"
+    ; attributes= domAttributes & attributesHTML & areaHTMLAttributes }
   ; {tag= "article"; attributes= domAttributes & attributesHTML}
   ; {tag= "aside"; attributes= domAttributes & attributesHTML}
-  ; {tag= "audio"; attributes= attributesHTML & mediaHTMLAttributes}
+  ; { tag= "audio"
+    ; attributes= domAttributes & attributesHTML & mediaHTMLAttributes }
   ; {tag= "b"; attributes= domAttributes & attributesHTML}
-  ; {tag= "base"; attributes= attributesHTML & baseHTMLAttributes}
+  ; { tag= "base"
+    ; attributes= domAttributes & attributesHTML & baseHTMLAttributes }
   ; {tag= "bdi"; attributes= domAttributes & attributesHTML}
   ; {tag= "bdo"; attributes= domAttributes & attributesHTML}
   ; {tag= "big"; attributes= domAttributes & attributesHTML}
-  ; {tag= "blockquote"; attributes= attributesHTML & blockquoteHTMLAttributes}
+  ; { tag= "blockquote"
+    ; attributes= domAttributes & attributesHTML & blockquoteHTMLAttributes }
   ; {tag= "body"; attributes= domAttributes & attributesHTML}
   ; {tag= "br"; attributes= domAttributes & attributesHTML}
-  ; {tag= "button"; attributes= attributesHTML & buttonHTMLAttributes}
-  ; {tag= "canvas"; attributes= attributesHTML & canvasHTMLAttributes}
+  ; { tag= "button"
+    ; attributes= domAttributes & attributesHTML & buttonHTMLAttributes }
+  ; { tag= "canvas"
+    ; attributes= domAttributes & attributesHTML & canvasHTMLAttributes }
   ; {tag= "caption"; attributes= domAttributes & attributesHTML}
   ; {tag= "cite"; attributes= domAttributes & attributesHTML}
   ; {tag= "code"; attributes= domAttributes & attributesHTML}
-  ; {tag= "col"; attributes= attributesHTML & colHTMLAttributes}
-  ; {tag= "colgroup"; attributes= attributesHTML & colgroupHTMLAttributes}
-  ; {tag= "data"; attributes= attributesHTML & dataHTMLAttributes}
+  ; {tag= "col"; attributes= domAttributes & attributesHTML & colHTMLAttributes}
+  ; { tag= "colgroup"
+    ; attributes= domAttributes & attributesHTML & colgroupHTMLAttributes }
+  ; { tag= "data"
+    ; attributes= domAttributes & attributesHTML & dataHTMLAttributes }
   ; {tag= "datalist"; attributes= domAttributes & attributesHTML}
   ; {tag= "dd"; attributes= domAttributes & attributesHTML}
-  ; {tag= "del"; attributes= attributesHTML & delHTMLAttributes}
-  ; {tag= "details"; attributes= attributesHTML & detailsHTMLAttributes}
+  ; {tag= "del"; attributes= domAttributes & attributesHTML & delHTMLAttributes}
+  ; { tag= "details"
+    ; attributes= domAttributes & attributesHTML & detailsHTMLAttributes }
   ; {tag= "dfn"; attributes= domAttributes & attributesHTML}
-  ; {tag= "dialog"; attributes= attributesHTML & dialogHTMLAttributes}
+  ; { tag= "dialog"
+    ; attributes= domAttributes & attributesHTML & dialogHTMLAttributes }
   ; {tag= "div"; attributes= domAttributes & attributesHTML}
   ; {tag= "dl"; attributes= domAttributes & attributesHTML}
   ; {tag= "dt"; attributes= domAttributes & attributesHTML}
@@ -1879,7 +1886,8 @@ let htmlElements =
   ; {tag= "sub"; attributes= domAttributes & attributesHTML}
   ; {tag= "summary"; attributes= domAttributes & attributesHTML}
   ; {tag= "sup"; attributes= domAttributes & attributesHTML}
-  ; {tag= "table"; attributes= attributesHTML & tableHTMLAttributes}
+  ; { tag= "table"
+    ; attributes= domAttributes & attributesHTML & tableHTMLAttributes }
   ; {tag= "tbody"; attributes= domAttributes & attributesHTML}
   ; {tag= "td"; attributes= domAttributes & attributesHTML & tdHTMLAttributes}
   ; {tag= "template"; attributes= domAttributes & attributesHTML}
