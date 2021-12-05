@@ -24,9 +24,27 @@ type prop = Attribute of attribute | Event of event
 
 type element = {tag: string; attributes: attribute list}
 
+let attributeReferrerPolicy = String
+(* | Empty
+   | NoReferrer
+   | NoReferrerWhenDowngrade
+   | Origin
+   | OriginWhenCrossOrigin
+   | SameOrigin
+   | StrictOrigin
+   | StrictOriginWhenCrossOrigin
+   | UnsafeUrl *)
+
+let attributeAnchorTarget = String
+(* | Self
+   | Blank
+   | Parent
+   | Top
+   | Custom of String *)
+
 let commonDOMAttributes =
   [ (* dangerouslySetInnerHTML?: {
-           __html: string;
+           __html: String;
        };
 
        // Clipboard Events
@@ -222,21 +240,21 @@ let commonDOMAttributes =
 (* All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/ *)
 let ariaAttributes =
   [ (* /** Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. */
-        'aria-activedescendant'?: string;
+        'aria-activedescendant'?: String;
         /** Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. */
-        'aria-atomic'?: boolean | 'false' | 'true';
+        'aria-atomic'?: Bool | 'false' | 'true';
         /**
      * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
      * presented if they are made.
      */
         'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both';
         /** Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. */
-        'aria-busy'?: boolean | 'false' | 'true';
+        'aria-busy'?: Bool | 'false' | 'true';
         /**
      * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
      * @see aria-pressed @see aria-selected.
      */
-        'aria-checked'?: boolean | 'false' | 'mixed' | 'true';
+        'aria-checked'?: Bool | 'false' | 'mixed' | 'true';
         /**
      * Defines the total number of columns in a table, grid, or treegrid.
      * @see aria-colindex.
@@ -256,24 +274,24 @@ let ariaAttributes =
      * Identifies the element (or elements) whose contents or presence are controlled by the current element.
      * @see aria-owns.
      */
-        'aria-controls'?: string;
+        'aria-controls'?: String;
         /** Indicates the element that represents the current item within a container or set of related elements. */
-        'aria-current'?: boolean | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time';
+        'aria-current'?: Bool | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time';
         /**
      * Identifies the element (or elements) that describes the object.
      * @see aria-labelledby
      */
-        'aria-describedby'?: string;
+        'aria-describedby'?: String;
         /**
      * Identifies the element that provides a detailed, extended description for the object.
      * @see aria-describedby.
      */
-        'aria-details'?: string;
+        'aria-details'?: String;
         /**
      * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
      * @see aria-hidden @see aria-readonly.
      */
-        'aria-disabled'?: boolean | 'false' | 'true';
+        'aria-disabled'?: Bool | 'false' | 'true';
         /**
      * Indicates what functions can be performed when a dragged object is released on the drop target.
      * @deprecated in ARIA 1.1
@@ -283,53 +301,53 @@ let ariaAttributes =
      * Identifies the element that provides an error message for the object.
      * @see aria-invalid @see aria-describedby.
      */
-        'aria-errormessage'?: string;
+        'aria-errormessage'?: String;
         /** Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. */
-        'aria-expanded'?: boolean | 'false' | 'true';
+        'aria-expanded'?: Bool | 'false' | 'true';
         /**
      * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
      * allows assistive technology to override the general default of reading in document source order.
      */
-        'aria-flowto'?: string;
+        'aria-flowto'?: String;
         /**
      * Indicates an element's "grabbed" state in a drag-and-drop operation.
      * @deprecated in ARIA 1.1
      */
-        'aria-grabbed'?: boolean | 'false' | 'true';
+        'aria-grabbed'?: Bool | 'false' | 'true';
         /** Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. */
-        'aria-haspopup'?: boolean | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
+        'aria-haspopup'?: Bool | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
         /**
      * Indicates whether the element is exposed to an accessibility API.
      * @see aria-disabled.
      */
-        'aria-hidden'?: boolean | 'false' | 'true';
+        'aria-hidden'?: Bool | 'false' | 'true';
         /**
      * Indicates the entered value does not conform to the format expected by the application.
      * @see aria-errormessage.
      */
-        'aria-invalid'?: boolean | 'false' | 'true' | 'grammar' | 'spelling';
+        'aria-invalid'?: Bool | 'false' | 'true' | 'grammar' | 'spelling';
         /** Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. */
-        'aria-keyshortcuts'?: string;
+        'aria-keyshortcuts'?: String;
         /**
-     * Defines a string value that labels the current element.
+     * Defines a String value that labels the current element.
      * @see aria-labelledby.
      */
-        'aria-label'?: string;
+        'aria-label'?: String;
         /**
      * Identifies the element (or elements) that labels the current element.
      * @see aria-describedby.
      */
-        'aria-labelledby'?: string;
+        'aria-labelledby'?: String;
         /** Defines the hierarchical level of an element within a structure. */
         'aria-level'?: number;
         /** Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. */
         'aria-live'?: 'off' | 'assertive' | 'polite';
         /** Indicates whether an element is modal when displayed. */
-        'aria-modal'?: boolean | 'false' | 'true';
+        'aria-modal'?: Bool | 'false' | 'true';
         /** Indicates whether a text box accepts multiple lines of input or only a single line. */
-        'aria-multiline'?: boolean | 'false' | 'true';
+        'aria-multiline'?: Bool | 'false' | 'true';
         /** Indicates that the user may select more than one item from the current selectable descendants. */
-        'aria-multiselectable'?: boolean | 'false' | 'true';
+        'aria-multiselectable'?: Bool | 'false' | 'true';
         /** Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. */
         'aria-orientation'?: 'horizontal' | 'vertical';
         /**
@@ -337,12 +355,12 @@ let ariaAttributes =
      * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
      * @see aria-controls.
      */
-        'aria-owns'?: string;
+        'aria-owns'?: String;
         /**
      * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
      * A hint could be a sample value or a brief description of the expected format.
      */
-        'aria-placeholder'?: string;
+        'aria-placeholder'?: String;
         /**
      * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
      * @see aria-setsize.
@@ -352,21 +370,21 @@ let ariaAttributes =
      * Indicates the current "pressed" state of toggle buttons.
      * @see aria-checked @see aria-selected.
      */
-        'aria-pressed'?: boolean | 'false' | 'mixed' | 'true';
+        'aria-pressed'?: Bool | 'false' | 'mixed' | 'true';
         /**
      * Indicates that the element is not editable, but is otherwise operable.
      * @see aria-disabled.
      */
-        'aria-readonly'?: boolean | 'false' | 'true';
+        'aria-readonly'?: Bool | 'false' | 'true';
         /**
      * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
      * @see aria-atomic.
      */
         'aria-relevant'?: 'additions' | 'additions removals' | 'additions text' | 'all' | 'removals' | 'removals additions' | 'removals text' | 'text' | 'text additions' | 'text removals';
         /** Indicates that user input is required on the element before a form may be submitted. */
-        'aria-required'?: boolean | 'false' | 'true';
+        'aria-required'?: Bool | 'false' | 'true';
         /** Defines a human-readable, author-localized description for the role of an element. */
-        'aria-roledescription'?: string;
+        'aria-roledescription'?: String;
         /**
      * Defines the total number of rows in a table, grid, or treegrid.
      * @see aria-rowindex.
@@ -386,7 +404,7 @@ let ariaAttributes =
      * Indicates the current "selected" state of various widgets.
      * @see aria-checked @see aria-pressed.
      */
-        'aria-selected'?: boolean | 'false' | 'true';
+        'aria-selected'?: Bool | 'false' | 'true';
         /**
      * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
      * @see aria-posinset.
@@ -404,10 +422,10 @@ let ariaAttributes =
      */
         'aria-valuenow'?: number;
         /** Defines the human readable text alternative of aria-valuenow for a range widget. */
-        'aria-valuetext'?: string; *) ]
+        'aria-valuetext'?: String; *) ]
 
 (* All the WAI-ARIA 1.1 role attribute values from https://www.w3.org/TR/wai-aria-1.1/#role_definitions *)
-type ariaRole = string
+let ariaRole = String
 (* | Alert
    | Alertdialog
    | Application
@@ -477,378 +495,348 @@ type ariaRole = string
    | Tree
    | Treegrid
    | Treeitem
-   | Custom of string *)
-
-let attributesHTML = []
+   | Custom of String *)
 
 (* <T> extends AriaAttributes, DOMAttributes<T> { *)
-(* React-specific Attributes *)
-(* defaultChecked?: boolean;
-   defaultValue?: string | number | ReadonlyArray<string>;
-   suppressContentEditableWarning?: boolean;
-   suppressHydrationWarning?: boolean; *)
+let attributesHTML =
+  [ (* React-specific Attributes *)
+    {name= "defaultChecked"; type_= Bool; htmlName= ""}
+  ; { name= "defaultValue"
+    ; type_= String (* | number | ReadonlyArray<String> *)
+    ; htmlName= "" }
+  ; {name= "suppressContentEditableWarning"; type_= Bool; htmlName= ""}
+  ; {name= "suppressHydrationWarning"; type_= Bool; htmlName= ""}
+  ; (* Standard HTML Attributes *)
+    {name= "accessKey"; type_= String; htmlName= ""}
+  ; {name= "className"; type_= String; htmlName= ""}
+  ; {name= "contentEditable"; type_= String (* | "inherit" *); htmlName= ""}
+  ; {name= "contextMenu"; type_= String; htmlName= ""}
+  ; {name= "dir"; type_= String; htmlName= ""}
+  ; {name= "draggable"; type_= String (* Booleanish *); htmlName= ""}
+  ; {name= "hidden"; type_= Bool; htmlName= ""}
+  ; {name= "id"; type_= String; htmlName= ""}
+  ; {name= "lang"; type_= String; htmlName= ""}
+  ; {name= "placeholder"; type_= String; htmlName= ""}
+  ; {name= "slot"; type_= String; htmlName= ""}
+  ; {name= "spellCheck"; type_= String (* Booleanish *); htmlName= ""}
+  ; {name= "style"; type_= Style; htmlName= ""}
+  ; {name= "tabIndex"; type_= Int; htmlName= ""}
+  ; {name= "title"; type_= String; htmlName= ""}
+  ; {name= "translate"; type_= String (* 'yes' | 'no' *); htmlName= ""}
+  ; (* Unknown *)
+    {name= "radioGroup"; type_= String; htmlName= ""}
+  ; (* <command>, <menuitem> *)
 
-(* Standard HTML Attributes *)
-(* accessKey?: string;
-        className?: string;
-        contentEditable?: Booleanish | "inherit";
-        contextMenu?: string;
-        dir?: string;
-        draggable?: Booleanish;
-        hidden?: boolean;
-        id?: string;
-        lang?: string;
-        placeholder?: string;
-        slot?: string;
-        spellCheck?: Booleanish;
-        style?: CSSProperties;
-        tabIndex?: number;
-        title?: string;
-        translate?: 'yes' | 'no';
+    (* WAI-ARIA *)
+    {name= "role"; type_= String (* AriaRole *); htmlName= ""}
+  ; (* RDFa Attributes *)
+    {name= "about"; type_= String; htmlName= ""}
+  ; {name= "datatype"; type_= String; htmlName= ""}
+  ; {name= "inlist"; type_= String (* any *); htmlName= ""}
+  ; {name= "prefix"; type_= String; htmlName= ""}
+  ; {name= "property"; type_= String; htmlName= ""}
+  ; {name= "resource"; type_= String; htmlName= ""}
+  ; {name= "typeof"; type_= String; htmlName= ""}
+  ; {name= "vocab"; type_= String; htmlName= ""}
+  ; (* Non-standard Attributes *)
+    {name= "autoCapitalize"; type_= String; htmlName= ""}
+  ; {name= "autoCorrect"; type_= String; htmlName= ""}
+  ; {name= "autoSave"; type_= String; htmlName= ""}
+  ; {name= "color"; type_= String; htmlName= ""}
+  ; {name= "itemProp"; type_= String; htmlName= ""}
+  ; {name= "itemScope"; type_= Bool; htmlName= ""}
+  ; {name= "itemType"; type_= String; htmlName= ""}
+  ; {name= "itemID"; type_= String; htmlName= ""}
+  ; {name= "itemRef"; type_= String; htmlName= ""}
+  ; {name= "results"; type_= Int; htmlName= ""}
+  ; {name= "security"; type_= String; htmlName= ""}
+  ; {name= "unselectable"; type_= String (* 'on' | 'off' *); htmlName= ""}
+  ; (* Living Standard
 
-        // Unknown
-        radioGroup?: string; // <command>, <menuitem>
+       * Hints at the type of data that might be entered by the user while editing the element or its contents
+       * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute *)
+    { name= "inputMode"
+    ; type_=
+        String
+        (* 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' *)
+    ; htmlName= "" }
+  ; (* * Specify that a standard HTML element should behave like a defined custom built-in element
+       * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is *)
+    {name= "is"; type_= String; htmlName= ""} ]
 
-        // WAI-ARIA
-        role?: AriaRole;
+(* <T> extends HTMLAttributes<T> { *)
+let allHTMLAttributes =
+  [ (* Standard HTML Attributes *)
+    {name= "accept"; type_= String; htmlName= ""}
+  ; {name= "acceptCharset"; type_= String; htmlName= ""}
+  ; {name= "action"; type_= String; htmlName= ""}
+  ; {name= "allowFullScreen"; type_= Bool; htmlName= ""}
+  ; {name= "allowTransparency"; type_= Bool; htmlName= ""}
+  ; {name= "alt"; type_= String; htmlName= ""}
+  ; {name= "as"; type_= String; htmlName= ""}
+  ; {name= "async"; type_= Bool; htmlName= ""}
+  ; {name= "autoComplete"; type_= String; htmlName= ""}
+  ; {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; {name= "autoPlay"; type_= Bool; htmlName= ""}
+  ; {name= "capture"; type_= (* Bool |  *) String; htmlName= ""}
+  ; {name= "cellPadding"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "cellSpacing"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "charSet"; type_= String; htmlName= ""}
+  ; {name= "challenge"; type_= String; htmlName= ""}
+  ; {name= "checked"; type_= Bool; htmlName= ""}
+  ; {name= "cite"; type_= String; htmlName= ""}
+  ; {name= "classID"; type_= String; htmlName= ""}
+  ; {name= "cols"; type_= Int (* number *); htmlName= ""}
+  ; {name= "colSpan"; type_= Int (* number *); htmlName= ""}
+  ; {name= "content"; type_= String; htmlName= ""}
+  ; {name= "controls"; type_= Bool; htmlName= ""}
+  ; {name= "coords"; type_= String; htmlName= ""}
+  ; {name= "crossOrigin"; type_= String; htmlName= ""}
+  ; {name= "data"; type_= String; htmlName= ""}
+  ; {name= "dateTime"; type_= String; htmlName= ""}
+  ; {name= "default"; type_= Bool; htmlName= ""}
+  ; {name= "defer"; type_= Bool; htmlName= ""}
+  ; {name= "disabled"; type_= Bool; htmlName= ""}
+  ; {name= "download"; type_= String (* any *); htmlName= ""}
+  ; {name= "encType"; type_= String; htmlName= ""}
+  ; {name= "form"; type_= String; htmlName= ""}
+  ; {name= "formAction"; type_= String; htmlName= ""}
+  ; {name= "formEncType"; type_= String; htmlName= ""}
+  ; {name= "formMethod"; type_= String; htmlName= ""}
+  ; {name= "formNoValidate"; type_= Bool; htmlName= ""}
+  ; {name= "formTarget"; type_= String; htmlName= ""}
+  ; {name= "frameBorder"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "headers"; type_= String; htmlName= ""}
+  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "high"; type_= Int (* number *); htmlName= ""}
+  ; {name= "href"; type_= String; htmlName= ""}
+  ; {name= "hrefLang"; type_= String; htmlName= ""}
+  ; {name= "htmlFor"; type_= String; htmlName= ""}
+  ; {name= "httpEquiv"; type_= String; htmlName= ""}
+  ; {name= "integrity"; type_= String; htmlName= ""}
+  ; {name= "keyParams"; type_= String; htmlName= ""}
+  ; {name= "keyType"; type_= String; htmlName= ""}
+  ; {name= "kind"; type_= String; htmlName= ""}
+  ; {name= "label"; type_= String; htmlName= ""}
+  ; {name= "list"; type_= String; htmlName= ""}
+  ; {name= "loop"; type_= Bool; htmlName= ""}
+  ; {name= "low"; type_= Int (* number *); htmlName= ""}
+  ; {name= "manifest"; type_= String; htmlName= ""}
+  ; {name= "marginHeight"; type_= Int (* number *); htmlName= ""}
+  ; {name= "marginWidth"; type_= Int (* number *); htmlName= ""}
+  ; {name= "max"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "maxLength"; type_= Int (* number *); htmlName= ""}
+  ; {name= "media"; type_= String; htmlName= ""}
+  ; {name= "mediaGroup"; type_= String; htmlName= ""}
+  ; {name= "method"; type_= String; htmlName= ""}
+  ; {name= "min"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "minLength"; type_= Int (* number *); htmlName= ""}
+  ; {name= "multiple"; type_= Bool; htmlName= ""}
+  ; {name= "muted"; type_= Bool; htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""}
+  ; {name= "nonce"; type_= String; htmlName= ""}
+  ; {name= "noValidate"; type_= Bool; htmlName= ""}
+  ; {name= "open"; type_= Bool; htmlName= ""}
+  ; {name= "optimum"; type_= Int (* number *); htmlName= ""}
+  ; {name= "pattern"; type_= String; htmlName= ""}
+  ; {name= "placeholder"; type_= String; htmlName= ""}
+  ; {name= "playsInline"; type_= Bool; htmlName= ""}
+  ; {name= "poster"; type_= String; htmlName= ""}
+  ; {name= "preload"; type_= String; htmlName= ""}
+  ; {name= "readOnly"; type_= Bool; htmlName= ""}
+  ; {name= "rel"; type_= String; htmlName= ""}
+  ; {name= "required"; type_= Bool; htmlName= ""}
+  ; {name= "reversed"; type_= Bool; htmlName= ""}
+  ; {name= "rows"; type_= Int (* number *); htmlName= ""}
+  ; {name= "rowSpan"; type_= Int (* number *); htmlName= ""}
+  ; {name= "sandbox"; type_= String; htmlName= ""}
+  ; {name= "scope"; type_= String; htmlName= ""}
+  ; {name= "scoped"; type_= Bool; htmlName= ""}
+  ; {name= "scrolling"; type_= String; htmlName= ""}
+  ; {name= "seamless"; type_= Bool; htmlName= ""}
+  ; {name= "selected"; type_= Bool; htmlName= ""}
+  ; {name= "shape"; type_= String; htmlName= ""}
+  ; {name= "size"; type_= Int (* number *); htmlName= ""}
+  ; {name= "sizes"; type_= String; htmlName= ""}
+  ; {name= "span"; type_= Int (* number *); htmlName= ""}
+  ; {name= "src"; type_= String; htmlName= ""}
+  ; {name= "srcDoc"; type_= String; htmlName= ""}
+  ; {name= "srcLang"; type_= String; htmlName= ""}
+  ; {name= "srcSet"; type_= String; htmlName= ""}
+  ; {name= "start"; type_= Int (* number *); htmlName= ""}
+  ; {name= "step"; type_= (* number | *) String; htmlName= ""}
+  ; {name= "summary"; type_= String; htmlName= ""}
+  ; {name= "target"; type_= String; htmlName= ""}
+  ; {name= "type"; type_= String; htmlName= ""}
+  ; {name= "useMap"; type_= String; htmlName= ""}
+  ; { name= "value"
+    ; type_= String (* | ReadonlyArray<String> | number *)
+    ; htmlName= "" }
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "wmode"; type_= String; htmlName= ""}
+  ; {name= "wrap"; type_= String; htmlName= ""} ]
 
-        // RDFa Attributes
-        about?: string;
-        datatype?: string;
-        inlist?: any;
-        prefix?: string;
-        property?: string;
-        resource?: string;
-        typeof?: string;
-        vocab?: string;
+let anchorHTMLAttributes =
+  [ {name= "download"; type_= String (* any; *); htmlName= "download"}
+  ; {name= "href"; type_= String; htmlName= "href"}
+  ; {name= "hrefLang"; type_= String; htmlName= "hrefLang"}
+  ; {name= "media"; type_= String; htmlName= "media"}
+  ; {name= "ping"; type_= String; htmlName= "ping"}
+  ; {name= "rel"; type_= String; htmlName= "rel"}
+  ; {name= "target"; type_= attributeAnchorTarget; htmlName= "target"}
+  ; {name= "type"; type_= String; htmlName= "type"}
+  ; { name= "referrerPolicy"
+    ; type_= attributeReferrerPolicy
+    ; htmlName= "referrerPolicy" } ]
 
-        // Non-standard Attributes
-        autoCapitalize?: string;
-        autoCorrect?: string;
-        autoSave?: string;
-        color?: string;
-        itemProp?: string;
-        itemScope?: boolean;
-        itemType?: string;
-        itemID?: string;
-        itemRef?: string;
-        results?: number;
-        security?: string;
-        unselectable?: 'on' | 'off';
+let audioHTMLAttributes = [] (* <T> extends MediaHTMLAttributes<T> {] *)
 
-        // Living Standard
-        /**
- * Hints at the type of data that might be entered by the user while editing the element or its contents
- * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute
- */
-        inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
-        /**
- * Specify that a standard HTML element should behave like a defined custom built-in element
- * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is
- */
-        is?: string; *)
+(* <T> extends HTMLAttributes<T> { *)
+let areaHTMLAttributes =
+  [ {name= "alt"; type_= String; htmlName= ""}
+  ; {name= "coords"; type_= String; htmlName= ""}
+  ; {name= "download"; type_= String (* any *); htmlName= ""}
+  ; {name= "href"; type_= String; htmlName= ""}
+  ; {name= "hrefLang"; type_= String; htmlName= ""}
+  ; {name= "media"; type_= String; htmlName= ""}
+  ; {name= "referrerPolicy"; type_= attributeReferrerPolicy; htmlName= ""}
+  ; {name= "rel"; type_= String; htmlName= ""}
+  ; {name= "shape"; type_= String; htmlName= ""}
+  ; {name= "target"; type_= String; htmlName= ""} ]
 
-let allHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       // Standard HTML Attributes
-       accept?: string;
-       acceptCharset?: string;
-       action?: string;
-       allowFullScreen?: boolean;
-       allowTransparency?: boolean;
-       alt?: string;
-       as?: string;
-       async?: boolean;
-       autoComplete?: string;
-       autoFocus?: boolean;
-       autoPlay?: boolean;
-       capture?: boolean | string;
-       cellPadding?: number | string;
-       cellSpacing?: number | string;
-       charSet?: string;
-       challenge?: string;
-       checked?: boolean;
-       cite?: string;
-       classID?: string;
-       cols?: number;
-       colSpan?: number;
-       content?: string;
-       controls?: boolean;
-       coords?: string;
-       crossOrigin?: string;
-       data?: string;
-       dateTime?: string;
-       default?: boolean;
-       defer?: boolean;
-       disabled?: boolean;
-       download?: any;
-       encType?: string;
-       form?: string;
-       formAction?: string;
-       formEncType?: string;
-       formMethod?: string;
-       formNoValidate?: boolean;
-       formTarget?: string;
-       frameBorder?: number | string;
-       headers?: string;
-       height?: number | string;
-       high?: number;
-       href?: string;
-       hrefLang?: string;
-       htmlFor?: string;
-       httpEquiv?: string;
-       integrity?: string;
-       keyParams?: string;
-       keyType?: string;
-       kind?: string;
-       label?: string;
-       list?: string;
-       loop?: boolean;
-       low?: number;
-       manifest?: string;
-       marginHeight?: number;
-       marginWidth?: number;
-       max?: number | string;
-       maxLength?: number;
-       media?: string;
-       mediaGroup?: string;
-       method?: string;
-       min?: number | string;
-       minLength?: number;
-       multiple?: boolean;
-       muted?: boolean;
-       name?: string;
-       nonce?: string;
-       noValidate?: boolean;
-       open?: boolean;
-       optimum?: number;
-       pattern?: string;
-       placeholder?: string;
-       playsInline?: boolean;
-       poster?: string;
-       preload?: string;
-       readOnly?: boolean;
-       rel?: string;
-       required?: boolean;
-       reversed?: boolean;
-       rows?: number;
-       rowSpan?: number;
-       sandbox?: string;
-       scope?: string;
-       scoped?: boolean;
-       scrolling?: string;
-       seamless?: boolean;
-       selected?: boolean;
-       shape?: string;
-       size?: number;
-       sizes?: string;
-       span?: number;
-       src?: string;
-       srcDoc?: string;
-       srcLang?: string;
-       srcSet?: string;
-       start?: number;
-       step?: number | string;
-       summary?: string;
-       target?: string;
-       type?: string;
-       useMap?: string;
-       value?: string | ReadonlyArray<string> | number;
-       width?: number | string;
-       wmode?: string;
-       wrap?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let baseHTMLAttributes =
+  [ {name= "href"; type_= String; htmlName= ""}
+  ; {name= "target"; type_= String; htmlName= ""} ]
 
-type attributeReferrerPolicy = string
-(* | Empty
-   | NoReferrer
-   | NoReferrerWhenDowngrade
-   | Origin
-   | OriginWhenCrossOrigin
-   | SameOrigin
-   | StrictOrigin
-   | StrictOriginWhenCrossOrigin
-   | UnsafeUrl *)
+(* <T> extends HTMLAttributes<T> { *)
+let blockquoteHTMLAttributes = [{name= "cite"; type_= String; htmlName= ""}]
 
-type attributeAnchorTarget = string
-(* | Self
-   | Blank
-   | Parent
-   | Top
-   | Custom of string *)
+(* <T> extends HTMLAttributes<T> { *)
+let buttonHTMLAttributes =
+  [ {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; {name= "disabled"; type_= Bool; htmlName= ""}
+  ; {name= "form"; type_= String; htmlName= ""}
+  ; {name= "formAction"; type_= String; htmlName= ""}
+  ; {name= "formEncType"; type_= String; htmlName= ""}
+  ; {name= "formMethod"; type_= String; htmlName= ""}
+  ; {name= "formNoValidate"; type_= Bool; htmlName= ""}
+  ; {name= "formTarget"; type_= String; htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""}
+  ; { name= "type"
+    ; type_= String (* 'submit' | 'reset' | 'button' *)
+    ; htmlName= "" }
+  ; { name= "value"
+    ; type_= String (* | ReadonlyArray<String> | number *)
+    ; htmlName= "" } ]
 
-let anchorHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       download?: any;
-       href?: string;
-       hrefLang?: string;
-       media?: string;
-       ping?: string;
-       rel?: string;
-       target?: HTMLAttributeAnchorTarget;
-       type?: string;
-       referrerPolicy?: HTMLAttributeReferrerPolicy;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let canvasHTMLAttributes =
+  [ {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-let audioHTMLAttributes = [] (* <T> extends MediaHTMLAttributes<T> {} *)
+(* <T> extends HTMLAttributes<T> { *)
+let colHTMLAttributes =
+  [ {name= "span"; type_= Int (* number *); htmlName= ""}
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-let areaHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       alt?: string;
-       coords?: string;
-       download?: any;
-       href?: string;
-       hrefLang?: string;
-       media?: string;
-       referrerPolicy?: HTMLAttributeReferrerPolicy;
-       rel?: string;
-       shape?: string;
-       target?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let colgroupHTMLAttributes =
+  [{name= "span"; type_= Int (* number *); htmlName= ""}]
 
-let baseHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       href?: string;
-       target?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let dataHTMLAttributes =
+  [ { name= "value"
+    ; type_= String (* | ReadonlyArray<String> | number *)
+    ; htmlName= "" } ]
 
-let blockquoteHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       cite?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let detailsHTMLAttributes =
+  [ {name= "open"; type_= Bool; htmlName= ""}
+    (* { name="onToggle"; type_= ReactEventHandler<T>; htmlName="" }; *) ]
 
-let buttonHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       autoFocus?: boolean;
-       disabled?: boolean;
-       form?: string;
-       formAction?: string;
-       formEncType?: string;
-       formMethod?: string;
-       formNoValidate?: boolean;
-       formTarget?: string;
-       name?: string;
-       type?: 'submit' | 'reset' | 'button';
-       value?: string | ReadonlyArray<string> | number;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let delHTMLAttributes =
+  [ {name= "cite"; type_= String; htmlName= ""}
+  ; {name= "dateTime"; type_= String; htmlName= ""} ]
 
-let canvasHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       height?: number | string;
-       width?: number | string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let dialogHTMLAttributes = [{name= "open"; type_= Bool; htmlName= ""}]
 
-let colHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       span?: number;
-       width?: number | string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let embedHTMLAttributes =
+  [ {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "src"; type_= String; htmlName= ""}
+  ; {name= "type"; type_= String; htmlName= ""}
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-let colgroupHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       span?: number;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let fieldsetHTMLAttributes =
+  [ {name= "disabled"; type_= Bool; htmlName= ""}
+  ; {name= "form"; type_= String; htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""} ]
 
-let dataHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       value?: string | ReadonlyArray<string> | number;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let formHTMLAttributes =
+  [ {name= "acceptCharset"; type_= String; htmlName= ""}
+  ; {name= "action"; type_= String; htmlName= ""}
+  ; {name= "autoComplete"; type_= String; htmlName= ""}
+  ; {name= "encType"; type_= String; htmlName= ""}
+  ; {name= "method"; type_= String; htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""}
+  ; {name= "noValidate"; type_= Bool; htmlName= ""}
+  ; {name= "target"; type_= String; htmlName= ""} ]
 
-let detailsHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       open?: boolean;
-       onToggle?: ReactEventHandler<T>;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let htmlHTMLAttributes = [{name= "manifest"; type_= String; htmlName= ""}]
 
-let delHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       cite?: string;
-       dateTime?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let iframeHTMLAttributes =
+  [ {name= "allow"; type_= String; htmlName= ""}
+  ; {name= "allowFullScreen"; type_= Bool; htmlName= ""}
+  ; {name= "allowTransparency"; type_= Bool; htmlName= ""}
+  ; (* @deprecated *)
+    {name= "frameBorder"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "loading"; type_= String (* "eager" | "lazy" *); htmlName= ""}
+  ; (* @deprecated *)
+    {name= "marginHeight"; type_= Int (* number *); htmlName= ""}
+  ; (* @deprecated *)
+    {name= "marginWidth"; type_= Int (* number *); htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""}
+  ; {name= "referrerPolicy"; type_= attributeReferrerPolicy; htmlName= ""}
+  ; {name= "sandbox"; type_= String; htmlName= ""}
+  ; (* @deprecated *)
+    {name= "scrolling"; type_= String; htmlName= ""}
+  ; {name= "seamless"; type_= Bool; htmlName= ""}
+  ; {name= "src"; type_= String; htmlName= ""}
+  ; {name= "srcDoc"; type_= String; htmlName= ""}
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-let dialogHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       open?: boolean;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let imgHTMLAttributes =
+  [ {name= "alt"; type_= String; htmlName= ""}
+  ; { name= "crossOrigin"
+    ; type_= String (* "anonymous" | "use-credentials" | "" *)
+    ; htmlName= "" }
+  ; { name= "decoding"
+    ; type_= String (* "async" | "auto" | "sync" *)
+    ; htmlName= "" }
+  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "loading"; type_= String (* "eager" | "lazy" *); htmlName= ""}
+  ; {name= "referrerPolicy"; type_= attributeReferrerPolicy; htmlName= ""}
+  ; {name= "sizes"; type_= String; htmlName= ""}
+  ; {name= "src"; type_= String; htmlName= ""}
+  ; {name= "srcSet"; type_= String; htmlName= ""}
+  ; {name= "useMap"; type_= String; htmlName= ""}
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-let embedHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       height?: number | string;
-       src?: string;
-       type?: string;
-       width?: number | string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let insHTMLAttributes =
+  [ {name= "cite"; type_= String; htmlName= ""}
+  ; {name= "dateTime"; type_= String; htmlName= ""} ]
 
-let fieldsetHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       disabled?: boolean;
-       form?: string;
-       name?: string;
-   } *)
-
-let formHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       acceptCharset?: string;
-       action?: string;
-       autoComplete?: string;
-       encType?: string;
-       method?: string;
-       name?: string;
-       noValidate?: boolean;
-       target?: string;
-   } *)
-
-let htmlHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       manifest?: string;
-   } *)
-
-let iframeHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       allow?: string;
-       allowFullScreen?: boolean;
-       allowTransparency?: boolean;
-       /** @deprecated */
-       frameBorder?: number | string;
-       height?: number | string;
-       loading?: "eager" | "lazy";
-       /** @deprecated */
-       marginHeight?: number;
-       /** @deprecated */
-       marginWidth?: number;
-       name?: string;
-       referrerPolicy?: HTMLAttributeReferrerPolicy;
-       sandbox?: string;
-       /** @deprecated */
-       scrolling?: string;
-       seamless?: boolean;
-       src?: string;
-       srcDoc?: string;
-       width?: number | string;
-   } *)
-
-let imgHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       alt?: string;
-       crossOrigin?: "anonymous" | "use-credentials" | "";
-       decoding?: "async" | "auto" | "sync";
-       height?: number | string;
-       loading?: "eager" | "lazy";
-       referrerPolicy?: HTMLAttributeReferrerPolicy;
-       sizes?: string;
-       src?: string;
-       srcSet?: string;
-       useMap?: string;
-       width?: number | string;
-   } *)
-
-let insHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       cite?: string;
-       dateTime?: string;
-   } *)
-
-type inputTypeAttribute = string
+let inputTypeAttribute = String
 (*
         | 'button'
         | 'checkbox'
@@ -872,612 +860,620 @@ type inputTypeAttribute = string
         | 'time'
         | 'url'
         | 'week'
-        | (string & {});  *)
+        | (String & {});  *)
 
-let inputHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       accept?: string;
-       alt?: string;
-       autoComplete?: string;
-       autoFocus?: boolean;
-       capture?: boolean | string; // https://www.w3.org/TR/html-media-capture/#the-capture-attribute
-       checked?: boolean;
-       crossOrigin?: string;
-       disabled?: boolean;
-       form?: string;
-       formAction?: string;
-       formEncType?: string;
-       formMethod?: string;
-       formNoValidate?: boolean;
-       formTarget?: string;
-       height?: number | string;
-       list?: string;
-       max?: number | string;
-       maxLength?: number;
-       min?: number | string;
-       minLength?: number;
-       multiple?: boolean;
-       name?: string;
-       pattern?: string;
-       placeholder?: string;
-       readOnly?: boolean;
-       required?: boolean;
-       size?: number;
-       src?: string;
-       step?: number | string;
-       type?: HTMLInputTypeAttribute;
-       value?: string | ReadonlyArray<string> | number;
-       width?: number | string;
+(* <T> extends HTMLAttributes<T> { *)
+let inputHTMLAttributes =
+  [ {name= "accept"; type_= String; htmlName= ""}
+  ; {name= "alt"; type_= String; htmlName= ""}
+  ; {name= "autoComplete"; type_= String; htmlName= ""}
+  ; {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; { name= "capture"
+    ; type_= (* Bool | *) String
+    ; (* https://www.w3.org/TR/html-media-capture/ *) htmlName= "" }
+  ; {name= "checked"; type_= Bool; htmlName= ""}
+  ; {name= "crossOrigin"; type_= String; htmlName= ""}
+  ; {name= "disabled"; type_= Bool; htmlName= ""}
+  ; {name= "form"; type_= String; htmlName= ""}
+  ; {name= "formAction"; type_= String; htmlName= ""}
+  ; {name= "formEncType"; type_= String; htmlName= ""}
+  ; {name= "formMethod"; type_= String; htmlName= ""}
+  ; {name= "formNoValidate"; type_= Bool; htmlName= ""}
+  ; {name= "formTarget"; type_= String; htmlName= ""}
+  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "list"; type_= String; htmlName= ""}
+  ; {name= "max"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "maxLength"; type_= Int (* number *); htmlName= ""}
+  ; {name= "min"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "minLength"; type_= Int (* number *); htmlName= ""}
+  ; {name= "multiple"; type_= Bool; htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""}
+  ; {name= "pattern"; type_= String; htmlName= ""}
+  ; {name= "placeholder"; type_= String; htmlName= ""}
+  ; {name= "readOnly"; type_= Bool; htmlName= ""}
+  ; {name= "required"; type_= Bool; htmlName= ""}
+  ; {name= "size"; type_= Int (* number *); htmlName= ""}
+  ; {name= "src"; type_= String; htmlName= ""}
+  ; {name= "step"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "type"; type_= inputTypeAttribute; htmlName= ""}
+  ; { name= "value"
+    ; type_= String (* | ReadonlyArray<String> | number *)
+    ; htmlName= "" }
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
+    (* { name="onChange"; type_= ChangeEventHandler<T>; htmlName="" }; *) ]
 
-       onChange?: ChangeEventHandler<T>;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let keygenHTMLAttributes =
+  [ {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; {name= "challenge"; type_= String; htmlName= ""}
+  ; {name= "disabled"; type_= Bool; htmlName= ""}
+  ; {name= "form"; type_= String; htmlName= ""}
+  ; {name= "keyType"; type_= String; htmlName= ""}
+  ; {name= "keyParams"; type_= String; htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""} ]
 
-let keygenHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       autoFocus?: boolean;
-       challenge?: string;
-       disabled?: boolean;
-       form?: string;
-       keyType?: string;
-       keyParams?: string;
-       name?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let labelHTMLAttributes =
+  [ {name= "form"; type_= String; htmlName= ""}
+  ; {name= "htmlFor"; type_= String; htmlName= ""} ]
 
-let labelHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       form?: string;
-       htmlFor?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let liHTMLAttributes =
+  [ { name= "value"
+    ; type_= String (* | ReadonlyArray<String> | number *)
+    ; htmlName= "" } ]
 
-let liHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       value?: string | ReadonlyArray<string> | number;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let linkHTMLAttributes =
+  [ {name= "as"; type_= String; htmlName= ""}
+  ; {name= "crossOrigin"; type_= String; htmlName= ""}
+  ; {name= "href"; type_= String; htmlName= ""}
+  ; {name= "hrefLang"; type_= String; htmlName= ""}
+  ; {name= "integrity"; type_= String; htmlName= ""}
+  ; {name= "imageSrcSet"; type_= String; htmlName= ""}
+  ; {name= "media"; type_= String; htmlName= ""}
+  ; {name= "referrerPolicy"; type_= attributeReferrerPolicy; htmlName= ""}
+  ; {name= "rel"; type_= String; htmlName= ""}
+  ; {name= "sizes"; type_= String; htmlName= ""}
+  ; {name= "type"; type_= String; htmlName= ""}
+  ; {name= "charSet"; type_= String; htmlName= ""} ]
 
-let linkHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       as?: string;
-       crossOrigin?: string;
-       href?: string;
-       hrefLang?: string;
-       integrity?: string;
-       imageSrcSet?: string;
-       media?: string;
-       referrerPolicy?: HTMLAttributeReferrerPolicy;
-       rel?: string;
-       sizes?: string;
-       type?: string;
-       charSet?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let mapHTMLAttributes = [{name= "name"; type_= String; htmlName= ""}]
 
-let mapHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       name?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let menuHTMLAttributes = [{name= "type"; type_= String; htmlName= ""}]
 
-let menuHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       type?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let mediaHTMLAttributes =
+  [ {name= "autoPlay"; type_= Bool; htmlName= ""}
+  ; {name= "controls"; type_= Bool; htmlName= ""}
+  ; {name= "controlsList"; type_= String; htmlName= ""}
+  ; {name= "crossOrigin"; type_= String; htmlName= ""}
+  ; {name= "loop"; type_= Bool; htmlName= ""}
+  ; {name= "mediaGroup"; type_= String; htmlName= ""}
+  ; {name= "muted"; type_= Bool; htmlName= ""}
+  ; {name= "playsInline"; type_= Bool; htmlName= ""}
+  ; {name= "preload"; type_= String; htmlName= ""}
+  ; {name= "src"; type_= String; htmlName= ""} ]
 
-let mediaHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       autoPlay?: boolean;
-       controls?: boolean;
-       controlsList?: string;
-       crossOrigin?: string;
-       loop?: boolean;
-       mediaGroup?: string;
-       muted?: boolean;
-       playsInline?: boolean;
-       preload?: string;
-       src?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let metaHTMLAttributes =
+  [ {name= "charSet"; type_= String; htmlName= ""}
+  ; {name= "content"; type_= String; htmlName= ""}
+  ; {name= "httpEquiv"; type_= String; htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""}
+  ; {name= "media"; type_= String; htmlName= ""} ]
 
-let metaHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       charSet?: string;
-       content?: string;
-       httpEquiv?: string;
-       name?: string;
-       media?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let meterHTMLAttributes =
+  [ {name= "form"; type_= String; htmlName= ""}
+  ; {name= "high"; type_= Int (* number *); htmlName= ""}
+  ; {name= "low"; type_= Int (* number *); htmlName= ""}
+  ; {name= "max"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "min"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "optimum"; type_= Int (* number *); htmlName= ""}
+  ; { name= "value"
+    ; type_= String (* | ReadonlyArray<String> | number *)
+    ; htmlName= "" } ]
 
-let meterHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       form?: string;
-       high?: number;
-       low?: number;
-       max?: number | string;
-       min?: number | string;
-       optimum?: number;
-       value?: string | ReadonlyArray<string> | number;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let quoteHTMLAttributes = [{name= "cite"; type_= String; htmlName= ""}]
 
-let quoteHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       cite?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let objectHTMLAttributes =
+  [ {name= "classID"; type_= String; htmlName= ""}
+  ; {name= "data"; type_= String; htmlName= ""}
+  ; {name= "form"; type_= String; htmlName= ""}
+  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""}
+  ; {name= "type"; type_= String; htmlName= ""}
+  ; {name= "useMap"; type_= String; htmlName= ""}
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "wmode"; type_= String; htmlName= ""} ]
 
-let objectHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       classID?: string;
-       data?: string;
-       form?: string;
-       height?: number | string;
-       name?: string;
-       type?: string;
-       useMap?: string;
-       width?: number | string;
-       wmode?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let olHTMLAttributes =
+  [ {name= "reversed"; type_= Bool; htmlName= ""}
+  ; {name= "start"; type_= Int (* number *); htmlName= ""}
+  ; {name= "type"; type_= String (* '1' | 'a' | 'A' | 'i' | 'I' *); htmlName= ""}
+  ]
 
-let olHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       reversed?: boolean;
-       start?: number;
-       type?: '1' | 'a' | 'A' | 'i' | 'I';
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let optgroupHTMLAttributes =
+  [ {name= "disabled"; type_= Bool; htmlName= ""}
+  ; {name= "label"; type_= String; htmlName= ""} ]
 
-let optgroupHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       disabled?: boolean;
-       label?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let optionHTMLAttributes =
+  [ {name= "disabled"; type_= Bool; htmlName= ""}
+  ; {name= "label"; type_= String; htmlName= ""}
+  ; {name= "selected"; type_= Bool; htmlName= ""}
+  ; { name= "value"
+    ; type_= String (* | ReadonlyArray<String> | number *)
+    ; htmlName= "" } ]
 
-let optionHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       disabled?: boolean;
-       label?: string;
-       selected?: boolean;
-       value?: string | ReadonlyArray<string> | number;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let outputHTMLAttributes =
+  [ {name= "form"; type_= String; htmlName= ""}
+  ; {name= "htmlFor"; type_= String; htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""} ]
 
-let outputHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       form?: string;
-       htmlFor?: string;
-       name?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let paramHTMLAttributes =
+  [ {name= "name"; type_= String; htmlName= ""}
+  ; { name= "value"
+    ; type_= String (* | ReadonlyArray<String> | number *)
+    ; htmlName= "" } ]
 
-let paramHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       name?: string;
-       value?: string | ReadonlyArray<string> | number;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let progressHTMLAttributes =
+  [ {name= "max"; type_= (* number |  *) String; htmlName= ""}
+  ; { name= "value"
+    ; type_= String (* | ReadonlyArray<String> | number *)
+    ; htmlName= "" } ]
 
-let progressHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       max?: number | string;
-       value?: string | ReadonlyArray<string> | number;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let slotHTMLAttributes = [{name= "name"; type_= String; htmlName= ""}]
 
-let slotHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       name?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let scriptHTMLAttributes =
+  [ {name= "async"; type_= Bool; htmlName= ""}
+  ; (* @deprecated *)
+    {name= "charSet"; type_= String; htmlName= ""}
+  ; {name= "crossOrigin"; type_= String; htmlName= ""}
+  ; {name= "defer"; type_= Bool; htmlName= ""}
+  ; {name= "integrity"; type_= String; htmlName= ""}
+  ; {name= "noModule"; type_= Bool; htmlName= ""}
+  ; {name= "nonce"; type_= String; htmlName= ""}
+  ; {name= "referrerPolicy"; type_= attributeReferrerPolicy; htmlName= ""}
+  ; {name= "src"; type_= String; htmlName= ""}
+  ; {name= "type"; type_= String; htmlName= ""} ]
 
-let scriptHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       async?: boolean;
-       /** @deprecated */
-       charSet?: string;
-       crossOrigin?: string;
-       defer?: boolean;
-       integrity?: string;
-       noModule?: boolean;
-       nonce?: string;
-       referrerPolicy?: HTMLAttributeReferrerPolicy;
-       src?: string;
-       type?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let selectHTMLAttributes =
+  [ {name= "autoComplete"; type_= String; htmlName= ""}
+  ; {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; {name= "disabled"; type_= Bool; htmlName= ""}
+  ; {name= "form"; type_= String; htmlName= ""}
+  ; {name= "multiple"; type_= Bool; htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""}
+  ; {name= "required"; type_= Bool; htmlName= ""}
+  ; {name= "size"; type_= Int (* number *); htmlName= ""}
+  ; { name= "value"
+    ; type_= String (* | ReadonlyArray<String> | number *)
+    ; htmlName= "" }
+    (* { name="onChange"; type_= ChangeEventHandler<T>; htmlName="" }; *) ]
 
-let selectHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       autoComplete?: string;
-       autoFocus?: boolean;
-       disabled?: boolean;
-       form?: string;
-       multiple?: boolean;
-       name?: string;
-       required?: boolean;
-       size?: number;
-       value?: string | ReadonlyArray<string> | number;
-       onChange?: ChangeEventHandler<T>;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let sourceHTMLAttributes =
+  [ {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "media"; type_= String; htmlName= ""}
+  ; {name= "sizes"; type_= String; htmlName= ""}
+  ; {name= "src"; type_= String; htmlName= ""}
+  ; {name= "srcSet"; type_= String; htmlName= ""}
+  ; {name= "type"; type_= String; htmlName= ""}
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-let sourceHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       height?: number | string;
-       media?: string;
-       sizes?: string;
-       src?: string;
-       srcSet?: string;
-       type?: string;
-       width?: number | string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let styleHTMLAttributes =
+  [ {name= "media"; type_= String; htmlName= ""}
+  ; {name= "nonce"; type_= String; htmlName= ""}
+  ; {name= "scoped"; type_= Bool; htmlName= ""}
+  ; {name= "type"; type_= String; htmlName= ""} ]
 
-let styleHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       media?: string;
-       nonce?: string;
-       scoped?: boolean;
-       type?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let tableHTMLAttributes =
+  [ {name= "cellPadding"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "cellSpacing"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "summary"; type_= String; htmlName= ""}
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""} ]
 
-let tableHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       cellPadding?: number | string;
-       cellSpacing?: number | string;
-       summary?: string;
-       width?: number | string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let textareaHTMLAttributes =
+  [ {name= "autoComplete"; type_= String; htmlName= ""}
+  ; {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; {name= "cols"; type_= Int (* number *); htmlName= ""}
+  ; {name= "dirName"; type_= String; htmlName= ""}
+  ; {name= "disabled"; type_= Bool; htmlName= ""}
+  ; {name= "form"; type_= String; htmlName= ""}
+  ; {name= "maxLength"; type_= Int (* number *); htmlName= ""}
+  ; {name= "minLength"; type_= Int (* number *); htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""}
+  ; {name= "placeholder"; type_= String; htmlName= ""}
+  ; {name= "readOnly"; type_= Bool; htmlName= ""}
+  ; {name= "required"; type_= Bool; htmlName= ""}
+  ; {name= "rows"; type_= Int (* number *); htmlName= ""}
+  ; { name= "value"
+    ; type_= String (* | ReadonlyArray<String> | number *)
+    ; htmlName= "" }
+  ; {name= "wrap"; type_= String; htmlName= ""}
+    (* { name="onChange"; type_= ChangeEventHandler<T>; htmlName="" }; *) ]
 
-let textareaHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       autoComplete?: string;
-       autoFocus?: boolean;
-       cols?: number;
-       dirName?: string;
-       disabled?: boolean;
-       form?: string;
-       maxLength?: number;
-       minLength?: number;
-       name?: string;
-       placeholder?: string;
-       readOnly?: boolean;
-       required?: boolean;
-       rows?: number;
-       value?: string | ReadonlyArray<string> | number;
-       wrap?: string;
+(* <T> extends HTMLAttributes<T> { *)
+let tdHTMLAttributes =
+  [ { name= "align"
+    ; type_=
+        String (* type_= "left" | "center" | "right" | "justify" | "char" *)
+    ; htmlName= "" }
+  ; {name= "colSpan"; type_= Int (* number *); htmlName= ""}
+  ; {name= "headers"; type_= String; htmlName= ""}
+  ; {name= "rowSpan"; type_= Int (* number *); htmlName= ""}
+  ; {name= "scope"; type_= String; htmlName= ""}
+  ; {name= "abbr"; type_= String; htmlName= ""}
+  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
+  ; { name= "valign"
+    ; type_= String (* "top" | "middle" | "bottom" | "baseline" *)
+    ; htmlName= "" } ]
 
-       onChange?: ChangeEventHandler<T>;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let thHTMLAttributes =
+  [ { name= "align"
+    ; type_= String (* "left" | "center" | "right" | "justify" | "char" *)
+    ; htmlName= "" }
+  ; {name= "colSpan"; type_= Int (* number *); htmlName= ""}
+  ; {name= "headers"; type_= String; htmlName= ""}
+  ; {name= "rowSpan"; type_= Int (* number *); htmlName= ""}
+  ; {name= "scope"; type_= String; htmlName= ""}
+  ; {name= "abbr"; type_= String; htmlName= ""} ]
 
-let tdHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       align?: "left" | "center" | "right" | "justify" | "char";
-       colSpan?: number;
-       headers?: string;
-       rowSpan?: number;
-       scope?: string;
-       abbr?: string;
-       height?: number | string;
-       width?: number | string;
-       valign?: "top" | "middle" | "bottom" | "baseline";
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let timeHTMLAttributes = [{name= "dateTime"; type_= String; htmlName= ""}]
 
-let thHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       align?: "left" | "center" | "right" | "justify" | "char";
-       colSpan?: number;
-       headers?: string;
-       rowSpan?: number;
-       scope?: string;
-       abbr?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let trackHTMLAttributes =
+  [ {name= "default"; type_= Bool; htmlName= ""}
+  ; {name= "kind"; type_= String; htmlName= ""}
+  ; {name= "label"; type_= String; htmlName= ""}
+  ; {name= "src"; type_= String; htmlName= ""}
+  ; {name= "srcLang"; type_= String; htmlName= ""} ]
 
-let timeHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       dateTime?: string;
-   } *)
+(* <T> extends MediaHTMLAttributes<T> { *)
+let videoHTMLAttributes =
+  [ {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "playsInline"; type_= Bool; htmlName= ""}
+  ; {name= "poster"; type_= String; htmlName= ""}
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "disablePictureInPicture"; type_= Bool; htmlName= ""} ]
 
-let trackHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       default?: boolean;
-       kind?: string;
-       label?: string;
-       src?: string;
-       srcLang?: string;
-   } *)
-
-let videoHTMLAttributes = []
-(* <T> extends MediaHTMLAttributes<T> {
-       height?: number | string;
-       playsInline?: boolean;
-       poster?: string;
-       width?: number | string;
-       disablePictureInPicture?: boolean;
-   } *)
-
-(* // this list is "complete" in that it contains every SVG attribute
+(* (* this list is "complete" in that it contains every SVG attribute *)
    // that React supports, but the types can be improved.
    // Full list here: https://facebook.github.io/react/docs/dom-elements.html
    //
    // The three broad type categories are (in order of restrictiveness):
-   //   - "number | string"
-   //   - "string"
-   //   - union of string literals *)
-let sVGAttributes = []
-(* <T> extends AriaAttributes, DOMAttributes<T> {
-       // Attributes which also defined in HTMLAttributes
-       // See comment in SVGDOMPropertyConfig.js
-       className?: string;
-       color?: string;
-       height?: number | string;
-       id?: string;
-       lang?: string;
-       max?: number | string;
-       media?: string;
-       method?: string;
-       min?: number | string;
-       name?: string;
-       style?: CSSProperties;
-       target?: string;
-       type?: string;
-       width?: number | string;
+   //   - "(* number |  *)String"
+   //   - "String"
+   //   - union of String literals *)
+(* <T> extends AriaAttributes, DOMAttributes<T> { *)
+let attributesSVG =
+  [ (* Attributes which also defined in HTMLAttributes *)
+    (* See comment in SVGDOMPropertyConfig.js *)
+    {name= "className"; type_= String; htmlName= ""}
+  ; {name= "color"; type_= String; htmlName= ""}
+  ; {name= "height"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "id"; type_= String; htmlName= ""}
+  ; {name= "lang"; type_= String; htmlName= ""}
+  ; {name= "max"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "media"; type_= String; htmlName= ""}
+  ; {name= "method"; type_= String; htmlName= ""}
+  ; {name= "min"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "name"; type_= String; htmlName= ""}
+  ; {name= "style"; type_= Style; htmlName= ""}
+  ; {name= "target"; type_= String; htmlName= ""}
+  ; {name= "type"; type_= String; htmlName= ""}
+  ; {name= "width"; type_= (* number |  *) String; htmlName= ""}
+  ; (* Other HTML properties supported by SVG elements in browsers *)
+    {name= "role"; type_= ariaRole; htmlName= ""}
+  ; {name= "tabIndex"; type_= Int (* number *); htmlName= ""}
+  ; { name= "crossOrigin"
+    ; type_= String (* "anonymous" | "use-credentials" | "" *)
+    ; htmlName= "" }
+  ; (* SVG Specific attributes *)
+    {name= "accentHeight"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "accumulate"; type_= String (* type_= "none" | "sum" *); htmlName= ""}
+  ; { name= "additive"
+    ; type_= String (* type_= "replace" | "sum" *)
+    ; htmlName= "" }
+  ; { name= "alignmentBaseline"
+    ; type_= String
+    ; (* type_= "auto" | "baseline" | "before-edge" | "text-before-edge" | "middle" | "central" | "after-edge"
+         "text-after-edge" | "ideographic" | "alphabetic" | "hanging" | "mathematical" | "inherit"; *)
+      htmlName= "" }
+  ; {name= "allowReorder"; type_= String (* type_= "no" | "yes" *); htmlName= ""}
+  ; {name= "alphabetic"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "amplitude"; type_= (* number |  *) String; htmlName= ""}
+  ; { name= "arabicForm"
+    ; type_= String (* type_= "initial" | "medial" | "terminal" | "isolated" *)
+    ; htmlName= "" }
+  ; {name= "ascent"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "attributeName"; type_= String; htmlName= ""}
+  ; {name= "attributeType"; type_= String; htmlName= ""}
+  ; {name= "autoReverse"; type_= String (* Booleanish *); htmlName= ""}
+  ; {name= "azimuth"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "baseFrequency"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "baselineShift"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "baseProfile"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "bbox"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "begin"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "bias"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "by"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "calcMode"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "capHeight"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "clip"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "clipPath"; type_= String; htmlName= ""}
+  ; {name= "clipPathUnits"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "clipRule"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "colorInterpolation"; type_= (* number |  *) String; htmlName= ""}
+  ; { name= "colorInterpolationFilters"
+    ; type_= String (* type_= "auto" | "sRGB" | "linearRGB" | "inherit" *)
+    ; htmlName= "" }
+  ; {name= "colorProfile"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "colorRendering"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "contentScriptType"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "contentStyleType"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "cursor"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "cx"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "cy"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "d"; type_= String; htmlName= ""}
+  ; {name= "decelerate"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "descent"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "diffuseConstant"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "direction"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "display"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "divisor"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "dominantBaseline"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "dur"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "dx"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "dy"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "edgeMode"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "elevation"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "enableBackground"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "end"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "exponent"; type_= (* number |  *) String; htmlName= ""}
+  ; { name= "externalResourcesRequired"
+    ; type_= String (* Booleanish *)
+    ; htmlName= "" }
+  ; {name= "fill"; type_= String; htmlName= ""}
+  ; {name= "fillOpacity"; type_= (* number |  *) String; htmlName= ""}
+  ; { name= "fillRule"
+    ; type_= String (* type_= "nonzero" | "evenodd" | "inherit" *)
+    ; htmlName= "" }
+  ; {name= "filter"; type_= String; htmlName= ""}
+  ; {name= "filterRes"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "filterUnits"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "floodColor"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "floodOpacity"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "focusable"; type_= String (* Booleanish | "auto" *); htmlName= ""}
+  ; {name= "fontFamily"; type_= String; htmlName= ""}
+  ; {name= "fontSize"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "fontSizeAdjust"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "fontStretch"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "fontStyle"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "fontVariant"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "fontWeight"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "format"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "fr"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "from"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "fx"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "fy"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "g1"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "g2"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "glyphName"; type_= (* number |  *) String; htmlName= ""}
+  ; { name= "glyphOrientationHorizontal"
+    ; type_= (* number |  *) String
+    ; htmlName= "" }
+  ; { name= "glyphOrientationVertical"
+    ; type_= (* number |  *) String
+    ; htmlName= "" }
+  ; {name= "glyphRef"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "gradientTransform"; type_= String; htmlName= ""}
+  ; {name= "gradientUnits"; type_= String; htmlName= ""}
+  ; {name= "hanging"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "horizAdvX"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "horizOriginX"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "href"; type_= String; htmlName= ""}
+  ; {name= "ideographic"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "imageRendering"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "in2"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "in"; type_= String; htmlName= ""}
+  ; {name= "intercept"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "k1"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "k2"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "k3"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "k4"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "k"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "kernelMatrix"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "kernelUnitLength"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "kerning"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "keyPoints"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "keySplines"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "keyTimes"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "lengthAdjust"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "letterSpacing"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "lightingColor"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "limitingConeAngle"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "local"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "markerEnd"; type_= String; htmlName= ""}
+  ; {name= "markerHeight"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "markerMid"; type_= String; htmlName= ""}
+  ; {name= "markerStart"; type_= String; htmlName= ""}
+  ; {name= "markerUnits"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "markerWidth"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "mask"; type_= String; htmlName= ""}
+  ; {name= "maskContentUnits"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "maskUnits"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "mathematical"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "mode"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "numOctaves"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "offset"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "opacity"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "operator"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "order"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "orient"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "orientation"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "origin"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "overflow"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "overlinePosition"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "overlineThickness"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "paintOrder"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "panose1"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "path"; type_= String; htmlName= ""}
+  ; {name= "pathLength"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "patternContentUnits"; type_= String; htmlName= ""}
+  ; {name= "patternTransform"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "patternUnits"; type_= String; htmlName= ""}
+  ; {name= "pointerEvents"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "points"; type_= String; htmlName= ""}
+  ; {name= "pointsAtX"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "pointsAtY"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "pointsAtZ"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "preserveAlpha"; type_= String (* Booleanish *); htmlName= ""}
+  ; {name= "preserveAspectRatio"; type_= String; htmlName= ""}
+  ; {name= "primitiveUnits"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "r"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "radius"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "refX"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "refY"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "renderingIntent"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "repeatCount"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "repeatDur"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "requiredExtensions"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "requiredFeatures"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "restart"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "result"; type_= String; htmlName= ""}
+  ; {name= "rotate"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "rx"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "ry"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "scale"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "seed"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "shapeRendering"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "slope"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "spacing"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "specularConstant"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "specularExponent"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "speed"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "spreadMethod"; type_= String; htmlName= ""}
+  ; {name= "startOffset"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "stdDeviation"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "stemh"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "stemv"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "stitchTiles"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "stopColor"; type_= String; htmlName= ""}
+  ; {name= "stopOpacity"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "strikethroughPosition"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "strikethroughThickness"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "String"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "stroke"; type_= String; htmlName= ""}
+  ; {name= "strokeDasharray"; type_= String (* | number *); htmlName= ""}
+  ; {name= "strokeDashoffset"; type_= String (* | number *); htmlName= ""}
+  ; { name= "strokeLinecap"
+    ; type_= String (* type_= "butt" | "round" | "square" | "inherit" *)
+    ; htmlName= "" }
+  ; { name= "strokeLinejoin"
+    ; type_= String (* type_= "miter" | "round" | "bevel" | "inherit" *)
+    ; htmlName= "" }
+  ; {name= "strokeMiterlimit"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "strokeOpacity"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "strokeWidth"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "surfaceScale"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "systemLanguage"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "tableValues"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "targetX"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "targetY"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "textAnchor"; type_= String; htmlName= ""}
+  ; {name= "textDecoration"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "textLength"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "textRendering"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "to"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "transform"; type_= String; htmlName= ""}
+  ; {name= "u1"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "u2"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "underlinePosition"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "underlineThickness"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "unicode"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "unicodeBidi"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "unicodeRange"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "unitsPerEm"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "vAlphabetic"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "values"; type_= String; htmlName= ""}
+  ; {name= "vectorEffect"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "version"; type_= String; htmlName= ""}
+  ; {name= "vertAdvY"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "vertOriginX"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "vertOriginY"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "vHanging"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "vIdeographic"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "viewBox"; type_= String; htmlName= ""}
+  ; {name= "viewTarget"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "visibility"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "vMathematical"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "widths"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "wordSpacing"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "writingMode"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "x1"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "x2"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "x"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "xChannelSelector"; type_= String; htmlName= ""}
+  ; {name= "xHeight"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "xlinkActuate"; type_= String; htmlName= ""}
+  ; {name= "xlinkArcrole"; type_= String; htmlName= ""}
+  ; {name= "xlinkHref"; type_= String; htmlName= ""}
+  ; {name= "xlinkRole"; type_= String; htmlName= ""}
+  ; {name= "xlinkShow"; type_= String; htmlName= ""}
+  ; {name= "xlinkTitle"; type_= String; htmlName= ""}
+  ; {name= "xlinkType"; type_= String; htmlName= ""}
+  ; {name= "xmlBase"; type_= String; htmlName= ""}
+  ; {name= "xmlLang"; type_= String; htmlName= ""}
+  ; {name= "xmlns"; type_= String; htmlName= ""}
+  ; {name= "xmlnsXlink"; type_= String; htmlName= ""}
+  ; {name= "xmlSpace"; type_= String; htmlName= ""}
+  ; {name= "y1"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "y2"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "y"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "yChannelSelector"; type_= String; htmlName= ""}
+  ; {name= "z"; type_= (* number |  *) String; htmlName= ""}
+  ; {name= "zoomAndPan"; type_= String; htmlName= ""} ]
 
-       // Other HTML properties supported by SVG elements in browsers
-       role?: AriaRole;
-       tabIndex?: number;
-       crossOrigin?: "anonymous" | "use-credentials" | "";
-
-       // SVG Specific attributes
-       accentHeight?: number | string;
-       accumulate?: "none" | "sum";
-       additive?: "replace" | "sum";
-       alignmentBaseline?: "auto" | "baseline" | "before-edge" | "text-before-edge" | "middle" | "central" | "after-edge" |
-       "text-after-edge" | "ideographic" | "alphabetic" | "hanging" | "mathematical" | "inherit";
-       allowReorder?: "no" | "yes";
-       alphabetic?: number | string;
-       amplitude?: number | string;
-       arabicForm?: "initial" | "medial" | "terminal" | "isolated";
-       ascent?: number | string;
-       attributeName?: string;
-       attributeType?: string;
-       autoReverse?: Booleanish;
-       azimuth?: number | string;
-       baseFrequency?: number | string;
-       baselineShift?: number | string;
-       baseProfile?: number | string;
-       bbox?: number | string;
-       begin?: number | string;
-       bias?: number | string;
-       by?: number | string;
-       calcMode?: number | string;
-       capHeight?: number | string;
-       clip?: number | string;
-       clipPath?: string;
-       clipPathUnits?: number | string;
-       clipRule?: number | string;
-       colorInterpolation?: number | string;
-       colorInterpolationFilters?: "auto" | "sRGB" | "linearRGB" | "inherit";
-       colorProfile?: number | string;
-       colorRendering?: number | string;
-       contentScriptType?: number | string;
-       contentStyleType?: number | string;
-       cursor?: number | string;
-       cx?: number | string;
-       cy?: number | string;
-       d?: string;
-       decelerate?: number | string;
-       descent?: number | string;
-       diffuseConstant?: number | string;
-       direction?: number | string;
-       display?: number | string;
-       divisor?: number | string;
-       dominantBaseline?: number | string;
-       dur?: number | string;
-       dx?: number | string;
-       dy?: number | string;
-       edgeMode?: number | string;
-       elevation?: number | string;
-       enableBackground?: number | string;
-       end?: number | string;
-       exponent?: number | string;
-       externalResourcesRequired?: Booleanish;
-       fill?: string;
-       fillOpacity?: number | string;
-       fillRule?: "nonzero" | "evenodd" | "inherit";
-       filter?: string;
-       filterRes?: number | string;
-       filterUnits?: number | string;
-       floodColor?: number | string;
-       floodOpacity?: number | string;
-       focusable?: Booleanish | "auto";
-       fontFamily?: string;
-       fontSize?: number | string;
-       fontSizeAdjust?: number | string;
-       fontStretch?: number | string;
-       fontStyle?: number | string;
-       fontVariant?: number | string;
-       fontWeight?: number | string;
-       format?: number | string;
-       fr?: number | string;
-       from?: number | string;
-       fx?: number | string;
-       fy?: number | string;
-       g1?: number | string;
-       g2?: number | string;
-       glyphName?: number | string;
-       glyphOrientationHorizontal?: number | string;
-       glyphOrientationVertical?: number | string;
-       glyphRef?: number | string;
-       gradientTransform?: string;
-       gradientUnits?: string;
-       hanging?: number | string;
-       horizAdvX?: number | string;
-       horizOriginX?: number | string;
-       href?: string;
-       ideographic?: number | string;
-       imageRendering?: number | string;
-       in2?: number | string;
-       in?: string;
-       intercept?: number | string;
-       k1?: number | string;
-       k2?: number | string;
-       k3?: number | string;
-       k4?: number | string;
-       k?: number | string;
-       kernelMatrix?: number | string;
-       kernelUnitLength?: number | string;
-       kerning?: number | string;
-       keyPoints?: number | string;
-       keySplines?: number | string;
-       keyTimes?: number | string;
-       lengthAdjust?: number | string;
-       letterSpacing?: number | string;
-       lightingColor?: number | string;
-       limitingConeAngle?: number | string;
-       local?: number | string;
-       markerEnd?: string;
-       markerHeight?: number | string;
-       markerMid?: string;
-       markerStart?: string;
-       markerUnits?: number | string;
-       markerWidth?: number | string;
-       mask?: string;
-       maskContentUnits?: number | string;
-       maskUnits?: number | string;
-       mathematical?: number | string;
-       mode?: number | string;
-       numOctaves?: number | string;
-       offset?: number | string;
-       opacity?: number | string;
-       operator?: number | string;
-       order?: number | string;
-       orient?: number | string;
-       orientation?: number | string;
-       origin?: number | string;
-       overflow?: number | string;
-       overlinePosition?: number | string;
-       overlineThickness?: number | string;
-       paintOrder?: number | string;
-       panose1?: number | string;
-       path?: string;
-       pathLength?: number | string;
-       patternContentUnits?: string;
-       patternTransform?: number | string;
-       patternUnits?: string;
-       pointerEvents?: number | string;
-       points?: string;
-       pointsAtX?: number | string;
-       pointsAtY?: number | string;
-       pointsAtZ?: number | string;
-       preserveAlpha?: Booleanish;
-       preserveAspectRatio?: string;
-       primitiveUnits?: number | string;
-       r?: number | string;
-       radius?: number | string;
-       refX?: number | string;
-       refY?: number | string;
-       renderingIntent?: number | string;
-       repeatCount?: number | string;
-       repeatDur?: number | string;
-       requiredExtensions?: number | string;
-       requiredFeatures?: number | string;
-       restart?: number | string;
-       result?: string;
-       rotate?: number | string;
-       rx?: number | string;
-       ry?: number | string;
-       scale?: number | string;
-       seed?: number | string;
-       shapeRendering?: number | string;
-       slope?: number | string;
-       spacing?: number | string;
-       specularConstant?: number | string;
-       specularExponent?: number | string;
-       speed?: number | string;
-       spreadMethod?: string;
-       startOffset?: number | string;
-       stdDeviation?: number | string;
-       stemh?: number | string;
-       stemv?: number | string;
-       stitchTiles?: number | string;
-       stopColor?: string;
-       stopOpacity?: number | string;
-       strikethroughPosition?: number | string;
-       strikethroughThickness?: number | string;
-       string?: number | string;
-       stroke?: string;
-       strokeDasharray?: string | number;
-       strokeDashoffset?: string | number;
-       strokeLinecap?: "butt" | "round" | "square" | "inherit";
-       strokeLinejoin?: "miter" | "round" | "bevel" | "inherit";
-       strokeMiterlimit?: number | string;
-       strokeOpacity?: number | string;
-       strokeWidth?: number | string;
-       surfaceScale?: number | string;
-       systemLanguage?: number | string;
-       tableValues?: number | string;
-       targetX?: number | string;
-       targetY?: number | string;
-       textAnchor?: string;
-       textDecoration?: number | string;
-       textLength?: number | string;
-       textRendering?: number | string;
-       to?: number | string;
-       transform?: string;
-       u1?: number | string;
-       u2?: number | string;
-       underlinePosition?: number | string;
-       underlineThickness?: number | string;
-       unicode?: number | string;
-       unicodeBidi?: number | string;
-       unicodeRange?: number | string;
-       unitsPerEm?: number | string;
-       vAlphabetic?: number | string;
-       values?: string;
-       vectorEffect?: number | string;
-       version?: string;
-       vertAdvY?: number | string;
-       vertOriginX?: number | string;
-       vertOriginY?: number | string;
-       vHanging?: number | string;
-       vIdeographic?: number | string;
-       viewBox?: string;
-       viewTarget?: number | string;
-       visibility?: number | string;
-       vMathematical?: number | string;
-       widths?: number | string;
-       wordSpacing?: number | string;
-       writingMode?: number | string;
-       x1?: number | string;
-       x2?: number | string;
-       x?: number | string;
-       xChannelSelector?: string;
-       xHeight?: number | string;
-       xlinkActuate?: string;
-       xlinkArcrole?: string;
-       xlinkHref?: string;
-       xlinkRole?: string;
-       xlinkShow?: string;
-       xlinkTitle?: string;
-       xlinkType?: string;
-       xmlBase?: string;
-       xmlLang?: string;
-       xmlns?: string;
-       xmlnsXlink?: string;
-       xmlSpace?: string;
-       y1?: number | string;
-       y2?: number | string;
-       y?: number | string;
-       yChannelSelector?: string;
-       z?: number | string;
-       zoomAndPan?: string;
-   } *)
-
-let webViewHTMLAttributes = []
-(* <T> extends HTMLAttributes<T> {
-       allowFullScreen?: boolean;
-       allowpopups?: boolean;
-       autoFocus?: boolean;
-       autosize?: boolean;
-       blinkfeatures?: string;
-       disableblinkfeatures?: string;
-       disableguestresize?: boolean;
-       disablewebsecurity?: boolean;
-       guestinstance?: string;
-       httpreferrer?: string;
-       nodeintegration?: boolean;
-       partition?: string;
-       plugins?: boolean;
-       preload?: string;
-       src?: string;
-       useragent?: string;
-       webpreferences?: string;
-   } *)
+(* <T> extends HTMLAttributes<T> { *)
+let webViewHTMLAttributes =
+  [ {name= "allowFullScreen"; type_= Bool; htmlName= ""}
+  ; {name= "allowpopups"; type_= Bool; htmlName= ""}
+  ; {name= "autoFocus"; type_= Bool; htmlName= ""}
+  ; {name= "autosize"; type_= Bool; htmlName= ""}
+  ; {name= "blinkfeatures"; type_= String; htmlName= ""}
+  ; {name= "disableblinkfeatures"; type_= String; htmlName= ""}
+  ; {name= "disableguestresize"; type_= Bool; htmlName= ""}
+  ; {name= "disablewebsecurity"; type_= Bool; htmlName= ""}
+  ; {name= "guestinstance"; type_= String; htmlName= ""}
+  ; {name= "httpreferrer"; type_= String; htmlName= ""}
+  ; {name= "nodeintegration"; type_= Bool; htmlName= ""}
+  ; {name= "partition"; type_= String; htmlName= ""}
+  ; {name= "plugins"; type_= Bool; htmlName= ""}
+  ; {name= "preload"; type_= String; htmlName= ""}
+  ; {name= "src"; type_= String; htmlName= ""}
+  ; {name= "useragent"; type_= String; htmlName= ""}
+  ; {name= "webpreferences"; type_= String; htmlName= ""} ]
 
 let reactSVG = []
 (* {
@@ -1536,7 +1532,7 @@ let reactSVG = []
        tspan: SVGFactory;
        use: SVGFactory;
        view: SVGFactory;
-   } *)
+   ] *)
 
 (* //
    // Browser Interfaces
@@ -1547,7 +1543,7 @@ let abstractView = []
 (* {
        styleMedia: StyleMedia;
        document: Document;
-   } *)
+   ] *)
 
 let touch = []
 (* {
@@ -1559,7 +1555,8 @@ let touch = []
        clientY: number;
        pageX: number;
        pageY: number;
-   } *)
+   ]
+*)
 
 let touchList = []
 (* {
@@ -1567,140 +1564,135 @@ let touchList = []
        length: number;
        item(index: number): Touch;
        identifiedTouch(identifier: number): Touch;
-   } *)
+   ] *)
 
-(* // Error Interfaces *)
+(* Error Interfaces *)
 let errorInfo = []
 (* {
-       /**
-        * Captures which component contained the exception, and its ancestors.
-        */
-       componentStack: string;
-   } *)
+      /**
+       * Captures which component contained the exception, and its ancestors.
+       */
+      componentStack: String; *)
 
 let htmlElements =
   [ (* HTML *)
-    { tag= "a"
-    ; attributes=
-        [ (* attributesHTML + <React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> *) ]
-    }
+    {tag= "a"; attributes= (* attributesHTML + *) anchorHTMLAttributes}
   ; (*
-a: DetailedHTMLFactory<AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>;
-        abbr: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        address: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        area: DetailedHTMLFactory<AreaHTMLAttributes<HTMLAreaElement>, HTMLAreaElement>;
-        article: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        aside: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        audio: DetailedHTMLFactory<AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement>;
-        b: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        base: DetailedHTMLFactory<BaseHTMLAttributes<HTMLBaseElement>, HTMLBaseElement>;
-        bdi: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        bdo: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        big: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        blockquote: DetailedHTMLFactory<BlockquoteHTMLAttributes<HTMLElement>, HTMLElement>;
-        body: DetailedHTMLFactory<HTMLAttributes<HTMLBodyElement>, HTMLBodyElement>;
-        br: DetailedHTMLFactory<HTMLAttributes<HTMLBRElement>, HTMLBRElement>;
-        button: DetailedHTMLFactory<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
-        canvas: DetailedHTMLFactory<CanvasHTMLAttributes<HTMLCanvasElement>, HTMLCanvasElement>;
-        caption: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        cite: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        code: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        col: DetailedHTMLFactory<ColHTMLAttributes<HTMLTableColElement>, HTMLTableColElement>;
-        colgroup: DetailedHTMLFactory<ColgroupHTMLAttributes<HTMLTableColElement>, HTMLTableColElement>;
-        data: DetailedHTMLFactory<DataHTMLAttributes<HTMLDataElement>, HTMLDataElement>;
-        datalist: DetailedHTMLFactory<HTMLAttributes<HTMLDataListElement>, HTMLDataListElement>;
-        dd: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        del: DetailedHTMLFactory<DelHTMLAttributes<HTMLElement>, HTMLElement>;
-        details: DetailedHTMLFactory<DetailsHTMLAttributes<HTMLElement>, HTMLElement>;
-        dfn: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        dialog: DetailedHTMLFactory<DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>;
-        div: DetailedHTMLFactory<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-        dl: DetailedHTMLFactory<HTMLAttributes<HTMLDListElement>, HTMLDListElement>;
-        dt: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        em: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        embed: DetailedHTMLFactory<EmbedHTMLAttributes<HTMLEmbedElement>, HTMLEmbedElement>;
-        fieldset: DetailedHTMLFactory<FieldsetHTMLAttributes<HTMLFieldSetElement>, HTMLFieldSetElement>;
-        figcaption: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        figure: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        footer: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        form: DetailedHTMLFactory<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>;
-        h1: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-        h2: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-        h3: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-        h4: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-        h5: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-        h6: DetailedHTMLFactory<HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
-        head: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLHeadElement>;
-        header: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        hgroup: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        hr: DetailedHTMLFactory<HTMLAttributes<HTMLHRElement>, HTMLHRElement>;
-        html: DetailedHTMLFactory<HtmlHTMLAttributes<HTMLHtmlElement>, HTMLHtmlElement>;
-        i: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        iframe: DetailedHTMLFactory<IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>;
-        img: DetailedHTMLFactory<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>;
-        input: DetailedHTMLFactory<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
-        ins: DetailedHTMLFactory<InsHTMLAttributes<HTMLModElement>, HTMLModElement>;
-        kbd: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        keygen: DetailedHTMLFactory<KeygenHTMLAttributes<HTMLElement>, HTMLElement>;
-        label: DetailedHTMLFactory<LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement>;
-        legend: DetailedHTMLFactory<HTMLAttributes<HTMLLegendElement>, HTMLLegendElement>;
-        li: DetailedHTMLFactory<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>;
-        link: DetailedHTMLFactory<LinkHTMLAttributes<HTMLLinkElement>, HTMLLinkElement>;
-        main: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        map: DetailedHTMLFactory<MapHTMLAttributes<HTMLMapElement>, HTMLMapElement>;
-        mark: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        menu: DetailedHTMLFactory<MenuHTMLAttributes<HTMLElement>, HTMLElement>;
-        menuitem: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        meta: DetailedHTMLFactory<MetaHTMLAttributes<HTMLMetaElement>, HTMLMetaElement>;
-        meter: DetailedHTMLFactory<MeterHTMLAttributes<HTMLElement>, HTMLElement>;
-        nav: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        noscript: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        object: DetailedHTMLFactory<ObjectHTMLAttributes<HTMLObjectElement>, HTMLObjectElement>;
-        ol: DetailedHTMLFactory<OlHTMLAttributes<HTMLOListElement>, HTMLOListElement>;
-        optgroup: DetailedHTMLFactory<OptgroupHTMLAttributes<HTMLOptGroupElement>, HTMLOptGroupElement>;
-        option: DetailedHTMLFactory<OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement>;
-        output: DetailedHTMLFactory<OutputHTMLAttributes<HTMLElement>, HTMLElement>;
-        p: DetailedHTMLFactory<HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement>;
-        param: DetailedHTMLFactory<ParamHTMLAttributes<HTMLParamElement>, HTMLParamElement>;
-        picture: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        pre: DetailedHTMLFactory<HTMLAttributes<HTMLPreElement>, HTMLPreElement>;
-        progress: DetailedHTMLFactory<ProgressHTMLAttributes<HTMLProgressElement>, HTMLProgressElement>;
-        q: DetailedHTMLFactory<QuoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement>;
-        rp: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        rt: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        ruby: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        s: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        samp: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        slot: DetailedHTMLFactory<SlotHTMLAttributes<HTMLSlotElement>, HTMLSlotElement>;
-        script: DetailedHTMLFactory<ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement>;
-        section: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        select: DetailedHTMLFactory<SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
-        small: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        source: DetailedHTMLFactory<SourceHTMLAttributes<HTMLSourceElement>, HTMLSourceElement>;
-        span: DetailedHTMLFactory<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
-        strong: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        style: DetailedHTMLFactory<StyleHTMLAttributes<HTMLStyleElement>, HTMLStyleElement>;
-        sub: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        summary: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        sup: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        table: DetailedHTMLFactory<TableHTMLAttributes<HTMLTableElement>, HTMLTableElement>;
-        template: DetailedHTMLFactory<HTMLAttributes<HTMLTemplateElement>, HTMLTemplateElement>;
-        tbody: DetailedHTMLFactory<HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
-        td: DetailedHTMLFactory<TdHTMLAttributes<HTMLTableDataCellElement>, HTMLTableDataCellElement>;
-        textarea: DetailedHTMLFactory<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
-        tfoot: DetailedHTMLFactory<HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
-        th: DetailedHTMLFactory<ThHTMLAttributes<HTMLTableHeaderCellElement>, HTMLTableHeaderCellElement>;
-        thead: DetailedHTMLFactory<HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement>;
-        time: DetailedHTMLFactory<TimeHTMLAttributes<HTMLElement>, HTMLElement>;
-        title: DetailedHTMLFactory<HTMLAttributes<HTMLTitleElement>, HTMLTitleElement>;
-        tr: DetailedHTMLFactory<HTMLAttributes<HTMLTableRowElement>, HTMLTableRowElement>;
-        track: DetailedHTMLFactory<TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement>;
-        u: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        ul: DetailedHTMLFactory<HTMLAttributes<HTMLUListElement>, HTMLUListElement>;
-        "var": DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        video: DetailedHTMLFactory<VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
-        wbr: DetailedHTMLFactory<HTMLAttributes<HTMLElement>, HTMLElement>;
-        webview: DetailedHTMLFactory<WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement>;
+        abbr: HTMLAttributes<HTMLElement>, HTMLElement;
+        address: HTMLAttributes<HTMLElement>, HTMLElement;
+        area: AreaHTMLAttributes<HTMLAreaElement>, HTMLAreaElement;
+        article: HTMLAttributes<HTMLElement>, HTMLElement;
+        aside: HTMLAttributes<HTMLElement>, HTMLElement;
+        audio: AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement;
+        b: HTMLAttributes<HTMLElement>, HTMLElement;
+        base: BaseHTMLAttributes<HTMLBaseElement>, HTMLBaseElement;
+        bdi: HTMLAttributes<HTMLElement>, HTMLElement;
+        bdo: HTMLAttributes<HTMLElement>, HTMLElement;
+        big: HTMLAttributes<HTMLElement>, HTMLElement;
+        blockquote: BlockquoteHTMLAttributes<HTMLElement>, HTMLElement;
+        body: HTMLAttributes<HTMLBodyElement>, HTMLBodyElement;
+        br: HTMLAttributes<HTMLBRElement>, HTMLBRElement;
+        button: ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement;
+        canvas: CanvasHTMLAttributes<HTMLCanvasElement>, HTMLCanvasElement;
+        caption: HTMLAttributes<HTMLElement>, HTMLElement;
+        cite: HTMLAttributes<HTMLElement>, HTMLElement;
+        code: HTMLAttributes<HTMLElement>, HTMLElement;
+        col: ColHTMLAttributes<HTMLTableColElement>, HTMLTableColElement;
+        colgroup: ColgroupHTMLAttributes<HTMLTableColElement>, HTMLTableColElement;
+        data: DataHTMLAttributes<HTMLDataElement>, HTMLDataElement;
+        datalist: HTMLAttributes<HTMLDataListElement>, HTMLDataListElement;
+        dd: HTMLAttributes<HTMLElement>, HTMLElement;
+        del: DelHTMLAttributes<HTMLElement>, HTMLElement;
+        details: DetailsHTMLAttributes<HTMLElement>, HTMLElement;
+        dfn: HTMLAttributes<HTMLElement>, HTMLElement;
+        dialog: DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement;
+        div: HTMLAttributes<HTMLDivElement>, HTMLDivElement;
+        dl: HTMLAttributes<HTMLDListElement>, HTMLDListElement;
+        dt: HTMLAttributes<HTMLElement>, HTMLElement;
+        em: HTMLAttributes<HTMLElement>, HTMLElement;
+        embed: EmbedHTMLAttributes<HTMLEmbedElement>, HTMLEmbedElement;
+        fieldset: FieldsetHTMLAttributes<HTMLFieldSetElement>, HTMLFieldSetElement;
+        figcaption: HTMLAttributes<HTMLElement>, HTMLElement;
+        figure: HTMLAttributes<HTMLElement>, HTMLElement;
+        footer: HTMLAttributes<HTMLElement>, HTMLElement;
+        form: FormHTMLAttributes<HTMLFormElement>, HTMLFormElement;
+        h1: HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement;
+        h2: HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement;
+        h3: HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement;
+        h4: HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement;
+        h5: HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement;
+        h6: HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement;
+        head: HTMLAttributes<HTMLElement>, HTMLHeadElement;
+        header: HTMLAttributes<HTMLElement>, HTMLElement;
+        hgroup: HTMLAttributes<HTMLElement>, HTMLElement;
+        hr: HTMLAttributes<HTMLHRElement>, HTMLHRElement;
+        html: HtmlHTMLAttributes<HTMLHtmlElement>, HTMLHtmlElement;
+        i: HTMLAttributes<HTMLElement>, HTMLElement;
+        iframe: IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement;
+        img: ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement;
+        input: InputHTMLAttributes<HTMLInputElement>, HTMLInputElement;
+        ins: InsHTMLAttributes<HTMLModElement>, HTMLModElement;
+        kbd: HTMLAttributes<HTMLElement>, HTMLElement;
+        keygen: KeygenHTMLAttributes<HTMLElement>, HTMLElement;
+        label: LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement;
+        legend: HTMLAttributes<HTMLLegendElement>, HTMLLegendElement;
+        li: LiHTMLAttributes<HTMLLIElement>, HTMLLIElement;
+        link: LinkHTMLAttributes<HTMLLinkElement>, HTMLLinkElement;
+        main: HTMLAttributes<HTMLElement>, HTMLElement;
+        map: MapHTMLAttributes<HTMLMapElement>, HTMLMapElement;
+        mark: HTMLAttributes<HTMLElement>, HTMLElement;
+        menu: MenuHTMLAttributes<HTMLElement>, HTMLElement;
+        menuitem: HTMLAttributes<HTMLElement>, HTMLElement;
+        meta: MetaHTMLAttributes<HTMLMetaElement>, HTMLMetaElement;
+        meter: MeterHTMLAttributes<HTMLElement>, HTMLElement;
+        nav: HTMLAttributes<HTMLElement>, HTMLElement;
+        noscript: HTMLAttributes<HTMLElement>, HTMLElement;
+        object: ObjectHTMLAttributes<HTMLObjectElement>, HTMLObjectElement;
+        ol: OlHTMLAttributes<HTMLOListElement>, HTMLOListElement;
+        optgroup: OptgroupHTMLAttributes<HTMLOptGroupElement>, HTMLOptGroupElement;
+        option: OptionHTMLAttributes<HTMLOptionElement>, HTMLOptionElement;
+        output: OutputHTMLAttributes<HTMLElement>, HTMLElement;
+        p: HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement;
+        param: ParamHTMLAttributes<HTMLParamElement>, HTMLParamElement;
+        picture: HTMLAttributes<HTMLElement>, HTMLElement;
+        pre: HTMLAttributes<HTMLPreElement>, HTMLPreElement;
+        progress: ProgressHTMLAttributes<HTMLProgressElement>, HTMLProgressElement;
+        q: QuoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement;
+        rp: HTMLAttributes<HTMLElement>, HTMLElement;
+        rt: HTMLAttributes<HTMLElement>, HTMLElement;
+        ruby: HTMLAttributes<HTMLElement>, HTMLElement;
+        s: HTMLAttributes<HTMLElement>, HTMLElement;
+        samp: HTMLAttributes<HTMLElement>, HTMLElement;
+        slot: SlotHTMLAttributes<HTMLSlotElement>, HTMLSlotElement;
+        script: ScriptHTMLAttributes<HTMLScriptElement>, HTMLScriptElement;
+        section: HTMLAttributes<HTMLElement>, HTMLElement;
+        select: SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement;
+        small: HTMLAttributes<HTMLElement>, HTMLElement;
+        source: SourceHTMLAttributes<HTMLSourceElement>, HTMLSourceElement;
+        span: HTMLAttributes<HTMLSpanElement>, HTMLSpanElement;
+        strong: HTMLAttributes<HTMLElement>, HTMLElement;
+        style: StyleHTMLAttributes<HTMLStyleElement>, HTMLStyleElement;
+        sub: HTMLAttributes<HTMLElement>, HTMLElement;
+        summary: HTMLAttributes<HTMLElement>, HTMLElement;
+        sup: HTMLAttributes<HTMLElement>, HTMLElement;
+        table: TableHTMLAttributes<HTMLTableElement>, HTMLTableElement;
+        template: HTMLAttributes<HTMLTemplateElement>, HTMLTemplateElement;
+        tbody: HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement;
+        td: TdHTMLAttributes<HTMLTableDataCellElement>, HTMLTableDataCellElement;
+        textarea: TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement;
+        tfoot: HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement;
+        th: ThHTMLAttributes<HTMLTableHeaderCellElement>, HTMLTableHeaderCellElement;
+        thead: HTMLAttributes<HTMLTableSectionElement>, HTMLTableSectionElement;
+        time: TimeHTMLAttributes<HTMLElement>, HTMLElement;
+        title: HTMLAttributes<HTMLTitleElement>, HTMLTitleElement;
+        tr: HTMLAttributes<HTMLTableRowElement>, HTMLTableRowElement;
+        track: TrackHTMLAttributes<HTMLTrackElement>, HTMLTrackElement;
+        u: HTMLAttributes<HTMLElement>, HTMLElement;
+        ul: HTMLAttributes<HTMLUListElement>, HTMLUListElement;
+        "var": HTMLAttributes<HTMLElement>, HTMLElement;
+        video: VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement;
+        wbr: HTMLAttributes<HTMLElement>, HTMLElement;
+        webview: WebViewHTMLAttributes<HTMLWebViewElement>, HTMLWebViewElement;
   abbr: attributesHTML + <HTMLElement>, HTMLElement>;
        address: attributesHTML + <HTMLElement>, HTMLElement>;
        area: attributesHTML + <React.AreaHTMLAttributes<HTMLAreaElement>, HTMLAreaElement>;
