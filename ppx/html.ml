@@ -17,6 +17,8 @@ type eventType =
   | Image
   | Animation
   | Transition
+  | Pointer
+  | Drag
 
 type attribute = {type_: attributeType; name: string; htmlName: string}
 
@@ -45,196 +47,181 @@ let attributeAnchorTarget = String
    | Custom of String *)
 
 let commonDOMAttributes =
-  [ (*
-       // Clipboard Events
-       onCopy?: ClipboardEventHandler<T>;
-       onCopyCapture?: ClipboardEventHandler<T>;
-       onCut?: ClipboardEventHandler<T>;
-       onCutCapture?: ClipboardEventHandler<T>;
-       onPaste?: ClipboardEventHandler<T>;
-       onPasteCapture?: ClipboardEventHandler<T>;
-
-       // Composition Events
-       onCompositionEnd?: CompositionEventHandler<T>;
-       onCompositionEndCapture?: CompositionEventHandler<T>;
-       onCompositionStart?: CompositionEventHandler<T>;
-       onCompositionStartCapture?: CompositionEventHandler<T>;
-       onCompositionUpdate?: CompositionEventHandler<T>;
-       onCompositionUpdateCapture?: CompositionEventHandler<T>;
-
-       // Focus Events
-       onFocus?: FocusEventHandler<T>;
-       onFocusCapture?: FocusEventHandler<T>;
-       onBlur?: FocusEventHandler<T>;
-       onBlurCapture?: FocusEventHandler<T>;
-
-       // Form Events
-       onChange?: FormEventHandler<T>;
-       onChangeCapture?: FormEventHandler<T>;
-       onBeforeInput?: FormEventHandler<T>;
-       onBeforeInputCapture?: FormEventHandler<T>;
-       onInput?: FormEventHandler<T>;
-       onInputCapture?: FormEventHandler<T>;
-       onReset?: FormEventHandler<T>;
-       onResetCapture?: FormEventHandler<T>;
-       onSubmit?: FormEventHandler<T>;
-       onSubmitCapture?: FormEventHandler<T>;
-       onInvalid?: FormEventHandler<T>;
-       onInvalidCapture?: FormEventHandler<T>;
-
-       // Image Events
-       onLoad?: ReactEventHandler<T>;
-       onLoadCapture?: ReactEventHandler<T>;
-       onError?: ReactEventHandler<T>; // also a Media Event
-       onErrorCapture?: ReactEventHandler<T>; // also a Media Event
-
-       // Keyboard Events
-       onKeyDown?: KeyboardEventHandler<T>;
-       onKeyDownCapture?: KeyboardEventHandler<T>;
-       onKeyPress?: KeyboardEventHandler<T>;
-       onKeyPressCapture?: KeyboardEventHandler<T>;
-       onKeyUp?: KeyboardEventHandler<T>;
-       onKeyUpCapture?: KeyboardEventHandler<T>;
-
-       // Media Events
-       onAbort?: ReactEventHandler<T>;
-       onAbortCapture?: ReactEventHandler<T>;
-       onCanPlay?: ReactEventHandler<T>;
-       onCanPlayCapture?: ReactEventHandler<T>;
-       onCanPlayThrough?: ReactEventHandler<T>;
-       onCanPlayThroughCapture?: ReactEventHandler<T>;
-       onDurationChange?: ReactEventHandler<T>;
-       onDurationChangeCapture?: ReactEventHandler<T>;
-       onEmptied?: ReactEventHandler<T>;
-       onEmptiedCapture?: ReactEventHandler<T>;
-       onEncrypted?: ReactEventHandler<T>;
-       onEncryptedCapture?: ReactEventHandler<T>;
-       onEnded?: ReactEventHandler<T>;
-       onEndedCapture?: ReactEventHandler<T>;
-       onLoadedData?: ReactEventHandler<T>;
-       onLoadedDataCapture?: ReactEventHandler<T>;
-       onLoadedMetadata?: ReactEventHandler<T>;
-       onLoadedMetadataCapture?: ReactEventHandler<T>;
-       onLoadStart?: ReactEventHandler<T>;
-       onLoadStartCapture?: ReactEventHandler<T>;
-       onPause?: ReactEventHandler<T>;
-       onPauseCapture?: ReactEventHandler<T>;
-       onPlay?: ReactEventHandler<T>;
-       onPlayCapture?: ReactEventHandler<T>;
-       onPlaying?: ReactEventHandler<T>;
-       onPlayingCapture?: ReactEventHandler<T>;
-       onProgress?: ReactEventHandler<T>;
-       onProgressCapture?: ReactEventHandler<T>;
-       onRateChange?: ReactEventHandler<T>;
-       onRateChangeCapture?: ReactEventHandler<T>;
-       onSeeked?: ReactEventHandler<T>;
-       onSeekedCapture?: ReactEventHandler<T>;
-       onSeeking?: ReactEventHandler<T>;
-       onSeekingCapture?: ReactEventHandler<T>;
-       onStalled?: ReactEventHandler<T>;
-       onStalledCapture?: ReactEventHandler<T>;
-       onSuspend?: ReactEventHandler<T>;
-       onSuspendCapture?: ReactEventHandler<T>;
-       onTimeUpdate?: ReactEventHandler<T>;
-       onTimeUpdateCapture?: ReactEventHandler<T>;
-       onVolumeChange?: ReactEventHandler<T>;
-       onVolumeChangeCapture?: ReactEventHandler<T>;
-       onWaiting?: ReactEventHandler<T>;
-       onWaitingCapture?: ReactEventHandler<T>;
-
-       // MouseEvents
-       onAuxClick?: MouseEventHandler<T>;
-       onAuxClickCapture?: MouseEventHandler<T>;
-       onClick?: MouseEventHandler<T>;
-       onClickCapture?: MouseEventHandler<T>;
-       onContextMenu?: MouseEventHandler<T>;
-       onContextMenuCapture?: MouseEventHandler<T>;
-       onDoubleClick?: MouseEventHandler<T>;
-       onDoubleClickCapture?: MouseEventHandler<T>;
-       onDrag?: DragEventHandler<T>;
-       onDragCapture?: DragEventHandler<T>;
-       onDragEnd?: DragEventHandler<T>;
-       onDragEndCapture?: DragEventHandler<T>;
-       onDragEnter?: DragEventHandler<T>;
-       onDragEnterCapture?: DragEventHandler<T>;
-       onDragExit?: DragEventHandler<T>;
-       onDragExitCapture?: DragEventHandler<T>;
-       onDragLeave?: DragEventHandler<T>;
-       onDragLeaveCapture?: DragEventHandler<T>;
-       onDragOver?: DragEventHandler<T>;
-       onDragOverCapture?: DragEventHandler<T>;
-       onDragStart?: DragEventHandler<T>;
-       onDragStartCapture?: DragEventHandler<T>;
-       onDrop?: DragEventHandler<T>;
-       onDropCapture?: DragEventHandler<T>;
-       onMouseDown?: MouseEventHandler<T>;
-       onMouseDownCapture?: MouseEventHandler<T>;
-       onMouseEnter?: MouseEventHandler<T>;
-       onMouseLeave?: MouseEventHandler<T>;
-       onMouseMove?: MouseEventHandler<T>;
-       onMouseMoveCapture?: MouseEventHandler<T>;
-       onMouseOut?: MouseEventHandler<T>;
-       onMouseOutCapture?: MouseEventHandler<T>;
-       onMouseOver?: MouseEventHandler<T>;
-       onMouseOverCapture?: MouseEventHandler<T>;
-       onMouseUp?: MouseEventHandler<T>;
-       onMouseUpCapture?: MouseEventHandler<T>;
-
-       // Selection Events
-       onSelect?: ReactEventHandler<T>;
-       onSelectCapture?: ReactEventHandler<T>;
-
-       // Touch Events
-       onTouchCancel?: TouchEventHandler<T>;
-       onTouchCancelCapture?: TouchEventHandler<T>;
-       onTouchEnd?: TouchEventHandler<T>;
-       onTouchEndCapture?: TouchEventHandler<T>;
-       onTouchMove?: TouchEventHandler<T>;
-       onTouchMoveCapture?: TouchEventHandler<T>;
-       onTouchStart?: TouchEventHandler<T>;
-       onTouchStartCapture?: TouchEventHandler<T>;
-
-       // Pointer Events
-       onPointerDown?: PointerEventHandler<T>;
-       onPointerDownCapture?: PointerEventHandler<T>;
-       onPointerMove?: PointerEventHandler<T>;
-       onPointerMoveCapture?: PointerEventHandler<T>;
-       onPointerUp?: PointerEventHandler<T>;
-       onPointerUpCapture?: PointerEventHandler<T>;
-       onPointerCancel?: PointerEventHandler<T>;
-       onPointerCancelCapture?: PointerEventHandler<T>;
-       onPointerEnter?: PointerEventHandler<T>;
-       onPointerEnterCapture?: PointerEventHandler<T>;
-       onPointerLeave?: PointerEventHandler<T>;
-       onPointerLeaveCapture?: PointerEventHandler<T>;
-       onPointerOver?: PointerEventHandler<T>;
-       onPointerOverCapture?: PointerEventHandler<T>;
-       onPointerOut?: PointerEventHandler<T>;
-       onPointerOutCapture?: PointerEventHandler<T>;
-       onGotPointerCapture?: PointerEventHandler<T>;
-       onGotPointerCaptureCapture?: PointerEventHandler<T>;
-       onLostPointerCapture?: PointerEventHandler<T>;
-       onLostPointerCaptureCapture?: PointerEventHandler<T>;
-
-       // UI Events
-       onScroll?: UIEventHandler<T>;
-       onScrollCapture?: UIEventHandler<T>;
-
-       // Wheel Events
-       onWheel?: WheelEventHandler<T>;
-       onWheelCapture?: WheelEventHandler<T>;
-
-       // Animation Events
-       onAnimationStart?: AnimationEventHandler<T>;
-       onAnimationStartCapture?: AnimationEventHandler<T>;
-       onAnimationEnd?: AnimationEventHandler<T>;
-       onAnimationEndCapture?: AnimationEventHandler<T>;
-       onAnimationIteration?: AnimationEventHandler<T>;
-       onAnimationIterationCapture?: AnimationEventHandler<T>;
-
-       // Transition Events
-       onTransitionEnd?: TransitionEventHandler<T>;
-       onTransitionEndCapture?: TransitionEventHandler<T>; *) ]
+  [ (* Clipboard Events *)
+    {name= "onCopy"; type_= Clipboard}
+  ; {name= "onCopyCapture"; type_= Clipboard}
+  ; {name= "onCut"; type_= Clipboard}
+  ; {name= "onCutCapture"; type_= Clipboard}
+  ; {name= "onPaste"; type_= Clipboard}
+  ; {name= "onPasteCapture"; type_= Clipboard}
+  ; (* Composition Events *)
+    {name= "onCompositionEnd"; type_= Composition}
+  ; {name= "onCompositionEndCapture"; type_= Composition}
+  ; {name= "onCompositionStart"; type_= Composition}
+  ; {name= "onCompositionStartCapture"; type_= Composition}
+  ; {name= "onCompositionUpdate"; type_= Composition}
+  ; {name= "onCompositionUpdateCapture"; type_= Composition}
+  ; (* Focus Events *)
+    {name= "onFocus"; type_= Focus}
+  ; {name= "onFocusCapture"; type_= Focus}
+  ; {name= "onBlur"; type_= Focus}
+  ; {name= "onBlurCapture"; type_= Focus}
+  ; (* Form Events *)
+    {name= "onChange"; type_= Form}
+  ; {name= "onChangeCapture"; type_= Form}
+  ; {name= "onBeforeInput"; type_= Form}
+  ; {name= "onBeforeInputCapture"; type_= Form}
+  ; {name= "onInput"; type_= Form}
+  ; {name= "onInputCapture"; type_= Form}
+  ; {name= "onReset"; type_= Form}
+  ; {name= "onResetCapture"; type_= Form}
+  ; {name= "onSubmit"; type_= Form}
+  ; {name= "onSubmitCapture"; type_= Form}
+  ; {name= "onInvalid"; type_= Form}
+  ; {name= "onInvalidCapture"; type_= Form}
+  ; (* Image Events *)
+    {name= "onLoad"; type_= Media}
+  ; {name= "onLoadCapture"; type_= Media}
+  ; {name= "onError"; type_= Media}
+  ; {name= "onErrorCapture"; type_= Media}
+  ; (* Keyboard Events *)
+    {name= "onKeyDown"; type_= Keyboard}
+  ; {name= "onKeyDownCapture"; type_= Keyboard}
+  ; {name= "onKeyPress"; type_= Keyboard}
+  ; {name= "onKeyPressCapture"; type_= Keyboard}
+  ; {name= "onKeyUp"; type_= Keyboard}
+  ; {name= "onKeyUpCapture"; type_= Keyboard}
+  ; (* Media Events *)
+    {name= "onAbort"; type_= Media}
+  ; {name= "onAbortCapture"; type_= Media}
+  ; {name= "onCanPlay"; type_= Media}
+  ; {name= "onCanPlayCapture"; type_= Media}
+  ; {name= "onCanPlayThrough"; type_= Media}
+  ; {name= "onCanPlayThroughCapture"; type_= Media}
+  ; {name= "onDurationChange"; type_= Media}
+  ; {name= "onDurationChangeCapture"; type_= Media}
+  ; {name= "onEmptied"; type_= Media}
+  ; {name= "onEmptiedCapture"; type_= Media}
+  ; {name= "onEncrypted"; type_= Media}
+  ; {name= "onEncryptedCapture"; type_= Media}
+  ; {name= "onEnded"; type_= Media}
+  ; {name= "onEndedCapture"; type_= Media}
+  ; {name= "onLoadedData"; type_= Media}
+  ; {name= "onLoadedDataCapture"; type_= Media}
+  ; {name= "onLoadedMetadata"; type_= Media}
+  ; {name= "onLoadedMetadataCapture"; type_= Media}
+  ; {name= "onLoadStart"; type_= Media}
+  ; {name= "onLoadStartCapture"; type_= Media}
+  ; {name= "onPause"; type_= Media}
+  ; {name= "onPauseCapture"; type_= Media}
+  ; {name= "onPlay"; type_= Media}
+  ; {name= "onPlayCapture"; type_= Media}
+  ; {name= "onPlaying"; type_= Media}
+  ; {name= "onPlayingCapture"; type_= Media}
+  ; {name= "onProgress"; type_= Media}
+  ; {name= "onProgressCapture"; type_= Media}
+  ; {name= "onRateChange"; type_= Media}
+  ; {name= "onRateChangeCapture"; type_= Media}
+  ; {name= "onSeeked"; type_= Media}
+  ; {name= "onSeekedCapture"; type_= Media}
+  ; {name= "onSeeking"; type_= Media}
+  ; {name= "onSeekingCapture"; type_= Media}
+  ; {name= "onStalled"; type_= Media}
+  ; {name= "onStalledCapture"; type_= Media}
+  ; {name= "onSuspend"; type_= Media}
+  ; {name= "onSuspendCapture"; type_= Media}
+  ; {name= "onTimeUpdate"; type_= Media}
+  ; {name= "onTimeUpdateCapture"; type_= Media}
+  ; {name= "onVolumeChange"; type_= Media}
+  ; {name= "onVolumeChangeCapture"; type_= Media}
+  ; {name= "onWaiting"; type_= Media}
+  ; {name= "onWaitingCapture"; type_= Media}
+  ; (* MouseEvents *)
+    {name= "onAuxClick"; type_= Mouse}
+  ; {name= "onAuxClickCapture"; type_= Mouse}
+  ; {name= "onClick"; type_= Mouse}
+  ; {name= "onClickCapture"; type_= Mouse}
+  ; {name= "onContextMenu"; type_= Mouse}
+  ; {name= "onContextMenuCapture"; type_= Mouse}
+  ; {name= "onDoubleClick"; type_= Mouse}
+  ; {name= "onDoubleClickCapture"; type_= Mouse}
+  ; {name= "onDrag"; type_= Drag}
+  ; {name= "onDragCapture"; type_= Drag}
+  ; {name= "onDragEnd"; type_= Drag}
+  ; {name= "onDragEndCapture"; type_= Drag}
+  ; {name= "onDragEnter"; type_= Drag}
+  ; {name= "onDragEnterCapture"; type_= Drag}
+  ; {name= "onDragExit"; type_= Drag}
+  ; {name= "onDragExitCapture"; type_= Drag}
+  ; {name= "onDragLeave"; type_= Drag}
+  ; {name= "onDragLeaveCapture"; type_= Drag}
+  ; {name= "onDragOver"; type_= Drag}
+  ; {name= "onDragOverCapture"; type_= Drag}
+  ; {name= "onDragStart"; type_= Drag}
+  ; {name= "onDragStartCapture"; type_= Drag}
+  ; {name= "onDrop"; type_= Drag}
+  ; {name= "onDropCapture"; type_= Drag}
+  ; {name= "onMouseDown"; type_= Mouse}
+  ; {name= "onMouseDownCapture"; type_= Mouse}
+  ; {name= "onMouseEnter"; type_= Mouse}
+  ; {name= "onMouseLeave"; type_= Mouse}
+  ; {name= "onMouseMove"; type_= Mouse}
+  ; {name= "onMouseMoveCapture"; type_= Mouse}
+  ; {name= "onMouseOut"; type_= Mouse}
+  ; {name= "onMouseOutCapture"; type_= Mouse}
+  ; {name= "onMouseOver"; type_= Mouse}
+  ; {name= "onMouseOverCapture"; type_= Mouse}
+  ; {name= "onMouseUp"; type_= Mouse}
+  ; {name= "onMouseUpCapture"; type_= Mouse}
+  ; (* Selection Events *)
+    {name= "onSelect"; type_= Selection}
+  ; {name= "onSelectCapture"; type_= Selection}
+  ; (* Touch Events *)
+    {name= "onTouchCancel"; type_= Touch}
+  ; {name= "onTouchCancelCapture"; type_= Touch}
+  ; {name= "onTouchEnd"; type_= Touch}
+  ; {name= "onTouchEndCapture"; type_= Touch}
+  ; {name= "onTouchMove"; type_= Touch}
+  ; {name= "onTouchMoveCapture"; type_= Touch}
+  ; {name= "onTouchStart"; type_= Touch}
+  ; {name= "onTouchStartCapture"; type_= Touch}
+  ; (* Pointer Events *)
+    {name= "onPointerDown"; type_= Pointer}
+  ; {name= "onPointerDownCapture"; type_= Pointer}
+  ; {name= "onPointerMove"; type_= Pointer}
+  ; {name= "onPointerMoveCapture"; type_= Pointer}
+  ; {name= "onPointerUp"; type_= Pointer}
+  ; {name= "onPointerUpCapture"; type_= Pointer}
+  ; {name= "onPointerCancel"; type_= Pointer}
+  ; {name= "onPointerCancelCapture"; type_= Pointer}
+  ; {name= "onPointerEnter"; type_= Pointer}
+  ; {name= "onPointerEnterCapture"; type_= Pointer}
+  ; {name= "onPointerLeave"; type_= Pointer}
+  ; {name= "onPointerLeaveCapture"; type_= Pointer}
+  ; {name= "onPointerOver"; type_= Pointer}
+  ; {name= "onPointerOverCapture"; type_= Pointer}
+  ; {name= "onPointerOut"; type_= Pointer}
+  ; {name= "onPointerOutCapture"; type_= Pointer}
+  ; {name= "onGotPointerCapture"; type_= Pointer}
+  ; {name= "onGotPointerCaptureCapture"; type_= Pointer}
+  ; {name= "onLostPointerCapture"; type_= Pointer}
+  ; {name= "onLostPointerCaptureCapture"; type_= Pointer}
+  ; (* UI Events *)
+    {name= "onScroll"; type_= UI}
+  ; {name= "onScrollCapture"; type_= UI}
+  ; (* Wheel Events *)
+    {name= "onWheel"; type_= Wheel}
+  ; {name= "onWheelCapture"; type_= Wheel}
+  ; (* Animation Events *)
+    {name= "onAnimationStart"; type_= Animation}
+  ; {name= "onAnimationStartCapture"; type_= Animation}
+  ; {name= "onAnimationEnd"; type_= Animation}
+  ; {name= "onAnimationEndCapture"; type_= Animation}
+  ; {name= "onAnimationIteration"; type_= Animation}
+  ; {name= "onAnimationIterationCapture"; type_= Animation}
+  ; (* Transition Events *)
+    {name= "onTransitionEnd"; type_= Transition}
+  ; {name= "onTransitionEndCapture"; type_= Transition} ]
 
 (* All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/ *)
 let ariaAttributes =
@@ -848,7 +835,7 @@ let dataHTMLAttributes =
 
 let detailsHTMLAttributes =
   [ Attribute {name= "open"; type_= Bool; htmlName= "open"}
-    (* { name="onToggle"; type_= ReactEventHandler<T>; htmlName="" }; *) ]
+  ; Event {name= "onToggle"; type_= Media} ]
 
 let delHTMLAttributes =
   [ Attribute {name= "cite"; type_= String; htmlName= "cite"}
@@ -988,7 +975,7 @@ let inputHTMLAttributes =
       ; type_= String (* | ReadonlyArray<String> | number *)
       ; htmlName= "" }
   ; Attribute {name= "width"; type_= (* number |  *) String; htmlName= ""}
-    (* { name="onChange"; type_= ChangeEventHandler<T>; htmlName="" }; *) ]
+  ; Event {name= "onChange"; type_= Form} ]
 
 let keygenHTMLAttributes =
   [ Attribute {name= "autoFocus"; type_= Bool; htmlName= ""}
@@ -1137,7 +1124,7 @@ let selectHTMLAttributes =
       { name= "value"
       ; type_= String (* | ReadonlyArray<String> | number *)
       ; htmlName= "" }
-    (* { name="onChange"; type_= ChangeEventHandler<T>; htmlName="" }; *) ]
+  ; Event {name= "onChange"; type_= Form} ]
 
 let sourceHTMLAttributes =
   [ Attribute {name= "height"; type_= (* number |  *) String; htmlName= ""}
@@ -1179,7 +1166,7 @@ let textareaHTMLAttributes =
       ; type_= String (* | ReadonlyArray<String> | number *)
       ; htmlName= "" }
   ; Attribute {name= "wrap"; type_= String; htmlName= ""}
-    (* { name="onChange"; type_= ChangeEventHandler<T>; htmlName="" }; *) ]
+  ; Event {name= "onChange"; type_= Form} ]
 
 let tdHTMLAttributes =
   [ Attribute
