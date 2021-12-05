@@ -28,19 +28,18 @@ let makeProps
 let make =
   ((fun ?(name= (("")[@reason.raw_literal ""])) ->
       ((React.Fragment.make
-          ~children:(([React.Dom.createDOMElementVariadic "div"
-                         ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
-                         [((React.string
-                              ((("Hello ")[@reason.raw_literal "Hello "]) ^
-                                 name))
-                         [@reason.preserve_braces ])];
-                      Hello.make ~one:(("1")[@reason.raw_literal "1"])
-                        ~children:[((React.string
-                                       ((("Hello ")
-                                          [@reason.raw_literal "Hello "]) ^
-                                          name))
-                                  [@reason.preserve_braces ])] ()])
-          [@reason.preserve_braces ]) ())
+          ~children:[React.Dom.createDOMElementVariadic "div"
+                       ~props:(Js_of_ocaml.Js.Unsafe.obj [||])
+                       [((React.string
+                            ((("Hello ")[@reason.raw_literal "Hello "]) ^
+                               name))
+                       [@reason.preserve_braces ])];
+                    Hello.make ~one:(("1")[@reason.raw_literal "1"])
+                      ~children:[((React.string
+                                     ((("Hello ")
+                                        [@reason.raw_literal "Hello "]) ^
+                                        name))
+                                [@reason.preserve_braces ])] ()] ())
       [@reason.preserve_braces ]))
   [@warning "-16"])
 let make
@@ -459,8 +458,7 @@ module MemoCustomCompareProps =
         (fun prevPros -> fun nextProps -> false)
     let make ~a  ?key  () = React.createElement make (makeProps ?key ~a ())
   end
-let fragment foo = ((React.Fragment.make ~children:(([foo])[@bla ]) ())
-  [@bla ])
+let fragment foo = ((React.Fragment.make ~children:[foo] ())[@bla ])
 let polyChildrenFragment foo bar =
   React.Fragment.make ~children:[foo; bar] ()
 let nestedFragment foo bar baz =

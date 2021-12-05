@@ -1356,7 +1356,7 @@ let jsxMapper () =
           | _, nonJSXAttributes ->
               let callExpression = [%expr React.Fragment.createElement] in
               transformJsxCall callExpression
-                [(Labelled "children", filter_attr_create_element listItems)]
+                [(Labelled "children", {listItems with pexp_attributes= []})]
                 nonJSXAttributes pexp_loc pexp_loc_stack )
       (* Delegate to the default mapper, a deep identity traversal *)
       | _e ->
