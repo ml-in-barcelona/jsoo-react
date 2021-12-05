@@ -1760,121 +1760,6 @@ let htmlElements =
   [ {tag= "a"; attributes= domAttributes & anchorHTMLAttributes & attributesHTML}
   ; {tag= "abbr"; attributes= domAttributes & attributesHTML}
   ; {tag= "address"; attributes= domAttributes & attributesHTML}
-  ; {tag= "area"; attributes= domAttributes & areaHTMLAttributes}
-  ; {tag= "article"; attributes= domAttributes & attributesHTML}
-  ; {tag= "aside"; attributes= domAttributes & attributesHTML}
-  ; {tag= "audio"; attributes= domAttributes & mediaHTMLAttributes}
-  ; {tag= "b"; attributes= domAttributes & attributesHTML}
-  ; {tag= "base"; attributes= domAttributes & baseHTMLAttributes}
-  ; {tag= "bdi"; attributes= domAttributes & attributesHTML}
-  ; {tag= "bdo"; attributes= domAttributes & attributesHTML}
-  ; {tag= "big"; attributes= domAttributes & attributesHTML}
-  ; {tag= "blockquote"; attributes= blockquoteHTMLAttributes}
-  ; {tag= "body"; attributes= domAttributes & attributesHTML}
-  ; {tag= "br"; attributes= domAttributes & attributesHTML}
-  ; {tag= "button"; attributes= buttonHTMLAttributes}
-  ; {tag= "canvas"; attributes= canvasHTMLAttributes}
-  ; {tag= "caption"; attributes= domAttributes & attributesHTML}
-  ; {tag= "cite"; attributes= domAttributes & attributesHTML}
-  ; {tag= "code"; attributes= domAttributes & attributesHTML}
-  ; {tag= "col"; attributes= domAttributes & colHTMLAttributes}
-  ; {tag= "colgroup"; attributes= colgroupHTMLAttributes}
-  ; {tag= "data"; attributes= domAttributes & dataHTMLAttributes}
-  ; {tag= "datalist"; attributes= domAttributes & attributesHTML}
-  ; {tag= "dd"; attributes= domAttributes & attributesHTML}
-  ; {tag= "del"; attributes= domAttributes & delHTMLAttributes}
-  ; {tag= "details"; attributes= domAttributes & detailsHTMLAttributes}
-  ; {tag= "dfn"; attributes= domAttributes & attributesHTML}
-  ; {tag= "dialog"; attributes= domAttributes & dialogHTMLAttributes}
-  ; {tag= "div"; attributes= domAttributes & attributesHTML}
-  ; {tag= "dl"; attributes= domAttributes & attributesHTML}
-  ; {tag= "dt"; attributes= domAttributes & attributesHTML}
-  ; {tag= "em"; attributes= domAttributes & attributesHTML}
-  ; {tag= "embed"; attributes= domAttributes & embedHTMLAttributes}
-  ; {tag= "fieldset"; attributes= domAttributes & fieldsetHTMLAttributes}
-  ; {tag= "figcaption"; attributes= domAttributes & attributesHTML}
-  ; {tag= "figure"; attributes= domAttributes & attributesHTML}
-  ; {tag= "footer"; attributes= domAttributes & attributesHTML}
-  ; {tag= "form"; attributes= domAttributes & formHTMLAttributes}
-  ; {tag= "h1"; attributes= domAttributes & attributesHTML}
-  ; {tag= "h2"; attributes= domAttributes & attributesHTML}
-  ; {tag= "h3"; attributes= domAttributes & attributesHTML}
-  ; {tag= "h4"; attributes= domAttributes & attributesHTML}
-  ; {tag= "h5"; attributes= domAttributes & attributesHTML}
-  ; {tag= "h6"; attributes= domAttributes & attributesHTML}
-  ; {tag= "head"; attributes= domAttributes & attributesHTML}
-  ; {tag= "header"; attributes= domAttributes & attributesHTML}
-  ; {tag= "hgroup"; attributes= domAttributes & attributesHTML}
-  ; {tag= "hr"; attributes= domAttributes & attributesHTML}
-  ; {tag= "html"; attributes= domAttributes & htmlHTMLAttributes}
-  ; {tag= "i"; attributes= domAttributes & attributesHTML}
-  ; {tag= "iframe"; attributes= domAttributes & iframeHTMLAttributes}
-  ; {tag= "img"; attributes= domAttributes & imgHTMLAttributes}
-  ; {tag= "input"; attributes= domAttributes & inputHTMLAttributes}
-  ; {tag= "ins"; attributes= domAttributes & insHTMLAttributes}
-  ; {tag= "kbd"; attributes= domAttributes & attributesHTML}
-  ; {tag= "keygen"; attributes= keygenHTMLAttributes}
-  ; {tag= "label"; attributes= labelHTMLAttributes}
-  ; {tag= "legend"; attributes= domAttributes & attributesHTML}
-  ; {tag= "li"; attributes= domAttributes & liHTMLAttributes}
-  ; {tag= "link"; attributes= linkHTMLAttributes}
-  ; {tag= "main"; attributes= domAttributes & attributesHTML}
-  ; {tag= "map"; attributes= domAttributes & mapHTMLAttributes}
-  ; {tag= "mark"; attributes= domAttributes & attributesHTML}
-  ; {tag= "menu"; attributes= domAttributes & menuHTMLAttributes}
-  ; {tag= "menuitem"; attributes= domAttributes & attributesHTML}
-  ; {tag= "meta"; attributes= domAttributes & metaHTMLAttributes}
-  ; {tag= "meter"; attributes= domAttributes & meterHTMLAttributes}
-  ; {tag= "nav"; attributes= domAttributes & attributesHTML}
-  ; {tag= "noscript"; attributes= domAttributes & attributesHTML}
-  ; {tag= "object"; attributes= domAttributes & objectHTMLAttributes}
-  ; {tag= "ol"; attributes= domAttributes & olHTMLAttributes}
-  ; {tag= "optgroup"; attributes= domAttributes & optgroupHTMLAttributes}
-  ; {tag= "option"; attributes= domAttributes & optionHTMLAttributes}
-  ; {tag= "output"; attributes= domAttributes & outputHTMLAttributes}
-  ; {tag= "p"; attributes= domAttributes & attributesHTML}
-  ; {tag= "param"; attributes= domAttributes & paramHTMLAttributes}
-  ; {tag= "picture"; attributes= domAttributes & attributesHTML}
-  ; {tag= "pre"; attributes= domAttributes & attributesHTML}
-  ; {tag= "progress"; attributes= progressHTMLAttributes}
-  ; {tag= "q"; attributes= domAttributes & quoteHTMLAttributes}
-  ; {tag= "rp"; attributes= domAttributes & attributesHTML}
-  ; {tag= "rt"; attributes= domAttributes & attributesHTML}
-  ; {tag= "ruby"; attributes= domAttributes & attributesHTML}
-  ; {tag= "s"; attributes= domAttributes & attributesHTML}
-  ; {tag= "samp"; attributes= domAttributes & attributesHTML}
-  ; {tag= "slot"; attributes= domAttributes & slotHTMLAttributes}
-  ; {tag= "script"; attributes= domAttributes & scriptHTMLAttributes}
-  ; {tag= "section"; attributes= domAttributes & attributesHTML}
-  ; {tag= "select"; attributes= domAttributes & selectHTMLAttributes}
-  ; {tag= "small"; attributes= domAttributes & attributesHTML}
-  ; {tag= "source"; attributes= domAttributes & sourceHTMLAttributes}
-  ; {tag= "span"; attributes= domAttributes & attributesHTML}
-  ; {tag= "strong"; attributes= domAttributes & attributesHTML}
-  ; {tag= "style"; attributes= domAttributes & styleHTMLAttributes}
-  ; {tag= "sub"; attributes= domAttributes & attributesHTML}
-  ; {tag= "summary"; attributes= domAttributes & attributesHTML}
-  ; {tag= "sup"; attributes= domAttributes & attributesHTML}
-  ; {tag= "table"; attributes= domAttributes & tableHTMLAttributes}
-  ; {tag= "template"; attributes= domAttributes & attributesHTML}
-  ; {tag= "tbody"; attributes= domAttributes & attributesHTML}
-  ; {tag= "td"; attributes= domAttributes & tdHTMLAttributes}
-  ; {tag= "textarea"; attributes= domAttributes & textareaHTMLAttributes}
-  ; {tag= "tfoot"; attributes= domAttributes & attributesHTML}
-  ; {tag= "th"; attributes= domAttributes & thHTMLAttributes}
-  ; {tag= "thead"; attributes= domAttributes & attributesHTML}
-  ; {tag= "time"; attributes= domAttributes & timeHTMLAttributes}
-  ; {tag= "title"; attributes= domAttributes & attributesHTML}
-  ; {tag= "tr"; attributes= domAttributes & attributesHTML}
-  ; {tag= "track"; attributes= domAttributes & trackHTMLAttributes}
-  ; {tag= "u"; attributes= domAttributes & attributesHTML}
-  ; {tag= "ul"; attributes= domAttributes & attributesHTML}
-  ; {tag= "var"; attributes= domAttributes & attributesHTML}
-  ; {tag= "video"; attributes= domAttributes & videoHTMLAttributes}
-  ; {tag= "wbr"; attributes= domAttributes & attributesHTML}
-  ; {tag= "webview"; attributes= domAttributes & webViewHTMLAttributes}
-  ; {tag= "abbr"; attributes= domAttributes & attributesHTML}
-  ; {tag= "address"; attributes= domAttributes & attributesHTML}
   ; {tag= "area"; attributes= attributesHTML & areaHTMLAttributes}
   ; {tag= "article"; attributes= domAttributes & attributesHTML}
   ; {tag= "aside"; attributes= domAttributes & attributesHTML}
@@ -1955,7 +1840,7 @@ let htmlElements =
   ; {tag= "nav"; attributes= domAttributes & attributesHTML & domAttributes}
   ; {tag= "noindex"; attributes= domAttributes & attributesHTML}
   ; {tag= "noscript"; attributes= domAttributes & attributesHTML}
-  ; { tag= "object_"
+  ; { tag= "object"
     ; attributes= domAttributes & attributesHTML & objectHTMLAttributes }
   ; {tag= "ol"; attributes= domAttributes & attributesHTML & olHTMLAttributes}
   ; { tag= "optgroup"
@@ -1977,13 +1862,13 @@ let htmlElements =
   ; {tag= "ruby"; attributes= domAttributes & attributesHTML}
   ; {tag= "s"; attributes= domAttributes & attributesHTML}
   ; {tag= "samp"; attributes= domAttributes & attributesHTML}
-  ; { tag= "slot"
-    ; attributes= domAttributes & attributesHTML & slotHTMLAttributes }
   ; { tag= "script"
     ; attributes= domAttributes & attributesHTML & scriptHTMLAttributes }
   ; {tag= "section"; attributes= domAttributes & attributesHTML}
   ; { tag= "select"
     ; attributes= domAttributes & attributesHTML & selectHTMLAttributes }
+  ; { tag= "slot"
+    ; attributes= domAttributes & attributesHTML & slotHTMLAttributes }
   ; {tag= "small"; attributes= domAttributes & attributesHTML}
   ; { tag= "source"
     ; attributes= domAttributes & attributesHTML & sourceHTMLAttributes }
@@ -1995,9 +1880,9 @@ let htmlElements =
   ; {tag= "summary"; attributes= domAttributes & attributesHTML}
   ; {tag= "sup"; attributes= domAttributes & attributesHTML}
   ; {tag= "table"; attributes= attributesHTML & tableHTMLAttributes}
-  ; {tag= "template"; attributes= domAttributes & attributesHTML}
   ; {tag= "tbody"; attributes= domAttributes & attributesHTML}
   ; {tag= "td"; attributes= domAttributes & attributesHTML & tdHTMLAttributes}
+  ; {tag= "template"; attributes= domAttributes & attributesHTML}
   ; { tag= "textarea"
     ; attributes= domAttributes & attributesHTML & textareaHTMLAttributes }
   ; {tag= "tfoot"; attributes= domAttributes & attributesHTML}
@@ -2110,13 +1995,14 @@ let getHtmlName = function
 type errors = [`ElementNotFound | `AttributeNoMatch]
 
 let getAttributes tag =
-  List.find_opt (fun element -> element.tag == tag) elements
-  |> Option.to_result ~none:`AttributeNoMatch
+  List.find_opt (fun element -> element.tag = tag) elements
+  |> Option.to_result ~none:`ElementNotFound
 
 let findByName tag name =
-  let byName p = name = getName p in
+  let byName p = getName p = name in
   match getAttributes tag with
   | Ok {attributes} ->
-      List.find_opt byName attributes |> Option.to_result ~none:`ElementNotFound
+      List.find_opt byName attributes
+      |> Option.to_result ~none:`AttributeNoMatch
   | Error err ->
       Error err
