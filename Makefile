@@ -3,7 +3,7 @@ project_name = jsoo-react
 opam_file = $(project_name).opam
 current_hash = $(shell git rev-parse HEAD)
 
-.PHONY: build build-prod dev test test-promote deps fmt init publish-example
+.PHONY: build build-prod dev test test-promote deps format format-check init publish-example
 
 build:
 	opam exec -- dune build @@default
@@ -25,6 +25,9 @@ deps: $(opam_file)
 
 format:
 	opam exec -- dune build @fmt --auto-promote
+
+format-check:
+	opam exec -- dune build @fmt
 
 publish-example:
 	git checkout master && opam exec -- dune build --profile=prod @@default && cd example && yarn webpack:production \

@@ -47,7 +47,7 @@ jobs:
         run: make build
 
       - name: Check formatting
-        run: make format
+        run: make format-check
 
       - name: "Install npm packages for tests"
         run: yarn install
