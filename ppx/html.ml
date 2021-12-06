@@ -1879,7 +1879,7 @@ let getHtmlName = function
   | Event {name; _} ->
       name
 
-type errors = [`ElementNotFound | `AttributeNoMatch]
+type errors = [`ElementNotFound | `AttributeNotFound]
 
 let getAttributes tag =
   List.find_opt (fun element -> element.tag = tag) elements
@@ -1890,6 +1890,6 @@ let findByName tag name =
   match getAttributes tag with
   | Ok {attributes} ->
       List.find_opt byName attributes
-      |> Option.to_result ~none:`AttributeNoMatch
+      |> Option.to_result ~none:`AttributeNotFound
   | Error err ->
       Error err

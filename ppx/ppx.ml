@@ -1017,7 +1017,7 @@ let jsxMapper () =
             match err with
             | `ElementNotFound ->
                 raise @@ Location.raise_errorf ~loc "tag '%s' doesn't exist" id
-            | `AttributeNoMatch ->
+            | `AttributeNotFound ->
                 raise
                 @@ Location.raise_errorf ~loc
                      "prop '%s' isn't a valid prop for a '%s'" name id )

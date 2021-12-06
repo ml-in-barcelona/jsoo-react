@@ -24,7 +24,7 @@ type event = {type_: eventType; name: string}
 
 type prop = Attribute of attribute | Event of event
 
-type errors = [`ElementNotFound | `AttributeNoMatch]
+type errors = [`ElementNotFound | `AttributeNotFound]
 
 val getHtmlName : prop -> string
 
