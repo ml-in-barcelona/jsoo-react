@@ -1,43 +1,49 @@
 project_name = jsoo-react
 
+DUNE = opam exec -- dune
 opam_file = $(project_name).opam
 current_hash = $(shell git rev-parse HEAD)
 
 .PHONY: build build-prod dev test test-promote deps format format-check init publish-example
 
-build:
-	opam exec -- dune build @@default
+.PHONY: help
+help: ## Print this help message
+	@echo "List of available make commands";
+	@echo "";
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}';
+	@echo "";
 
-build-prod:
-	opam exec -- dune build --profile=prod @@default
+build: ## Build the project, including non installable libraries and executables
+	$(DUNE) build @@default
 
-dev:
-	opam exec -- dune build -w @@default
+build-prod: ## Build for production (--profile=prod)
+	$(DUNE) build --profile=prod @@default
 
-test:
-	opam exec -- dune build @runtest
+dev: ## Build in watch mode
+	$(DUNE) build -w @@default
 
-test-promote:
-	opam exec -- dune build @runtest --auto-promote
+test: ## Run the unit tests
+	$(DUNE) build @runtest
 
-# Alias to update the opam file and install the needed deps
-deps: $(opam_file)
+test-promote: ## Updates snapshots and promotes it to correct
+	$(DUNE) build @runtest --auto-promote
 
-format:
-	opam exec -- dune build @fmt --auto-promote
+deps: $(opam_file) ## Alias to update the opam file and install the needed deps
 
-format-check:
-	opam exec -- dune build @fmt
+format: ## Format the codebase with ocamlformat
+	$(DUNE) build @fmt --auto-promote
 
-publish-example:
-	git checkout master && opam exec -- dune build --profile=prod @@default && cd example && yarn webpack:production \
+format-check: ## Checks if format is correct
+	$(DUNE) build @fmt
+
+publish-example: ## Publish example/ to gh-pages
+	git checkout master && $(DUNE) build --profile=prod @@default && cd example && yarn webpack:production \
 	&& cd - && git checkout gh-pages && cp example/build/* . && git commit -am "$(current_hash)"
 
-# Update the package dependencies when new deps are added to dune-project
-$(opam_file): dune-project
-	opam exec -- dune build @install        # Update the $(project_name).opam file
+$(opam_file): dune-project ## Update the package dependencies when new deps are added to dune-project
+	$(DUNE) build @install
 	opam install . --deps-only --with-test # Install the new dependencies
 
-init:
-  # Create a local opam switch
+init: ## Create a local opam switch and setups githooks
+	git config core.hooksPath .githooks
 	opam switch create . 4.10.0 --deps-only --with-test
