@@ -761,7 +761,7 @@ let attributesHTML =
    ; Attribute {name= "step"; htmlName= "step"; type_= (* number | *) String}
    ; Attribute {name= "summary"; htmlName= "summary"; type_= String}
    ; Attribute {name= "target"; htmlName= "target"; type_= String}
-   ; Attribute {name= "type"; htmlName= "type"; type_= String}
+   ; Attribute {name= "type_"; htmlName= "type"; type_= String}
    ; Attribute {name= "useMap"; htmlName= "usemap"; type_= String}
    ; Attribute
        { name= "value"
@@ -779,7 +779,7 @@ let anchorHTMLAttributes =
   ; Attribute {name= "ping"; htmlName= "ping"; type_= String}
   ; Attribute {name= "rel"; htmlName= "rel"; type_= String}
   ; Attribute {name= "target"; htmlName= "target"; type_= attributeAnchorTarget}
-  ; Attribute {name= "type"; htmlName= "type"; type_= String}
+  ; Attribute {name= "type_"; htmlName= "type"; type_= String}
   ; Attribute
       { name= "referrerPolicy"
       ; htmlName= "referrerpolicy"
@@ -859,7 +859,7 @@ let dialogHTMLAttributes =
 let embedHTMLAttributes =
   [ Attribute {name= "height"; type_= String (* number |  *); htmlName= "height"}
   ; Attribute {name= "src"; type_= String; htmlName= "src"}
-  ; Attribute {name= "type"; type_= String; htmlName= "type"}
+  ; Attribute {name= "type_"; type_= String; htmlName= "type"}
   ; Attribute {name= "width"; type_= String (* number |  *); htmlName= "width"}
   ]
 
@@ -992,7 +992,7 @@ let inputHTMLAttributes =
   ; Attribute {name= "size"; htmlName= "size"; type_= Int (* number *)}
   ; Attribute {name= "src"; htmlName= "src"; type_= String}
   ; Attribute {name= "step"; htmlName= "step"; type_= String (* number |  *)}
-  ; Attribute {name= "type"; htmlName= "type"; type_= inputTypeAttribute}
+  ; Attribute {name= "type_"; htmlName= "type"; type_= inputTypeAttribute}
   ; Attribute
       { name= "value"
       ; htmlName= "value"
@@ -1029,14 +1029,14 @@ let linkHTMLAttributes =
   ; Attribute {name= "media"; htmlName= "media"; type_= String}
   ; Attribute {name= "rel"; htmlName= "rel"; type_= String}
   ; Attribute {name= "sizes"; htmlName= "sizes"; type_= String}
-  ; Attribute {name= "type"; htmlName= "type"; type_= String}
+  ; Attribute {name= "type_"; htmlName= "type"; type_= String}
   ; Attribute {name= "charSet"; htmlName= "charset"; type_= String} ]
 
 let mapHTMLAttributes =
   [Attribute {name= "name"; htmlName= "name"; type_= String}]
 
 let menuHTMLAttributes =
-  [Attribute {name= "type"; htmlName= "type"; type_= String}]
+  [Attribute {name= "type_"; htmlName= "type"; type_= String}]
 
 let mediaHTMLAttributes =
   [ Attribute {name= "autoPlay"; htmlName= "autoplay"; type_= Bool}
@@ -1079,7 +1079,7 @@ let objectHTMLAttributes =
   ; Attribute {name= "form"; htmlName= "form"; type_= String}
   ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
   ; Attribute {name= "name"; htmlName= "name"; type_= String}
-  ; Attribute {name= "type"; htmlName= "type"; type_= String}
+  ; Attribute {name= "type_"; htmlName= "type"; type_= String}
   ; Attribute {name= "useMap"; htmlName= "usemap"; type_= String}
   ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
   ; Attribute {name= "wmode"; htmlName= "wmode"; type_= String} ]
@@ -1137,7 +1137,7 @@ let scriptHTMLAttributes =
   ; Attribute {name= "noModule"; htmlName= "nomodule"; type_= Bool}
   ; Attribute {name= "nonce"; htmlName= "nonce"; type_= String}
   ; Attribute {name= "src"; htmlName= "src"; type_= String}
-  ; Attribute {name= "type"; htmlName= "type"; type_= String} ]
+  ; Attribute {name= "type_"; htmlName= "type"; type_= String} ]
 
 let selectHTMLAttributes =
   [ Attribute {name= "autoComplete"; htmlName= "autocomplete"; type_= String}
@@ -1160,7 +1160,7 @@ let sourceHTMLAttributes =
   ; Attribute {name= "sizes"; htmlName= "sizes"; type_= String}
   ; Attribute {name= "src"; htmlName= "src"; type_= String}
   ; Attribute {name= "srcSet"; htmlName= "srcset"; type_= String}
-  ; Attribute {name= "type"; htmlName= "type"; type_= String}
+  ; Attribute {name= "type_"; htmlName= "type"; type_= String}
   ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
   ]
 
@@ -1168,7 +1168,7 @@ let styleHTMLAttributes =
   [ Attribute {name= "media"; htmlName= "media"; type_= String}
   ; Attribute {name= "nonce"; htmlName= "nonce"; type_= String}
   ; Attribute {name= "scoped"; htmlName= "scoped"; type_= Bool}
-  ; Attribute {name= "type"; htmlName= "type"; type_= String} ]
+  ; Attribute {name= "type_"; htmlName= "type"; type_= String} ]
 
 let tableHTMLAttributes =
   [ Attribute
@@ -1276,7 +1276,7 @@ let svgAttributes =
   ; Attribute {name= "name"; htmlName= "name"; type_= String}
   ; Attribute {name= "style"; htmlName= "style"; type_= Style}
   ; Attribute {name= "target"; htmlName= "target"; type_= String}
-  ; Attribute {name= "type"; htmlName= "type"; type_= String}
+  ; Attribute {name= "type_"; htmlName= "type"; type_= String}
   ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
     (* Other HTML properties supported by SVG elements in browsers *)
   ; Attribute {name= "role"; htmlName= "role"; type_= ariaRole}
