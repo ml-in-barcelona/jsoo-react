@@ -662,3 +662,75 @@ let innerHTML =
                           [@reason.raw_literal "<lol></lol>"]))
                      [@reason.preserve_braces ]) : React.Dom.DangerouslySetInnerHTML.t)))|] : 
     React.Dom.domProps) []
+let testAttributes =
+  React.Dom.createDOMElementVariadic "div"
+    ~props:(Js_of_ocaml.Js.Unsafe.obj
+              [|("translate",
+                  (Js_of_ocaml.Js.Unsafe.inject
+                     (Js_of_ocaml.Js.string ((("yes")
+                        [@reason.raw_literal "yes"]) : string))))|] : 
+    React.Dom.domProps)
+    [React.Dom.createDOMElementVariadic "picture"
+       ~props:(Js_of_ocaml.Js.Unsafe.obj
+                 [|("id",
+                     (Js_of_ocaml.Js.Unsafe.inject
+                        (Js_of_ocaml.Js.string ((("idpicture")
+                           [@reason.raw_literal "idpicture"]) : string))))|] : 
+       React.Dom.domProps)
+       [React.Dom.createDOMElementVariadic "img"
+          ~props:(Js_of_ocaml.Js.Unsafe.obj
+                    [|("src",
+                        (Js_of_ocaml.Js.Unsafe.inject
+                           (Js_of_ocaml.Js.string ((("picture/img.png")
+                              [@reason.raw_literal "picture/img.png"]) : 
+                              string))));("alt",
+                                           (Js_of_ocaml.Js.Unsafe.inject
+                                              (Js_of_ocaml.Js.string
+                                                 ((("test picture/img.png")
+                                                 [@reason.raw_literal
+                                                   "test picture/img.png"]) : 
+                                                 string))));("id",
+                                                              (Js_of_ocaml.Js.Unsafe.inject
+                                                                 (Js_of_ocaml.Js.string
+                                                                    ((("idimg")
+                                                                    [@reason.raw_literal
+                                                                    "idimg"]) : 
+                                                                    string))))|] : 
+          React.Dom.domProps) [];
+       React.Dom.createDOMElementVariadic "source"
+         ~props:(Js_of_ocaml.Js.Unsafe.obj
+                   [|("type",
+                       (Js_of_ocaml.Js.Unsafe.inject
+                          (Js_of_ocaml.Js.string ((("image/webp")
+                             [@reason.raw_literal "image/webp"]) : string))));
+                     ("src",
+                       (Js_of_ocaml.Js.Unsafe.inject
+                          (Js_of_ocaml.Js.string ((("picture/img1.webp")
+                             [@reason.raw_literal "picture/img1.webp"]) : 
+                             string))))|] : React.Dom.domProps) [];
+       React.Dom.createDOMElementVariadic "source"
+         ~props:(Js_of_ocaml.Js.Unsafe.obj
+                   [|("type",
+                       (Js_of_ocaml.Js.Unsafe.inject
+                          (Js_of_ocaml.Js.string ((("image/jpeg")
+                             [@reason.raw_literal "image/jpeg"]) : string))));
+                     ("src",
+                       (Js_of_ocaml.Js.Unsafe.inject
+                          (Js_of_ocaml.Js.string ((("picture/img2.jpg")
+                             [@reason.raw_literal "picture/img2.jpg"]) : 
+                             string))))|] : React.Dom.domProps) []]]
+let randomElement =
+  React.Dom.createDOMElementVariadic "text"
+    ~props:(Js_of_ocaml.Js.Unsafe.obj
+              [|("dx",
+                  (Js_of_ocaml.Js.Unsafe.inject
+                     (Js_of_ocaml.Js.string ((("1 2")
+                        [@reason.raw_literal "1 2"]) : string))));("dy",
+                                                                    (
+                                                                    Js_of_ocaml.Js.Unsafe.inject
+                                                                    (Js_of_ocaml.Js.string
+                                                                    ((("3 4")
+                                                                    [@reason.raw_literal
+                                                                    "3 4"]) : 
+                                                                    string))))|] : 
+    React.Dom.domProps) []

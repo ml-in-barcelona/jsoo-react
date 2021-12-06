@@ -165,10 +165,10 @@ let make =
 let testAttributes =
   <div translate="yes">
     <picture id="idpicture">
-      <img src="picture/img.png" alt="test picture/img.png" id="idimg"/>
-      <source type_="image/webp" src="picture/img1.webp"/>
-      <source type_="image/jpeg" src="picture/img2.jpg"/>
+      <img src="picture/img.png" alt="test picture/img.png" id="idimg" />
+      <source type_="image/webp" src="picture/img1.webp" />
+      <source type_="image/jpeg" src="picture/img2.jpg" />
     </picture>
   </div>;
 
-let randomElement = <text dx="1 2" dy="3 4"/>;
+let randomElement = <text dx="1 2" dy="3 4" />;
