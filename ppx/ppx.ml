@@ -794,7 +794,8 @@ let jsxMapper () =
         (name, [], Typ.constr ~loc {loc; txt= optionIdent} [type_]) :: types
   in
   let nestedModules = ref [] in
-  let transformComponentDefinition mapper ctxt structure returnStructures =
+  let rec transformComponentDefinition ?(inside_component = false) mapper ctxt
+      structure returnStructures =
     match structure with
     (* external *)
     | { pstr_loc
@@ -859,12 +860,17 @@ let jsxMapper () =
             (Invalid_argument
                "Only one react.component call can exist on a component at one \
                 time" ) )
+    (* let%component foo = ... *)
+    | {pstr_desc= Pstr_extension (({txt= "component"}, PStr structure), _)} ->
+        List.fold_right
+          (transformComponentDefinition ~inside_component:true mapper ctxt)
+          structure returnStructures
     (* let component = ... *)
     | {pstr_loc; pstr_desc= Pstr_value (recFlag, valueBindings)} ->
         let fileName = filenameFromLoc pstr_loc in
         let emptyLoc = Location.in_file fileName in
         let mapBinding binding =
-          if hasAttrOnBinding binding then
+          if hasAttrOnBinding binding || inside_component then
             let bindingLoc = binding.pvb_loc in
             let bindingPatLoc = binding.pvb_pat.ppat_loc in
             let binding =
@@ -1252,8 +1258,10 @@ let jsxMapper () =
     | structure ->
         structure :: returnStructures
   in
-  let reactComponentTransform mapper ctxt structures =
-    List.fold_right (transformComponentDefinition mapper ctxt) structures []
+  let reactComponentTransform mapper ctxt structure_items =
+    List.fold_right
+      (transformComponentDefinition mapper ctxt)
+      structure_items []
   in
   let transformJsxCall callExpression callArguments attrs apply_loc
       apply_loc_stack =
@@ -1311,8 +1319,8 @@ let jsxMapper () =
         when filter_attr_name "react.dom" attribute ->
           super#structure {react_dom= true}
             (reactComponentTransform self c rest)
-      | structures ->
-          super#structure c (reactComponentTransform self c structures)
+      | structure_items ->
+          super#structure c (reactComponentTransform self c structure_items)
 
     method! expression c expression =
       let expression = super#expression c expression in
