@@ -1130,18 +1130,8 @@ let videoHTMLAttributes =
       ; htmlName= "disablepictureinpicture"
       ; type_= Bool } ]
 
-(* (* this list is "complete" in that it contains every SVG attribute *)
-   // that React supports, but the types can be improved.
-   // Full list here: https://facebook.github.io/react/docs/dom-elements.html
-   //
-   // The three broad type categories are (in order of restrictiveness):
-   //   - "(* number |  *)String"
-   //   - "String"
-   //   - union of String literals *)
 let svgAttributes =
-  [ (* Attributes which also defined in HTMLAttributes *)
-    (* See comment in SVGDOMPropertyConfig.js *)
-    Attribute {name= "color"; htmlName= "color"; type_= String}
+  [ Attribute {name= "color"; htmlName= "color"; type_= String}
   ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
   ; Attribute {name= "id"; htmlName= "id"; type_= String}
   ; Attribute {name= "lang"; htmlName= "lang"; type_= String}
