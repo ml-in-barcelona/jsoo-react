@@ -24,16 +24,6 @@ let make =
                                 [@reason.preserve_braces ])] ()] ())
       [@reason.preserve_braces ]))
   [@warning "-16"])
-let make
-  (Props :
-    < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
-  =
-  make
-    ?name:(fun (type res) -> fun (type a0) ->
-             fun (a0 : a0 Js_of_ocaml.Js.t) ->
-               fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                 (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
-             (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name))
 let make =
   let make_props
     : ?name:'name ->
@@ -54,6 +44,16 @@ let make =
                    Array.to_list)
                   |> (List.filter_map (fun x -> x)))
                  |> Array.of_list) in
+  let make
+    (Props :
+      < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+    =
+    make
+      ?name:(fun (type res) -> fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
+               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
   fun ?name ->
     fun ?key -> fun () -> React.createElement make (make_props ?key ?name ())
 let make =
@@ -68,24 +68,6 @@ let make =
             [@reason.preserve_braces ]))
       [@warning "-16"]))
   [@warning "-16"])
-let make
-  (Props :
-    <
-      a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b Js_of_ocaml.Js.readonly_prop
-                                               > 
-      Js_of_ocaml.Js.t)
-  =
-  make
-    ~b:(fun (type res) -> fun (type a0) ->
-          fun (a0 : a0 Js_of_ocaml.Js.t) ->
-            fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-              (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
-          (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
-    ~a:(fun (type res) -> fun (type a0) ->
-          fun (a0 : a0 Js_of_ocaml.Js.t) ->
-            fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-              (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-          (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) ()
 let make =
   let make_props
     : a:'a ->
@@ -111,6 +93,25 @@ let make =
                      Array.to_list)
                     |> (List.filter_map (fun x -> x)))
                    |> Array.of_list) in
+  let make
+    (Props :
+      <
+        a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
+                                                  Js_of_ocaml.Js.readonly_prop
+                                                 > 
+        Js_of_ocaml.Js.t)
+    =
+    make
+      ~b:(fun (type res) -> fun (type a0) ->
+            fun (a0 : a0 Js_of_ocaml.Js.t) ->
+              fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
+                (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
+            (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
+      ~a:(fun (type res) -> fun (type a0) ->
+            fun (a0 : a0 Js_of_ocaml.Js.t) ->
+              fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
+                (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+            (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
   fun ~a ->
     fun ~b ->
       fun ?key ->
@@ -138,25 +139,6 @@ module Bar =
                 [@reason.preserve_braces ]))
           [@warning "-16"]))
       [@warning "-16"])
-    let make
-      (Props :
-        <
-          a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
-                                                    Js_of_ocaml.Js.readonly_prop
-                                                   > 
-          Js_of_ocaml.Js.t)
-      =
-      make
-        ~b:(fun (type res) -> fun (type a0) ->
-              fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
-              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
-        ~a:(fun (type res) -> fun (type a0) ->
-              fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) ()
     let make =
       let make_props
         : a:'a ->
@@ -184,6 +166,25 @@ module Bar =
                          |> Array.to_list)
                         |> (List.filter_map (fun x -> x)))
                        |> Array.of_list) in
+      let make
+        (Props :
+          <
+            a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
+                                                      Js_of_ocaml.Js.readonly_prop
+                                                     > 
+            Js_of_ocaml.Js.t)
+        =
+        make
+          ~b:(fun (type res) -> fun (type a0) ->
+                fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                    -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
+          ~a:(fun (type res) -> fun (type a0) ->
+                fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                    -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
       fun ~a ->
         fun ~b ->
           fun ?key ->
@@ -202,25 +203,6 @@ module Bar =
                 [@reason.preserve_braces ]))
           [@warning "-16"]))
       [@warning "-16"])
-    let component
-      (Props :
-        <
-          a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
-                                                    Js_of_ocaml.Js.readonly_prop
-                                                   > 
-          Js_of_ocaml.Js.t)
-      =
-      component
-        ~b:(fun (type res) -> fun (type a0) ->
-              fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
-              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
-        ~a:(fun (type res) -> fun (type a0) ->
-              fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) ()
     let component =
       let component_props
         : a:'a ->
@@ -248,6 +230,25 @@ module Bar =
                          |> Array.to_list)
                         |> (List.filter_map (fun x -> x)))
                        |> Array.of_list) in
+      let component
+        (Props :
+          <
+            a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
+                                                      Js_of_ocaml.Js.readonly_prop
+                                                     > 
+            Js_of_ocaml.Js.t)
+        =
+        component
+          ~b:(fun (type res) -> fun (type a0) ->
+                fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                    -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
+          ~a:(fun (type res) -> fun (type a0) ->
+                fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                    -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
       fun ~a ->
         fun ~b ->
           fun ?key ->
@@ -272,25 +273,6 @@ module Func(M:X_int) =
                 [@reason.preserve_braces ]))
           [@warning "-16"]))
       [@warning "-16"])
-    let make
-      (Props :
-        <
-          a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
-                                                    Js_of_ocaml.Js.readonly_prop
-                                                   > 
-          Js_of_ocaml.Js.t)
-      =
-      make
-        ~b:(fun (type res) -> fun (type a0) ->
-              fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
-              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
-        ~a:(fun (type res) -> fun (type a0) ->
-              fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) ()
     let make =
       let make_props
         : a:'a ->
@@ -318,6 +300,25 @@ module Func(M:X_int) =
                          |> Array.to_list)
                         |> (List.filter_map (fun x -> x)))
                        |> Array.of_list) in
+      let make
+        (Props :
+          <
+            a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
+                                                      Js_of_ocaml.Js.readonly_prop
+                                                     > 
+            Js_of_ocaml.Js.t)
+        =
+        make
+          ~b:(fun (type res) -> fun (type a0) ->
+                fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                    -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
+          ~a:(fun (type res) -> fun (type a0) ->
+                fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                    -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
       fun ~a ->
         fun ~b ->
           fun ?key ->
@@ -339,9 +340,6 @@ module ForwardRef =
             [@reason.preserve_braces ])])
       [@warning "-16"])
     let make =
-      React.forwardRef
-        (fun (Props : <  >  Js_of_ocaml.Js.t) -> fun theRef -> make theRef)
-    let make =
       let make_props
         : ?key:string ->
             ?ref:React.Dom.domRef -> unit -> <  >  Js_of_ocaml.Js.t
@@ -359,6 +357,9 @@ module ForwardRef =
                        |> Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list) in
+      let make =
+        React.forwardRef
+          (fun (Props : <  >  Js_of_ocaml.Js.t) -> fun theRef -> make theRef) in
       fun ?key ->
         fun ?ref ->
           fun () -> React.createElement make (make_props ?ref ?key ())
@@ -376,20 +377,6 @@ module Memo =
           [@reason.preserve_braces ]))
       [@warning "-16"])
     let make =
-      React.memo
-        (fun
-           (Props :
-             < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
-           ->
-           make
-             ~a:(fun (type res) -> fun (type a0) ->
-                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                     fun
-                       (_ :
-                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                       -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)))
-    let make =
       let make_props
         : a:'a ->
             ?key:string ->
@@ -408,6 +395,20 @@ module Memo =
                        |> Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list) in
+      let make =
+        React.memo
+          (fun
+             (Props :
+               < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+             ->
+             make
+               ~a:(fun (type res) -> fun (type a0) ->
+                     fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                       fun
+                         (_ :
+                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                         -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+                     (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a))) in
       fun ~a ->
         fun ?key ->
           fun () -> React.createElement make (make_props ?key ~a ())
@@ -425,21 +426,6 @@ module MemoCustomCompareProps =
           [@reason.preserve_braces ]))
       [@warning "-16"])
     let make =
-      React.memoCustomCompareProps
-        (fun
-           (Props :
-             < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
-           ->
-           make
-             ~a:(fun (type res) -> fun (type a0) ->
-                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                     fun
-                       (_ :
-                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                       -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)))
-        (fun prevPros -> fun nextProps -> false)
-    let make =
       let make_props
         : a:'a ->
             ?key:string ->
@@ -458,6 +444,21 @@ module MemoCustomCompareProps =
                        |> Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list) in
+      let make =
+        React.memoCustomCompareProps
+          (fun
+             (Props :
+               < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+             ->
+             make
+               ~a:(fun (type res) -> fun (type a0) ->
+                     fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                       fun
+                         (_ :
+                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                         -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+                     (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)))
+          (fun prevPros -> fun nextProps -> false) in
       fun ~a ->
         fun ?key ->
           fun () -> React.createElement make (make_props ?key ~a ())
@@ -628,26 +629,6 @@ let make =
           [@reason.preserve_braces ]))
       [@warning "-16"]))
   [@warning "-16"])
-let make
-  (Props :
-    <
-      title: 'title Js_of_ocaml.Js.readonly_prop  ;children: 'children
-                                                               Js_of_ocaml.Js.readonly_prop
-                                                       > 
-      Js_of_ocaml.Js.t)
-  =
-  make
-    ~children:(fun (type res) -> fun (type a0) ->
-                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                   fun
-                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                     -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : res)
-                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#children))
-    ~title:(fun (type res) -> fun (type a0) ->
-              fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get a0 "title" : res)
-              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#title))
 let make =
   let make_props
     : title:'title ->
@@ -676,6 +657,28 @@ let make =
                      |> Array.to_list)
                     |> (List.filter_map (fun x -> x)))
                    |> Array.of_list) in
+  let make
+    (Props :
+      <
+        title: 'title Js_of_ocaml.Js.readonly_prop  ;children: 'children
+                                                                 Js_of_ocaml.Js.readonly_prop
+                                                         > 
+        Js_of_ocaml.Js.t)
+    =
+    make
+      ~children:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                       res) (Props : < .. >  Js_of_ocaml.Js.t)
+                   (fun x -> x#children))
+      ~title:(fun (type res) -> fun (type a0) ->
+                fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                    -> (Js_of_ocaml.Js.Unsafe.get a0 "title" : res)
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#title)) in
   fun ~title ->
     fun ~children ->
       fun ?key ->
@@ -715,25 +718,6 @@ let make =
       [@warning "-16"]))
   [@warning "-16"])
 let make =
-  React.Dom.forwardRef
-    (fun
-       (Props :
-         < children: 'children Js_of_ocaml.Js.readonly_prop   > 
-           Js_of_ocaml.Js.t)
-       ->
-       fun ref ->
-         make
-           ~children:(fun (type res) -> fun (type a0) ->
-                        fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                          fun
-                            (_ :
-                              a0 ->
-                                < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                            ->
-                            (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
-                            res) (Props : < .. >  Js_of_ocaml.Js.t)
-                        (fun x -> x#children)) ref)
-let make =
   let make_props
     : children:'children ->
         ?key:string ->
@@ -755,6 +739,25 @@ let make =
                      Some ("children", (inject children)))|] |> Array.to_list)
                     |> (List.filter_map (fun x -> x)))
                    |> Array.of_list) in
+  let make =
+    React.Dom.forwardRef
+      (fun
+         (Props :
+           < children: 'children Js_of_ocaml.Js.readonly_prop   > 
+             Js_of_ocaml.Js.t)
+         ->
+         fun ref ->
+           make
+             ~children:(fun (type res) -> fun (type a0) ->
+                          fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                            fun
+                              (_ :
+                                a0 ->
+                                  < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                              ->
+                              (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                              res) (Props : < .. >  Js_of_ocaml.Js.t)
+                          (fun x -> x#children)) ref) in
   fun ~children ->
     fun ?key ->
       fun ?ref ->

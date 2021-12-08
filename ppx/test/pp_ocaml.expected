@@ -4,16 +4,6 @@ let make =
         ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
         [React.string ("Hello " ^ name)])
   [@warning "-16"])
-let make
-  (Props :
-    < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
-  =
-  make
-    ?name:(fun (type res) -> fun (type a0) ->
-             fun (a0 : a0 Js_of_ocaml.Js.t) ->
-               fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
-                 (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
-             (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name))
 let make =
   let make_props
     : ?name:'name ->
@@ -34,6 +24,16 @@ let make =
                    Array.to_list)
                   |> (List.filter_map (fun x -> x)))
                  |> Array.of_list) in
+  let make
+    (Props :
+      < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+    =
+    make
+      ?name:(fun (type res) -> fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
+               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
   fun ?name ->
     fun ?key -> fun () -> React.createElement make (make_props ?key ?name ())
 let element =
@@ -63,17 +63,6 @@ let make =
                          (Js_of_ocaml.Js.string ("foo" : string))))|] : 
         React.Dom.domProps) [first; second])
   [@warning "-16"])
-let make
-  (Props :
-    < children: 'children Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
-  =
-  make
-    ~children:(fun (type res) -> fun (type a0) ->
-                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                   fun
-                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                     -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : res)
-                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#children))
 let make =
   let make_props
     : children:'children ->
@@ -93,6 +82,20 @@ let make =
                    Some ("children", (inject children)))|] |> Array.to_list)
                   |> (List.filter_map (fun x -> x)))
                  |> Array.of_list) in
+  let make
+    (Props :
+      < children: 'children Js_of_ocaml.Js.readonly_prop   > 
+        Js_of_ocaml.Js.t)
+    =
+    make
+      ~children:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                       res) (Props : < .. >  Js_of_ocaml.Js.t)
+                   (fun x -> x#children)) in
   fun ~children ->
     fun ?key ->
       fun () -> React.createElement make (make_props ?key ~children ())
@@ -105,17 +108,6 @@ let make =
                          (Js_of_ocaml.Js.string ("foo" : string))))|] : 
         React.Dom.domProps) kids)
   [@warning "-16"])
-let make
-  (Props :
-    < children: 'children Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
-  =
-  make
-    ~children:(fun (type res) -> fun (type a0) ->
-                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                   fun
-                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                     -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : res)
-                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#children))
 let make =
   let make_props
     : children:'children ->
@@ -135,6 +127,20 @@ let make =
                    Some ("children", (inject children)))|] |> Array.to_list)
                   |> (List.filter_map (fun x -> x)))
                  |> Array.of_list) in
+  let make
+    (Props :
+      < children: 'children Js_of_ocaml.Js.readonly_prop   > 
+        Js_of_ocaml.Js.t)
+    =
+    make
+      ~children:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                       res) (Props : < .. >  Js_of_ocaml.Js.t)
+                   (fun x -> x#children)) in
   fun ~children ->
     fun ?key ->
       fun () -> React.createElement make (make_props ?key ~children ())
@@ -145,17 +151,6 @@ let make =
           ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
           [first; second])
   [@warning "-16"])
-let make
-  (Props :
-    < children: 'children Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
-  =
-  make
-    ~children:(fun (type res) -> fun (type a0) ->
-                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                   fun
-                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                     -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : res)
-                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#children)) ()
 let make =
   let make_props
     : children:'children ->
@@ -175,6 +170,20 @@ let make =
                    Some ("children", (inject children)))|] |> Array.to_list)
                   |> (List.filter_map (fun x -> x)))
                  |> Array.of_list) in
+  let make
+    (Props :
+      < children: 'children Js_of_ocaml.Js.readonly_prop   > 
+        Js_of_ocaml.Js.t)
+    =
+    make
+      ~children:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                       res) (Props : < .. >  Js_of_ocaml.Js.t)
+                   (fun x -> x#children)) () in
   fun ~children ->
     fun ?key ->
       fun () -> React.createElement make (make_props ?key ~children ())
