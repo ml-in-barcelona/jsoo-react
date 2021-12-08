@@ -1,10 +1,4 @@
 let make =
-  ((fun ?(name= "") ->
-      React.Dom.createDOMElementVariadic "div"
-        ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-        [React.string ("Hello " ^ name)])
-  [@warning "-16"])
-let make =
   let make_props
     : ?name:'name ->
         ?key:string ->
@@ -24,6 +18,12 @@ let make =
                    Array.to_list)
                   |> (List.filter_map (fun x -> x)))
                  |> Array.of_list) in
+  let make =
+    ((fun ?(name= "") ->
+        React.Dom.createDOMElementVariadic "div"
+          ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+          [React.string ("Hello " ^ name)])
+    [@warning "-16"]) in
   let make
     (Props :
       < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
@@ -55,15 +55,6 @@ let element =
                                                                     string))))|] : 
     React.Dom.domProps) [React.string "hello"]
 let make =
-  ((fun ~children:(first, second) ->
-      React.Dom.createDOMElementVariadic "div"
-        ~props:(Js_of_ocaml.Js.Unsafe.obj
-                  [|("id",
-                      (Js_of_ocaml.Js.Unsafe.inject
-                         (Js_of_ocaml.Js.string ("foo" : string))))|] : 
-        React.Dom.domProps) [first; second])
-  [@warning "-16"])
-let make =
   let make_props
     : children:'children ->
         ?key:string ->
@@ -82,75 +73,32 @@ let make =
                    Some ("children", (inject children)))|] |> Array.to_list)
                   |> (List.filter_map (fun x -> x)))
                  |> Array.of_list) in
-  let make
-    (Props :
-      < children: 'children Js_of_ocaml.Js.readonly_prop   > 
-        Js_of_ocaml.Js.t)
-    =
-    make
-      ~children:(fun (type res) -> fun (type a0) ->
-                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                     fun
-                       (_ :
-                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                       -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
-                       res) (Props : < .. >  Js_of_ocaml.Js.t)
-                   (fun x -> x#children)) in
-  fun ~children ->
-    fun ?key ->
-      fun () -> React.createElement make (make_props ?key ~children ())
-let make =
-  ((fun ~children:kids ->
-      React.Dom.createDOMElementVariadic "div"
-        ~props:(Js_of_ocaml.Js.Unsafe.obj
-                  [|("id",
-                      (Js_of_ocaml.Js.Unsafe.inject
-                         (Js_of_ocaml.Js.string ("foo" : string))))|] : 
-        React.Dom.domProps) kids)
-  [@warning "-16"])
-let make =
-  let make_props
-    : children:'children ->
-        ?key:string ->
-          unit ->
-            < children: 'children Js_of_ocaml.Js.readonly_prop   > 
-              Js_of_ocaml.Js.t
-    =
-    fun ~children ->
-      fun ?key ->
-        fun () ->
-          let open Js_of_ocaml.Js.Unsafe in
-            obj
-              ((([|(Option.map
-                      (fun raw ->
-                         ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
-                   Some ("children", (inject children)))|] |> Array.to_list)
-                  |> (List.filter_map (fun x -> x)))
-                 |> Array.of_list) in
-  let make
-    (Props :
-      < children: 'children Js_of_ocaml.Js.readonly_prop   > 
-        Js_of_ocaml.Js.t)
-    =
-    make
-      ~children:(fun (type res) -> fun (type a0) ->
-                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                     fun
-                       (_ :
-                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                       -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
-                       res) (Props : < .. >  Js_of_ocaml.Js.t)
-                   (fun x -> x#children)) in
-  fun ~children ->
-    fun ?key ->
-      fun () -> React.createElement make (make_props ?key ~children ())
-let make =
-  ((fun ~children:(first, second) ->
-      fun () ->
+  let make =
+    ((fun ~children:(first, second) ->
         React.Dom.createDOMElementVariadic "div"
-          ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-          [first; second])
-  [@warning "-16"])
+          ~props:(Js_of_ocaml.Js.Unsafe.obj
+                    [|("id",
+                        (Js_of_ocaml.Js.Unsafe.inject
+                           (Js_of_ocaml.Js.string ("foo" : string))))|] : 
+          React.Dom.domProps) [first; second])
+    [@warning "-16"]) in
+  let make
+    (Props :
+      < children: 'children Js_of_ocaml.Js.readonly_prop   > 
+        Js_of_ocaml.Js.t)
+    =
+    make
+      ~children:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                       res) (Props : < .. >  Js_of_ocaml.Js.t)
+                   (fun x -> x#children)) in
+  fun ~children ->
+    fun ?key ->
+      fun () -> React.createElement make (make_props ?key ~children ())
 let make =
   let make_props
     : children:'children ->
@@ -170,6 +118,58 @@ let make =
                    Some ("children", (inject children)))|] |> Array.to_list)
                   |> (List.filter_map (fun x -> x)))
                  |> Array.of_list) in
+  let make =
+    ((fun ~children:kids ->
+        React.Dom.createDOMElementVariadic "div"
+          ~props:(Js_of_ocaml.Js.Unsafe.obj
+                    [|("id",
+                        (Js_of_ocaml.Js.Unsafe.inject
+                           (Js_of_ocaml.Js.string ("foo" : string))))|] : 
+          React.Dom.domProps) kids)
+    [@warning "-16"]) in
+  let make
+    (Props :
+      < children: 'children Js_of_ocaml.Js.readonly_prop   > 
+        Js_of_ocaml.Js.t)
+    =
+    make
+      ~children:(fun (type res) -> fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                       res) (Props : < .. >  Js_of_ocaml.Js.t)
+                   (fun x -> x#children)) in
+  fun ~children ->
+    fun ?key ->
+      fun () -> React.createElement make (make_props ?key ~children ())
+let make =
+  let make_props
+    : children:'children ->
+        ?key:string ->
+          unit ->
+            < children: 'children Js_of_ocaml.Js.readonly_prop   > 
+              Js_of_ocaml.Js.t
+    =
+    fun ~children ->
+      fun ?key ->
+        fun () ->
+          let open Js_of_ocaml.Js.Unsafe in
+            obj
+              ((([|(Option.map
+                      (fun raw ->
+                         ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
+                   Some ("children", (inject children)))|] |> Array.to_list)
+                  |> (List.filter_map (fun x -> x)))
+                 |> Array.of_list) in
+  let make =
+    ((fun ~children:(first, second) ->
+        fun () ->
+          React.Dom.createDOMElementVariadic "div"
+            ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+            [first; second])
+    [@warning "-16"]) in
   let make
     (Props :
       < children: 'children Js_of_ocaml.Js.readonly_prop   > 

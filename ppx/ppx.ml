@@ -286,7 +286,7 @@ let getFnName binding =
   | _ ->
       raise (Invalid_argument "react.component calls cannot be destructured.")
 
-let makeNewBinding binding expression newName =
+let make_new_binding binding expression newName =
   match binding with
   | {pvb_pat= {ppat_desc= Ppat_var ppat_var} as pvb_pat} ->
       { binding with
@@ -520,7 +520,8 @@ let makeJsObj ~loc named_arg_list_with_key_and_ref =
       |> List.filter_map (fun x -> x)
       |> Array.of_list )]
 
-let make_makeProps fn_name loc named_arg_list props_type rest =
+(* Builds the function that takes labelled arguments and generates a JS object *)
+let make_make_props fn_name loc named_arg_list props_type rest =
   let named_arg_list = List.map pluckLabelDefaultLocType named_arg_list in
   let props_type = makePropsType ~loc props_type in
   let core_type =
@@ -676,9 +677,9 @@ let argToType types (name, default, _noLabelName, _alias, loc, type_) =
         ; ptyp_loc_stack= [] } )
       :: types
 
-(* Creates the let make that will be passed to React.createElement *)
-let js_comp_make ~loc ~rec_flag ~internal_fn_name ~fn_name ~forward_ref
-    ~has_unit ~named_arg_list ~named_type_list ~payload ~wrap rest =
+(* Builds the function that will be passed as first param to React.createElement *)
+let make_js_comp ~loc ~fn_name ~forward_ref ~has_unit ~named_arg_list
+    ~named_type_list ~payload ~wrap rest =
   let props = get_props_attr payload in
   let pluck_arg (label, _, _, _, loc, _) =
     let label_str = Str_label.str label in
@@ -709,19 +710,7 @@ let js_comp_make ~loc ~rec_flag ~internal_fn_name ~fn_name ~forward_ref
     if has_unit then [(Nolabel, Exp.construct {loc; txt= Lident "()"} None)]
     else []
   in
-  let inner_expr =
-    Exp.apply
-      (Exp.ident
-         { loc
-         ; txt=
-             Lident
-               ( match rec_flag with
-               | Recursive ->
-                   internal_fn_name
-               | Nonrecursive ->
-                   fn_name ) } )
-      args
-  in
+  let inner_expr = Exp.apply (Exp.ident {loc; txt= Lident fn_name}) args in
   let inner_expr_with_ref =
     match forward_ref with
     | Some txt ->
@@ -740,7 +729,7 @@ let js_comp_make ~loc ~rec_flag ~internal_fn_name ~fn_name ~forward_ref
   in
   Exp.mk ~loc
     (Pexp_let
-       ( rec_flag
+       ( Nonrecursive
        , [ Vb.mk
              (Pat.var {loc; txt= fn_name})
              (wrap
@@ -755,10 +744,16 @@ let js_comp_make ~loc ~rec_flag ~internal_fn_name ~fn_name ~forward_ref
                    inner_expr_with_ref ) ) ]
        , rest ) )
 
+(* Builds the intermediate function with labelled arguments that will call make_props.
+   [body] is the the component implementation as originally written in source,
+   but without any wrappers like React.memo or forwardRef *)
+let make_ml_comp ~loc ~fn_name ~body rest =
+  Exp.mk ~loc
+    (Pexp_let (Nonrecursive, [Vb.mk (Pat.var {loc; txt= fn_name}) body], rest))
+
 (* This function takes any value binding and checks if it should be processed
    in case [react.component] attr is found, or if [inside_component] is passed. *)
-let process_value_binding ~pstr_loc ~rec_flag ~inside_component ~mapper ~ctxt
-    binding =
+let process_value_binding ~pstr_loc ~inside_component ~mapper ~ctxt binding =
   let filename = filename_from_loc pstr_loc in
   let empty_loc = Location.in_file filename in
   if has_attr_on_binding binding || inside_component then
@@ -770,7 +765,6 @@ let process_value_binding ~pstr_loc ~rec_flag ~inside_component ~mapper ~ctxt
       ; pvb_loc= empty_loc }
     in
     let fn_name = getFnName binding in
-    let internal_fn_name = fn_name ^ "$Internal" in
     let modified_binding_old binding =
       let expression = binding.pvb_expr in
       (* TODO: there is a long-tail of unsupported features inside of blocks - Pexp_letmodule , Pexp_letexception , Pexp_ifthenelse *)
@@ -917,7 +911,7 @@ let process_value_binding ~pstr_loc ~rec_flag ~inside_component ~mapper ~ctxt
       let wrap, has_unit, expression = spelunk_for_fun_expr expression in
       (wrap, has_unit, expression)
     in
-    let wrap, has_unit, expression = modified_binding binding in
+    let wrap, has_unit, ml_comp_body = modified_binding binding in
     let react_component_attr =
       try Some (List.find hasAttr binding.pvb_attributes)
       with Not_found -> None
@@ -930,12 +924,13 @@ let process_value_binding ~pstr_loc ~rec_flag ~inside_component ~mapper ~ctxt
           (empty_loc, None)
     in
     let named_type_list = List.fold_left argToType [] named_arg_list in
-    let js_comp_make =
-      js_comp_make ~loc:empty_loc ~rec_flag ~internal_fn_name ~fn_name
-        ~forward_ref ~has_unit ~named_arg_list ~named_type_list ~payload ~wrap
+    let ml_comp = make_ml_comp ~loc:empty_loc ~fn_name ~body:ml_comp_body in
+    let js_comp =
+      make_js_comp ~loc:empty_loc ~fn_name ~forward_ref ~has_unit
+        ~named_arg_list ~named_type_list ~payload ~wrap
     in
     let make_props =
-      make_makeProps fn_name empty_loc named_arg_list_with_key_and_ref
+      make_make_props fn_name empty_loc named_arg_list_with_key_and_ref
         named_type_list
     in
     let outer_make expression =
@@ -968,28 +963,13 @@ let process_value_binding ~pstr_loc ~rec_flag ~inside_component ~mapper ~ctxt
                         @ [(Nolabel, Exp.construct {loc; txt= Lident "()"} None)]
                         )]] )
          in
-         make_props @@ js_comp_make @@ outer )
+         make_props @@ ml_comp @@ js_comp @@ outer )
     in
     let inner_make_ident =
       Exp.ident ~loc:empty_loc {loc= empty_loc; txt= Lident fn_name}
     in
-    let bindings, new_binding =
-      match rec_flag with
-      | Recursive ->
-          ( [ outer_make
-                (Exp.let_ ~loc:empty_loc Recursive
-                   [ makeNewBinding binding expression internal_fn_name
-                   ; Vb.mk
-                       (Pat.var {loc= empty_loc; txt= fn_name})
-                       inner_make_ident ]
-                   (Exp.ident {loc= empty_loc; txt= Lident fn_name}) ) ]
-          , None )
-      | Nonrecursive ->
-          ( [{binding with pvb_expr= expression; pvb_attributes= []}]
-          , Some (outer_make inner_make_ident) )
-    in
-    (bindings, new_binding)
-  else ([binding], None)
+    outer_make inner_make_ident
+  else binding
 
 (* Builds the args list for elements like <Foo bar=2 />, or for React.Fragment: <> <div /> <p /> </> *)
 let uppercase_element_args ~loc callArguments =
@@ -1074,35 +1054,13 @@ let jsxMapper () =
           (transformComponentDefinition ~inside_component:true mapper ctxt)
           structure returnStructures
     (* let component = ... *)
-    | {pstr_loc; pstr_desc= Pstr_value (rec_flag, valueBindings)} ->
-        let structuresAndBinding =
+    | {pstr_loc; pstr_desc= Pstr_value (_rec_flag, value_bindings)} ->
+        let bindings =
           List.map
-            (process_value_binding ~pstr_loc ~rec_flag ~inside_component ~mapper
-               ~ctxt )
-            valueBindings
+            (process_value_binding ~pstr_loc ~inside_component ~mapper ~ctxt)
+            value_bindings
         in
-        let otherStructures (binding, newBinding) (bindings, newBindings) =
-          let newBindings =
-            match newBinding with
-            | Some newBinding ->
-                newBinding :: newBindings
-            | None ->
-                newBindings
-          in
-          (binding @ bindings, newBindings)
-        in
-        let bindings, newBindings =
-          List.fold_right otherStructures structuresAndBinding ([], [])
-        in
-        let fileName = filename_from_loc pstr_loc in
-        let emptyLoc = Location.in_file fileName in
-        [{pstr_loc; pstr_desc= Pstr_value (rec_flag, bindings)}]
-        @ ( match newBindings with
-          | [] ->
-              []
-          | newBindings ->
-              [ { pstr_loc= emptyLoc
-                ; pstr_desc= Pstr_value (rec_flag, newBindings) } ] )
+        [{pstr_loc; pstr_desc= Pstr_value (Nonrecursive, bindings)}]
         @ returnStructures
     | structure ->
         structure :: returnStructures

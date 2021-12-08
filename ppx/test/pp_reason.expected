@@ -8,23 +8,6 @@ module type Foo  =
               children:React.element -> React.element[@@react.component ]
   end
 let make =
-  ((fun ?(name= (("")[@reason.raw_literal ""])) ->
-      ((React.Fragment.make
-          ~children:[React.Dom.createDOMElementVariadic "div"
-                       ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-                       [((React.string
-                            ((("Hello ")[@reason.raw_literal "Hello "]) ^
-                               name))
-                       [@reason.preserve_braces ])];
-                    Hello.make ~one:(("1")[@reason.raw_literal "1"])
-                      ~children:[((React.string
-                                     ((("Hello ")
-                                        [@reason.raw_literal "Hello "]) ^
-                                        name))
-                                [@reason.preserve_braces ])] ()] ())
-      [@reason.preserve_braces ]))
-  [@warning "-16"])
-let make =
   let make_props
     : ?name:'name ->
         ?key:string ->
@@ -44,6 +27,23 @@ let make =
                    Array.to_list)
                   |> (List.filter_map (fun x -> x)))
                  |> Array.of_list) in
+  let make =
+    ((fun ?(name= (("")[@reason.raw_literal ""])) ->
+        ((React.Fragment.make
+            ~children:[React.Dom.createDOMElementVariadic "div"
+                         ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                         [((React.string
+                              ((("Hello ")[@reason.raw_literal "Hello "]) ^
+                                 name))
+                         [@reason.preserve_braces ])];
+                      Hello.make ~one:(("1")[@reason.raw_literal "1"])
+                        ~children:[((React.string
+                                       ((("Hello ")
+                                          [@reason.raw_literal "Hello "]) ^
+                                          name))
+                                  [@reason.preserve_braces ])] ()] ())
+        [@reason.preserve_braces ]))
+    [@warning "-16"]) in
   let make
     (Props :
       < name: 'name option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
@@ -56,18 +56,6 @@ let make =
                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
   fun ?name ->
     fun ?key -> fun () -> React.createElement make (make_props ?key ?name ())
-let make =
-  ((fun ~a ->
-      ((fun ~b ->
-          fun _ ->
-            ((print_endline (("This function should be named `Test`")
-                [@reason.raw_literal "This function should be named `Test`"]);
-              React.Dom.createDOMElementVariadic "div"
-                ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-                [])
-            [@reason.preserve_braces ]))
-      [@warning "-16"]))
-  [@warning "-16"])
 let make =
   let make_props
     : a:'a ->
@@ -93,6 +81,19 @@ let make =
                      Array.to_list)
                     |> (List.filter_map (fun x -> x)))
                    |> Array.of_list) in
+  let make =
+    ((fun ~a ->
+        ((fun ~b ->
+            fun _ ->
+              ((print_endline (("This function should be named `Test`")
+                  [@reason.raw_literal
+                    "This function should be named `Test`"]);
+                React.Dom.createDOMElementVariadic "div"
+                  ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                  [])
+              [@reason.preserve_braces ]))
+        [@warning "-16"]))
+    [@warning "-16"]) in
   let make
     (Props :
       <
@@ -127,19 +128,6 @@ module External =
 module Bar =
   struct
     let make =
-      ((fun ~a ->
-          ((fun ~b ->
-              fun _ ->
-                ((print_endline (("This function should be named `Test$Bar`")
-                    [@reason.raw_literal
-                      "This function should be named `Test$Bar`"]);
-                  React.Dom.createDOMElementVariadic "div"
-                    ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-                    [])
-                [@reason.preserve_braces ]))
-          [@warning "-16"]))
-      [@warning "-16"])
-    let make =
       let make_props
         : a:'a ->
             b:'b ->
@@ -166,6 +154,20 @@ module Bar =
                          |> Array.to_list)
                         |> (List.filter_map (fun x -> x)))
                        |> Array.of_list) in
+      let make =
+        ((fun ~a ->
+            ((fun ~b ->
+                fun _ ->
+                  ((print_endline
+                      (("This function should be named `Test$Bar`")
+                      [@reason.raw_literal
+                        "This function should be named `Test$Bar`"]);
+                    React.Dom.createDOMElementVariadic "div"
+                      ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                      [])
+                  [@reason.preserve_braces ]))
+            [@warning "-16"]))
+        [@warning "-16"]) in
       let make
         (Props :
           <
@@ -189,20 +191,6 @@ module Bar =
         fun ~b ->
           fun ?key ->
             fun () -> React.createElement make (make_props ?key ~b ~a ())
-    let component =
-      ((fun ~a ->
-          ((fun ~b ->
-              fun _ ->
-                ((print_endline
-                    (("This function should be named `Test$Bar$component`")
-                    [@reason.raw_literal
-                      "This function should be named `Test$Bar$component`"]);
-                  React.Dom.createDOMElementVariadic "div"
-                    ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-                    [])
-                [@reason.preserve_braces ]))
-          [@warning "-16"]))
-      [@warning "-16"])
     let component =
       let component_props
         : a:'a ->
@@ -230,6 +218,20 @@ module Bar =
                          |> Array.to_list)
                         |> (List.filter_map (fun x -> x)))
                        |> Array.of_list) in
+      let component =
+        ((fun ~a ->
+            ((fun ~b ->
+                fun _ ->
+                  ((print_endline
+                      (("This function should be named `Test$Bar$component`")
+                      [@reason.raw_literal
+                        "This function should be named `Test$Bar$component`"]);
+                    React.Dom.createDOMElementVariadic "div"
+                      ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                      [])
+                  [@reason.preserve_braces ]))
+            [@warning "-16"]))
+        [@warning "-16"]) in
       let component
         (Props :
           <
@@ -260,20 +262,6 @@ module Func(M:X_int) =
   struct
     let x = M.x + 1
     let make =
-      ((fun ~a ->
-          ((fun ~b ->
-              fun _ ->
-                ((print_endline
-                    (("This function should be named `Test$Func`")
-                    [@reason.raw_literal
-                      "This function should be named `Test$Func`"]) M.x;
-                  React.Dom.createDOMElementVariadic "div"
-                    ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-                    [])
-                [@reason.preserve_braces ]))
-          [@warning "-16"]))
-      [@warning "-16"])
-    let make =
       let make_props
         : a:'a ->
             b:'b ->
@@ -300,6 +288,20 @@ module Func(M:X_int) =
                          |> Array.to_list)
                         |> (List.filter_map (fun x -> x)))
                        |> Array.of_list) in
+      let make =
+        ((fun ~a ->
+            ((fun ~b ->
+                fun _ ->
+                  ((print_endline
+                      (("This function should be named `Test$Func`")
+                      [@reason.raw_literal
+                        "This function should be named `Test$Func`"]) M.x;
+                    React.Dom.createDOMElementVariadic "div"
+                      ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                      [])
+                  [@reason.preserve_braces ]))
+            [@warning "-16"]))
+        [@warning "-16"]) in
       let make
         (Props :
           <
@@ -327,19 +329,6 @@ module Func(M:X_int) =
 module ForwardRef =
   struct
     let make =
-      ((fun theRef ->
-          React.Dom.createDOMElementVariadic "div"
-            ~props:(Js_of_ocaml.Js.Unsafe.obj
-                      [|("ref",
-                          (Js_of_ocaml.Js.Unsafe.inject
-                             (((theRef |> Js_of_ocaml.Js.Opt.to_option)
-                             [@reason.preserve_braces ]) : React.Dom.domRef)))|] : 
-            React.Dom.domProps)
-            [((React.string (("ForwardRef")
-                 [@reason.raw_literal "ForwardRef"]))
-            [@reason.preserve_braces ])])
-      [@warning "-16"])
-    let make =
       let make_props
         : ?key:string ->
             ?ref:React.Dom.domRef -> unit -> <  >  Js_of_ocaml.Js.t
@@ -358,6 +347,19 @@ module ForwardRef =
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list) in
       let make =
+        ((fun theRef ->
+            React.Dom.createDOMElementVariadic "div"
+              ~props:(Js_of_ocaml.Js.Unsafe.obj
+                        [|("ref",
+                            (Js_of_ocaml.Js.Unsafe.inject
+                               (((theRef |> Js_of_ocaml.Js.Opt.to_option)
+                               [@reason.preserve_braces ]) : React.Dom.domRef)))|] : 
+              React.Dom.domProps)
+              [((React.string (("ForwardRef")
+                   [@reason.raw_literal "ForwardRef"]))
+              [@reason.preserve_braces ])])
+        [@warning "-16"]) in
+      let make =
         React.forwardRef
           (fun (Props : <  >  Js_of_ocaml.Js.t) -> fun theRef -> make theRef) in
       fun ?key ->
@@ -366,16 +368,6 @@ module ForwardRef =
   end
 module Memo =
   struct
-    let make =
-      ((fun ~a ->
-          ((React.Dom.createDOMElementVariadic "div"
-              ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-              [(((Printf.sprintf (("`a` is %s")
-                    [@reason.raw_literal "`a` is %s"]) a)
-                   |> React.string)
-              [@reason.preserve_braces ])])
-          [@reason.preserve_braces ]))
-      [@warning "-16"])
     let make =
       let make_props
         : a:'a ->
@@ -395,6 +387,16 @@ module Memo =
                        |> Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list) in
+      let make =
+        ((fun ~a ->
+            ((React.Dom.createDOMElementVariadic "div"
+                ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                [(((Printf.sprintf (("`a` is %s")
+                      [@reason.raw_literal "`a` is %s"]) a)
+                     |> React.string)
+                [@reason.preserve_braces ])])
+            [@reason.preserve_braces ]))
+        [@warning "-16"]) in
       let make =
         React.memo
           (fun
@@ -416,16 +418,6 @@ module Memo =
 module MemoCustomCompareProps =
   struct
     let make =
-      ((fun ~a ->
-          ((React.Dom.createDOMElementVariadic "div"
-              ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-              [(((Printf.sprintf (("`a` is %d")
-                    [@reason.raw_literal "`a` is %d"]) a)
-                   |> React.string)
-              [@reason.preserve_braces ])])
-          [@reason.preserve_braces ]))
-      [@warning "-16"])
-    let make =
       let make_props
         : a:'a ->
             ?key:string ->
@@ -444,6 +436,16 @@ module MemoCustomCompareProps =
                        |> Array.to_list)
                       |> (List.filter_map (fun x -> x)))
                      |> Array.of_list) in
+      let make =
+        ((fun ~a ->
+            ((React.Dom.createDOMElementVariadic "div"
+                ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                [(((Printf.sprintf (("`a` is %d")
+                      [@reason.raw_literal "`a` is %d"]) a)
+                     |> React.string)
+                [@reason.preserve_braces ])])
+            [@reason.preserve_braces ]))
+        [@warning "-16"]) in
       let make =
         React.memoCustomCompareProps
           (fun
@@ -618,18 +620,6 @@ let innerHTML =
                      [@reason.preserve_braces ]) : React.Dom.DangerouslySetInnerHTML.t)))|] : 
     React.Dom.domProps) []
 let make =
-  ((fun ~title ->
-      ((fun ~children ->
-          ((React.Dom.createDOMElementVariadic "div"
-              ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-              (((React.Dom.createDOMElementVariadic "span"
-                   ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-                   [((title |> s)[@reason.preserve_braces ])]) :: children)
-              [@reason.preserve_braces ]))
-          [@reason.preserve_braces ]))
-      [@warning "-16"]))
-  [@warning "-16"])
-let make =
   let make_props
     : title:'title ->
         children:'children ->
@@ -657,6 +647,18 @@ let make =
                      |> Array.to_list)
                     |> (List.filter_map (fun x -> x)))
                    |> Array.of_list) in
+  let make =
+    ((fun ~title ->
+        ((fun ~children ->
+            ((React.Dom.createDOMElementVariadic "div"
+                ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                (((React.Dom.createDOMElementVariadic "span"
+                     ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+                     [((title |> s)[@reason.preserve_braces ])]) :: children)
+                [@reason.preserve_braces ]))
+            [@reason.preserve_braces ]))
+        [@warning "-16"]))
+    [@warning "-16"]) in
   let make
     (Props :
       <
@@ -700,24 +702,6 @@ let t =
                         [@reason.raw_literal "FancyButton"]) : string))))|] : 
     React.Dom.domProps) children
 let make =
-  ((fun ~children ->
-      ((fun ref ->
-          ((React.Dom.createDOMElementVariadic "button"
-              ~props:(Js_of_ocaml.Js.Unsafe.obj
-                        [|("ref",
-                            (Js_of_ocaml.Js.Unsafe.inject
-                               (ref : React.Dom.domRef)));("className",
-                                                            (Js_of_ocaml.Js.Unsafe.inject
-                                                               (Js_of_ocaml.Js.string
-                                                                  ((("FancyButton")
-                                                                  [@reason.raw_literal
-                                                                    "FancyButton"]) : 
-                                                                  string))))|] : 
-              React.Dom.domProps) children)
-          [@reason.preserve_braces ]))
-      [@warning "-16"]))
-  [@warning "-16"])
-let make =
   let make_props
     : children:'children ->
         ?key:string ->
@@ -739,6 +723,24 @@ let make =
                      Some ("children", (inject children)))|] |> Array.to_list)
                     |> (List.filter_map (fun x -> x)))
                    |> Array.of_list) in
+  let make =
+    ((fun ~children ->
+        ((fun ref ->
+            ((React.Dom.createDOMElementVariadic "button"
+                ~props:(Js_of_ocaml.Js.Unsafe.obj
+                          [|("ref",
+                              (Js_of_ocaml.Js.Unsafe.inject
+                                 (ref : React.Dom.domRef)));("className",
+                                                              (Js_of_ocaml.Js.Unsafe.inject
+                                                                 (Js_of_ocaml.Js.string
+                                                                    ((("FancyButton")
+                                                                    [@reason.raw_literal
+                                                                    "FancyButton"]) : 
+                                                                    string))))|] : 
+                React.Dom.domProps) children)
+            [@reason.preserve_braces ]))
+        [@warning "-16"]))
+    [@warning "-16"]) in
   let make =
     React.Dom.forwardRef
       (fun
