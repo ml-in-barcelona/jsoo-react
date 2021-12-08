@@ -421,7 +421,7 @@ let rec makeArgsForMakePropsType list args =
   | [] ->
       args
 
-let makeMakePropsFnName fnName = fnName ^ "Props"
+let make_props_name fnName = fnName ^ "_props"
 
 (* Build an AST node for the props name when converted to a Js.t inside the function signature  *)
 let makePropsName ~loc name = Pat.mk ~loc (Ppat_var {txt= name; loc})
@@ -543,41 +543,32 @@ let makeJsObj ~loc namedArgListWithKeyAndRef =
       |> List.filter_map (fun x -> x)
       |> Array.of_list )]
 
-let makePropsValueBinding fnName loc namedArgListWithKeyAndRef propsType =
+let make_makeProps fn_name loc named_arg_list props_type rest =
+  let named_arg_list = List.map pluckLabelDefaultLocType named_arg_list in
+  let props_type = makePropsType ~loc props_type in
   let core_type =
-    makeArgsForMakePropsType namedArgListWithKeyAndRef
-      [%type: unit -> [%t propsType]]
+    makeArgsForMakePropsType named_arg_list [%type: unit -> [%t props_type]]
   in
-  Vb.mk ~loc
-    (Pat.mk ~loc
-       (Ppat_constraint
-          ( makePropsName ~loc (makeMakePropsFnName fnName)
-          , { ptyp_desc= Ptyp_poly ([], core_type)
-            ; ptyp_loc= loc
-            ; ptyp_attributes= []
-            ; ptyp_loc_stack= [] } ) ) )
-    (Exp.mk ~loc
-       (Pexp_constraint
-          ( makeFunsForMakePropsBody namedArgListWithKeyAndRef
-              [%expr
-                fun () ->
-                  let open Js_of_ocaml.Js.Unsafe in
-                  [%e makeJsObj ~loc namedArgListWithKeyAndRef]]
-          , core_type ) ) )
-
-(* Returns a structure item for the `makeProps` function *)
-let makePropsItem fnName loc namedArgListWithKeyAndRef propsType =
-  Str.mk ~loc
-    (Pstr_value
+  Exp.mk ~loc
+    (Pexp_let
        ( Nonrecursive
-       , [makePropsValueBinding fnName loc namedArgListWithKeyAndRef propsType]
-       ) )
-
-(* Builds an AST node for the entire `makeProps` function *)
-let makePropsDecl fnName loc namedArgListWithKeyAndRef namedTypeList =
-  makePropsItem fnName loc
-    (List.map pluckLabelDefaultLocType namedArgListWithKeyAndRef)
-    (makePropsType ~loc namedTypeList)
+       , [ Vb.mk ~loc
+             (Pat.mk ~loc
+                (Ppat_constraint
+                   ( makePropsName ~loc (make_props_name fn_name)
+                   , { ptyp_desc= Ptyp_poly ([], core_type)
+                     ; ptyp_loc= loc
+                     ; ptyp_attributes= []
+                     ; ptyp_loc_stack= [] } ) ) )
+             (Exp.mk ~loc
+                (Pexp_constraint
+                   ( makeFunsForMakePropsBody named_arg_list
+                       [%expr
+                         fun () ->
+                           let open Js_of_ocaml.Js.Unsafe in
+                           [%e makeJsObj ~loc named_arg_list]]
+                   , core_type ) ) ) ]
+       , rest ) )
 
 (* Builds the args list for elements like <Foo bar=2 />, or for React.Fragment: <> <div /> <p /> </> *)
 let uppercase_element_args ~loc callArguments =
@@ -785,81 +776,10 @@ let jsxMapper () =
           ; ptyp_loc_stack= [] } )
         :: types
   in
-  let argToConcreteType types (name, loc, type_) =
-    let open Str_label in
-    match name with
-    | Labelled _ as name ->
-        (name, [], type_) :: types
-    | Optional _ as name ->
-        (name, [], Typ.constr ~loc {loc; txt= optionIdent} [type_]) :: types
-  in
   let nestedModules = ref [] in
   let rec transformComponentDefinition ?(inside_component = false) mapper ctxt
       structure returnStructures =
     match structure with
-    (* external *)
-    | { pstr_loc
-      ; pstr_desc=
-          Pstr_primitive
-            ( {pval_name= {txt= fnName}; pval_attributes; pval_type} as
-            value_description ) } as pstr -> (
-      match List.filter hasAttr pval_attributes with
-      | [] ->
-          structure :: returnStructures
-      | [_] ->
-          let rec getPropTypes types ({ptyp_loc; ptyp_desc} as fullType) =
-            match ptyp_desc with
-            | Ptyp_arrow
-                ( ((Labelled _ | Optional _) as name)
-                , type_
-                , ({ptyp_desc= Ptyp_arrow _} as rest) ) ->
-                getPropTypes
-                  ((Str_label.of_arg_label name, ptyp_loc, type_) :: types)
-                  rest
-            | Ptyp_arrow (Nolabel, type_, _rest) ->
-                Location.raise_errorf ~loc:type_.ptyp_loc
-                  "jsoo-react: props need to be labelled arguments."
-            | Ptyp_arrow
-                (((Labelled _ | Optional _) as name), type_, returnValue) ->
-                ( returnValue
-                , (Str_label.of_arg_label name, returnValue.ptyp_loc, type_)
-                  :: types )
-            | _ ->
-                (fullType, types)
-          in
-          let innerType, propTypes = getPropTypes [] pval_type in
-          let namedTypeList = List.fold_left argToConcreteType [] propTypes in
-          let pluckLabelAndLoc (label, loc, type_) =
-            (label, None (* default *), loc, Some type_)
-          in
-          let retPropsType = makePropsType ~loc:pstr_loc namedTypeList in
-          let externalPropsDecl =
-            makePropsItem fnName pstr_loc
-              ( (Optional "key", None, pstr_loc, Some (keyType pstr_loc))
-              :: List.map pluckLabelAndLoc propTypes )
-              retPropsType
-          in
-          (* can't be an arrow because it will defensively uncurry *)
-          let newExternalType =
-            Ptyp_constr
-              ( {loc= pstr_loc; txt= Ldot (Lident "React", "componentLike")}
-              , [retPropsType; innerType] )
-          in
-          let newStructure =
-            { pstr with
-              pstr_desc=
-                Pstr_primitive
-                  { value_description with
-                    pval_type= {pval_type with ptyp_desc= newExternalType}
-                  ; pval_attributes= List.filter otherAttrsPure pval_attributes
-                  } }
-          in
-          externalPropsDecl :: newStructure :: returnStructures
-      | _ ->
-          raise
-            (Invalid_argument
-               "Only one react.component call can exist on a component at one \
-                time" ) )
     (* let%component foo = ... *)
     | {pstr_desc= Pstr_extension (({txt= "component"}, PStr structure), _)} ->
         List.fold_right
@@ -944,35 +864,43 @@ let jsxMapper () =
               | None ->
                   namedArgListWithKeyAndRef
             in
+            let namedTypeList = List.fold_left argToType [] namedArgList in
             let outerMake expression =
               Vb.mk ~loc:bindingLoc
                 ~attrs:(List.filter otherAttrsPure binding.pvb_attributes)
                 (Pat.var ~loc:bindingPatLoc {loc= bindingPatLoc; txt= fnName})
-                (makeFunsForMakePropsBody
-                   (List.map pluckLabelDefaultLocType namedArgListWithKeyAndRef)
-                   (let loc = emptyLoc in
-                    [%expr
-                      fun () ->
-                        React.createElement [%e expression]
-                          [%e
-                            Exp.apply ~loc
-                              (Exp.ident ~loc
-                                 {loc; txt= Lident (makeMakePropsFnName fnName)} )
-                              ( List.map
-                                  (fun ( arg
-                                       , _default
-                                       , _pattern
-                                       , _alias
-                                       , _pattern_loc
-                                       , _type ) ->
-                                    ( Str_label.to_arg_label arg
-                                    , Exp.ident ~loc:emptyLoc
-                                        { loc= emptyLoc
-                                        ; txt= Lident (Str_label.str arg) } ) )
-                                  namedArgListWithKeyAndRef
-                              @ [ ( Nolabel
-                                  , Exp.construct {loc; txt= Lident "()"} None
-                                  ) ] )]] ) )
+                (let outer =
+                   makeFunsForMakePropsBody
+                     (List.map pluckLabelDefaultLocType
+                        namedArgListWithKeyAndRef )
+                     (let loc = emptyLoc in
+                      [%expr
+                        fun () ->
+                          React.createElement [%e expression]
+                            [%e
+                              Exp.apply ~loc
+                                (Exp.ident ~loc
+                                   {loc; txt= Lident (make_props_name fnName)} )
+                                ( List.map
+                                    (fun ( arg
+                                         , _default
+                                         , _pattern
+                                         , _alias
+                                         , _pattern_loc
+                                         , _type ) ->
+                                      ( Str_label.to_arg_label arg
+                                      , Exp.ident ~loc:emptyLoc
+                                          { loc= emptyLoc
+                                          ; txt= Lident (Str_label.str arg) } )
+                                      )
+                                    namedArgListWithKeyAndRef
+                                @ [ ( Nolabel
+                                    , Exp.construct {loc; txt= Lident "()"} None
+                                    ) ] )]] )
+                 in
+                 make_makeProps fnName emptyLoc namedArgListWithKeyAndRef
+                   namedTypeList
+                 @@ outer )
             in
             let modifiedBinding binding =
               let hasApplication = ref false in
@@ -1124,11 +1052,7 @@ let jsxMapper () =
               in
               (Str_label.to_arg_label label, expr)
             in
-            let namedTypeList = List.fold_left argToType [] namedArgList in
             let loc = emptyLoc in
-            let makePropsLet =
-              makePropsDecl fnName loc namedArgListWithKeyAndRef namedTypeList
-            in
             let innerExpressionArgs =
               List.map pluck_arg namedArgList
               @ ( match forwardRef with
@@ -1205,22 +1129,14 @@ let jsxMapper () =
                   ( [{binding with pvb_expr= expression; pvb_attributes= []}]
                   , Some (outerMake innerMakeIdent) )
             in
-            ( Some makePropsLet
-            , Some (Vb.mk (Pat.var {loc= emptyLoc; txt= fnName}) fullExpression)
+            ( Some (Vb.mk (Pat.var {loc= emptyLoc; txt= fnName}) fullExpression)
             , bindings
             , newBinding )
-          else (None, None, [binding], None)
+          else (None, [binding], None)
         in
         let structuresAndBinding = List.map mapBinding valueBindings in
-        let otherStructures (extern, innerMake, binding, newBinding)
+        let otherStructures (innerMake, binding, newBinding)
             (externs, innerMakes, bindings, newBindings) =
-          let externs =
-            match extern with
-            | Some extern ->
-                extern :: externs
-            | None ->
-                externs
-          in
           let innerMakes =
             match innerMake with
             | Some innerMake ->

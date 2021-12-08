@@ -7,24 +7,6 @@ module type Foo  =
             ?htmlAttributes:htmlAttribute array ->
               children:React.element -> React.element[@@react.component ]
   end
-let makeProps
-  : ?name:'name ->
-      ?key:string ->
-        unit ->
-          < name: 'name option Js_of_ocaml.Js.readonly_prop   > 
-            Js_of_ocaml.Js.t
-  =
-  fun ?name ->
-    fun ?key ->
-      fun () ->
-        let open Js_of_ocaml.Js.Unsafe in
-          obj
-            ((([|(Option.map
-                    (fun raw -> ("key", (inject (Js_of_ocaml.Js.string raw))))
-                    key);(Option.map (fun raw -> ("name", (inject raw))) name)|]
-                 |> Array.to_list)
-                |> (List.filter_map (fun x -> x)))
-               |> Array.of_list)
 let make =
   ((fun ?(name= (("")[@reason.raw_literal ""])) ->
       ((React.Fragment.make
@@ -52,20 +34,15 @@ let make
                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
                  (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name))
-let make ?name  ?key  () = React.createElement make (makeProps ?key ?name ())
-let makeProps
-  : a:'a ->
-      b:'b ->
+let make =
+  let make_props
+    : ?name:'name ->
         ?key:string ->
           unit ->
-            <
-              a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
-                                                        Js_of_ocaml.Js.readonly_prop
-                                                       > 
+            < name: 'name option Js_of_ocaml.Js.readonly_prop   > 
               Js_of_ocaml.Js.t
-  =
-  fun ~a ->
-    fun ~b ->
+    =
+    fun ?name ->
       fun ?key ->
         fun () ->
           let open Js_of_ocaml.Js.Unsafe in
@@ -73,10 +50,12 @@ let makeProps
               ((([|(Option.map
                       (fun raw ->
                          ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
-                   Some ("b", (inject b)));(Some ("a", (inject a)))|] |>
+                   Option.map (fun raw -> ("name", (inject raw))) name)|] |>
                    Array.to_list)
                   |> (List.filter_map (fun x -> x)))
-                 |> Array.of_list)
+                 |> Array.of_list) in
+  fun ?name ->
+    fun ?key -> fun () -> React.createElement make (make_props ?key ?name ())
 let make =
   ((fun ~a ->
       ((fun ~b ->
@@ -107,73 +86,45 @@ let make
             fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop) ->
               (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
           (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) ()
-let make ~a  ~b  ?key  () =
-  React.createElement make (makeProps ?key ~b ~a ())
+let make =
+  let make_props
+    : a:'a ->
+        b:'b ->
+          ?key:string ->
+            unit ->
+              <
+                a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
+                                                          Js_of_ocaml.Js.readonly_prop
+                                                         > 
+                Js_of_ocaml.Js.t
+    =
+    fun ~a ->
+      fun ~b ->
+        fun ?key ->
+          fun () ->
+            let open Js_of_ocaml.Js.Unsafe in
+              obj
+                ((([|(Option.map
+                        (fun raw ->
+                           ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
+                     Some ("b", (inject b)));(Some ("a", (inject a)))|] |>
+                     Array.to_list)
+                    |> (List.filter_map (fun x -> x)))
+                   |> Array.of_list) in
+  fun ~a ->
+    fun ~b ->
+      fun ?key ->
+        fun () -> React.createElement make (make_props ?key ~b ~a ())
 module External =
   struct
-    let componentProps
-      : a:int ->
-          b:string ->
-            ?key:string ->
-              unit ->
-                <
-                  a: int Js_of_ocaml.Js.readonly_prop  ;b: string
-                                                             Js_of_ocaml.Js.readonly_prop
-                                                            > 
-                  Js_of_ocaml.Js.t
-      =
-      fun ~a ->
-        fun ~b ->
-          fun ?key ->
-            fun () ->
-              let open Js_of_ocaml.Js.Unsafe in
-                obj
-                  ((([|(Option.map
-                          (fun raw ->
-                             ("key", (inject (Js_of_ocaml.Js.string raw))))
-                          key);(Some ("b", (inject b)));(Some
-                                                           ("a", (inject a)))|]
-                       |> Array.to_list)
-                      |> (List.filter_map (fun x -> x)))
-                     |> Array.of_list)
-    external component :
-      (<
-         a: int Js_of_ocaml.Js.readonly_prop  ;b: string
-                                                    Js_of_ocaml.Js.readonly_prop
-                                                   > 
-         Js_of_ocaml.Js.t,
-        React.element) React.componentLike = ""[@@otherAttribute
-                                                 (("bla")
-                                                   [@reason.raw_literal
-                                                     "bla"])]
+    external component : a:int -> b:string -> React.element = ""[@@react.component
+                                                                  ][@@otherAttribute
+                                                                    (("bla")
+                                                                    [@reason.raw_literal
+                                                                    "bla"])]
   end
 module Bar =
   struct
-    let makeProps
-      : a:'a ->
-          b:'b ->
-            ?key:string ->
-              unit ->
-                <
-                  a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
-                                                            Js_of_ocaml.Js.readonly_prop
-                                                           > 
-                  Js_of_ocaml.Js.t
-      =
-      fun ~a ->
-        fun ~b ->
-          fun ?key ->
-            fun () ->
-              let open Js_of_ocaml.Js.Unsafe in
-                obj
-                  ((([|(Option.map
-                          (fun raw ->
-                             ("key", (inject (Js_of_ocaml.Js.string raw))))
-                          key);(Some ("b", (inject b)));(Some
-                                                           ("a", (inject a)))|]
-                       |> Array.to_list)
-                      |> (List.filter_map (fun x -> x)))
-                     |> Array.of_list)
     let make =
       ((fun ~a ->
           ((fun ~b ->
@@ -206,33 +157,37 @@ module Bar =
                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                   -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) ()
-    let make ~a  ~b  ?key  () =
-      React.createElement make (makeProps ?key ~b ~a ())
-    let componentProps
-      : a:'a ->
-          b:'b ->
-            ?key:string ->
-              unit ->
-                <
-                  a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
-                                                            Js_of_ocaml.Js.readonly_prop
-                                                           > 
-                  Js_of_ocaml.Js.t
-      =
+    let make =
+      let make_props
+        : a:'a ->
+            b:'b ->
+              ?key:string ->
+                unit ->
+                  <
+                    a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
+                                                              Js_of_ocaml.Js.readonly_prop
+                                                             > 
+                    Js_of_ocaml.Js.t
+        =
+        fun ~a ->
+          fun ~b ->
+            fun ?key ->
+              fun () ->
+                let open Js_of_ocaml.Js.Unsafe in
+                  obj
+                    ((([|(Option.map
+                            (fun raw ->
+                               ("key", (inject (Js_of_ocaml.Js.string raw))))
+                            key);(Some ("b", (inject b)));(Some
+                                                             ("a",
+                                                               (inject a)))|]
+                         |> Array.to_list)
+                        |> (List.filter_map (fun x -> x)))
+                       |> Array.of_list) in
       fun ~a ->
         fun ~b ->
           fun ?key ->
-            fun () ->
-              let open Js_of_ocaml.Js.Unsafe in
-                obj
-                  ((([|(Option.map
-                          (fun raw ->
-                             ("key", (inject (Js_of_ocaml.Js.string raw))))
-                          key);(Some ("b", (inject b)));(Some
-                                                           ("a", (inject a)))|]
-                       |> Array.to_list)
-                      |> (List.filter_map (fun x -> x)))
-                     |> Array.of_list)
+            fun () -> React.createElement make (make_props ?key ~b ~a ())
     let component =
       ((fun ~a ->
           ((fun ~b ->
@@ -266,38 +221,43 @@ module Bar =
                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                   -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) ()
-    let component ~a  ~b  ?key  () =
-      React.createElement component (componentProps ?key ~b ~a ())
+    let component =
+      let component_props
+        : a:'a ->
+            b:'b ->
+              ?key:string ->
+                unit ->
+                  <
+                    a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
+                                                              Js_of_ocaml.Js.readonly_prop
+                                                             > 
+                    Js_of_ocaml.Js.t
+        =
+        fun ~a ->
+          fun ~b ->
+            fun ?key ->
+              fun () ->
+                let open Js_of_ocaml.Js.Unsafe in
+                  obj
+                    ((([|(Option.map
+                            (fun raw ->
+                               ("key", (inject (Js_of_ocaml.Js.string raw))))
+                            key);(Some ("b", (inject b)));(Some
+                                                             ("a",
+                                                               (inject a)))|]
+                         |> Array.to_list)
+                        |> (List.filter_map (fun x -> x)))
+                       |> Array.of_list) in
+      fun ~a ->
+        fun ~b ->
+          fun ?key ->
+            fun () ->
+              React.createElement component (component_props ?key ~b ~a ())
   end
 module type X_int  = sig val x : int end
 module Func(M:X_int) =
   struct
     let x = M.x + 1
-    let makeProps
-      : a:'a ->
-          b:'b ->
-            ?key:string ->
-              unit ->
-                <
-                  a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
-                                                            Js_of_ocaml.Js.readonly_prop
-                                                           > 
-                  Js_of_ocaml.Js.t
-      =
-      fun ~a ->
-        fun ~b ->
-          fun ?key ->
-            fun () ->
-              let open Js_of_ocaml.Js.Unsafe in
-                obj
-                  ((([|(Option.map
-                          (fun raw ->
-                             ("key", (inject (Js_of_ocaml.Js.string raw))))
-                          key);(Some ("b", (inject b)));(Some
-                                                           ("a", (inject a)))|]
-                       |> Array.to_list)
-                      |> (List.filter_map (fun x -> x)))
-                     |> Array.of_list)
     let make =
       ((fun ~a ->
           ((fun ~b ->
@@ -331,27 +291,40 @@ module Func(M:X_int) =
                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                   -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) ()
-    let make ~a  ~b  ?key  () =
-      React.createElement make (makeProps ?key ~b ~a ())
+    let make =
+      let make_props
+        : a:'a ->
+            b:'b ->
+              ?key:string ->
+                unit ->
+                  <
+                    a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
+                                                              Js_of_ocaml.Js.readonly_prop
+                                                             > 
+                    Js_of_ocaml.Js.t
+        =
+        fun ~a ->
+          fun ~b ->
+            fun ?key ->
+              fun () ->
+                let open Js_of_ocaml.Js.Unsafe in
+                  obj
+                    ((([|(Option.map
+                            (fun raw ->
+                               ("key", (inject (Js_of_ocaml.Js.string raw))))
+                            key);(Some ("b", (inject b)));(Some
+                                                             ("a",
+                                                               (inject a)))|]
+                         |> Array.to_list)
+                        |> (List.filter_map (fun x -> x)))
+                       |> Array.of_list) in
+      fun ~a ->
+        fun ~b ->
+          fun ?key ->
+            fun () -> React.createElement make (make_props ?key ~b ~a ())
   end
 module ForwardRef =
   struct
-    let makeProps
-      : ?key:string ->
-          ?ref:React.Dom.domRef -> unit -> <  >  Js_of_ocaml.Js.t
-      =
-      fun ?key ->
-        fun ?ref ->
-          fun () ->
-            let open Js_of_ocaml.Js.Unsafe in
-              obj
-                ((([|(Option.map (fun raw -> ("ref", (inject raw))) ref);(
-                     Option.map
-                       (fun raw ->
-                          ("key", (inject (Js_of_ocaml.Js.string raw)))) key)|]
-                     |> Array.to_list)
-                    |> (List.filter_map (fun x -> x)))
-                   |> Array.of_list)
     let make =
       ((fun theRef ->
           React.Dom.createDOMElementVariadic "div"
@@ -368,28 +341,30 @@ module ForwardRef =
     let make =
       React.forwardRef
         (fun (Props : <  >  Js_of_ocaml.Js.t) -> fun theRef -> make theRef)
-    let make ?key  ?ref  () =
-      React.createElement make (makeProps ?ref ?key ())
+    let make =
+      let make_props
+        : ?key:string ->
+            ?ref:React.Dom.domRef -> unit -> <  >  Js_of_ocaml.Js.t
+        =
+        fun ?key ->
+          fun ?ref ->
+            fun () ->
+              let open Js_of_ocaml.Js.Unsafe in
+                obj
+                  ((([|(Option.map (fun raw -> ("ref", (inject raw))) ref);(
+                       Option.map
+                         (fun raw ->
+                            ("key", (inject (Js_of_ocaml.Js.string raw))))
+                         key)|]
+                       |> Array.to_list)
+                      |> (List.filter_map (fun x -> x)))
+                     |> Array.of_list) in
+      fun ?key ->
+        fun ?ref ->
+          fun () -> React.createElement make (make_props ?ref ?key ())
   end
 module Memo =
   struct
-    let makeProps
-      : a:'a ->
-          ?key:string ->
-            unit ->
-              < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t
-      =
-      fun ~a ->
-        fun ?key ->
-          fun () ->
-            let open Js_of_ocaml.Js.Unsafe in
-              obj
-                ((([|(Option.map
-                        (fun raw ->
-                           ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
-                     Some ("a", (inject a)))|] |> Array.to_list)
-                    |> (List.filter_map (fun x -> x)))
-                   |> Array.of_list)
     let make =
       ((fun ~a ->
           ((React.Dom.createDOMElementVariadic "div"
@@ -414,27 +389,31 @@ module Memo =
                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                        -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                    (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)))
-    let make ~a  ?key  () = React.createElement make (makeProps ?key ~a ())
+    let make =
+      let make_props
+        : a:'a ->
+            ?key:string ->
+              unit ->
+                < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t
+        =
+        fun ~a ->
+          fun ?key ->
+            fun () ->
+              let open Js_of_ocaml.Js.Unsafe in
+                obj
+                  ((([|(Option.map
+                          (fun raw ->
+                             ("key", (inject (Js_of_ocaml.Js.string raw))))
+                          key);(Some ("a", (inject a)))|]
+                       |> Array.to_list)
+                      |> (List.filter_map (fun x -> x)))
+                     |> Array.of_list) in
+      fun ~a ->
+        fun ?key ->
+          fun () -> React.createElement make (make_props ?key ~a ())
   end
 module MemoCustomCompareProps =
   struct
-    let makeProps
-      : a:'a ->
-          ?key:string ->
-            unit ->
-              < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t
-      =
-      fun ~a ->
-        fun ?key ->
-          fun () ->
-            let open Js_of_ocaml.Js.Unsafe in
-              obj
-                ((([|(Option.map
-                        (fun raw ->
-                           ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
-                     Some ("a", (inject a)))|] |> Array.to_list)
-                    |> (List.filter_map (fun x -> x)))
-                   |> Array.of_list)
     let make =
       ((fun ~a ->
           ((React.Dom.createDOMElementVariadic "div"
@@ -460,7 +439,28 @@ module MemoCustomCompareProps =
                        -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                    (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)))
         (fun prevPros -> fun nextProps -> false)
-    let make ~a  ?key  () = React.createElement make (makeProps ?key ~a ())
+    let make =
+      let make_props
+        : a:'a ->
+            ?key:string ->
+              unit ->
+                < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t
+        =
+        fun ~a ->
+          fun ?key ->
+            fun () ->
+              let open Js_of_ocaml.Js.Unsafe in
+                obj
+                  ((([|(Option.map
+                          (fun raw ->
+                             ("key", (inject (Js_of_ocaml.Js.string raw))))
+                          key);(Some ("a", (inject a)))|]
+                       |> Array.to_list)
+                      |> (List.filter_map (fun x -> x)))
+                     |> Array.of_list) in
+      fun ~a ->
+        fun ?key ->
+          fun () -> React.createElement make (make_props ?key ~a ())
   end
 let fragment foo = ((React.Fragment.make ~children:[foo] ())[@bla ])
 let polyChildrenFragment foo bar =
@@ -616,33 +616,6 @@ let innerHTML =
                           [@reason.raw_literal "<lol></lol>"]))
                      [@reason.preserve_braces ]) : React.Dom.DangerouslySetInnerHTML.t)))|] : 
     React.Dom.domProps) []
-let makeProps
-  : title:'title ->
-      children:'children ->
-        ?key:string ->
-          unit ->
-            <
-              title: 'title Js_of_ocaml.Js.readonly_prop  ;children: 
-                                                             'children
-                                                               Js_of_ocaml.Js.readonly_prop
-                                                               > 
-              Js_of_ocaml.Js.t
-  =
-  fun ~title ->
-    fun ~children ->
-      fun ?key ->
-        fun () ->
-          let open Js_of_ocaml.Js.Unsafe in
-            obj
-              ((([|(Option.map
-                      (fun raw ->
-                         ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
-                   Some ("children", (inject children)));(Some
-                                                            ("title",
-                                                              (inject title)))|]
-                   |> Array.to_list)
-                  |> (List.filter_map (fun x -> x)))
-                 |> Array.of_list)
 let make =
   ((fun ~title ->
       ((fun ~children ->
@@ -675,8 +648,39 @@ let make
                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                   -> (Js_of_ocaml.Js.Unsafe.get a0 "title" : res)
               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#title))
-let make ~title  ~children  ?key  () =
-  React.createElement make (makeProps ?key ~children ~title ())
+let make =
+  let make_props
+    : title:'title ->
+        children:'children ->
+          ?key:string ->
+            unit ->
+              <
+                title: 'title Js_of_ocaml.Js.readonly_prop  ;children: 
+                                                               'children
+                                                                 Js_of_ocaml.Js.readonly_prop
+                                                                 > 
+                Js_of_ocaml.Js.t
+    =
+    fun ~title ->
+      fun ~children ->
+        fun ?key ->
+          fun () ->
+            let open Js_of_ocaml.Js.Unsafe in
+              obj
+                ((([|(Option.map
+                        (fun raw ->
+                           ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
+                     Some ("children", (inject children)));(Some
+                                                              ("title",
+                                                                (inject title)))|]
+                     |> Array.to_list)
+                    |> (List.filter_map (fun x -> x)))
+                   |> Array.of_list) in
+  fun ~title ->
+    fun ~children ->
+      fun ?key ->
+        fun () ->
+          React.createElement make (make_props ?key ~children ~title ())
 let t =
   FancyButton.make ~ref:buttonRef
     ~children:[React.Dom.createDOMElementVariadic "div"
@@ -692,27 +696,6 @@ let t =
                      (Js_of_ocaml.Js.string ((("FancyButton")
                         [@reason.raw_literal "FancyButton"]) : string))))|] : 
     React.Dom.domProps) children
-let makeProps
-  : children:'children ->
-      ?key:string ->
-        ?ref:React.Dom.domRef ->
-          unit ->
-            < children: 'children Js_of_ocaml.Js.readonly_prop   > 
-              Js_of_ocaml.Js.t
-  =
-  fun ~children ->
-    fun ?key ->
-      fun ?ref ->
-        fun () ->
-          let open Js_of_ocaml.Js.Unsafe in
-            obj
-              ((([|(Option.map (fun raw -> ("ref", (inject raw))) ref);(
-                   Option.map
-                     (fun raw ->
-                        ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
-                   Some ("children", (inject children)))|] |> Array.to_list)
-                  |> (List.filter_map (fun x -> x)))
-                 |> Array.of_list)
 let make =
   ((fun ~children ->
       ((fun ref ->
@@ -750,5 +733,30 @@ let make =
                             (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
                             res) (Props : < .. >  Js_of_ocaml.Js.t)
                         (fun x -> x#children)) ref)
-let make ~children  ?key  ?ref  () =
-  React.createElement make (makeProps ?ref ?key ~children ())
+let make =
+  let make_props
+    : children:'children ->
+        ?key:string ->
+          ?ref:React.Dom.domRef ->
+            unit ->
+              < children: 'children Js_of_ocaml.Js.readonly_prop   > 
+                Js_of_ocaml.Js.t
+    =
+    fun ~children ->
+      fun ?key ->
+        fun ?ref ->
+          fun () ->
+            let open Js_of_ocaml.Js.Unsafe in
+              obj
+                ((([|(Option.map (fun raw -> ("ref", (inject raw))) ref);(
+                     Option.map
+                       (fun raw ->
+                          ("key", (inject (Js_of_ocaml.Js.string raw)))) key);(
+                     Some ("children", (inject children)))|] |> Array.to_list)
+                    |> (List.filter_map (fun x -> x)))
+                   |> Array.of_list) in
+  fun ~children ->
+    fun ?key ->
+      fun ?ref ->
+        fun () ->
+          React.createElement make (make_props ?ref ?key ~children ())
