@@ -584,72 +584,68 @@ let reactAttributes =
       ; htmlName= "suppressHydrationWarning"
       ; type_= Bool } ]
 
-let attributesHTML =
-  reactAttributes
-  & [ (* Standard HTML Attributes *)
-      Attribute {name= "accessKey"; htmlName= "accesskey"; type_= String}
-    ; Attribute {name= "contextMenu"; htmlName= "contextmenu"; type_= String}
-    ; Attribute {name= "dir"; htmlName= "dir"; type_= String}
-    ; Attribute
-        { name= "draggable"
-        ; htmlName= "draggable"
-        ; type_= String (* Booleanish *) }
-    ; Attribute {name= "hidden"; htmlName= "hidden"; type_= Bool}
-    ; Attribute {name= "id"; htmlName= "id"; type_= String}
-    ; Attribute {name= "lang"; htmlName= "lang"; type_= String}
-    ; Attribute {name= "placeholder"; htmlName= "placeholder"; type_= String}
-    ; Attribute {name= "slot"; htmlName= "slot"; type_= String}
-    ; Attribute
-        { name= "spellCheck"
-        ; htmlName= "spellcheck"
-        ; type_= String (* Booleanish *) }
-    ; Attribute {name= "style"; htmlName= "style"; type_= Style}
-    ; Attribute {name= "tabIndex"; htmlName= "tabindex"; type_= Int}
-    ; Attribute {name= "title"; htmlName= "title"; type_= String}
-    ; Attribute
-        { name= "translate"
-        ; htmlName= "translate"
-        ; type_= String (* 'yes' | 'no' *) }
-    ; Attribute {name= "radioGroup"; htmlName= "radiogroup"; type_= String}
-      (* Unknown *)
-      (* <command>, <menuitem> *)
-      (* WAI-ARIA *)
-    ; Attribute {name= "role"; htmlName= "role"; type_= ariaRole}
-      (* RDFa Attributes *)
-    ; Attribute {name= "about"; htmlName= "about"; type_= String}
-    ; Attribute {name= "datatype"; htmlName= "datatype"; type_= String}
-    ; Attribute {name= "inlist"; htmlName= "inlist"; type_= String (* any *)}
-    ; Attribute {name= "prefix"; htmlName= "prefix"; type_= String}
-    ; Attribute {name= "property"; htmlName= "property"; type_= String}
-    ; Attribute {name= "resource"; htmlName= "resource"; type_= String}
-    ; Attribute {name= "typeof"; htmlName= "typeof"; type_= String}
-    ; Attribute {name= "vocab"; htmlName= "vocab"; type_= String}
-      (* Non-standard Attributes *)
-    ; Attribute
-        {name= "autoCapitalize"; htmlName= "autocapitalize"; type_= String}
-    ; Attribute {name= "autoCorrect"; htmlName= "autocorrect"; type_= String}
-    ; Attribute {name= "autoSave"; htmlName= "autosave"; type_= String}
-    ; Attribute {name= "color"; htmlName= "color"; type_= String}
-    ; Attribute {name= "itemProp"; htmlName= "itemprop"; type_= String}
-    ; Attribute {name= "itemScope"; htmlName= "itemscope"; type_= Bool}
-    ; Attribute {name= "itemType"; htmlName= "itemtype"; type_= String}
-    ; Attribute {name= "itemID"; htmlName= "itemid"; type_= String}
-    ; Attribute {name= "itemRef"; htmlName= "itemref"; type_= String}
-    ; Attribute {name= "results"; htmlName= "results"; type_= Int}
-    ; Attribute {name= "security"; htmlName= "security"; type_= String}
-      (* Living Standard
-       * Hints at the type of data that might be entered by the user while editing the element or its contents
-       * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute *)
-    ; Attribute
-        { name= "inputMode"
-        ; htmlName= "inputmode"
-        ; type_=
-            String
-            (* 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' *)
-        }
-      (* Specify that a standard HTML element should behave like a defined custom built-in element
-          * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is *)
-    ; Attribute {name= "is"; htmlName= "is"; type_= String} ]
+let elementAttributes =
+  [ (* Standard HTML Attributes *)
+    Attribute {name= "accessKey"; htmlName= "accesskey"; type_= String}
+  ; Attribute {name= "contextMenu"; htmlName= "contextmenu"; type_= String}
+  ; Attribute {name= "dir"; htmlName= "dir"; type_= String}
+  ; Attribute
+      {name= "draggable"; htmlName= "draggable"; type_= String (* Booleanish *)}
+  ; Attribute {name= "hidden"; htmlName= "hidden"; type_= Bool}
+  ; Attribute {name= "id"; htmlName= "id"; type_= String}
+  ; Attribute {name= "lang"; htmlName= "lang"; type_= String}
+  ; Attribute {name= "placeholder"; htmlName= "placeholder"; type_= String}
+  ; Attribute {name= "slot"; htmlName= "slot"; type_= String}
+  ; Attribute
+      { name= "spellCheck"
+      ; htmlName= "spellcheck"
+      ; type_= String (* Booleanish *) }
+  ; Attribute {name= "style"; htmlName= "style"; type_= Style}
+  ; Attribute {name= "tabIndex"; htmlName= "tabindex"; type_= Int}
+  ; Attribute {name= "title"; htmlName= "title"; type_= String}
+  ; Attribute
+      { name= "translate"
+      ; htmlName= "translate"
+      ; type_= String (* 'yes' | 'no' *) }
+  ; Attribute {name= "radioGroup"; htmlName= "radiogroup"; type_= String}
+    (* Unknown *)
+    (* <command>, <menuitem> *)
+    (* WAI-ARIA *)
+  ; Attribute {name= "role"; htmlName= "role"; type_= ariaRole}
+    (* RDFa Attributes *)
+  ; Attribute {name= "about"; htmlName= "about"; type_= String}
+  ; Attribute {name= "datatype"; htmlName= "datatype"; type_= String}
+  ; Attribute {name= "inlist"; htmlName= "inlist"; type_= String (* any *)}
+  ; Attribute {name= "prefix"; htmlName= "prefix"; type_= String}
+  ; Attribute {name= "property"; htmlName= "property"; type_= String}
+  ; Attribute {name= "resource"; htmlName= "resource"; type_= String}
+  ; Attribute {name= "typeof"; htmlName= "typeof"; type_= String}
+  ; Attribute {name= "vocab"; htmlName= "vocab"; type_= String}
+    (* Non-standard Attributes *)
+  ; Attribute {name= "autoCapitalize"; htmlName= "autocapitalize"; type_= String}
+  ; Attribute {name= "autoCorrect"; htmlName= "autocorrect"; type_= String}
+  ; Attribute {name= "autoSave"; htmlName= "autosave"; type_= String}
+  ; Attribute {name= "color"; htmlName= "color"; type_= String}
+  ; Attribute {name= "itemProp"; htmlName= "itemprop"; type_= String}
+  ; Attribute {name= "itemScope"; htmlName= "itemscope"; type_= Bool}
+  ; Attribute {name= "itemType"; htmlName= "itemtype"; type_= String}
+  ; Attribute {name= "itemID"; htmlName= "itemid"; type_= String}
+  ; Attribute {name= "itemRef"; htmlName= "itemref"; type_= String}
+  ; Attribute {name= "results"; htmlName= "results"; type_= Int}
+  ; Attribute {name= "security"; htmlName= "security"; type_= String}
+    (* Living Standard
+     * Hints at the type of data that might be entered by the user while editing the element or its contents
+     * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute *)
+  ; Attribute
+      { name= "inputMode"
+      ; htmlName= "inputmode"
+      ; type_=
+          String
+          (* 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' *)
+      }
+    (* Specify that a standard HTML element should behave like a defined custom built-in element
+        * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is *)
+  ; Attribute {name= "is"; htmlName= "is"; type_= String} ]
 
 let anchorHTMLAttributes =
   [ Attribute {name= "download"; htmlName= "download"; type_= String (* any; *)}
@@ -1600,242 +1596,191 @@ let webViewHTMLAttributes =
   ; Attribute {name= "webpreferences"; htmlName= "webpreferences"; type_= String}
   ]
 
+let commonHtmlAttributes = domAttributes & elementAttributes & reactAttributes
+
 let htmlElements =
-  [ {tag= "a"; attributes= domAttributes & anchorHTMLAttributes & attributesHTML}
-  ; {tag= "abbr"; attributes= domAttributes & attributesHTML}
-  ; {tag= "address"; attributes= domAttributes & attributesHTML}
-  ; { tag= "area"
-    ; attributes= domAttributes & attributesHTML & areaHTMLAttributes }
-  ; {tag= "article"; attributes= domAttributes & attributesHTML}
-  ; {tag= "aside"; attributes= domAttributes & attributesHTML}
-  ; { tag= "audio"
-    ; attributes= domAttributes & attributesHTML & mediaHTMLAttributes }
-  ; {tag= "b"; attributes= domAttributes & attributesHTML}
-  ; { tag= "base"
-    ; attributes= domAttributes & attributesHTML & baseHTMLAttributes }
-  ; {tag= "bdi"; attributes= domAttributes & attributesHTML}
-  ; {tag= "bdo"; attributes= domAttributes & attributesHTML}
-  ; {tag= "big"; attributes= domAttributes & attributesHTML}
+  [ {tag= "a"; attributes= commonHtmlAttributes & anchorHTMLAttributes}
+  ; {tag= "abbr"; attributes= commonHtmlAttributes}
+  ; {tag= "address"; attributes= commonHtmlAttributes}
+  ; {tag= "area"; attributes= commonHtmlAttributes & areaHTMLAttributes}
+  ; {tag= "article"; attributes= commonHtmlAttributes}
+  ; {tag= "aside"; attributes= commonHtmlAttributes}
+  ; {tag= "audio"; attributes= commonHtmlAttributes & mediaHTMLAttributes}
+  ; {tag= "b"; attributes= commonHtmlAttributes}
+  ; {tag= "base"; attributes= commonHtmlAttributes & baseHTMLAttributes}
+  ; {tag= "bdi"; attributes= commonHtmlAttributes}
+  ; {tag= "bdo"; attributes= commonHtmlAttributes}
+  ; {tag= "big"; attributes= commonHtmlAttributes}
   ; { tag= "blockquote"
-    ; attributes= domAttributes & attributesHTML & blockquoteHTMLAttributes }
-  ; {tag= "body"; attributes= domAttributes & attributesHTML}
-  ; {tag= "br"; attributes= domAttributes & attributesHTML}
-  ; { tag= "button"
-    ; attributes= domAttributes & attributesHTML & buttonHTMLAttributes }
-  ; { tag= "canvas"
-    ; attributes= domAttributes & attributesHTML & canvasHTMLAttributes }
-  ; {tag= "caption"; attributes= domAttributes & attributesHTML}
-  ; {tag= "cite"; attributes= domAttributes & attributesHTML}
-  ; {tag= "code"; attributes= domAttributes & attributesHTML}
-  ; {tag= "col"; attributes= domAttributes & attributesHTML & colHTMLAttributes}
-  ; { tag= "colgroup"
-    ; attributes= domAttributes & attributesHTML & colgroupHTMLAttributes }
-  ; { tag= "data"
-    ; attributes= domAttributes & attributesHTML & dataHTMLAttributes }
-  ; {tag= "datalist"; attributes= domAttributes & attributesHTML}
-  ; {tag= "dd"; attributes= domAttributes & attributesHTML}
-  ; {tag= "del"; attributes= domAttributes & attributesHTML & delHTMLAttributes}
-  ; { tag= "details"
-    ; attributes= domAttributes & attributesHTML & detailsHTMLAttributes }
-  ; {tag= "dfn"; attributes= domAttributes & attributesHTML}
-  ; { tag= "dialog"
-    ; attributes= domAttributes & attributesHTML & dialogHTMLAttributes }
-  ; {tag= "div"; attributes= domAttributes & attributesHTML}
-  ; {tag= "dl"; attributes= domAttributes & attributesHTML}
-  ; {tag= "dt"; attributes= domAttributes & attributesHTML}
-  ; {tag= "em"; attributes= domAttributes & attributesHTML}
-  ; { tag= "embed"
-    ; attributes= domAttributes & attributesHTML & embedHTMLAttributes }
-  ; { tag= "fieldset"
-    ; attributes= domAttributes & attributesHTML & fieldsetHTMLAttributes }
-  ; {tag= "figcaption"; attributes= domAttributes & attributesHTML}
-  ; {tag= "figure"; attributes= domAttributes & attributesHTML}
-  ; {tag= "footer"; attributes= domAttributes & attributesHTML}
-  ; { tag= "form"
-    ; attributes= domAttributes & attributesHTML & formHTMLAttributes }
-  ; {tag= "h1"; attributes= domAttributes & attributesHTML}
-  ; {tag= "h2"; attributes= domAttributes & attributesHTML}
-  ; {tag= "h3"; attributes= domAttributes & attributesHTML}
-  ; {tag= "h4"; attributes= domAttributes & attributesHTML}
-  ; {tag= "h5"; attributes= domAttributes & attributesHTML}
-  ; {tag= "h6"; attributes= domAttributes & attributesHTML}
-  ; {tag= "head"; attributes= domAttributes & attributesHTML}
-  ; {tag= "header"; attributes= domAttributes & attributesHTML}
-  ; {tag= "hgroup"; attributes= domAttributes & attributesHTML}
-  ; {tag= "hr"; attributes= domAttributes & attributesHTML}
-  ; { tag= "html"
-    ; attributes= domAttributes & attributesHTML & htmlHTMLAttributes }
-  ; {tag= "i"; attributes= domAttributes & attributesHTML}
-  ; { tag= "iframe"
-    ; attributes= domAttributes & attributesHTML & iframeHTMLAttributes }
-  ; {tag= "img"; attributes= domAttributes & attributesHTML & imgHTMLAttributes}
-  ; { tag= "input"
-    ; attributes= domAttributes & attributesHTML & inputHTMLAttributes }
-  ; {tag= "ins"; attributes= domAttributes & attributesHTML & insHTMLAttributes}
-  ; {tag= "kbd"; attributes= domAttributes & attributesHTML & domAttributes}
-  ; { tag= "keygen"
-    ; attributes= domAttributes & attributesHTML & keygenHTMLAttributes }
-  ; { tag= "label"
-    ; attributes= domAttributes & attributesHTML & labelHTMLAttributes }
-  ; {tag= "legend"; attributes= domAttributes & attributesHTML}
-  ; {tag= "li"; attributes= domAttributes & attributesHTML & liHTMLAttributes}
-  ; { tag= "link"
-    ; attributes= domAttributes & attributesHTML & linkHTMLAttributes }
-  ; {tag= "main"; attributes= domAttributes & attributesHTML}
-  ; {tag= "map"; attributes= domAttributes & attributesHTML & mapHTMLAttributes}
-  ; {tag= "mark"; attributes= domAttributes & attributesHTML}
-  ; { tag= "menu"
-    ; attributes= domAttributes & attributesHTML & menuHTMLAttributes }
-  ; {tag= "menuitem"; attributes= domAttributes & attributesHTML}
-  ; { tag= "meta"
-    ; attributes= domAttributes & attributesHTML & metaHTMLAttributes }
-  ; { tag= "meter"
-    ; attributes= domAttributes & attributesHTML & meterHTMLAttributes }
-  ; {tag= "nav"; attributes= domAttributes & attributesHTML & domAttributes}
-  ; {tag= "noindex"; attributes= domAttributes & attributesHTML}
-  ; {tag= "noscript"; attributes= domAttributes & attributesHTML}
-  ; { tag= "object"
-    ; attributes= domAttributes & attributesHTML & objectHTMLAttributes }
-  ; {tag= "ol"; attributes= domAttributes & attributesHTML & olHTMLAttributes}
-  ; { tag= "optgroup"
-    ; attributes= domAttributes & attributesHTML & optgroupHTMLAttributes }
-  ; { tag= "option"
-    ; attributes= domAttributes & attributesHTML & optionHTMLAttributes }
-  ; { tag= "output"
-    ; attributes= domAttributes & attributesHTML & outputHTMLAttributes }
-  ; {tag= "p"; attributes= domAttributes & attributesHTML}
-  ; { tag= "param"
-    ; attributes= domAttributes & attributesHTML & paramHTMLAttributes }
-  ; {tag= "picture"; attributes= domAttributes & attributesHTML}
-  ; {tag= "pre"; attributes= domAttributes & attributesHTML}
-  ; { tag= "progress"
-    ; attributes= domAttributes & attributesHTML & progressHTMLAttributes }
-  ; {tag= "q"; attributes= domAttributes & attributesHTML & quoteHTMLAttributes}
-  ; {tag= "rp"; attributes= domAttributes & attributesHTML}
-  ; {tag= "rt"; attributes= domAttributes & attributesHTML}
-  ; {tag= "ruby"; attributes= domAttributes & attributesHTML}
-  ; {tag= "s"; attributes= domAttributes & attributesHTML}
-  ; {tag= "samp"; attributes= domAttributes & attributesHTML}
-  ; { tag= "script"
-    ; attributes= domAttributes & attributesHTML & scriptHTMLAttributes }
-  ; {tag= "section"; attributes= domAttributes & attributesHTML}
-  ; { tag= "select"
-    ; attributes= domAttributes & attributesHTML & selectHTMLAttributes }
-  ; { tag= "slot"
-    ; attributes= domAttributes & attributesHTML & slotHTMLAttributes }
-  ; {tag= "small"; attributes= domAttributes & attributesHTML}
-  ; { tag= "source"
-    ; attributes= domAttributes & attributesHTML & sourceHTMLAttributes }
-  ; {tag= "span"; attributes= domAttributes & attributesHTML}
-  ; {tag= "strong"; attributes= domAttributes & attributesHTML}
-  ; { tag= "style"
-    ; attributes= domAttributes & attributesHTML & styleHTMLAttributes }
-  ; {tag= "sub"; attributes= domAttributes & attributesHTML}
-  ; {tag= "summary"; attributes= domAttributes & attributesHTML}
-  ; {tag= "sup"; attributes= domAttributes & attributesHTML}
-  ; { tag= "table"
-    ; attributes= domAttributes & attributesHTML & tableHTMLAttributes }
-  ; {tag= "tbody"; attributes= domAttributes & attributesHTML}
-  ; {tag= "td"; attributes= domAttributes & attributesHTML & tdHTMLAttributes}
-  ; {tag= "template"; attributes= domAttributes & attributesHTML}
-  ; { tag= "textarea"
-    ; attributes= domAttributes & attributesHTML & textareaHTMLAttributes }
-  ; {tag= "tfoot"; attributes= domAttributes & attributesHTML}
-  ; {tag= "th"; attributes= domAttributes & attributesHTML & thHTMLAttributes}
-  ; {tag= "thead"; attributes= domAttributes & attributesHTML}
-  ; { tag= "time"
-    ; attributes= domAttributes & attributesHTML & timeHTMLAttributes }
-  ; {tag= "title"; attributes= domAttributes & attributesHTML}
-  ; {tag= "tr"; attributes= domAttributes & attributesHTML}
-  ; { tag= "track"
-    ; attributes= domAttributes & attributesHTML & trackHTMLAttributes }
-  ; {tag= "u"; attributes= domAttributes & attributesHTML}
-  ; {tag= "ul"; attributes= domAttributes & attributesHTML}
-  ; {tag= "var"; attributes= domAttributes & attributesHTML}
+    ; attributes= commonHtmlAttributes & blockquoteHTMLAttributes }
+  ; {tag= "body"; attributes= commonHtmlAttributes}
+  ; {tag= "br"; attributes= commonHtmlAttributes}
+  ; {tag= "button"; attributes= commonHtmlAttributes & buttonHTMLAttributes}
+  ; {tag= "canvas"; attributes= commonHtmlAttributes & canvasHTMLAttributes}
+  ; {tag= "caption"; attributes= commonHtmlAttributes}
+  ; {tag= "cite"; attributes= commonHtmlAttributes}
+  ; {tag= "code"; attributes= commonHtmlAttributes}
+  ; {tag= "col"; attributes= commonHtmlAttributes & colHTMLAttributes}
+  ; {tag= "colgroup"; attributes= commonHtmlAttributes & colgroupHTMLAttributes}
+  ; {tag= "data"; attributes= commonHtmlAttributes & dataHTMLAttributes}
+  ; {tag= "datalist"; attributes= commonHtmlAttributes}
+  ; {tag= "dd"; attributes= commonHtmlAttributes}
+  ; {tag= "del"; attributes= commonHtmlAttributes & delHTMLAttributes}
+  ; {tag= "details"; attributes= commonHtmlAttributes & detailsHTMLAttributes}
+  ; {tag= "dfn"; attributes= commonHtmlAttributes}
+  ; {tag= "dialog"; attributes= commonHtmlAttributes & dialogHTMLAttributes}
+  ; {tag= "div"; attributes= commonHtmlAttributes}
+  ; {tag= "dl"; attributes= commonHtmlAttributes}
+  ; {tag= "dt"; attributes= commonHtmlAttributes}
+  ; {tag= "em"; attributes= commonHtmlAttributes}
+  ; {tag= "embed"; attributes= commonHtmlAttributes & embedHTMLAttributes}
+  ; {tag= "fieldset"; attributes= commonHtmlAttributes & fieldsetHTMLAttributes}
+  ; {tag= "figcaption"; attributes= commonHtmlAttributes}
+  ; {tag= "figure"; attributes= commonHtmlAttributes}
+  ; {tag= "footer"; attributes= commonHtmlAttributes}
+  ; {tag= "form"; attributes= commonHtmlAttributes & formHTMLAttributes}
+  ; {tag= "h1"; attributes= commonHtmlAttributes}
+  ; {tag= "h2"; attributes= commonHtmlAttributes}
+  ; {tag= "h3"; attributes= commonHtmlAttributes}
+  ; {tag= "h4"; attributes= commonHtmlAttributes}
+  ; {tag= "h5"; attributes= commonHtmlAttributes}
+  ; {tag= "h6"; attributes= commonHtmlAttributes}
+  ; {tag= "head"; attributes= commonHtmlAttributes}
+  ; {tag= "header"; attributes= commonHtmlAttributes}
+  ; {tag= "hgroup"; attributes= commonHtmlAttributes}
+  ; {tag= "hr"; attributes= commonHtmlAttributes}
+  ; {tag= "html"; attributes= commonHtmlAttributes & htmlHTMLAttributes}
+  ; {tag= "i"; attributes= commonHtmlAttributes}
+  ; {tag= "iframe"; attributes= commonHtmlAttributes & iframeHTMLAttributes}
+  ; {tag= "img"; attributes= commonHtmlAttributes & imgHTMLAttributes}
+  ; {tag= "input"; attributes= commonHtmlAttributes & inputHTMLAttributes}
+  ; {tag= "ins"; attributes= commonHtmlAttributes & insHTMLAttributes}
+  ; {tag= "kbd"; attributes= commonHtmlAttributes & domAttributes}
+  ; {tag= "keygen"; attributes= commonHtmlAttributes & keygenHTMLAttributes}
+  ; {tag= "label"; attributes= commonHtmlAttributes & labelHTMLAttributes}
+  ; {tag= "legend"; attributes= commonHtmlAttributes}
+  ; {tag= "li"; attributes= commonHtmlAttributes & liHTMLAttributes}
+  ; {tag= "link"; attributes= commonHtmlAttributes & linkHTMLAttributes}
+  ; {tag= "main"; attributes= commonHtmlAttributes}
+  ; {tag= "map"; attributes= commonHtmlAttributes & mapHTMLAttributes}
+  ; {tag= "mark"; attributes= commonHtmlAttributes}
+  ; {tag= "menu"; attributes= commonHtmlAttributes & menuHTMLAttributes}
+  ; {tag= "menuitem"; attributes= commonHtmlAttributes}
+  ; {tag= "meta"; attributes= commonHtmlAttributes & metaHTMLAttributes}
+  ; {tag= "meter"; attributes= commonHtmlAttributes & meterHTMLAttributes}
+  ; {tag= "nav"; attributes= commonHtmlAttributes}
+  ; {tag= "noindex"; attributes= commonHtmlAttributes}
+  ; {tag= "noscript"; attributes= commonHtmlAttributes}
+  ; {tag= "object"; attributes= commonHtmlAttributes & objectHTMLAttributes}
+  ; {tag= "ol"; attributes= commonHtmlAttributes & olHTMLAttributes}
+  ; {tag= "optgroup"; attributes= commonHtmlAttributes & optgroupHTMLAttributes}
+  ; {tag= "option"; attributes= commonHtmlAttributes & optionHTMLAttributes}
+  ; {tag= "output"; attributes= commonHtmlAttributes & outputHTMLAttributes}
+  ; {tag= "p"; attributes= commonHtmlAttributes}
+  ; {tag= "param"; attributes= commonHtmlAttributes & paramHTMLAttributes}
+  ; {tag= "picture"; attributes= commonHtmlAttributes}
+  ; {tag= "pre"; attributes= commonHtmlAttributes}
+  ; {tag= "progress"; attributes= commonHtmlAttributes & progressHTMLAttributes}
+  ; {tag= "q"; attributes= commonHtmlAttributes & quoteHTMLAttributes}
+  ; {tag= "rp"; attributes= commonHtmlAttributes}
+  ; {tag= "rt"; attributes= commonHtmlAttributes}
+  ; {tag= "ruby"; attributes= commonHtmlAttributes}
+  ; {tag= "s"; attributes= commonHtmlAttributes}
+  ; {tag= "samp"; attributes= commonHtmlAttributes}
+  ; {tag= "script"; attributes= commonHtmlAttributes & scriptHTMLAttributes}
+  ; {tag= "section"; attributes= commonHtmlAttributes}
+  ; {tag= "select"; attributes= commonHtmlAttributes & selectHTMLAttributes}
+  ; {tag= "slot"; attributes= commonHtmlAttributes & slotHTMLAttributes}
+  ; {tag= "small"; attributes= commonHtmlAttributes}
+  ; {tag= "source"; attributes= commonHtmlAttributes & sourceHTMLAttributes}
+  ; {tag= "span"; attributes= commonHtmlAttributes}
+  ; {tag= "strong"; attributes= commonHtmlAttributes}
+  ; {tag= "style"; attributes= commonHtmlAttributes & styleHTMLAttributes}
+  ; {tag= "sub"; attributes= commonHtmlAttributes}
+  ; {tag= "summary"; attributes= commonHtmlAttributes}
+  ; {tag= "sup"; attributes= commonHtmlAttributes}
+  ; {tag= "table"; attributes= commonHtmlAttributes & tableHTMLAttributes}
+  ; {tag= "tbody"; attributes= commonHtmlAttributes}
+  ; {tag= "td"; attributes= commonHtmlAttributes & tdHTMLAttributes}
+  ; {tag= "template"; attributes= commonHtmlAttributes}
+  ; {tag= "textarea"; attributes= commonHtmlAttributes & textareaHTMLAttributes}
+  ; {tag= "tfoot"; attributes= commonHtmlAttributes}
+  ; {tag= "th"; attributes= commonHtmlAttributes & thHTMLAttributes}
+  ; {tag= "thead"; attributes= commonHtmlAttributes}
+  ; {tag= "time"; attributes= commonHtmlAttributes & timeHTMLAttributes}
+  ; {tag= "title"; attributes= commonHtmlAttributes}
+  ; {tag= "tr"; attributes= commonHtmlAttributes}
+  ; {tag= "track"; attributes= commonHtmlAttributes & trackHTMLAttributes}
+  ; {tag= "u"; attributes= commonHtmlAttributes}
+  ; {tag= "ul"; attributes= commonHtmlAttributes}
+  ; {tag= "var"; attributes= commonHtmlAttributes}
   ; {tag= "video"; attributes= domAttributes & videoHTMLAttributes}
-  ; {tag= "wbr"; attributes= domAttributes & attributesHTML}
-  ; { tag= "webview"
-    ; attributes= domAttributes & attributesHTML & webViewHTMLAttributes } ]
+  ; {tag= "wbr"; attributes= commonHtmlAttributes}
+  ; {tag= "webview"; attributes= commonHtmlAttributes & webViewHTMLAttributes}
+  ]
+
+let commonSvgAttributes =
+  reactAttributes & domAttributes & svgAttributes & ariaAttributes
 
 let svgElements =
-  [ {tag= "svg"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "animate"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; { tag= "animateMotion"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; { tag= "animateTransform"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; {tag= "circle"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "clipPath"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "defs"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "desc"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "ellipse"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "feBlend"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; { tag= "feColorMatrix"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; { tag= "feComponentTransfer"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; { tag= "feComposite"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; { tag= "feConvolveMatrix"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; { tag= "feDiffuseLighting"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; { tag= "feDisplacementMap"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; { tag= "feDistantLight"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; { tag= "feDropShadow"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; {tag= "feFlood"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "feFuncA"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "feFuncB"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "feFuncG"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "feFuncR"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; { tag= "feGaussianBlur"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; {tag= "feImage"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "feMerge"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; { tag= "feMergeNode"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; { tag= "feMorphology"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; {tag= "feOffset"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; { tag= "fePointLight"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; { tag= "feSpecularLighting"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; { tag= "feSpotLight"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; {tag= "feTile"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; { tag= "feTurbulence"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; {tag= "filter"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; { tag= "foreignObject"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; {tag= "g"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "image"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "line"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; { tag= "linearGradient"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; {tag= "marker"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "mask"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "metadata"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "mpath"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "path"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "pattern"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "polygon"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "polyline"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; { tag= "radialGradient"
-    ; attributes= domAttributes & svgAttributes & ariaAttributes }
-  ; {tag= "rect"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "stop"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "switch"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "symbol"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "text"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "textPath"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "tspan"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "use"; attributes= domAttributes & svgAttributes & ariaAttributes}
-  ; {tag= "view"; attributes= domAttributes & svgAttributes & ariaAttributes} ]
+  [ {tag= "svg"; attributes= commonSvgAttributes}
+  ; {tag= "animate"; attributes= commonSvgAttributes}
+  ; {tag= "animateMotion"; attributes= commonSvgAttributes}
+  ; {tag= "animateTransform"; attributes= commonSvgAttributes}
+  ; {tag= "circle"; attributes= commonSvgAttributes}
+  ; {tag= "clipPath"; attributes= commonSvgAttributes}
+  ; {tag= "defs"; attributes= commonSvgAttributes}
+  ; {tag= "desc"; attributes= commonSvgAttributes}
+  ; {tag= "ellipse"; attributes= commonSvgAttributes}
+  ; {tag= "feBlend"; attributes= commonSvgAttributes}
+  ; {tag= "feColorMatrix"; attributes= commonSvgAttributes}
+  ; {tag= "feComponentTransfer"; attributes= commonSvgAttributes}
+  ; {tag= "feComposite"; attributes= commonSvgAttributes}
+  ; {tag= "feConvolveMatrix"; attributes= commonSvgAttributes}
+  ; {tag= "feDiffuseLighting"; attributes= commonSvgAttributes}
+  ; {tag= "feDisplacementMap"; attributes= commonSvgAttributes}
+  ; {tag= "feDistantLight"; attributes= commonSvgAttributes}
+  ; {tag= "feDropShadow"; attributes= commonSvgAttributes}
+  ; {tag= "feFlood"; attributes= commonSvgAttributes}
+  ; {tag= "feFuncA"; attributes= commonSvgAttributes}
+  ; {tag= "feFuncB"; attributes= commonSvgAttributes}
+  ; {tag= "feFuncG"; attributes= commonSvgAttributes}
+  ; {tag= "feFuncR"; attributes= commonSvgAttributes}
+  ; {tag= "feGaussianBlur"; attributes= commonSvgAttributes}
+  ; {tag= "feImage"; attributes= commonSvgAttributes}
+  ; {tag= "feMerge"; attributes= commonSvgAttributes}
+  ; {tag= "feMergeNode"; attributes= commonSvgAttributes}
+  ; {tag= "feMorphology"; attributes= commonSvgAttributes}
+  ; {tag= "feOffset"; attributes= commonSvgAttributes}
+  ; {tag= "fePointLight"; attributes= commonSvgAttributes}
+  ; {tag= "feSpecularLighting"; attributes= commonSvgAttributes}
+  ; {tag= "feSpotLight"; attributes= commonSvgAttributes}
+  ; {tag= "feTile"; attributes= commonSvgAttributes}
+  ; {tag= "feTurbulence"; attributes= commonSvgAttributes}
+  ; {tag= "filter"; attributes= commonSvgAttributes}
+  ; {tag= "foreignObject"; attributes= commonSvgAttributes}
+  ; {tag= "g"; attributes= commonSvgAttributes}
+  ; {tag= "image"; attributes= commonSvgAttributes}
+  ; {tag= "line"; attributes= commonSvgAttributes}
+  ; {tag= "linearGradient"; attributes= commonSvgAttributes}
+  ; {tag= "marker"; attributes= commonSvgAttributes}
+  ; {tag= "mask"; attributes= commonSvgAttributes}
+  ; {tag= "metadata"; attributes= commonSvgAttributes}
+  ; {tag= "mpath"; attributes= commonSvgAttributes}
+  ; {tag= "path"; attributes= commonSvgAttributes}
+  ; {tag= "pattern"; attributes= commonSvgAttributes}
+  ; {tag= "polygon"; attributes= commonSvgAttributes}
+  ; {tag= "polyline"; attributes= commonSvgAttributes}
+  ; {tag= "radialGradient"; attributes= commonSvgAttributes}
+  ; {tag= "rect"; attributes= commonSvgAttributes}
+  ; {tag= "stop"; attributes= commonSvgAttributes}
+  ; {tag= "switch"; attributes= commonSvgAttributes}
+  ; {tag= "symbol"; attributes= commonSvgAttributes}
+  ; {tag= "text"; attributes= commonSvgAttributes}
+  ; {tag= "textPath"; attributes= commonSvgAttributes}
+  ; {tag= "tspan"; attributes= commonSvgAttributes}
+  ; {tag= "use"; attributes= commonSvgAttributes}
+  ; {tag= "view"; attributes= commonSvgAttributes} ]
 
 let elements = svgElements & htmlElements
 
