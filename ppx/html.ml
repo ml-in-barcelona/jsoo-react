@@ -1600,38 +1600,6 @@ let webViewHTMLAttributes =
   ; Attribute {name= "webpreferences"; htmlName= "webpreferences"; type_= String}
   ]
 
-(* Browser Interfaces https://github.com/nikeee/2048-typescript/blob/master/2048/js/touch.d.ts *)
-(* let abstractView = [] *)
-(* {
-       styleMedia: StyleMedia;
-       document: Document;
-   ] *)
-
-(* let touch = [] *)
-(* {
-       identifier: number;
-       target: EventTarget;
-       screenX: number;
-       screenY: number;
-       clientX: number;
-       clientY: number;
-       pageX: number;
-       pageY: number;
-   ]
-*)
-
-(* let touchList = [] *)
-(*
-   [index: number]: Touch;
-   length: number;
-   item(index: number): Touch;
-   identifiedTouch(identifier: number): Touch;
-*)
-
-(* let errorInfo = [] *)
-(* Captures which component contained the exception, and its ancestors. *)
-(* componentStack: string; *)
-
 let htmlElements =
   [ {tag= "a"; attributes= domAttributes & anchorHTMLAttributes & attributesHTML}
   ; {tag= "abbr"; attributes= domAttributes & attributesHTML}
