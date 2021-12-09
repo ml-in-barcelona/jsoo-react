@@ -1,18 +1,3 @@
-// Interfaces
-
-module type Foo = {
-  [@react.component]
-  let make:
-    (
-      ~title: string=?,
-      ~defaultTitle: string=?,
-      ~meta: array(metaField)=?,
-      ~htmlAttributes: array(htmlAttribute)=?,
-      ~children: React.element
-    ) =>
-    React.element;
-};
-
 // Components
 
 [@react.component]
@@ -31,7 +16,7 @@ let make = (~a, ~b, _) => {
 
 module External = {
   [@react.component] [@otherAttribute "bla"]
-  external component: (~a: int, ~b: string, _) => React.element;
+  external component: (~a: int, ~b: string) => React.element;
 };
 
 module Bar = {
@@ -162,5 +147,17 @@ let innerHTML =
 // TODO: fix this test (are these components deprecated??)
 // let nestedElementCustomName = <Foo.component a=1 b="1" />;
 
-// This throws exception (expected)
-// let lowerSpread = value => <lower> ...value </lower>;
+[@react.component]
+let make = (~title, ~children) => {
+  <div> ...{[<span> {title |> s} </span>, ...children]} </div>;
+};
+
+let t = <FancyButton ref=buttonRef> <div /> </FancyButton>;
+
+let t = <button ref className="FancyButton"> ...children </button>;
+
+[@react.component]
+let make =
+  React.Dom.forwardRef((~children, ref) => {
+    <button ref className="FancyButton"> ...children </button>
+  });

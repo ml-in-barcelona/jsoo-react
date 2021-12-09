@@ -75,8 +75,7 @@ let testContext = () => {
   module DummyContext = {
     let context = React.createContext("foo");
     module Provider = {
-      include React.Context;
-      let make = provider(context);
+      let make = React.Context.provider(context);
     };
     module Consumer = {
       [@react.component]
@@ -569,7 +568,7 @@ let testForwardRef = () => {
     [@react.component]
     let make =
       React.Dom.forwardRef((~children, ref) => {
-        <button ref className="FancyButton"> children </button>
+        <button ref className="FancyButton"> ...children </button>
       });
   };
 
@@ -624,7 +623,7 @@ let testChildrenMapWithIndex = () => {
     [@react.component]
     let make = (~children, ()) => {
       <div>
-        {React.Children.mapWithIndex(children, (element, index) => {
+        {React.Children.mapWithIndex(React.list(children), (element, index) => {
            React.cloneElement(
              element,
              Js_of_ocaml.Js.Unsafe.(
@@ -694,6 +693,29 @@ let testFragmentSyntax = () => {
   });
 };
 
+let testNonListChildren = () => {
+  module NonListChildrenComponent = {
+    [@react.component]
+    let make = (~children as (first, second), ()) => {
+      <div> first second </div>;
+    };
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <NonListChildrenComponent>
+          ...(<div> {React.int(1)} </div>, <div> {React.int(3)} </div>)
+        </NonListChildrenComponent>,
+        Html.element(c),
+      )
+    });
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<div><div>1</div><div>3</div></div>"),
+    );
+  });
+};
+
 let testDangerouslySetInnerHTML = () => {
   withContainer(c => {
     act(() => {
@@ -707,6 +729,30 @@ let testDangerouslySetInnerHTML = () => {
       )
     });
     assert_equal(c##.innerHTML, Js.string("<div><lol></lol></div>"));
+  });
+};
+
+let testAliasedChildren = () => {
+  module AliasedChildrenComponent = {
+    [@react.component]
+    let make = (~children as kids, ()) => {
+      <div> ...kids </div>;
+    };
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <AliasedChildrenComponent>
+          <div> {React.int(1)} </div>
+          <div> {React.int(3)} </div>
+        </AliasedChildrenComponent>,
+        Html.element(c),
+      )
+    });
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<div><div>1</div><div>3</div></div>"),
+    );
   });
 };
 
@@ -757,7 +803,13 @@ let refs =
     "useRef" >:: testUseRef,
   ];
 
-let children = "children" >::: ["mapWithIndex" >:: testChildrenMapWithIndex];
+let children =
+  "children"
+  >::: [
+    "mapWithIndex" >:: testChildrenMapWithIndex,
+    "nonListChildren" >:: testNonListChildren,
+    "aliasedChildren" >:: testAliasedChildren,
+  ];
 
 let fragments =
   "fragments"

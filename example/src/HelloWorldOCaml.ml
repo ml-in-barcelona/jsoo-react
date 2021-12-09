@@ -1,2 +1,3 @@
-let make () = (div ~children:[React.string "Hello world from OCaml"] () [@JSX])
-  [@@react.component]
+[@@@react.dom]
+
+let%component make () = div ~children:[React.string "Hello world from OCaml"] ()

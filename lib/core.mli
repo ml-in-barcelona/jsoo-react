@@ -284,7 +284,8 @@ val createRef : unit -> 'a js_nullable Ref.t [@@js.global "React.createRef"]
    Although Reason parser doesn't support it so that's a requirement before adding it here *)
 val createFragment : element list -> element
   [@@js.custom
-    val createFragmentInternal : Ojs.t -> Ojs.t -> element list -> element
+    val createFragmentInternal :
+      Ojs.t -> Ojs.t -> (element list[@js.variadic]) -> element
       [@@js.global "React.createElement"]
 
     val fragmentInternal : Ojs.t [@@js.global "React.Fragment"]
@@ -294,22 +295,8 @@ val createFragment : element list -> element
 module Context : sig
   type 'props t
 
-  val makeProps :
-       value:'props
-    -> children:element
-    -> unit
-    -> < value: 'props ; children: element Js_of_ocaml.Js.readonly_prop >
-       Js_of_ocaml.Js.t
-    [@@js.custom
-      let makeProps ~value ~children () =
-        Js_of_ocaml.Js.Unsafe.(
-          obj [|("value", inject value); ("children", inject children)|])]
-
   val provider :
-       'props t
-    -> < value: 'props ; children: element Js_of_ocaml.Js.readonly_prop >
-       Js_of_ocaml.Js.t
-       component
+    'props t -> value:'props -> children:element list -> unit -> element
     [@@js.custom
       external of_ojs :
            Ojs.t
@@ -319,7 +306,13 @@ module Context : sig
 
       val providerInternal : 'props t -> Ojs.t [@@js.get "Provider"]
 
-      let provider c = of_ojs (providerInternal c)]
+      let makeProps ~value () =
+        Js_of_ocaml.Js.Unsafe.(obj [|("value", inject value)|])
+
+      let provider c ~value ~children () =
+        createElementVariadic
+          (of_ojs (providerInternal c))
+          (makeProps ~value ()) children]
 end
 
 val createContext : 'a -> 'a Context.t [@@js.global "React.createContext"]
@@ -347,23 +340,7 @@ module Children : sig
 end
 
 module Fragment : sig
-  val makeProps :
-       children:element
-    -> ?key:Js_of_ocaml.Js.js_string Js_of_ocaml.Js.t
-    -> unit
-    -> < children: element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
-    [@@js.custom
-      let makeProps ~children ?key () =
-        match key with
-        | Some k ->
-            Js_of_ocaml.Js.Unsafe.(
-              obj [|("key", inject k); ("children", inject children)|])
-        | None ->
-            Js_of_ocaml.Js.Unsafe.(obj [|("children", inject children)|])]
-
-  val make :
-    < children: element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
-    component
+  val make : children:element list -> ?key:string -> unit -> element
     [@@js.custom
       external to_component :
            Ojs.t
@@ -372,7 +349,17 @@ module Fragment : sig
 
       val makeInternal : Ojs.t [@@js.global "React.Fragment"]
 
-      let make = to_component makeInternal]
+      let makeProps ?key () =
+        match key with
+        | Some k ->
+            Js_of_ocaml.Js.Unsafe.(obj [|("key", inject k)|])
+        | None ->
+            Js_of_ocaml.Js.Unsafe.(obj [||])
+
+      let make ~children ?key () =
+        createElementVariadic
+          (to_component makeInternal)
+          (makeProps ?key ()) children]
 end
 
 val memo : 'props component -> 'props component [@@js.global "React.memo"]

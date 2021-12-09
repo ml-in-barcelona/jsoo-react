@@ -3,20 +3,31 @@
  (libraries reason ppxlib jsoo_react_ppx))
 
 (rule
- (targets pp.result)
- (deps test.ml)
+ (targets pp_reason.result)
+ (deps test_reason.ml)
  (action
   (run ./main.exe --impl %{deps} -o %{targets})))
 
 (rule
- (targets test.ml)
- (deps input.re)
+ (targets test_reason.ml)
+ (deps input_reason.re)
  (action
   (with-stdout-to
    %{targets}
    (run refmt --parse=re --print=ml %{deps}))))
 
 (rule
+ (targets pp_ocaml.result)
+ (deps input_ocaml.ml)
+ (action
+  (run ./main.exe --impl %{deps} -o %{targets})))
+
+(rule
  (alias runtest)
  (action
-  (diff pp.expected pp.result)))
+  (diff pp_reason.expected pp_reason.result)))
+
+(rule
+ (alias runtest)
+ (action
+  (diff pp_ocaml.expected pp_ocaml.result)))
