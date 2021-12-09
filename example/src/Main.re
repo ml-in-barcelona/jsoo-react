@@ -57,10 +57,16 @@ let examples = [
     element:
       <Interface
         key="inter"
-        title="jsoo-react PPX can also be used in interface files.">
+        title="jsoo-react PPX is not needed in interface files, as module signatures are the same as the original function, but including the `key` optional param.">
         React.null
       </Interface>,
-    code: <Code text=[%blob "Interface.rei"] />,
+    code:
+      <div>
+        <strong> {"Interface" |> s} </strong>
+        <Code text=[%blob "Interface.rei"] />
+        <strong> {"Implementation" |> s} </strong>
+        <Code text=[%blob "Interface.re"] />
+      </div>,
     showTitle: false,
   },
   {

@@ -1,18 +1,3 @@
-// Interfaces
-
-module type Foo = {
-  [@react.component]
-  let make:
-    (
-      ~title: string=?,
-      ~defaultTitle: string=?,
-      ~meta: array(metaField)=?,
-      ~htmlAttributes: array(htmlAttribute)=?,
-      ~children: React.element
-    ) =>
-    React.element;
-};
-
 // Components
 
 [@react.component]
