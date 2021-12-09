@@ -606,7 +606,7 @@ let innerHTML =
     ~props:(Js_of_ocaml.Js.Unsafe.obj
               [|("dangerouslySetInnerHTML",
                   (Js_of_ocaml.Js.Unsafe.inject
-                     (((React.Dom.createMarkup ~__html:(("<lol></lol>")
+                     (((React.Dom.makeInnerHtml ~__html:(("<lol></lol>")
                           [@reason.raw_literal "<lol></lol>"]))
                      [@reason.preserve_braces ]) : React.Dom.DangerouslySetInnerHTML.t)))|] : 
     React.Dom.domProps) []

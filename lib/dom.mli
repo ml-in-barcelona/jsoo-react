@@ -501,5 +501,5 @@ module DangerouslySetInnerHTML : sig
   type t
 end
 
-val createMarkup : __html:string -> DangerouslySetInnerHTML.t
+val makeInnerHtml : __html:string -> DangerouslySetInnerHTML.t
   [@@js.builder] [@@js.verbatim_names]

@@ -721,7 +721,7 @@ let testDangerouslySetInnerHTML = () => {
     act(() => {
       React.Dom.render(
         <div
-          dangerouslySetInnerHTML={React.Dom.createMarkup(
+          dangerouslySetInnerHTML={React.Dom.makeInnerHtml(
             ~__html="<lol></lol>",
           )}
         />,
