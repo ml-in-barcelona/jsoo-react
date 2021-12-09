@@ -359,8 +359,7 @@ let ariaAttributes =
      * Identifies the element (or elements) that labels the current element.
      * @see aria-describedby.
      *)
-  ; Attribute
-      {name= "ariaLabelledby"; jsxName= "aria-labelledby"; type_= String}
+  ; Attribute {name= "ariaLabelledby"; jsxName= "aria-labelledby"; type_= String}
     (* Defines the hierarchical level of an element within a structure. *)
   ; Attribute {name= "ariaLevel"; jsxName= "aria-level"; type_= Int}
     (* Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect ;rom the live region. *)
@@ -597,16 +596,12 @@ let elementAttributes =
   ; Attribute {name= "placeholder"; jsxName= "placeholder"; type_= String}
   ; Attribute {name= "slot"; jsxName= "slot"; type_= String}
   ; Attribute
-      { name= "spellCheck"
-      ; jsxName= "spellcheck"
-      ; type_= String (* Booleanish *) }
+      {name= "spellCheck"; jsxName= "spellcheck"; type_= String (* Booleanish *)}
   ; Attribute {name= "style"; jsxName= "style"; type_= Style}
   ; Attribute {name= "tabIndex"; jsxName= "tabindex"; type_= Int}
   ; Attribute {name= "title"; jsxName= "title"; type_= String}
   ; Attribute
-      { name= "translate"
-      ; jsxName= "translate"
-      ; type_= String (* 'yes' | 'no' *) }
+      {name= "translate"; jsxName= "translate"; type_= String (* 'yes' | 'no' *)}
   ; Attribute {name= "radioGroup"; jsxName= "radiogroup"; type_= String}
     (* Unknown *)
     (* <command>, <menuitem> *)
@@ -1131,7 +1126,7 @@ let videoHTMLAttributes =
       ; type_= Bool } ]
 
 module SVG = struct
-  let docUrl = "https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/"
+  (* "https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/" *)
 
   let coreAttributes =
     (* https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/Core *)
