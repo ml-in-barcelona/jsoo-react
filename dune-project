@@ -33,12 +33,12 @@
   (js_of_ocaml-ppx :with-test)
   (conf-npm :with-test)
 
-  ;; Dev dependencies
-  (ocamlformat :dev)
-  (reason :dev)
+  ;; Dev dependencies, using with-test so that consumers don't install them (until package is released in opam)
+  (ocamlformat :with-test)
+  (reason :with-test)
 
-  ;; Example dependencies
-  (ppx_blob :dev)
-  (js_of_ocaml-lwt :dev)
+  ;; Example dependencies, using with-test so that consumers don't install them (until package is released in opam)
+  (ppx_blob :with-test)
+  (js_of_ocaml-lwt :with-test)
 
 ))
