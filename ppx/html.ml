@@ -1130,436 +1130,522 @@ let videoHTMLAttributes =
       ; htmlName= "disablepictureinpicture"
       ; type_= Bool } ]
 
-let svgAttributes =
-  [ Attribute {name= "color"; htmlName= "color"; type_= String}
-  ; Attribute {name= "height"; htmlName= "height"; type_= String (* number |  *)}
-  ; Attribute {name= "id"; htmlName= "id"; type_= String}
-  ; Attribute {name= "lang"; htmlName= "lang"; type_= String}
-  ; Attribute {name= "max"; htmlName= "max"; type_= String (* number |  *)}
-  ; Attribute {name= "media"; htmlName= "media"; type_= String}
-  ; Attribute {name= "method"; htmlName= "method"; type_= String}
-  ; Attribute {name= "min"; htmlName= "min"; type_= String (* number |  *)}
-  ; Attribute {name= "name"; htmlName= "name"; type_= String}
-  ; Attribute {name= "style"; htmlName= "style"; type_= Style}
-  ; Attribute {name= "target"; htmlName= "target"; type_= String}
-  ; Attribute {name= "type_"; htmlName= "type"; type_= String}
-  ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
-    (* Other HTML properties supported by SVG elements in browsers *)
-  ; Attribute {name= "role"; htmlName= "role"; type_= ariaRole}
-  ; Attribute {name= "tabIndex"; htmlName= "tabIndex"; type_= Int (* number *)}
-  ; Attribute
-      { name= "crossOrigin"
-      ; htmlName= "crossOrigin"
-      ; type_= String (* "anonymous" | "use-credentials" | "" *) }
-    (* SVG Specific attributes *)
-  ; Attribute
-      { name= "accentHeight"
-      ; htmlName= "accentHeight"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "accumulate"
-      ; htmlName= "accumulate"
-      ; type_= String (* type_= "none" | "sum" *) }
-  ; Attribute
-      { name= "additive"
-      ; htmlName= "additive"
-      ; type_= String (* type_= "replace" | "sum" *) }
-  ; Attribute
-      { name= "alignmentBaseline"
-      ; htmlName= "alignmentBaseline"
-      ; type_=
-          String
-          (* "auto" | "baseline" | "before-edge" | "text-before-edge" | "middle" | "central" | "after-edge" "text-after-edge" | "ideographic" | "alphabetic" | "hanging" | "mathematical" | "inherit" *)
-      }
-  ; Attribute
-      { name= "allowReorder"
-      ; htmlName= "allowReorder"
-      ; type_= String (* type_= "no" | "yes" *) }
-  ; Attribute
-      {name= "alphabetic"; htmlName= "alphabetic"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "amplitude"; htmlName= "amplitude"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "arabicForm"
-      ; htmlName= "arabicForm"
-      ; type_=
-          String (* type_= "initial" | "medial" | "terminal" | "isolated" *) }
-  ; Attribute {name= "ascent"; htmlName= "ascent"; type_= String (* number |  *)}
-  ; Attribute {name= "attributeName"; htmlName= "attributeName"; type_= String}
-  ; Attribute {name= "attributeType"; htmlName= "attributeType"; type_= String}
-  ; Attribute
-      { name= "autoReverse"
-      ; htmlName= "autoReverse"
-      ; type_= String (* Booleanish *) }
-  ; Attribute
-      {name= "azimuth"; htmlName= "azimuth"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "baseProfile"
-      ; htmlName= "baseProfile"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "bbox"; htmlName= "bbox"; type_= String (* number |  *)}
-  ; Attribute {name= "begin"; htmlName= "begin"; type_= String (* number |  *)}
-  ; Attribute {name= "bias"; htmlName= "bias"; type_= String (* number |  *)}
-  ; Attribute {name= "by"; htmlName= "by"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "calcMode"; htmlName= "calcMode"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "capHeight"; htmlName= "capHeight"; type_= String (* number |  *)}
-  ; Attribute {name= "clip"; htmlName= "clip"; type_= String (* number |  *)}
-  ; Attribute {name= "clipPath"; htmlName= "clipPath"; type_= String}
-  ; Attribute
-      { name= "clipRule"
-      ; htmlName= "clipRule"
-      ; type_= (* number | "linearRGB" | "inherit" *) String }
-  ; Attribute
-      { name= "colorProfile"
-      ; htmlName= "colorProfile"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "cursor"; htmlName= "cursor"; type_= String (* number |  *)}
-  ; Attribute {name= "cx"; htmlName= "cx"; type_= String (* number |  *)}
-  ; Attribute {name= "cy"; htmlName= "cy"; type_= String (* number |  *)}
-  ; Attribute {name= "d"; htmlName= "d"; type_= String}
-  ; Attribute
-      {name= "decelerate"; htmlName= "decelerate"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "descent"; htmlName= "descent"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "direction"; htmlName= "direction"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "display"; htmlName= "display"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "divisor"; htmlName= "divisor"; type_= String (* number |  *)}
-  ; Attribute {name= "dur"; htmlName= "dur"; type_= String (* number |  *)}
-  ; Attribute {name= "dx"; htmlName= "dx"; type_= String (* number |  *)}
-  ; Attribute {name= "dy"; htmlName= "dy"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "edgeMode"; htmlName= "edgeMode"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "elevation"; htmlName= "elevation"; type_= String (* number |  *)}
-  ; Attribute {name= "end"; htmlName= "end"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "exponent"; htmlName= "exponent"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "externalResourcesRequired"
-      ; htmlName= "externalResourcesRequired"
-      ; type_= String (* Booleanish *) }
-  ; Attribute {name= "fill"; htmlName= "fill"; type_= String}
-  ; Attribute
-      { name= "fillOpacity"
-      ; htmlName= "fillOpacity"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "fillRule"
-      ; htmlName= "fillRule"
-      ; type_= String (* type_= "nonzero" | "evenodd" | "inherit" *) }
-  ; Attribute {name= "filter"; htmlName= "filter"; type_= String}
-  ; Attribute
-      {name= "filterRes"; htmlName= "filterRes"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "filterUnits"
-      ; htmlName= "filterUnits"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      {name= "floodColor"; htmlName= "floodColor"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "floodOpacity"
-      ; htmlName= "floodOpacity"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "fontFamily"; htmlName= "fontFamily"; type_= String}
-  ; Attribute
-      {name= "fontSize"; htmlName= "fontSize"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "fontStretch"
-      ; htmlName= "fontStretch"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      {name= "fontStyle"; htmlName= "fontStyle"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "fontVariant"
-      ; htmlName= "fontVariant"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      {name= "fontWeight"; htmlName= "fontWeight"; type_= String (* number |  *)}
-  ; Attribute {name= "format"; htmlName= "format"; type_= String (* number |  *)}
-  ; Attribute {name= "fr"; htmlName= "fr"; type_= String (* number |  *)}
-  ; Attribute {name= "from"; htmlName= "from"; type_= String (* number |  *)}
-  ; Attribute {name= "fx"; htmlName= "fx"; type_= String (* number |  *)}
-  ; Attribute {name= "fy"; htmlName= "fy"; type_= String (* number |  *)}
-  ; Attribute {name= "g1"; htmlName= "g1"; type_= String (* number |  *)}
-  ; Attribute {name= "g2"; htmlName= "g2"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "glyphName"; htmlName= "glyphName"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "glyphOrientationHorizontal"
-      ; htmlName= "glyphOrientationHorizontal"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "glyphOrientationVertical"
-      ; htmlName= "glyphOrientationVertical"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      {name= "glyphRef"; htmlName= "glyphRef"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "gradientTransform"; htmlName= "gradientTransform"; type_= String}
-  ; Attribute {name= "gradientUnits"; htmlName= "gradientUnits"; type_= String}
-  ; Attribute
-      {name= "hanging"; htmlName= "hanging"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "horizAdvX"; htmlName= "horizAdvX"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "horizOriginX"
-      ; htmlName= "horizOriginX"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "href"; htmlName= "href"; type_= String}
-  ; Attribute
-      { name= "ideographic"
-      ; htmlName= "ideographic"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "in2"; htmlName= "in2"; type_= String (* number |  *)}
-  ; Attribute {name= "in"; htmlName= "in"; type_= String}
-  ; Attribute
-      {name= "intercept"; htmlName= "intercept"; type_= String (* number |  *)}
-  ; Attribute {name= "k1"; htmlName= "k1"; type_= String (* number |  *)}
-  ; Attribute {name= "k2"; htmlName= "k2"; type_= String (* number |  *)}
-  ; Attribute {name= "k3"; htmlName= "k3"; type_= String (* number |  *)}
-  ; Attribute {name= "k4"; htmlName= "k4"; type_= String (* number |  *)}
-  ; Attribute {name= "k"; htmlName= "k"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "kernelMatrix"
-      ; htmlName= "kernelMatrix"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      {name= "kerning"; htmlName= "kerning"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "keyPoints"; htmlName= "keyPoints"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "keySplines"; htmlName= "keySplines"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "keyTimes"; htmlName= "keyTimes"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "lengthAdjust"
-      ; htmlName= "lengthAdjust"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "local"; htmlName= "local"; type_= String (* number |  *)}
-  ; Attribute {name= "markerEnd"; htmlName= "markerEnd"; type_= String}
-  ; Attribute
-      { name= "markerHeight"
-      ; htmlName= "markerHeight"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "markerMid"; htmlName= "markerMid"; type_= String}
-  ; Attribute {name= "markerStart"; htmlName= "markerStart"; type_= String}
-  ; Attribute
-      { name= "markerUnits"
-      ; htmlName= "markerUnits"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "markerWidth"
-      ; htmlName= "markerWidth"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "mask"; htmlName= "mask"; type_= String}
-  ; Attribute
-      {name= "maskUnits"; htmlName= "maskUnits"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "mathematical"
-      ; htmlName= "mathematical"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "mode"; htmlName= "mode"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "numOctaves"; htmlName= "numOctaves"; type_= String (* number |  *)}
-  ; Attribute {name= "offset"; htmlName= "offset"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "opacity"; htmlName= "opacity"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "operator"; htmlName= "operator"; type_= String (* number |  *)}
-  ; Attribute {name= "order"; htmlName= "order"; type_= String (* number |  *)}
-  ; Attribute {name= "orient"; htmlName= "orient"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "orientation"
-      ; htmlName= "orientation"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "origin"; htmlName= "origin"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "overflow"; htmlName= "overflow"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "paintOrder"; htmlName= "paintOrder"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "panose1"; htmlName= "panose1"; type_= String (* number |  *)}
-  ; Attribute {name= "path"; htmlName= "path"; type_= String}
-  ; Attribute
-      {name= "pathLength"; htmlName= "pathLength"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "patternContentUnits"
-      ; htmlName= "patternContentUnits"
-      ; type_= String }
-  ; Attribute {name= "patternUnits"; htmlName= "patternUnits"; type_= String}
-  ; Attribute {name= "points"; htmlName= "points"; type_= String}
-  ; Attribute
-      {name= "pointsAtX"; htmlName= "pointsAtX"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "pointsAtY"; htmlName= "pointsAtY"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "pointsAtZ"; htmlName= "pointsAtZ"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "preserveAspectRatio"
-      ; htmlName= "preserveAspectRatio"
-      ; type_= String }
-  ; Attribute {name= "r"; htmlName= "r"; type_= String (* number |  *)}
-  ; Attribute {name= "radius"; htmlName= "radius"; type_= String (* number |  *)}
-  ; Attribute {name= "refX"; htmlName= "refX"; type_= String (* number |  *)}
-  ; Attribute {name= "refY"; htmlName= "refY"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "repeatCount"
-      ; htmlName= "repeatCount"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      {name= "repeatDur"; htmlName= "repeatDur"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "restart"; htmlName= "restart"; type_= String (* number |  *)}
-  ; Attribute {name= "result"; htmlName= "result"; type_= String}
-  ; Attribute {name= "rotate"; htmlName= "rotate"; type_= String (* number |  *)}
-  ; Attribute {name= "rx"; htmlName= "rx"; type_= String (* number |  *)}
-  ; Attribute {name= "ry"; htmlName= "ry"; type_= String (* number |  *)}
-  ; Attribute {name= "scale"; htmlName= "scale"; type_= String (* number |  *)}
-  ; Attribute {name= "seed"; htmlName= "seed"; type_= String (* number |  *)}
-  ; Attribute {name= "slope"; htmlName= "slope"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "spacing"; htmlName= "spacing"; type_= String (* number |  *)}
-  ; Attribute {name= "speed"; htmlName= "speed"; type_= String (* number |  *)}
-  ; Attribute {name= "spreadMethod"; htmlName= "spreadMethod"; type_= String}
-  ; Attribute
-      { name= "startOffset"
-      ; htmlName= "startOffset"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "stdDeviation"
-      ; htmlName= "stdDeviation"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "stemh"; htmlName= "stemh"; type_= String (* number |  *)}
-  ; Attribute {name= "stemv"; htmlName= "stemv"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "stitchTiles"
-      ; htmlName= "stitchTiles"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "stopColor"; htmlName= "stopColor"; type_= String}
-  ; Attribute
-      { name= "stopOpacity"
-      ; htmlName= "stopOpacity"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "strikethroughPosition"
-      ; htmlName= "strikethroughPosition"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "strikethroughThickness"
-      ; htmlName= "strikethroughThickness"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "String"; htmlName= "String"; type_= String (* number |  *)}
-  ; Attribute {name= "stroke"; htmlName= "stroke"; type_= String}
-  ; Attribute
-      { name= "strokeLinecap"
-      ; htmlName= "strokeLinecap"
-      ; type_= String (* type_= "butt" | "round" | "square" | "inherit" *) }
-  ; Attribute
-      { name= "strokeWidth"
-      ; htmlName= "strokeWidth"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "surfaceScale"
-      ; htmlName= "surfaceScale"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "tableValues"
-      ; htmlName= "tableValues"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      {name= "targetX"; htmlName= "targetX"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "targetY"; htmlName= "targetY"; type_= String (* number |  *)}
-  ; Attribute {name= "textAnchor"; htmlName= "textAnchor"; type_= String}
-  ; Attribute
-      {name= "textLength"; htmlName= "textLength"; type_= String (* number |  *)}
-  ; Attribute {name= "to"; htmlName= "to"; type_= String (* number |  *)}
-  ; Attribute {name= "transform"; htmlName= "transform"; type_= String}
-  ; Attribute {name= "u1"; htmlName= "u1"; type_= String (* number |  *)}
-  ; Attribute {name= "u2"; htmlName= "u2"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "unicode"; htmlName= "unicode"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "unicodeBidi"
-      ; htmlName= "unicodeBidi"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "unicodeRange"
-      ; htmlName= "unicodeRange"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      {name= "unitsPerEm"; htmlName= "unitsPerEm"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "vAlphabetic"
-      ; htmlName= "vAlphabetic"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "values"; htmlName= "values"; type_= String}
-  ; Attribute
-      { name= "vectorEffect"
-      ; htmlName= "vectorEffect"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "version"; htmlName= "version"; type_= String}
-  ; Attribute
-      {name= "vertAdvY"; htmlName= "vertAdvY"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "vertOriginX"
-      ; htmlName= "vertOriginX"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "vertOriginY"
-      ; htmlName= "vertOriginY"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      {name= "vHanging"; htmlName= "vHanging"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "vIdeographic"
-      ; htmlName= "vIdeographic"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "viewBox"; htmlName= "viewBox"; type_= String}
-  ; Attribute
-      {name= "viewTarget"; htmlName= "viewTarget"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "visibility"; htmlName= "visibility"; type_= String (* number |  *)}
-  ; Attribute {name= "widths"; htmlName= "widths"; type_= String (* number |  *)}
-  ; Attribute
-      { name= "wordSpacing"
-      ; htmlName= "wordSpacing"
-      ; type_= String (* number |  *) }
-  ; Attribute
-      { name= "writingMode"
-      ; htmlName= "writingMode"
-      ; type_= String (* number |  *) }
-  ; Attribute {name= "x1"; htmlName= "x1"; type_= String (* number |  *)}
-  ; Attribute {name= "x2"; htmlName= "x2"; type_= String (* number |  *)}
-  ; Attribute {name= "x"; htmlName= "x"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "xChannelSelector"; htmlName= "xChannelSelector"; type_= String}
-  ; Attribute
-      {name= "xHeight"; htmlName= "xHeight"; type_= String (* number |  *)}
-  ; Attribute {name= "xlinkActuate"; htmlName= "xlinkActuate"; type_= String}
-  ; Attribute {name= "xlinkArcrole"; htmlName= "xlinkArcrole"; type_= String}
-  ; Attribute {name= "xlinkHref"; htmlName= "xlinkHref"; type_= String}
-  ; Attribute {name= "xlinkRole"; htmlName= "xlinkRole"; type_= String}
-  ; Attribute {name= "xlinkShow"; htmlName= "xlinkShow"; type_= String}
-  ; Attribute {name= "xlinkTitle"; htmlName= "xlinkTitle"; type_= String}
-  ; Attribute {name= "xlinkType"; htmlName= "xlinkType"; type_= String}
-  ; Attribute {name= "xmlBase"; htmlName= "xmlBase"; type_= String}
-  ; Attribute {name= "xmlLang"; htmlName= "xmlLang"; type_= String}
-  ; Attribute {name= "xmlns"; htmlName= "xmlns"; type_= String}
-  ; Attribute {name= "xmlnsXlink"; htmlName= "xmlnsXlink"; type_= String}
-  ; Attribute {name= "xmlSpace"; htmlName= "xmlSpace"; type_= String}
-  ; Attribute {name= "y1"; htmlName= "y1"; type_= String (* number |  *)}
-  ; Attribute {name= "y2"; htmlName= "y2"; type_= String (* number |  *)}
-  ; Attribute {name= "y"; htmlName= "y"; type_= String (* number |  *)}
-  ; Attribute
-      {name= "yChannelSelector"; htmlName= "yChannelSelector"; type_= String}
-  ; Attribute {name= "z"; htmlName= "z"; type_= String (* number |  *)}
-  ; Attribute {name= "zoomAndPan"; htmlName= "zoomAndPan"; type_= String} ]
+module SVG = struct
+  let docUrl = "https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/"
+
+  let coreAttributes =
+    (* https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/Core *)
+    [ Attribute {name= "id"; htmlName= "id"; type_= String}
+    ; Attribute {name= "lang"; htmlName= "lang"; type_= String}
+    ; Attribute {name= "tabIndex"; htmlName= "tabIndex"; type_= String}
+    ; Attribute {name= "xmlBase"; htmlName= "xmlBase"; type_= String}
+    ; Attribute {name= "xmlLang"; htmlName= "xmlLang"; type_= String}
+    ; Attribute {name= "xmlSpace"; htmlName= "xmlSpace"; type_= String} ]
+
+  let stylingAttributes =
+    (* https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/Styling *)
+    [ Attribute {name= "className"; htmlName= "className"; type_= String}
+    ; Attribute {name= "style"; htmlName= "style"; type_= Style} ]
+
+  let presentationAttributes =
+    (* Presentation attributes *)
+    [ Attribute {name= "clip"; htmlName= "clip"; type_= String (* number |  *)}
+    ; Attribute {name= "clipPath"; htmlName= "clipPath"; type_= String}
+    ; Attribute
+        {name= "cursor"; htmlName= "cursor"; type_= String (* number |  *)}
+    ; Attribute {name= "fill"; htmlName= "fill"; type_= String}
+    ; Attribute {name= "filter"; htmlName= "filter"; type_= String}
+    ; Attribute {name= "fontFamily"; htmlName= "fontFamily"; type_= String}
+    ; Attribute {name= "letterSpacing"; htmlName= "letterSpacing"; type_= String}
+    ; Attribute {name= "lightingColor"; htmlName= "lightingColor"; type_= String}
+    ; Attribute {name= "markerEnd"; htmlName= "markerEnd"; type_= String}
+    ; Attribute {name= "mask"; htmlName= "mask"; type_= String}
+    ; Attribute {name= "pointerEvents"; htmlName= "pointerEvents"; type_= String}
+    ; Attribute {name= "stopColor"; htmlName= "stopColor"; type_= String}
+    ; Attribute {name= "stroke"; htmlName= "stroke"; type_= String}
+    ; Attribute {name= "textAnchor"; htmlName= "textAnchor"; type_= String}
+    ; Attribute {name= "transform"; htmlName= "transform"; type_= String}
+    ; Attribute
+        {name= "transformOrigin"; htmlName= "transformOrigin"; type_= String}
+    ; Attribute
+        { name= "alignmentBaseline"
+        ; htmlName= "alignmentBaseline"
+        ; type_=
+            String
+            (* "auto" | "baseline" | "before-edge" | "text-before-edge" | "middle" | "central" | "after-edge" "text-after-edge" | "ideographic" | "alphabetic" | "hanging" | "mathematical" | "inherit" *)
+        }
+    ; Attribute
+        { name= "clipRule"
+        ; htmlName= "clipRule"
+        ; type_= (* number | "linearRGB" | "inherit" *) String }
+    ; Attribute
+        { name= "colorProfile"
+        ; htmlName= "colorProfile"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "direction"; htmlName= "direction"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "display"; htmlName= "display"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "divisor"; htmlName= "divisor"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "fillOpacity"
+        ; htmlName= "fillOpacity"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "fillRule"
+        ; htmlName= "fillRule"
+        ; type_= String (* type_= "nonzero" | "evenodd" | "inherit" *) }
+    ; Attribute
+        { name= "floodColor"
+        ; htmlName= "floodColor"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "floodOpacity"
+        ; htmlName= "floodOpacity"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "fontSize"; htmlName= "fontSize"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "fontStretch"
+        ; htmlName= "fontStretch"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "fontStyle"; htmlName= "fontStyle"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "fontVariant"
+        ; htmlName= "fontVariant"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "fontWeight"
+        ; htmlName= "fontWeight"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "glyphOrientationHorizontal"
+        ; htmlName= "glyphOrientationHorizontal"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "glyphOrientationVertical"
+        ; htmlName= "glyphOrientationVertical"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "kerning"; htmlName= "kerning"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "keyPoints"; htmlName= "keyPoints"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "opacity"; htmlName= "opacity"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "operator"; htmlName= "operator"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "overflow"; htmlName= "overflow"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "stopOpacity"
+        ; htmlName= "stopOpacity"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "strokeLinecap"
+        ; htmlName= "strokeLinecap"
+        ; type_= String (* type_= "butt" | "round" | "square" | "inherit" *) }
+    ; Attribute
+        { name= "unicodeBidi"
+        ; htmlName= "unicodeBidi"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "vectorEffect"
+        ; htmlName= "vectorEffect"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "wordSpacing"
+        ; htmlName= "wordSpacing"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "writingMode"
+        ; htmlName= "writingMode"
+        ; type_= String (* number |  *) } ]
+
+  let filtersAttributes =
+    (* https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute#filters_attributes *)
+    [ (* Filter primitive attributes *)
+      Attribute
+        {name= "height"; htmlName= "height"; type_= String (* number |  *)}
+    ; Attribute {name= "width"; htmlName= "width"; type_= String (* number |  *)}
+    ; Attribute {name= "result"; htmlName= "result"; type_= String}
+    ; Attribute {name= "x"; htmlName= "x"; type_= String (* number |  *)}
+    ; Attribute {name= "y"; htmlName= "y"; type_= String (* number |  *)}
+      (* Transfer function attributes
+         type, tableValues, slope, intercept, amplitude, exponent, offset
+      *)
+    ; Attribute {name= "type_"; htmlName= "type"; type_= String}
+    ; Attribute
+        {name= "exponent"; htmlName= "exponent"; type_= String (* number |  *)}
+    ; Attribute {name= "slope"; htmlName= "slope"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "amplitude"; htmlName= "amplitude"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "intercept"; htmlName= "intercept"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "tableValues"
+        ; htmlName= "tableValues"
+        ; type_= String (* number |  *) }
+      (* Animation target element attributes
+         *)
+    ; Attribute {name= "href"; htmlName= "href"; type_= String}
+      (* Animation attribute target attributes*)
+    ; Attribute {name= "attributeName"; htmlName= "attributeName"; type_= String}
+    ; Attribute {name= "attributeType"; htmlName= "attributeType"; type_= String}
+      (* Animation timing attributes
+         begin, dur, end, min, max, restart, repeatCount, repeatDur, fill *)
+    ; Attribute {name= "begin"; htmlName= "begin"; type_= String (* number |  *)}
+    ; Attribute {name= "dur"; htmlName= "dur"; type_= String (* number |  *)}
+    ; Attribute {name= "end"; htmlName= "end"; type_= String (* number |  *)}
+    ; Attribute {name= "max"; htmlName= "max"; type_= String (* number |  *)}
+    ; Attribute {name= "min"; htmlName= "min"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "repeatCount"
+        ; htmlName= "repeatCount"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "restart"; htmlName= "restart"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "repeatDur"; htmlName= "repeatDur"; type_= String (* number |  *)}
+    ; Attribute {name= "fill"; htmlName= "fill"; type_= String}
+      (* Animation value attributes *)
+    ; Attribute
+        {name= "calcMode"; htmlName= "calcMode"; type_= String (* number |  *)}
+    ; Attribute {name= "values"; htmlName= "values"; type_= String}
+    ; Attribute
+        { name= "keySplines"
+        ; htmlName= "keySplines"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "keyTimes"; htmlName= "keyTimes"; type_= String (* number |  *)}
+    ; Attribute {name= "from"; htmlName= "from"; type_= String (* number |  *)}
+    ; Attribute {name= "to"; htmlName= "to"; type_= String (* number |  *)}
+    ; Attribute {name= "by"; htmlName= "by"; type_= String (* number |  *)}
+      (* Animation addition attributes *)
+    ; Attribute
+        { name= "accumulate"
+        ; htmlName= "accumulate"
+        ; type_= String (* type_= "none" | "sum" *) }
+    ; Attribute
+        { name= "additive"
+        ; htmlName= "additive"
+        ; type_= String (* type_= "replace" | "sum" *) } ]
+
+  let htmlAttributes =
+    (* These are valid SVG attributes, that are HTML Attributes as well *)
+    [ Attribute {name= "color"; htmlName= "color"; type_= String}
+    ; Attribute {name= "id"; htmlName= "id"; type_= String}
+    ; Attribute {name= "lang"; htmlName= "lang"; type_= String}
+    ; Attribute {name= "media"; htmlName= "media"; type_= String}
+    ; Attribute {name= "method"; htmlName= "method"; type_= String}
+    ; Attribute {name= "name"; htmlName= "name"; type_= String}
+    ; Attribute {name= "style"; htmlName= "style"; type_= Style}
+    ; Attribute {name= "target"; htmlName= "target"; type_= String}
+      (* Other HTML properties supported by SVG elements in browsers *)
+    ; Attribute {name= "role"; htmlName= "role"; type_= ariaRole}
+    ; Attribute {name= "tabIndex"; htmlName= "tabIndex"; type_= Int (* number *)}
+    ; Attribute
+        { name= "crossOrigin"
+        ; htmlName= "crossOrigin"
+        ; type_= String (* "anonymous" | "use-credentials" | "" *) }
+      (* SVG Specific attributes *)
+    ; Attribute
+        { name= "accentHeight"
+        ; htmlName= "accentHeight"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "allowReorder"
+        ; htmlName= "allowReorder"
+        ; type_= String (* type_= "no" | "yes" *) }
+    ; Attribute
+        { name= "alphabetic"
+        ; htmlName= "alphabetic"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "arabicForm"
+        ; htmlName= "arabicForm"
+        ; type_=
+            String (* type_= "initial" | "medial" | "terminal" | "isolated" *)
+        }
+    ; Attribute
+        {name= "ascent"; htmlName= "ascent"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "autoReverse"
+        ; htmlName= "autoReverse"
+        ; type_= String (* Booleanish *) }
+    ; Attribute
+        {name= "azimuth"; htmlName= "azimuth"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "baseProfile"
+        ; htmlName= "baseProfile"
+        ; type_= String (* number |  *) }
+    ; Attribute {name= "bbox"; htmlName= "bbox"; type_= String (* number |  *)}
+    ; Attribute {name= "bias"; htmlName= "bias"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "capHeight"; htmlName= "capHeight"; type_= String (* number |  *)}
+    ; Attribute {name= "cx"; htmlName= "cx"; type_= String (* number |  *)}
+    ; Attribute {name= "cy"; htmlName= "cy"; type_= String (* number |  *)}
+    ; Attribute {name= "d"; htmlName= "d"; type_= String}
+    ; Attribute
+        { name= "decelerate"
+        ; htmlName= "decelerate"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "descent"; htmlName= "descent"; type_= String (* number |  *)}
+    ; Attribute {name= "dx"; htmlName= "dx"; type_= String (* number |  *)}
+    ; Attribute {name= "dy"; htmlName= "dy"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "edgeMode"; htmlName= "edgeMode"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "elevation"; htmlName= "elevation"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "externalResourcesRequired"
+        ; htmlName= "externalResourcesRequired"
+        ; type_= String (* Booleanish *) }
+    ; Attribute
+        {name= "filterRes"; htmlName= "filterRes"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "filterUnits"
+        ; htmlName= "filterUnits"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "format"; htmlName= "format"; type_= String (* number |  *)}
+    ; Attribute {name= "fr"; htmlName= "fr"; type_= String (* number |  *)}
+    ; Attribute {name= "fx"; htmlName= "fx"; type_= String (* number |  *)}
+    ; Attribute {name= "fy"; htmlName= "fy"; type_= String (* number |  *)}
+    ; Attribute {name= "g1"; htmlName= "g1"; type_= String (* number |  *)}
+    ; Attribute {name= "g2"; htmlName= "g2"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "glyphName"; htmlName= "glyphName"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "glyphRef"; htmlName= "glyphRef"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "gradientTransform"; htmlName= "gradientTransform"; type_= String}
+    ; Attribute {name= "gradientUnits"; htmlName= "gradientUnits"; type_= String}
+    ; Attribute
+        {name= "hanging"; htmlName= "hanging"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "horizAdvX"; htmlName= "horizAdvX"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "horizOriginX"
+        ; htmlName= "horizOriginX"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "ideographic"
+        ; htmlName= "ideographic"
+        ; type_= String (* number |  *) }
+    ; Attribute {name= "in2"; htmlName= "in2"; type_= String (* number |  *)}
+    ; Attribute {name= "in"; htmlName= "in"; type_= String}
+    ; Attribute {name= "k1"; htmlName= "k1"; type_= String (* number |  *)}
+    ; Attribute {name= "k2"; htmlName= "k2"; type_= String (* number |  *)}
+    ; Attribute {name= "k3"; htmlName= "k3"; type_= String (* number |  *)}
+    ; Attribute {name= "k4"; htmlName= "k4"; type_= String (* number |  *)}
+    ; Attribute {name= "k"; htmlName= "k"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "kernelMatrix"
+        ; htmlName= "kernelMatrix"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "limitingConeAngle"; htmlName= "limitingConeAngle"; type_= String}
+    ; Attribute
+        { name= "lengthAdjust"
+        ; htmlName= "lengthAdjust"
+        ; type_= String (* number |  *) }
+    ; Attribute {name= "local"; htmlName= "local"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "markerHeight"
+        ; htmlName= "markerHeight"
+        ; type_= String (* number |  *) }
+    ; Attribute {name= "markerMid"; htmlName= "marker-mid"; type_= String}
+    ; Attribute {name= "markerStart"; htmlName= "marker-start"; type_= String}
+    ; Attribute
+        { name= "markerUnits"
+        ; htmlName= "markerUnits"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "markerWidth"
+        ; htmlName= "markerWidth"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "maskUnits"; htmlName= "maskUnits"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "mathematical"
+        ; htmlName= "mathematical"
+        ; type_= String (* number |  *) }
+    ; Attribute {name= "mode"; htmlName= "mode"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "numOctaves"
+        ; htmlName= "numOctaves"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "offset"; htmlName= "offset"; type_= String (* number |  *)}
+    ; Attribute {name= "order"; htmlName= "order"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "orient"; htmlName= "orient"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "orientation"
+        ; htmlName= "orientation"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "origin"; htmlName= "origin"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "overlineThickness"; htmlName= "overline-thickness"; type_= Int}
+    ; Attribute
+        { name= "paintOrder"
+        ; htmlName= "paint-order"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "panose1"; htmlName= "panose1"; type_= String (* number |  *)}
+    ; Attribute {name= "path"; htmlName= "path"; type_= String}
+    ; Attribute
+        { name= "pathLength"
+        ; htmlName= "pathLength"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "patternContentUnits"
+        ; htmlName= "patternContentUnits"
+        ; type_= String }
+    ; Attribute {name= "patternUnits"; htmlName= "patternUnits"; type_= String}
+    ; Attribute {name= "points"; htmlName= "points"; type_= String}
+    ; Attribute
+        {name= "pointsAtX"; htmlName= "pointsAtX"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "pointsAtY"; htmlName= "pointsAtY"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "pointsAtZ"; htmlName= "pointsAtZ"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "preserveAspectRatio"
+        ; htmlName= "preserveAspectRatio"
+        ; type_= String }
+    ; Attribute {name= "r"; htmlName= "r"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "radius"; htmlName= "radius"; type_= String (* number |  *)}
+    ; Attribute {name= "refX"; htmlName= "refX"; type_= String (* number |  *)}
+    ; Attribute {name= "refY"; htmlName= "refY"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "rotate"; htmlName= "rotate"; type_= String (* number |  *)}
+    ; Attribute {name= "rx"; htmlName= "rx"; type_= String (* number |  *)}
+    ; Attribute {name= "ry"; htmlName= "ry"; type_= String (* number |  *)}
+    ; Attribute {name= "scale"; htmlName= "scale"; type_= String (* number |  *)}
+    ; Attribute {name= "seed"; htmlName= "seed"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "spacing"; htmlName= "spacing"; type_= String (* number |  *)}
+    ; Attribute {name= "speed"; htmlName= "speed"; type_= String (* number |  *)}
+    ; Attribute {name= "spreadMethod"; htmlName= "spreadMethod"; type_= String}
+    ; Attribute
+        { name= "startOffset"
+        ; htmlName= "startOffset"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "stdDeviation"
+        ; htmlName= "stdDeviation"
+        ; type_= String (* number |  *) }
+    ; Attribute {name= "stemh"; htmlName= "stemh"; type_= String (* number |  *)}
+    ; Attribute {name= "stemv"; htmlName= "stemv"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "stitchTiles"
+        ; htmlName= "stitchTiles"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "strikethroughPosition"
+        ; htmlName= "strikethroughPosition"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "strikethroughThickness"
+        ; htmlName= "strikethroughThickness"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "String"; htmlName= "String"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "strokeWidth"
+        ; htmlName= "strokeWidth"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "surfaceScale"
+        ; htmlName= "surfaceScale"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "targetX"; htmlName= "targetX"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "targetY"; htmlName= "targetY"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "textLength"
+        ; htmlName= "textLength"
+        ; type_= String (* number |  *) }
+    ; Attribute {name= "u1"; htmlName= "u1"; type_= String (* number |  *)}
+    ; Attribute {name= "u2"; htmlName= "u2"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "unicode"; htmlName= "unicode"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "unicodeRange"
+        ; htmlName= "unicodeRange"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "unitsPerEm"
+        ; htmlName= "unitsPerEm"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "vAlphabetic"
+        ; htmlName= "vAlphabetic"
+        ; type_= String (* number |  *) }
+    ; Attribute {name= "version"; htmlName= "version"; type_= String}
+    ; Attribute
+        {name= "vertAdvY"; htmlName= "vertAdvY"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "vertOriginX"
+        ; htmlName= "vertOriginX"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "vertOriginY"
+        ; htmlName= "vertOriginY"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "vHanging"; htmlName= "vHanging"; type_= String (* number |  *)}
+    ; Attribute
+        { name= "vIdeographic"
+        ; htmlName= "vIdeographic"
+        ; type_= String (* number |  *) }
+    ; Attribute {name= "viewBox"; htmlName= "viewBox"; type_= String}
+    ; Attribute
+        { name= "viewTarget"
+        ; htmlName= "viewTarget"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        { name= "visibility"
+        ; htmlName= "visibility"
+        ; type_= String (* number |  *) }
+    ; Attribute
+        {name= "widths"; htmlName= "widths"; type_= String (* number |  *)}
+    ; Attribute {name= "x1"; htmlName= "x1"; type_= String (* number |  *)}
+    ; Attribute {name= "x2"; htmlName= "x2"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "xChannelSelector"; htmlName= "xChannelSelector"; type_= String}
+    ; Attribute
+        {name= "xHeight"; htmlName= "xHeight"; type_= String (* number |  *)}
+    ; Attribute {name= "xlinkActuate"; htmlName= "xlinkActuate"; type_= String}
+    ; Attribute {name= "xlinkArcrole"; htmlName= "xlinkArcrole"; type_= String}
+    ; Attribute {name= "xlinkHref"; htmlName= "xlinkHref"; type_= String}
+    ; Attribute {name= "xlinkRole"; htmlName= "xlinkRole"; type_= String}
+    ; Attribute {name= "xlinkShow"; htmlName= "xlinkShow"; type_= String}
+    ; Attribute {name= "xlinkTitle"; htmlName= "xlinkTitle"; type_= String}
+    ; Attribute {name= "xlinkType"; htmlName= "xlinkType"; type_= String}
+    ; Attribute {name= "xmlBase"; htmlName= "xmlBase"; type_= String}
+    ; Attribute {name= "xmlLang"; htmlName= "xmlLang"; type_= String}
+    ; Attribute {name= "xmlns"; htmlName= "xmlns"; type_= String}
+    ; Attribute {name= "xmlnsXlink"; htmlName= "xmlnsXlink"; type_= String}
+    ; Attribute {name= "xmlSpace"; htmlName= "xmlSpace"; type_= String}
+    ; Attribute {name= "y1"; htmlName= "y1"; type_= String (* number |  *)}
+    ; Attribute {name= "y2"; htmlName= "y2"; type_= String (* number |  *)}
+    ; Attribute
+        {name= "yChannelSelector"; htmlName= "yChannelSelector"; type_= String}
+    ; Attribute {name= "z"; htmlName= "z"; type_= String (* number |  *)}
+    ; Attribute {name= "zoomAndPan"; htmlName= "zoomAndPan"; type_= String} ]
+
+  let attributes =
+    htmlAttributes & filtersAttributes & presentationAttributes
+    & stylingAttributes & coreAttributes
+end
 
 let webViewHTMLAttributes =
   [ Attribute {name= "allowFullScreen"; htmlName= "allowfullscreen"; type_= Bool}
@@ -1710,7 +1796,7 @@ let htmlElements =
   ]
 
 let commonSvgAttributes =
-  reactAttributes & domAttributes & svgAttributes & ariaAttributes
+  reactAttributes & domAttributes & SVG.attributes & ariaAttributes
 
 let svgElements =
   [ {tag= "svg"; attributes= commonSvgAttributes}
