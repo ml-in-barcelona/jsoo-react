@@ -18,7 +18,7 @@ type eventType =
   | Pointer
   | Drag
 
-type attribute = {type_: attributeType; name: string; htmlName: string}
+type attribute = {type_: attributeType; name: string; jsxName: string}
 
 type event = {type_: eventType; name: string}
 
@@ -26,6 +26,6 @@ type prop = Attribute of attribute | Event of event
 
 type errors = [`ElementNotFound | `AttributeNotFound]
 
-val getHtmlName : prop -> string
+val getJSXName : prop -> string
 
 val findByName : string -> string -> (prop, errors) result

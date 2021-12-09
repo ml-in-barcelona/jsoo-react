@@ -1022,9 +1022,9 @@ let jsxMapper () =
                 @@ Location.raise_errorf ~loc
                      "prop '%s' isn't a valid prop for a '%s'" name id )
         in
-        let htmlName = Html.getHtmlName prop in
+        let jsxName = Html.getJSXName prop in
         let objectKey =
-          Exp.constant ~loc (Pconst_string (htmlName, loc, None))
+          Exp.constant ~loc (Pconst_string (jsxName, loc, None))
         in
         let objectValue = makeValue ~loc prop value in
         [%expr [%e objectKey], Js_of_ocaml.Js.Unsafe.inject [%e objectValue]]
