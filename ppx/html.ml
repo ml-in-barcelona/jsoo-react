@@ -46,7 +46,8 @@ let attributeAnchorTarget = String
    | Top
    | Custom of String *)
 
-let domAttributes =
+let globalEventHandlers =
+  (* https://developer.mozilla.org/en-US/docs/Web/Events/Event_handlers *)
   [ Event {name= "onCopy"; type_= Clipboard}
   ; Event {name= "onCopyCapture"; type_= Clipboard}
   ; Event {name= "onCut"; type_= Clipboard}
@@ -532,7 +533,7 @@ let ariaRole = String
    | Custom of String *)
 
 let reactAttributes =
-  [ (* React-specific Attributes *)
+  [ (* https://reactjs.org/docs/dom-elements.html *)
     Attribute
       { name= "dangerouslySetInnerHTML"
       ; jsxName= "dangerouslySetInnerHTML"
@@ -554,54 +555,42 @@ let reactAttributes =
       ; jsxName= "suppressHydrationWarning"
       ; type_= Bool } ]
 
-let elementAttributes =
-  [ (* Standard HTML Attributes *)
-    Attribute {name= "accessKey"; jsxName= "accesskey"; type_= String}
-  ; Attribute {name= "contextMenu"; jsxName= "contextmenu"; type_= String}
+let globalAttributes =
+  [ (* https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes *)
+    (* Standard HTML Attributes *)
+    Attribute {name= "accessKey"; jsxName= "accessKey"; type_= String}
+  ; Attribute {name= "autoCapitalize"; jsxName= "autoCapitalize"; type_= String}
+  ; Attribute {name= "contextMenu"; jsxName= "contextMenu"; type_= String}
+  ; Attribute
+      {name= "contentEditable"; jsxName= "contentEditable"; type_= String}
   ; Attribute {name= "dir"; jsxName= "dir"; type_= String}
   ; Attribute
       {name= "draggable"; jsxName= "draggable"; type_= String (* Booleanish *)}
   ; Attribute {name= "hidden"; jsxName= "hidden"; type_= Bool}
   ; Attribute {name= "id"; jsxName= "id"; type_= String}
+  ; Attribute {name= "itemProp"; jsxName= "itemProp"; type_= String}
+  ; Attribute {name= "itemScope"; jsxName= "itemScope"; type_= Bool}
+  ; Attribute {name= "itemType"; jsxName= "itemType"; type_= String}
+  ; Attribute {name= "itemID"; jsxName= "itemID"; type_= String}
+  ; Attribute {name= "itemRef"; jsxName= "itemRef"; type_= String}
   ; Attribute {name= "lang"; jsxName= "lang"; type_= String}
   ; Attribute {name= "placeholder"; jsxName= "placeholder"; type_= String}
+  ; Attribute {name= "part"; jsxName= "part"; type_= String}
+  ; Attribute {name= "nonce"; jsxName= "nonce"; type_= String}
   ; Attribute {name= "slot"; jsxName= "slot"; type_= String}
   ; Attribute
-      {name= "spellCheck"; jsxName= "spellcheck"; type_= String (* Booleanish *)}
+      {name= "spellCheck"; jsxName= "spellCheck"; type_= String (* Booleanish *)}
   ; Attribute {name= "style"; jsxName= "style"; type_= Style}
-  ; Attribute {name= "tabIndex"; jsxName= "tabindex"; type_= Int}
+  ; Attribute {name= "tabIndex"; jsxName= "tabIndex"; type_= Int}
+  ; Attribute {name= "enterKeyHint"; jsxName= "enterKeyHint"; type_= Int}
+    (* data-* attributes are globaly available *)
+    (* Experimental ; Attribute {name= "exportParts"; jsxName= "exportParts"; type_= Int} *)
   ; Attribute {name= "title"; jsxName= "title"; type_= String}
   ; Attribute
       {name= "translate"; jsxName= "translate"; type_= String (* 'yes' | 'no' *)}
-  ; Attribute {name= "radioGroup"; jsxName= "radiogroup"; type_= String}
-    (* Unknown *)
-    (* <command>, <menuitem> *)
-    (* WAI-ARIA *)
-  ; Attribute {name= "role"; jsxName= "role"; type_= ariaRole}
-    (* RDFa Attributes *)
-  ; Attribute {name= "about"; jsxName= "about"; type_= String}
-  ; Attribute {name= "datatype"; jsxName= "datatype"; type_= String}
-  ; Attribute {name= "inlist"; jsxName= "inlist"; type_= String (* any *)}
-  ; Attribute {name= "prefix"; jsxName= "prefix"; type_= String}
-  ; Attribute {name= "property"; jsxName= "property"; type_= String}
-  ; Attribute {name= "resource"; jsxName= "resource"; type_= String}
-  ; Attribute {name= "typeof"; jsxName= "typeof"; type_= String}
-  ; Attribute {name= "vocab"; jsxName= "vocab"; type_= String}
-    (* Non-standard Attributes *)
-  ; Attribute {name= "autoCapitalize"; jsxName= "autocapitalize"; type_= String}
-  ; Attribute {name= "autoCorrect"; jsxName= "autocorrect"; type_= String}
-  ; Attribute {name= "autoSave"; jsxName= "autosave"; type_= String}
-  ; Attribute {name= "color"; jsxName= "color"; type_= String}
-  ; Attribute {name= "itemProp"; jsxName= "itemprop"; type_= String}
-  ; Attribute {name= "itemScope"; jsxName= "itemscope"; type_= Bool}
-  ; Attribute {name= "itemType"; jsxName= "itemtype"; type_= String}
-  ; Attribute {name= "itemID"; jsxName= "itemid"; type_= String}
-  ; Attribute {name= "itemRef"; jsxName= "itemref"; type_= String}
-  ; Attribute {name= "results"; jsxName= "results"; type_= Int}
-  ; Attribute {name= "security"; jsxName= "security"; type_= String}
     (* Living Standard
-     * Hints at the type of data that might be entered by the user while editing the element or its contents
-     * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute *)
+       * Hints at the type of data that might be entered by the user while editing the element or its contents
+       * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute *)
   ; Attribute
       { name= "inputMode"
       ; jsxName= "inputmode"
@@ -613,10 +602,30 @@ let elementAttributes =
         * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is *)
   ; Attribute {name= "is"; jsxName= "is"; type_= String} ]
 
+let elementAttributes =
+  [ Attribute {name= "radioGroup"; jsxName= "radioGroup"; type_= String}
+    (* WAI-ARIA *)
+  ; Attribute {name= "role"; jsxName= "role"; type_= ariaRole}
+    (* RDFa Attributes *)
+  ; Attribute {name= "about"; jsxName= "about"; type_= String}
+  ; Attribute {name= "dataType"; jsxName= "dataType"; type_= String}
+  ; Attribute {name= "inlist"; jsxName= "inlist"; type_= String (* any *)}
+  ; Attribute {name= "prefix"; jsxName= "prefix"; type_= String}
+  ; Attribute {name= "property"; jsxName= "property"; type_= String}
+  ; Attribute {name= "resource"; jsxName= "resource"; type_= String}
+  ; Attribute {name= "typeof"; jsxName= "typeof"; type_= String}
+  ; Attribute {name= "vocab"; jsxName= "vocab"; type_= String}
+    (* Non-standard Attributes *)
+  ; Attribute {name= "autoCorrect"; jsxName= "autoCorrect"; type_= String}
+  ; Attribute {name= "autoSave"; jsxName= "autoSave"; type_= String}
+  ; Attribute {name= "color"; jsxName= "color"; type_= String}
+  ; Attribute {name= "results"; jsxName= "results"; type_= Int}
+  ; Attribute {name= "security"; jsxName= "security"; type_= String} ]
+
 let anchorHTMLAttributes =
   [ Attribute {name= "download"; jsxName= "download"; type_= String (* any; *)}
   ; Attribute {name= "href"; jsxName= "href"; type_= String}
-  ; Attribute {name= "hrefLang"; jsxName= "hreflang"; type_= String}
+  ; Attribute {name= "hrefLang"; jsxName= "hrefLang"; type_= String}
   ; Attribute {name= "media"; jsxName= "media"; type_= String}
   ; Attribute {name= "ping"; jsxName= "ping"; type_= String}
   ; Attribute {name= "rel"; jsxName= "rel"; type_= String}
@@ -624,7 +633,7 @@ let anchorHTMLAttributes =
   ; Attribute {name= "type_"; jsxName= "type"; type_= String}
   ; Attribute
       { name= "referrerPolicy"
-      ; jsxName= "referrerpolicy"
+      ; jsxName= "referrerPolicy"
       ; type_= attributeReferrerPolicy } ]
 
 let areaHTMLAttributes =
@@ -632,11 +641,11 @@ let areaHTMLAttributes =
   ; Attribute {name= "coords"; jsxName= "coords"; type_= String}
   ; Attribute {name= "download"; jsxName= "download"; type_= String (* any *)}
   ; Attribute {name= "href"; jsxName= "href"; type_= String}
-  ; Attribute {name= "hrefLang"; jsxName= "hreflang"; type_= String}
+  ; Attribute {name= "hrefLang"; jsxName= "hrefLang"; type_= String}
   ; Attribute {name= "media"; jsxName= "media"; type_= String}
   ; Attribute
       { name= "referrerPolicy"
-      ; jsxName= "referrerpolicy"
+      ; jsxName= "referrerPolicy"
       ; type_= attributeReferrerPolicy }
   ; Attribute {name= "rel"; jsxName= "rel"; type_= String}
   ; Attribute {name= "shape"; jsxName= "shape"; type_= String}
@@ -653,11 +662,11 @@ let buttonHTMLAttributes =
   [ Attribute {name= "autoFocus"; jsxName= "autofocus"; type_= Bool}
   ; Attribute {name= "disabled"; jsxName= "disabled"; type_= Bool}
   ; Attribute {name= "form"; jsxName= "form"; type_= String}
-  ; Attribute {name= "formAction"; jsxName= "formaction"; type_= String}
-  ; Attribute {name= "formEncType"; jsxName= "formenctype"; type_= String}
-  ; Attribute {name= "formMethod"; jsxName= "formmethod"; type_= String}
-  ; Attribute {name= "formNoValidate"; jsxName= "formnovalidate"; type_= Bool}
-  ; Attribute {name= "formTarget"; jsxName= "formtarget"; type_= String}
+  ; Attribute {name= "formAction"; jsxName= "formAction"; type_= String}
+  ; Attribute {name= "formEncType"; jsxName= "formEncType"; type_= String}
+  ; Attribute {name= "formMethod"; jsxName= "formMethod"; type_= String}
+  ; Attribute {name= "formNoValidate"; jsxName= "formNoValidate"; type_= Bool}
+  ; Attribute {name= "formTarget"; jsxName= "formTarget"; type_= String}
   ; Attribute {name= "name"; jsxName= "name"; type_= String}
   ; Attribute
       { name= "type_"
@@ -693,7 +702,7 @@ let detailsHTMLAttributes =
 
 let delHTMLAttributes =
   [ Attribute {name= "cite"; type_= String; jsxName= "cite"}
-  ; Attribute {name= "dateTime"; type_= String; jsxName= "datetime"} ]
+  ; Attribute {name= "dateTime"; type_= String; jsxName= "dateTime"} ]
 
 let dialogHTMLAttributes =
   [Attribute {name= "open"; jsxName= "open"; type_= Bool}]
@@ -711,13 +720,13 @@ let fieldsetHTMLAttributes =
   ; Attribute {name= "name"; jsxName= "name"; type_= String} ]
 
 let formHTMLAttributes =
-  [ Attribute {name= "acceptCharset"; jsxName= "acceptcharset"; type_= String}
+  [ Attribute {name= "acceptCharset"; jsxName= "acceptCharset"; type_= String}
   ; Attribute {name= "action"; jsxName= "action"; type_= String}
-  ; Attribute {name= "autoComplete"; jsxName= "autocomplete"; type_= String}
-  ; Attribute {name= "encType"; jsxName= "enctype"; type_= String}
+  ; Attribute {name= "autoComplete"; jsxName= "autoComplete"; type_= String}
+  ; Attribute {name= "encType"; jsxName= "encType"; type_= String}
   ; Attribute {name= "method"; jsxName= "method"; type_= String}
   ; Attribute {name= "name"; jsxName= "name"; type_= String}
-  ; Attribute {name= "noValidate"; jsxName= "novalidate"; type_= Bool}
+  ; Attribute {name= "noValidate"; jsxName= "noValidate"; type_= Bool}
   ; Attribute {name= "target"; jsxName= "target"; type_= String} ]
 
 let htmlHTMLAttributes =
@@ -725,28 +734,28 @@ let htmlHTMLAttributes =
 
 let iframeHTMLAttributes =
   [ Attribute {name= "allow"; jsxName= "allow"; type_= String}
-  ; Attribute {name= "allowFullScreen"; jsxName= "allowfullscreen"; type_= Bool}
+  ; Attribute {name= "allowFullScreen"; jsxName= "allowFullScreen"; type_= Bool}
   ; Attribute
-      {name= "allowTransparency"; jsxName= "allowtransparency"; type_= Bool}
+      {name= "allowTransparency"; jsxName= "allowTransparency"; type_= Bool}
   ; (* deprecated *)
     Attribute
       { name= "frameBorder"
-      ; jsxName= "frameborder"
+      ; jsxName= "frameBorder"
       ; type_= String (* number |  *) }
   ; Attribute {name= "height"; jsxName= "height"; type_= String (* number |  *)}
   ; (* deprecated *)
     Attribute
-      {name= "marginHeight"; jsxName= "marginheight"; type_= Int (* number *)}
+      {name= "marginHeight"; jsxName= "marginHeight"; type_= Int (* number *)}
   ; (* deprecated *)
     Attribute
-      {name= "marginWidth"; jsxName= "marginwidth"; type_= Int (* number *)}
+      {name= "marginWidth"; jsxName= "marginWidth"; type_= Int (* number *)}
   ; Attribute {name= "name"; jsxName= "name"; type_= String}
   ; Attribute {name= "sandbox"; jsxName= "sandbox"; type_= String}
   ; (* deprecated *)
     Attribute {name= "scrolling"; jsxName= "scrolling"; type_= String}
   ; Attribute {name= "seamless"; jsxName= "seamless"; type_= Bool}
   ; Attribute {name= "src"; jsxName= "src"; type_= String}
-  ; Attribute {name= "srcDoc"; jsxName= "srcdoc"; type_= String}
+  ; Attribute {name= "srcDoc"; jsxName= "srcDoc"; type_= String}
   ; Attribute {name= "width"; jsxName= "width"; type_= String (* number |  *)}
   ]
 
@@ -754,7 +763,7 @@ let imgHTMLAttributes =
   [ Attribute {name= "alt"; jsxName= "alt"; type_= String}
   ; Attribute
       { name= "crossOrigin"
-      ; jsxName= "crossorigin"
+      ; jsxName= "crossOrigin"
       ; type_= String (* "anonymous" | "use-credentials" | "" *) }
   ; Attribute
       { name= "decoding"
@@ -796,13 +805,13 @@ let inputTypeAttribute = String
         | 'time'
         | 'url'
         | 'week'
-        | (String & {});  *)
+        | (String & {}); *)
 
 let inputHTMLAttributes =
   [ Attribute {name= "accept"; jsxName= "accept"; type_= String}
   ; Attribute {name= "alt"; jsxName= "alt"; type_= String}
-  ; Attribute {name= "autoComplete"; jsxName= "autocomplete"; type_= String}
-  ; Attribute {name= "autoFocus"; jsxName= "autofocus"; type_= Bool}
+  ; Attribute {name= "autoComplete"; jsxName= "autoComplete"; type_= String}
+  ; Attribute {name= "autoFocus"; jsxName= "autoFocus"; type_= Bool}
   ; Attribute
       { name= "capture"
       ; jsxName= "capture"
@@ -811,25 +820,25 @@ let inputHTMLAttributes =
           (* Bool | *)
           (* https://www.w3.org/TR/html-media-capture/ *) }
   ; Attribute {name= "checked"; jsxName= "checked"; type_= Bool}
-  ; Attribute {name= "crossOrigin"; jsxName= "crossorigin"; type_= String}
+  ; Attribute {name= "crossOrigin"; jsxName= "crossOrigin"; type_= String}
   ; Attribute {name= "disabled"; jsxName= "disabled"; type_= Bool}
   ; Attribute {name= "form"; jsxName= "form"; type_= String}
-  ; Attribute {name= "formAction"; jsxName= "formaction"; type_= String}
-  ; Attribute {name= "formEncType"; jsxName= "formenctype"; type_= String}
-  ; Attribute {name= "formMethod"; jsxName= "formmethod"; type_= String}
-  ; Attribute {name= "formNoValidate"; jsxName= "formnovalidate"; type_= Bool}
-  ; Attribute {name= "formTarget"; jsxName= "formtarget"; type_= String}
+  ; Attribute {name= "formAction"; jsxName= "formAction"; type_= String}
+  ; Attribute {name= "formEncType"; jsxName= "formEncType"; type_= String}
+  ; Attribute {name= "formMethod"; jsxName= "formMethod"; type_= String}
+  ; Attribute {name= "formNoValidate"; jsxName= "formNoValidate"; type_= Bool}
+  ; Attribute {name= "formTarget"; jsxName= "formTarget"; type_= String}
   ; Attribute {name= "height"; jsxName= "height"; type_= String (* number |  *)}
   ; Attribute {name= "list"; jsxName= "list"; type_= String}
   ; Attribute {name= "max"; jsxName= "max"; type_= String (* number |  *)}
-  ; Attribute {name= "maxLength"; jsxName= "maxlength"; type_= Int (* number *)}
+  ; Attribute {name= "maxLength"; jsxName= "maxLength"; type_= Int (* number *)}
   ; Attribute {name= "min"; jsxName= "min"; type_= String (* number |  *)}
-  ; Attribute {name= "minLength"; jsxName= "minlength"; type_= Int (* number *)}
+  ; Attribute {name= "minLength"; jsxName= "minLength"; type_= Int (* number *)}
   ; Attribute {name= "multiple"; jsxName= "multiple"; type_= Bool}
   ; Attribute {name= "name"; jsxName= "name"; type_= String}
   ; Attribute {name= "pattern"; jsxName= "pattern"; type_= String}
   ; Attribute {name= "placeholder"; jsxName= "placeholder"; type_= String}
-  ; Attribute {name= "readOnly"; jsxName= "readonly"; type_= Bool}
+  ; Attribute {name= "readOnly"; jsxName= "readOnly"; type_= Bool}
   ; Attribute {name= "required"; jsxName= "required"; type_= Bool}
   ; Attribute {name= "size"; jsxName= "size"; type_= Int (* number *)}
   ; Attribute {name= "src"; jsxName= "src"; type_= String}
@@ -843,17 +852,17 @@ let inputHTMLAttributes =
   ; Event {name= "onChange"; type_= Form} ]
 
 let keygenHTMLAttributes =
-  [ Attribute {name= "autoFocus"; jsxName= "autofocus"; type_= Bool}
+  [ Attribute {name= "autoFocus"; jsxName= "autoFocus"; type_= Bool}
   ; Attribute {name= "challenge"; jsxName= "challenge"; type_= String}
   ; Attribute {name= "disabled"; jsxName= "disabled"; type_= Bool}
   ; Attribute {name= "form"; jsxName= "form"; type_= String}
-  ; Attribute {name= "keyType"; jsxName= "keytype"; type_= String}
-  ; Attribute {name= "keyParams"; jsxName= "keyparams"; type_= String}
+  ; Attribute {name= "keyType"; jsxName= "keyType"; type_= String}
+  ; Attribute {name= "keyParams"; jsxName= "keyParams"; type_= String}
   ; Attribute {name= "name"; jsxName= "name"; type_= String} ]
 
 let labelHTMLAttributes =
   [ Attribute {name= "form"; jsxName= "form"; type_= String}
-  ; Attribute {name= "htmlFor"; jsxName= "htmlfor"; type_= String} ]
+  ; Attribute {name= "htmlFor"; jsxName= "htmlFor"; type_= String} ]
 
 let liHTMLAttributes =
   [ Attribute
@@ -863,16 +872,16 @@ let liHTMLAttributes =
 
 let linkHTMLAttributes =
   [ Attribute {name= "as"; jsxName= "as"; type_= String}
-  ; Attribute {name= "crossOrigin"; jsxName= "crossorigin"; type_= String}
+  ; Attribute {name= "crossOrigin"; jsxName= "crossOrigin"; type_= String}
   ; Attribute {name= "href"; jsxName= "href"; type_= String}
-  ; Attribute {name= "hrefLang"; jsxName= "hreflang"; type_= String}
+  ; Attribute {name= "hrefLang"; jsxName= "hrefLang"; type_= String}
   ; Attribute {name= "integrity"; jsxName= "integrity"; type_= String}
-  ; Attribute {name= "imageSrcSet"; jsxName= "imagesrcset"; type_= String}
+  ; Attribute {name= "imageSrcSet"; jsxName= "imageSrcSet"; type_= String}
   ; Attribute {name= "media"; jsxName= "media"; type_= String}
   ; Attribute {name= "rel"; jsxName= "rel"; type_= String}
   ; Attribute {name= "sizes"; jsxName= "sizes"; type_= String}
   ; Attribute {name= "type_"; jsxName= "type"; type_= String}
-  ; Attribute {name= "charSet"; jsxName= "charset"; type_= String} ]
+  ; Attribute {name= "charSet"; jsxName= "charSet"; type_= String} ]
 
 let mapHTMLAttributes =
   [Attribute {name= "name"; jsxName= "name"; type_= String}]
@@ -881,22 +890,22 @@ let menuHTMLAttributes =
   [Attribute {name= "type_"; jsxName= "type"; type_= String}]
 
 let mediaHTMLAttributes =
-  [ Attribute {name= "autoPlay"; jsxName= "autoplay"; type_= Bool}
+  [ Attribute {name= "autoPlay"; jsxName= "autoPlay"; type_= Bool}
   ; Attribute {name= "controls"; jsxName= "controls"; type_= Bool}
-  ; Attribute {name= "controlsList"; jsxName= "controlslist"; type_= String}
-  ; Attribute {name= "crossOrigin"; jsxName= "crossorigin"; type_= String}
+  ; Attribute {name= "controlsList"; jsxName= "controlsList"; type_= String}
+  ; Attribute {name= "crossOrigin"; jsxName= "crossOrigin"; type_= String}
   ; Attribute {name= "loop"; jsxName= "loop"; type_= Bool}
   ; (* deprecated *)
-    Attribute {name= "mediaGroup"; jsxName= "mediagroup"; type_= String}
+    Attribute {name= "mediaGroup"; jsxName= "mediaGroup"; type_= String}
   ; Attribute {name= "muted"; jsxName= "muted"; type_= Bool}
-  ; Attribute {name= "playsInline"; jsxName= "playsinline"; type_= Bool}
+  ; Attribute {name= "playsInline"; jsxName= "playsInline"; type_= Bool}
   ; Attribute {name= "preload"; jsxName= "preload"; type_= String}
   ; Attribute {name= "src"; jsxName= "src"; type_= String} ]
 
 let metaHTMLAttributes =
-  [ Attribute {name= "charSet"; jsxName= "charset"; type_= String}
+  [ Attribute {name= "charSet"; jsxName= "charSet"; type_= String}
   ; Attribute {name= "content"; jsxName= "content"; type_= String}
-  ; Attribute {name= "httpEquiv"; jsxName= "httpequiv"; type_= String}
+  ; Attribute {name= "httpEquiv"; jsxName= "httpEquiv"; type_= String}
   ; Attribute {name= "name"; jsxName= "name"; type_= String}
   ; Attribute {name= "media"; jsxName= "media"; type_= String} ]
 
@@ -916,13 +925,13 @@ let quoteHTMLAttributes =
   [Attribute {name= "cite"; jsxName= "cite"; type_= String}]
 
 let objectHTMLAttributes =
-  [ Attribute {name= "classID"; jsxName= "classid"; type_= String}
+  [ Attribute {name= "classID"; jsxName= "classID"; type_= String}
   ; Attribute {name= "data"; jsxName= "data"; type_= String}
   ; Attribute {name= "form"; jsxName= "form"; type_= String}
   ; Attribute {name= "height"; jsxName= "height"; type_= String (* number |  *)}
   ; Attribute {name= "name"; jsxName= "name"; type_= String}
   ; Attribute {name= "type_"; jsxName= "type"; type_= String}
-  ; Attribute {name= "useMap"; jsxName= "usemap"; type_= String}
+  ; Attribute {name= "useMap"; jsxName= "useMap"; type_= String}
   ; Attribute {name= "width"; jsxName= "width"; type_= String (* number |  *)}
   ; Attribute {name= "wmode"; jsxName= "wmode"; type_= String} ]
 
@@ -949,7 +958,7 @@ let optionHTMLAttributes =
 
 let outputHTMLAttributes =
   [ Attribute {name= "form"; jsxName= "form"; type_= String}
-  ; Attribute {name= "htmlFor"; jsxName= "htmlfor"; type_= String}
+  ; Attribute {name= "htmlFor"; jsxName= "htmlFor"; type_= String}
   ; Attribute {name= "name"; jsxName= "name"; type_= String} ]
 
 let paramHTMLAttributes =
@@ -972,18 +981,18 @@ let slotHTMLAttributes =
 let scriptHTMLAttributes =
   [ (* deprecated *)
     Attribute {name= "async"; jsxName= "async"; type_= Bool}
-  ; Attribute {name= "charSet"; jsxName= "charset"; type_= String}
-  ; Attribute {name= "crossOrigin"; jsxName= "crossorigin"; type_= String}
+  ; Attribute {name= "charSet"; jsxName= "charSet"; type_= String}
+  ; Attribute {name= "crossOrigin"; jsxName= "crossOrigin"; type_= String}
   ; Attribute {name= "defer"; jsxName= "defer"; type_= Bool}
   ; Attribute {name= "integrity"; jsxName= "integrity"; type_= String}
-  ; Attribute {name= "noModule"; jsxName= "nomodule"; type_= Bool}
+  ; Attribute {name= "noModule"; jsxName= "noModule"; type_= Bool}
   ; Attribute {name= "nonce"; jsxName= "nonce"; type_= String}
   ; Attribute {name= "src"; jsxName= "src"; type_= String}
   ; Attribute {name= "type_"; jsxName= "type"; type_= String} ]
 
 let selectHTMLAttributes =
-  [ Attribute {name= "autoComplete"; jsxName= "autocomplete"; type_= String}
-  ; Attribute {name= "autoFocus"; jsxName= "autofocus"; type_= Bool}
+  [ Attribute {name= "autoComplete"; jsxName= "autoComplete"; type_= String}
+  ; Attribute {name= "autoFocus"; jsxName= "autoFocus"; type_= Bool}
   ; Attribute {name= "disabled"; jsxName= "disabled"; type_= Bool}
   ; Attribute {name= "form"; jsxName= "form"; type_= String}
   ; Attribute {name= "multiple"; jsxName= "multiple"; type_= Bool}
@@ -1001,7 +1010,7 @@ let sourceHTMLAttributes =
   ; Attribute {name= "media"; jsxName= "media"; type_= String}
   ; Attribute {name= "sizes"; jsxName= "sizes"; type_= String}
   ; Attribute {name= "src"; jsxName= "src"; type_= String}
-  ; Attribute {name= "srcSet"; jsxName= "srcset"; type_= String}
+  ; Attribute {name= "srcSet"; jsxName= "srcSet"; type_= String}
   ; Attribute {name= "type_"; jsxName= "type"; type_= String}
   ; Attribute {name= "width"; jsxName= "width"; type_= String (* number |  *)}
   ]
@@ -1015,28 +1024,28 @@ let styleHTMLAttributes =
 let tableHTMLAttributes =
   [ Attribute
       { name= "cellPadding"
-      ; jsxName= "cellpadding"
+      ; jsxName= "cellPadding"
       ; type_= String (* number |  *) }
   ; Attribute
       { name= "cellSpacing"
-      ; jsxName= "cellspacing"
+      ; jsxName= "cellSpacing"
       ; type_= String (* number |  *) }
   ; Attribute {name= "summary"; jsxName= "summary"; type_= String}
   ; Attribute {name= "width"; jsxName= "width"; type_= String (* number |  *)}
   ]
 
 let textareaHTMLAttributes =
-  [ Attribute {name= "autoComplete"; jsxName= "autocomplete"; type_= String}
-  ; Attribute {name= "autoFocus"; jsxName= "autofocus"; type_= Bool}
+  [ Attribute {name= "autoComplete"; jsxName= "autoComplete"; type_= String}
+  ; Attribute {name= "autoFocus"; jsxName= "autoFocus"; type_= String}
   ; Attribute {name= "cols"; jsxName= "cols"; type_= Int (* number *)}
-  ; Attribute {name= "dirName"; jsxName= "dirname"; type_= String}
+  ; Attribute {name= "dirName"; jsxName= "dirName"; type_= String}
   ; Attribute {name= "disabled"; jsxName= "disabled"; type_= Bool}
   ; Attribute {name= "form"; jsxName= "form"; type_= String}
-  ; Attribute {name= "maxLength"; jsxName= "maxlength"; type_= Int (* number *)}
-  ; Attribute {name= "minLength"; jsxName= "minlength"; type_= Int (* number *)}
+  ; Attribute {name= "maxLength"; jsxName= "maxLength"; type_= Int (* number *)}
+  ; Attribute {name= "minLength"; jsxName= "minLength"; type_= Int (* number *)}
   ; Attribute {name= "name"; jsxName= "name"; type_= String}
   ; Attribute {name= "placeholder"; jsxName= "placeholder"; type_= String}
-  ; Attribute {name= "readOnly"; jsxName= "readonly"; type_= Bool}
+  ; Attribute {name= "readOnly"; jsxName= "readOnly"; type_= Bool}
   ; Attribute {name= "required"; jsxName= "required"; type_= Bool}
   ; Attribute {name= "rows"; jsxName= "rows"; type_= Int (* number *)}
   ; Attribute
@@ -1053,7 +1062,7 @@ let tdHTMLAttributes =
       ; type_=
           String (* type_= "left" | "center" | "right" | "justify" | "char" *)
       }
-  ; Attribute {name= "colSpan"; jsxName= "colspan"; type_= Int (* number *)}
+  ; Attribute {name= "colSpan"; jsxName= "colSpan"; type_= Int (* number *)}
   ; Attribute {name= "headers"; jsxName= "headers"; type_= String}
   ; Attribute {name= "rowSpan"; jsxName= "rowspan"; type_= Int (* number *)}
   ; Attribute {name= "scope"; jsxName= "scope"; type_= String}
@@ -1070,9 +1079,9 @@ let thHTMLAttributes =
       { name= "align"
       ; jsxName= "align"
       ; type_= String (* "left" | "center" | "right" | "justify" | "char" *) }
-  ; Attribute {name= "colSpan"; jsxName= "colspan"; type_= Int (* number *)}
+  ; Attribute {name= "colSpan"; jsxName= "colSpan"; type_= Int (* number *)}
   ; Attribute {name= "headers"; jsxName= "headers"; type_= String}
-  ; Attribute {name= "rowSpan"; jsxName= "rowspan"; type_= Int (* number *)}
+  ; Attribute {name= "rowSpan"; jsxName= "rowSpan"; type_= Int (* number *)}
   ; Attribute {name= "scope"; jsxName= "scope"; type_= String}
   ; Attribute {name= "abbr"; jsxName= "abbr"; type_= String} ]
 
@@ -1423,8 +1432,8 @@ module SVG = struct
         { name= "markerHeight"
         ; jsxName= "markerHeight"
         ; type_= String (* number |  *) }
-    ; Attribute {name= "markerMid"; jsxName= "marker-mid"; type_= String}
-    ; Attribute {name= "markerStart"; jsxName= "marker-start"; type_= String}
+    ; Attribute {name= "markerMid"; jsxName= "markerMid"; type_= String}
+    ; Attribute {name= "markerStart"; jsxName= "markerStart"; type_= String}
     ; Attribute
         { name= "markerUnits"
         ; jsxName= "markerUnits"
@@ -1456,10 +1465,10 @@ module SVG = struct
     ; Attribute
         {name= "origin"; jsxName= "origin"; type_= String (* number |  *)}
     ; Attribute
-        {name= "overlineThickness"; jsxName= "overline-thickness"; type_= Int}
+        {name= "overlineThickness"; jsxName= "overlineThickness"; type_= Int}
     ; Attribute
         { name= "paintOrder"
-        ; jsxName= "paint-order"
+        ; jsxName= "paintOrder"
         ; type_= String (* number |  *) }
     ; Attribute
         {name= "panose1"; jsxName= "panose1"; type_= String (* number |  *)}
@@ -1612,31 +1621,32 @@ module SVG = struct
 end
 
 let webViewHTMLAttributes =
-  [ Attribute {name= "allowFullScreen"; jsxName= "allowfullscreen"; type_= Bool}
-  ; Attribute {name= "allowpopups"; jsxName= "allowpopups"; type_= Bool}
-  ; Attribute {name= "autoFocus"; jsxName= "autofocus"; type_= Bool}
-  ; Attribute {name= "autosize"; jsxName= "autosize"; type_= Bool}
-  ; Attribute {name= "blinkfeatures"; jsxName= "blinkfeatures"; type_= String}
+  [ Attribute {name= "allowFullScreen"; jsxName= "allowfullcreen"; type_= Bool}
+  ; Attribute {name= "allowPopups"; jsxName= "allowPopups"; type_= Bool}
+  ; Attribute {name= "autoFocus"; jsxName= "autoFocus"; type_= Bool}
+  ; Attribute {name= "autoSize"; jsxName= "autoSize"; type_= Bool}
+  ; Attribute {name= "blinkFeatures"; jsxName= "blinkFeatures"; type_= String}
   ; Attribute
-      { name= "disableblinkfeatures"
-      ; jsxName= "disableblinkfeatures"
+      { name= "disableBlinkFeatures"
+      ; jsxName= "disableBlinkFeatures"
       ; type_= String }
   ; Attribute
-      {name= "disableguestresize"; jsxName= "disableguestresize"; type_= Bool}
+      {name= "disableGuestResize"; jsxName= "disableGuestResize"; type_= Bool}
   ; Attribute
-      {name= "disablewebsecurity"; jsxName= "disablewebsecurity"; type_= Bool}
-  ; Attribute {name= "guestinstance"; jsxName= "guestinstance"; type_= String}
-  ; Attribute {name= "httpreferrer"; jsxName= "httpreferrer"; type_= String}
-  ; Attribute {name= "nodeintegration"; jsxName= "nodeintegration"; type_= Bool}
+      {name= "disableWebSecurity"; jsxName= "disableWebSecurity"; type_= Bool}
+  ; Attribute {name= "guestInstance"; jsxName= "guestInstance"; type_= String}
+  ; Attribute {name= "httpReferrer"; jsxName= "httpReferrer"; type_= String}
+  ; Attribute {name= "nodeIntegration"; jsxName= "nodeIntegration"; type_= Bool}
   ; Attribute {name= "partition"; jsxName= "partition"; type_= String}
   ; Attribute {name= "plugins"; jsxName= "plugins"; type_= Bool}
   ; Attribute {name= "preload"; jsxName= "preload"; type_= String}
   ; Attribute {name= "src"; jsxName= "src"; type_= String}
-  ; Attribute {name= "useragent"; jsxName= "useragent"; type_= String}
-  ; Attribute {name= "webpreferences"; jsxName= "webpreferences"; type_= String}
+  ; Attribute {name= "userAgent"; jsxName= "userAgent"; type_= String}
+  ; Attribute {name= "webPreferences"; jsxName= "webPreferences"; type_= String}
   ]
 
-let commonHtmlAttributes = domAttributes & elementAttributes & reactAttributes
+let commonHtmlAttributes =
+  elementAttributes & reactAttributes & globalAttributes & globalEventHandlers
 
 let htmlElements =
   [ {tag= "a"; attributes= commonHtmlAttributes & anchorHTMLAttributes}
@@ -1695,7 +1705,7 @@ let htmlElements =
   ; {tag= "img"; attributes= commonHtmlAttributes & imgHTMLAttributes}
   ; {tag= "input"; attributes= commonHtmlAttributes & inputHTMLAttributes}
   ; {tag= "ins"; attributes= commonHtmlAttributes & insHTMLAttributes}
-  ; {tag= "kbd"; attributes= commonHtmlAttributes & domAttributes}
+  ; {tag= "kbd"; attributes= commonHtmlAttributes}
   ; {tag= "keygen"; attributes= commonHtmlAttributes & keygenHTMLAttributes}
   ; {tag= "label"; attributes= commonHtmlAttributes & labelHTMLAttributes}
   ; {tag= "legend"; attributes= commonHtmlAttributes}
@@ -1754,13 +1764,13 @@ let htmlElements =
   ; {tag= "u"; attributes= commonHtmlAttributes}
   ; {tag= "ul"; attributes= commonHtmlAttributes}
   ; {tag= "var"; attributes= commonHtmlAttributes}
-  ; {tag= "video"; attributes= domAttributes & videoHTMLAttributes}
+  ; {tag= "video"; attributes= commonHtmlAttributes & videoHTMLAttributes}
   ; {tag= "wbr"; attributes= commonHtmlAttributes}
   ; {tag= "webview"; attributes= commonHtmlAttributes & webViewHTMLAttributes}
   ]
 
 let commonSvgAttributes =
-  SVG.attributes & reactAttributes & domAttributes & ariaAttributes
+  SVG.attributes & reactAttributes & globalEventHandlers & ariaAttributes
 
 let svgElements =
   [ {tag= "svg"; attributes= commonSvgAttributes}
