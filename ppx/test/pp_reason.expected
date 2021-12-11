@@ -467,19 +467,17 @@ let upperWithProp = Upper.make ~count ()
 let upperWithChild foo = Upper.make ~children:[foo] ()
 let upperWithChildren foo bar = Upper.make ~children:[foo; bar] ()
 let lower =
-  React.Dom.createDOMElementVariadic "lower"
+  React.Dom.createDOMElementVariadic "div"
     ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps) []
 let lowerWithChildAndProps foo =
-  React.Dom.createDOMElementVariadic "lower"
+  React.Dom.createDOMElementVariadic "a"
     ~props:(Js_of_ocaml.Js.Unsafe.obj
-              [|("cols", (Js_of_ocaml.Js.Unsafe.inject (1 : int)));("href",
-                                                                    (Js_of_ocaml.Js.Unsafe.inject
-                                                                    (Js_of_ocaml.Js.string
-                                                                    ((("https://example.com")
-                                                                    [@reason.raw_literal
-                                                                    "https://example.com"]) : 
-                                                                    string))))|] : 
-    React.Dom.domProps) [foo]
+              [|("tabIndex", (Js_of_ocaml.Js.Unsafe.inject (1 : int)));
+                ("href",
+                  (Js_of_ocaml.Js.Unsafe.inject
+                     (Js_of_ocaml.Js.string ((("https://example.com")
+                        [@reason.raw_literal "https://example.com"]) : 
+                        string))))|] : React.Dom.domProps) [foo]
 let lowerWithChildren foo bar =
   React.Dom.createDOMElementVariadic "lower"
     ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps) [foo; bar]
@@ -756,3 +754,75 @@ let make =
       fun ?ref ->
         fun () ->
           React.createElement make (make_props ?ref ?key ~children ())
+let testAttributes =
+  React.Dom.createDOMElementVariadic "div"
+    ~props:(Js_of_ocaml.Js.Unsafe.obj
+              [|("translate",
+                  (Js_of_ocaml.Js.Unsafe.inject
+                     (Js_of_ocaml.Js.string ((("yes")
+                        [@reason.raw_literal "yes"]) : string))))|] : 
+    React.Dom.domProps)
+    [React.Dom.createDOMElementVariadic "picture"
+       ~props:(Js_of_ocaml.Js.Unsafe.obj
+                 [|("id",
+                     (Js_of_ocaml.Js.Unsafe.inject
+                        (Js_of_ocaml.Js.string ((("idpicture")
+                           [@reason.raw_literal "idpicture"]) : string))))|] : 
+       React.Dom.domProps)
+       [React.Dom.createDOMElementVariadic "img"
+          ~props:(Js_of_ocaml.Js.Unsafe.obj
+                    [|("src",
+                        (Js_of_ocaml.Js.Unsafe.inject
+                           (Js_of_ocaml.Js.string ((("picture/img.png")
+                              [@reason.raw_literal "picture/img.png"]) : 
+                              string))));("alt",
+                                           (Js_of_ocaml.Js.Unsafe.inject
+                                              (Js_of_ocaml.Js.string
+                                                 ((("test picture/img.png")
+                                                 [@reason.raw_literal
+                                                   "test picture/img.png"]) : 
+                                                 string))));("id",
+                                                              (Js_of_ocaml.Js.Unsafe.inject
+                                                                 (Js_of_ocaml.Js.string
+                                                                    ((("idimg")
+                                                                    [@reason.raw_literal
+                                                                    "idimg"]) : 
+                                                                    string))))|] : 
+          React.Dom.domProps) [];
+       React.Dom.createDOMElementVariadic "source"
+         ~props:(Js_of_ocaml.Js.Unsafe.obj
+                   [|("type",
+                       (Js_of_ocaml.Js.Unsafe.inject
+                          (Js_of_ocaml.Js.string ((("image/webp")
+                             [@reason.raw_literal "image/webp"]) : string))));
+                     ("src",
+                       (Js_of_ocaml.Js.Unsafe.inject
+                          (Js_of_ocaml.Js.string ((("picture/img1.webp")
+                             [@reason.raw_literal "picture/img1.webp"]) : 
+                             string))))|] : React.Dom.domProps) [];
+       React.Dom.createDOMElementVariadic "source"
+         ~props:(Js_of_ocaml.Js.Unsafe.obj
+                   [|("type",
+                       (Js_of_ocaml.Js.Unsafe.inject
+                          (Js_of_ocaml.Js.string ((("image/jpeg")
+                             [@reason.raw_literal "image/jpeg"]) : string))));
+                     ("src",
+                       (Js_of_ocaml.Js.Unsafe.inject
+                          (Js_of_ocaml.Js.string ((("picture/img2.jpg")
+                             [@reason.raw_literal "picture/img2.jpg"]) : 
+                             string))))|] : React.Dom.domProps) []]]
+let randomElement =
+  React.Dom.createDOMElementVariadic "text"
+    ~props:(Js_of_ocaml.Js.Unsafe.obj
+              [|("dx",
+                  (Js_of_ocaml.Js.Unsafe.inject
+                     (Js_of_ocaml.Js.string ((("1 2")
+                        [@reason.raw_literal "1 2"]) : string))));("dy",
+                                                                    (
+                                                                    Js_of_ocaml.Js.Unsafe.inject
+                                                                    (Js_of_ocaml.Js.string
+                                                                    ((("3 4")
+                                                                    [@reason.raw_literal
+                                                                    "3 4"]) : 
+                                                                    string))))|] : 
+    React.Dom.domProps) []

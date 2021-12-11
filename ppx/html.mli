@@ -15,13 +15,17 @@ type eventType =
   | Image
   | Animation
   | Transition
+  | Pointer
+  | Drag
 
-type attribute = {type_: attributeType; name: string; htmlName: string}
+type attribute = {type_: attributeType; name: string; jsxName: string}
 
 type event = {type_: eventType; name: string}
 
 type prop = Attribute of attribute | Event of event
 
-val getHtmlName : prop -> string
+type errors = [`ElementNotFound | `AttributeNotFound]
 
-val findByName : string -> prop option
+val getJSXName : prop -> string
+
+val findByName : string -> string -> (prop, errors) result
