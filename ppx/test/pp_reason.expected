@@ -826,3 +826,105 @@ let randomElement =
                                                                     "3 4"]) : 
                                                                     string))))|] : 
     React.Dom.domProps) []
+let make =
+  let make_props
+    : name:'name ->
+        ?isDisabled:'isDisabled ->
+          ?onClick:'onClick ->
+            ?key:string ->
+              unit ->
+                <
+                  name: 'name Js_of_ocaml.Js.readonly_prop  ;isDisabled: 
+                                                               'isDisabled
+                                                                 option
+                                                                 Js_of_ocaml.Js.readonly_prop
+                                                                ;onClick: 
+                                                                   'onClick
+                                                                    option
+                                                                    Js_of_ocaml.Js.readonly_prop
+                                                                     > 
+                  Js_of_ocaml.Js.t
+    =
+    fun ~name ->
+      fun ?isDisabled ->
+        fun ?onClick ->
+          fun ?key ->
+            fun () ->
+              let open Js_of_ocaml.Js.Unsafe in
+                obj
+                  ((([|(Option.map
+                          (fun raw ->
+                             ("key", (inject (Js_of_ocaml.Js.string raw))))
+                          key);(Option.map
+                                  (fun raw -> ("onClick", (inject raw)))
+                                  onClick);(Option.map
+                                              (fun raw ->
+                                                 ("isDisabled", (inject raw)))
+                                              isDisabled);(Some
+                                                             ("name",
+                                                               (inject name)))|]
+                       |> Array.to_list)
+                      |> (List.filter_map (fun x -> x)))
+                     |> Array.of_list) in
+  let make =
+    ((fun ~name ->
+        ((fun ?isDisabled ->
+            ((fun ?onClick ->
+                ((React.Dom.createDOMElementVariadic "button"
+                    ~props:(Js_of_ocaml.Js.Unsafe.obj
+                              [|("name",
+                                  (Js_of_ocaml.Js.Unsafe.inject
+                                     (Js_of_ocaml.Js.string (name : string))));
+                                ("onClick",
+                                  (Js_of_ocaml.Js.Unsafe.inject
+                                     (Js_of_ocaml.Js.Optdef.option
+                                        (onClick : (React.Event.Mouse.t ->
+                                                      unit)
+                                                     option))));("disabled",
+                                                                  (Js_of_ocaml.Js.Unsafe.inject
+                                                                    (isDisabled : 
+                                                                    bool)))|] : 
+                    React.Dom.domProps) [])
+                [@reason.preserve_braces ]))
+            [@warning "-16"]))
+        [@warning "-16"]))
+    [@warning "-16"]) in
+  let make
+    (Props :
+      <
+        name: 'name Js_of_ocaml.Js.readonly_prop  ;isDisabled: 'isDisabled
+                                                                 option
+                                                                 Js_of_ocaml.Js.readonly_prop
+                                                      ;onClick: 'onClick
+                                                                  option
+                                                                  Js_of_ocaml.Js.readonly_prop
+                                                           > 
+        Js_of_ocaml.Js.t)
+    =
+    make
+      ?onClick:(fun (type res) -> fun (type a0) ->
+                  fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                    fun
+                      (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                      -> (Js_of_ocaml.Js.Unsafe.get a0 "onClick" : res)
+                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#onClick))
+      ?isDisabled:(fun (type res) -> fun (type a0) ->
+                     fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                       fun
+                         (_ :
+                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                         -> (Js_of_ocaml.Js.Unsafe.get a0 "isDisabled" : 
+                         res) (Props : < .. >  Js_of_ocaml.Js.t)
+                     (fun x -> x#isDisabled))
+      ~name:(fun (type res) -> fun (type a0) ->
+               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                 fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                   -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
+               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
+  fun ~name ->
+    fun ?isDisabled ->
+      fun ?onClick ->
+        fun ?key ->
+          fun () ->
+            React.createElement make
+              (make_props ?key ?onClick ?isDisabled ~name ())
