@@ -172,3 +172,8 @@ let testAttributes =
   </div>;
 
 let randomElement = <text dx="1 2" dy="3 4" />;
+
+[@react.component]
+let make = (~name, ~isDisabled=?, ~onClick=?) => {
+  <button name ?onClick disabled=isDisabled />
+}
