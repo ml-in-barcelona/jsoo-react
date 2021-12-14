@@ -1,0 +1,4 @@
+[1mFile "element_attribute_error.ml", line 3, characters 24-38[0m:
+3 | let%component make () = div ~lola:1 ()
+                            [1;31m^^^^^^^^^^^^^^[0m
+[1;31mError[0m: prop 'lola' isn't a valid prop for a 'div'
