@@ -19,12 +19,12 @@
 (rule
  (targets element_attribute_error.actual)
  (deps
-  (:pp ./main.exe)
+  (:main ./main.exe)
   (:input element_attribute_error.ml))
  (action
   (with-stderr-to
    %{targets}
-   (bash "! ./%{pp} %{input}"))))
+   (bash "! ./%{main} %{input}"))))
 
 (rule
  (targets pp_ocaml.result)
