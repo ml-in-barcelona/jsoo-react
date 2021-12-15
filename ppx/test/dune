@@ -17,7 +17,7 @@
    (run refmt --parse=re --print=ml %{deps}))))
 
 (rule
- (targets element_attribute_error.actual)
+ (targets element_attribute_error.result)
  (deps
   (:main ./main.exe)
   (:input element_attribute_error.ml))
@@ -38,4 +38,4 @@
   (progn
    (diff pp_reason.expected pp_reason.result)
    (diff pp_ocaml.expected pp_ocaml.result)
-   (diff element_attribute_error.expected element_attribute_error.actual))))
+   (diff element_attribute_error.expected element_attribute_error.result))))
