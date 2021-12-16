@@ -24,7 +24,7 @@
  (action
   (with-stderr-to
    %{targets}
-   (bash "! ./%{main} %{input}"))))
+   (system "! ./%{main} %{input}"))))
 
 (rule
  (targets pp_ocaml.result)
