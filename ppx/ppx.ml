@@ -62,6 +62,9 @@ let labelled str = Labelled str
 let getLabel str =
   match str with Optional str | Labelled str -> str | Nolabel -> ""
 
+let isOptional str =
+  match str with Optional _ -> true | Labelled _ -> false | Nolabel -> false
+
 let optionIdent = Lident "option"
 
 let dom_tags =
@@ -434,64 +437,110 @@ let rec makeFunsForMakePropsBody list args =
   | [] ->
       args
 
-let makeAttributeValue ~loc (type_ : Html.attributeType) value =
-  match type_ with
-  | String ->
+let makeAttributeValue ~loc ~isOptional (type_ : Html.attributeType) value =
+  match (type_, isOptional) with
+  | String, true ->
+      [%expr Js_of_ocaml.Js.string ([%e value] : string option)]
+  | String, false ->
       [%expr Js_of_ocaml.Js.string ([%e value] : string)]
-  | Int ->
+  | Int, false ->
       [%expr ([%e value] : int)]
-  | Float ->
+  | Int, true ->
+      [%expr ([%e value] : int option)]
+  | Float, false ->
       [%expr ([%e value] : float)]
-  | Bool ->
+  | Float, true ->
+      [%expr ([%e value] : float option)]
+  | Bool, false ->
       [%expr ([%e value] : bool)]
-  | Style ->
+  | Bool, true ->
+      [%expr ([%e value] : bool option)]
+  | Style, false ->
       [%expr ([%e value] : React.Dom.Style.t)]
-  | Ref ->
+  | Style, true ->
+      [%expr ([%e value] : React.Dom.Style.t option)]
+  | Ref, false ->
       [%expr ([%e value] : React.Dom.domRef)]
-  | InnerHtml ->
+  | Ref, true ->
+      [%expr ([%e value] : React.Dom.domRef option)]
+  | InnerHtml, false ->
       [%expr ([%e value] : React.Dom.DangerouslySetInnerHTML.t)]
+  | InnerHtml, true ->
+      [%expr ([%e value] : React.Dom.DangerouslySetInnerHTML.t option)]
 
-let makeEventValue ~loc (type_ : Html.eventType) value =
-  match type_ with
-  | Clipboard ->
+let makeEventValue ~loc ~isOptional (type_ : Html.eventType) value =
+  match (type_, isOptional) with
+  | Clipboard, false ->
       [%expr ([%e value] : React.Event.Clipboard.t -> unit)]
-  | Composition ->
+  | Clipboard, true ->
+      [%expr ([%e value] : (React.Event.Clipboard.t -> unit) option)]
+  | Composition, false ->
       [%expr ([%e value] : React.Event.Composition.t -> unit)]
-  | Keyboard ->
+  | Composition, true ->
+      [%expr ([%e value] : (React.Event.Composition.t -> unit) option)]
+  | Keyboard, false ->
       [%expr ([%e value] : React.Event.Keyboard.t -> unit)]
-  | Focus ->
+  | Keyboard, true ->
+      [%expr ([%e value] : (React.Event.Keyboard.t -> unit) option)]
+  | Focus, false ->
       [%expr ([%e value] : React.Event.Focus.t -> unit)]
-  | Form ->
+  | Focus, true ->
+      [%expr ([%e value] : (React.Event.Focus.t -> unit) option)]
+  | Form, false ->
       [%expr ([%e value] : React.Event.Form.t -> unit)]
-  | Mouse ->
+  | Form, true ->
+      [%expr ([%e value] : (React.Event.Form.t -> unit) option)]
+  | Mouse, false ->
       [%expr ([%e value] : React.Event.Mouse.t -> unit)]
-  | Selection ->
+  | Mouse, true ->
+      [%expr ([%e value] : (React.Event.Mouse.t -> unit) option)]
+  | Selection, false ->
       [%expr ([%e value] : React.Event.Selection.t -> unit)]
-  | Touch ->
+  | Selection, true ->
+      [%expr ([%e value] : (React.Event.Selection.t -> unit) option)]
+  | Touch, false ->
       [%expr ([%e value] : React.Event.Touch.t -> unit)]
-  | UI ->
+  | Touch, true ->
+      [%expr ([%e value] : (React.Event.Touch.t -> unit) option)]
+  | UI, false ->
       [%expr ([%e value] : React.Event.UI.t -> unit)]
-  | Wheel ->
+  | UI, true ->
+      [%expr ([%e value] : (React.Event.UI.t -> unit) option)]
+  | Wheel, false ->
       [%expr ([%e value] : React.Event.Wheel.t -> unit)]
-  | Media ->
+  | Wheel, true ->
+      [%expr ([%e value] : (React.Event.Wheel.t -> unit) option)]
+  | Media, false ->
       [%expr ([%e value] : React.Event.Media.t -> unit)]
-  | Image ->
+  | Media, true ->
+      [%expr ([%e value] : (React.Event.Media.t -> unit) option)]
+  | Image, false ->
       [%expr ([%e value] : React.Event.Image.t -> unit)]
-  | Animation ->
+  | Image, true ->
+      [%expr ([%e value] : (React.Event.Image.t -> unit) option)]
+  | Animation, false ->
       [%expr ([%e value] : React.Event.Animation.t -> unit)]
-  | Transition ->
+  | Animation, true ->
+      [%expr ([%e value] : (React.Event.Animation.t -> unit) option)]
+  | Transition, false ->
       [%expr ([%e value] : React.Event.Transition.t -> unit)]
-  | Pointer ->
+  | Transition, true ->
+      [%expr ([%e value] : (React.Event.Transition.t -> unit) option)]
+  | Pointer, false ->
       [%expr ([%e value] : React.Event.Syntetic.t -> unit)]
-  | Drag ->
+  | Pointer, true ->
+      [%expr ([%e value] : (React.Event.Syntetic.t -> unit) option)]
+  | Drag, false ->
       [%expr ([%e value] : React.Event.Syntetic.t -> unit)]
+  | Drag, true ->
+      [%expr ([%e value] : (React.Event.Syntetic.t -> unit) option)]
 
-let makeValue ~loc prop value =
+let makeValue ~loc ~isOptional prop value =
   match prop with
   | Html.Attribute attribute ->
-      makeAttributeValue ~loc attribute.type_ value
+      makeAttributeValue ~loc ~isOptional attribute.type_ value
   | Html.Event event ->
-      makeEventValue ~loc event.type_ value
+      makeEventValue ~loc ~isOptional event.type_ value
 
 let makeJsObj ~loc named_arg_list_with_key_and_ref =
   let open Str_label in
@@ -1008,6 +1057,7 @@ let jsxMapper () =
       let labeledProps = List.filter isLabeledArg nonChildrenProps in
       let makePropField (arg_label, value) =
         let loc = callLoc in
+        let isOptional = isOptional arg_label in
         let name = getLabel arg_label in
         let prop =
           match Html.findByName id name with
@@ -1026,8 +1076,16 @@ let jsxMapper () =
         let objectKey =
           Exp.constant ~loc (Pconst_string (jsxName, loc, None))
         in
-        let objectValue = makeValue ~loc prop value in
-        [%expr [%e objectKey], Js_of_ocaml.Js.Unsafe.inject [%e objectValue]]
+        let objectValue = makeValue ~isOptional ~loc prop value in
+        match isOptional with
+        | true ->
+            [%expr
+              [%e objectKey]
+              , Js_of_ocaml.Js.Unsafe.inject
+                  (Js_of_ocaml.Js.Optdef.option [%e objectValue])]
+        | false ->
+            [%expr
+              [%e objectKey], Js_of_ocaml.Js.Unsafe.inject [%e objectValue]]
       in
       let propsObj =
         [%expr
