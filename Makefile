@@ -23,7 +23,7 @@ dev: ## Build in watch mode
 	$(DUNE) build -w @@default
 
 test: ## Run the unit tests
-	$(DUNE) build @runtest --no-buffer
+	$(DUNE) build @runtest --diff-command "git --no-pager diff --no-index --color=never -u --minimal"
 
 test-promote: ## Updates snapshots and promotes it to correct
 	$(DUNE) build @runtest --auto-promote
