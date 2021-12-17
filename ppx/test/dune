@@ -17,6 +17,17 @@
    (run refmt --parse=re --print=ml %{deps}))))
 
 (rule
+ (alias error-msg)
+ (targets element_attribute_error.result)
+ (deps
+  (:main ./main.exe)
+  (:input element_attribute_error.ml))
+ (action
+  (with-stderr-to
+   %{targets}
+   (bash "! ./%{main} %{input}"))))
+
+(rule
  (targets pp_ocaml.result)
  (deps input_ocaml.ml)
  (action
@@ -25,9 +36,6 @@
 (rule
  (alias runtest)
  (action
-  (diff pp_reason.expected pp_reason.result)))
-
-(rule
- (alias runtest)
- (action
-  (diff pp_ocaml.expected pp_ocaml.result)))
+  (progn
+   (diff pp_reason.expected pp_reason.result)
+   (diff pp_ocaml.expected pp_ocaml.result))))
