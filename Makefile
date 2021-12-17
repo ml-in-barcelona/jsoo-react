@@ -23,17 +23,10 @@ dev: ## Build in watch mode
 	$(DUNE) build -w @@default
 
 test: ## Run the unit tests
-	$(DUNE) build @runtest
+	$(DUNE) build @runtest --diff-command "git --no-pager diff --no-index --color=never -u --minimal"
 
 test-promote: ## Updates snapshots and promotes it to correct
-	$(DUNE) build @runtest
-
-# This is a separate command to run this tests conditionaly on CI, currently the dune setup with (bash "! ./%{main} %{input}")) fails in Windows. We skip it on Windows.
-test-error-msg: ## Run the unit tests for error messages
-	$(DUNE) build @error-msg --diff-command "git --no-pager diff --no-index --color=never -u --minimal"
-
-test-error-msg-promote: ## Update snapshots and promotes it to correct only the unit tests for error messages
-	$(DUNE) build @error-msg --diff-command "git --no-pager diff --no-index --color=never -u --minimal"
+	$(DUNE) build @runtest --diff-command "git --no-pager diff --no-index --color=never -u --minimal"
 
 deps: $(opam_file) ## Alias to update the opam file and install the needed deps
 

@@ -25,7 +25,9 @@
  (action
   (with-stderr-to
    %{targets}
-   (bash "! ./%{main} %{input}"))))
+   (with-accepted-exit-codes
+    1
+    (system "./%{main} %{input}")))))
 
 (rule
  (targets pp_ocaml.result)
@@ -38,4 +40,5 @@
  (action
   (progn
    (diff pp_reason.expected pp_reason.result)
-   (diff pp_ocaml.expected pp_ocaml.result))))
+   (diff pp_ocaml.expected pp_ocaml.result)
+   (diff element_attribute_error.expected element_attribute_error.result))))
