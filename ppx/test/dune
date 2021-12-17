@@ -17,6 +17,7 @@
    (run refmt --parse=re --print=ml %{deps}))))
 
 (rule
+ (alias error-msg)
  (targets element_attribute_error.result)
  (deps
   (:main ./main.exe)
@@ -24,7 +25,7 @@
  (action
   (with-stderr-to
    %{targets}
-   (system "! ./%{main} %{input}"))))
+   (bash "! ./%{main} %{input}"))))
 
 (rule
  (targets pp_ocaml.result)
@@ -37,5 +38,4 @@
  (action
   (progn
    (diff pp_reason.expected pp_reason.result)
-   (diff pp_ocaml.expected pp_ocaml.result)
-   (diff element_attribute_error.expected element_attribute_error.result))))
+   (diff pp_ocaml.expected pp_ocaml.result))))
