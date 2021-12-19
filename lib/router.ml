@@ -76,9 +76,8 @@ let path () =
       w |> location |> pathname
     with
     | "" | "/" ->
-        print_endline "here" ; []
+        []
     | raw ->
-        print_endline "raw" ;
         let raw = sliceToEnd raw in
         let raw =
           let n = String.length raw in
