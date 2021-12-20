@@ -15,3 +15,5 @@ let%component make ~children:kids = div ~id:"foo" ~children:kids ()
 
 let%component make ~children:(first, second) () =
   div ~children:[first; second] ()
+
+let%component make ?(name = "") = div ~children:[name] ()

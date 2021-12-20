@@ -26,7 +26,7 @@ test: ## Run the unit tests
 	$(DUNE) build @runtest
 
 test-promote: ## Updates snapshots and promotes it to correct
-	$(DUNE) build @runtest
+	$(DUNE) build @runtest --auto-promote
 
 # This is a separate command to run this tests conditionaly on CI, currently the dune setup with (bash "! ./%{main} %{input}")) fails in Windows. We skip it on Windows.
 test-error-msg: ## Run the unit tests for error messages
