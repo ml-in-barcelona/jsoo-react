@@ -177,3 +177,8 @@ let randomElement = <text dx="1 2" dy="3 4" />;
 let make = (~name, ~isDisabled=?, ~onClick=?) => {
   <button name ?onClick disabled=isDisabled />;
 };
+
+[@react.component]
+let make = (~name="joe") => {
+  <div> {Printf.sprintf("`name` is %s", name) |> React.string} </div>;
+};

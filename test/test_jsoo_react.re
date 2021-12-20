@@ -71,6 +71,27 @@ let testKeys = () =>
     );
   });
 
+let testOptionalProps = () => {
+  module OptProps = {
+    [@react.component]
+    let make = (~name="joe") => {
+      <div> {Printf.sprintf("`name` is %s", name) |> React.string} </div>;
+    };
+  };
+  withContainer(c => {
+    act(() => {React.Dom.render(<OptProps />, Html.element(c))});
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(Js.string("`name` is joe")),
+    );
+    act(() => {React.Dom.render(<OptProps name="jane" />, Html.element(c))});
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(Js.string("`name` is jane")),
+    );
+  });
+};
+
 let testContext = () => {
   module DummyContext = {
     let context = React.createContext("foo");
@@ -762,6 +783,7 @@ let basic =
     "testDom" >:: testDom,
     "testReact" >:: testReact,
     "testKey" >:: testKeys,
+    "testOptionalProps" >:: testOptionalProps,
   ];
 
 let context = "context" >::: ["testContext" >:: testContext];
