@@ -1,4 +1,4 @@
-type element = private Ojs.t
+type element = Ojs.t
 
 val element_of_js : Ojs.t -> element
 
@@ -71,8 +71,14 @@ let callback_to_js _ cb = cb
 
 let callback_of_js _ js = js]
 
-val createElement : 'props component -> 'props -> element
-  [@@js.global "React.createElement"]
+val createElement : 'props component -> 'props -> element [@@js.custom]
+
+[@@@js.implem
+val createElement_internal : Imports.react -> 'a component -> 'a -> element
+  [@@js.call "createElement"]
+
+let createElement : 'prps component -> 'prps -> element =
+  createElement_internal Imports.react]
 
 val createElementVariadic :
   'props component -> 'props -> (element list[@js.variadic]) -> element
