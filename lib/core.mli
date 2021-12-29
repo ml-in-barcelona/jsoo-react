@@ -1,4 +1,4 @@
-type element = Ojs.t
+type element = private Ojs.t
 
 val element_of_js : Ojs.t -> element
 
