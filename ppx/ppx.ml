@@ -653,13 +653,13 @@ let rec recursivelyTransformNamedArgsForMake mapper ctxt expr list =
             None
       in
       recursivelyTransformNamedArgsForMake mapper ctxt expression
-        (( Str_label.of_arg_label arg
-         , default
-         , pattern
-         , alias
-         , pattern.ppat_loc
-         , type_ )
-         :: list )
+        ( ( Str_label.of_arg_label arg
+          , default
+          , pattern
+          , alias
+          , pattern.ppat_loc
+          , type_ )
+        :: list )
   | Pexp_fun
       ( Nolabel
       , _
