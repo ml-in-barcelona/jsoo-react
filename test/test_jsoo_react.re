@@ -71,7 +71,7 @@ let testKeys = () =>
     );
   });
 
-let testOptionalProps = () => {
+let testOptionalPropsUppercase = () => {
   module OptProps = {
     [@react.component]
     let make = (~name="joe") => {
@@ -92,7 +92,7 @@ let testOptionalProps = () => {
   });
 };
 
-let testOptionalAttributes = () => {
+let testOptionalPropsLowercase = () => {
   module LinkWithMaybeHref = {
     [@react.component]
     let make = (~href) => <a ?href />;
@@ -809,8 +809,8 @@ let basic =
     "testDom" >:: testDom,
     "testReact" >:: testReact,
     "testKey" >:: testKeys,
-    "testOptionalProps" >:: testOptionalProps,
-    "testOptionalAttributes" >:: testOptionalAttributes,
+    "testOptionalPropsUppercase" >:: testOptionalPropsUppercase,
+    "testOptionalPropsLowercase" >:: testOptionalPropsLowercase,
   ];
 
 let context = "context" >::: ["testContext" >:: testContext];
