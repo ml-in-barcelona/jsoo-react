@@ -92,6 +92,32 @@ let testOptionalProps = () => {
   });
 };
 
+let testOptionalAttributes = () => {
+  module LinkWithMaybeHref = {
+    [@react.component]
+    let make = (~href) => <a ?href />;
+  };
+
+  withContainer(c => {
+    act(() =>
+      React.Dom.render(<LinkWithMaybeHref href=None />, Html.element(c))
+    );
+    assert_equal(c##.innerHTML, Js.string("<a></a>"));
+    act(() =>
+      React.Dom.render(
+        <LinkWithMaybeHref href={Some("https://google.es")} />,
+        Html.element(c),
+      )
+    );
+
+    printInnerHTML(c);
+    assert_equal(
+      c##.innerHTML,
+      Js.string({|<a href="https://google.es"></a>|}),
+    );
+  });
+};
+
 let testContext = () => {
   module DummyContext = {
     let context = React.createContext("foo");
@@ -784,6 +810,7 @@ let basic =
     "testReact" >:: testReact,
     "testKey" >:: testKeys,
     "testOptionalProps" >:: testOptionalProps,
+    "testOptionalAttributes" >:: testOptionalAttributes,
   ];
 
 let context = "context" >::: ["testContext" >:: testContext];
