@@ -25,6 +25,9 @@ dev: ## Build in watch mode
 test: ## Run the unit tests
 	$(DUNE) build @runtest
 
+test-watch: ## Run the unit tests in watch mode
+	$(DUNE) build @runtest -w
+
 test-promote: ## Updates snapshots and promotes it to correct
 	$(DUNE) build @runtest --auto-promote
 
