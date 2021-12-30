@@ -2,7 +2,7 @@
 
 [![Actions Status](https://github.com/ml-in-barcelona/jsoo-react/workflows/CI/badge.svg?branch=master)](https://github.com/ml-in-barcelona/jsoo-react/actions?query=branch%3Amaster)
 
-Bindings to [React](https://reactjs.org/) for [js_of_ocaml](ocsigen.org/js_of_ocaml/), including JSX ppx.
+Bindings to [React](https://reactjs.org/) for [js_of_ocaml](https://ocsigen.org/js_of_ocaml/latest), including JSX ppx.
 
 Adapted from [ReasonReact](https://github.com/reasonml/reason-react/).
 
