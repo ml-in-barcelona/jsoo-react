@@ -16,9 +16,20 @@ external domElement_to_js : domElement -> Ojs.t = "%identity"
 external domElement_of_js : Ojs.t -> domElement = "%identity"]
 
 val unmountComponentAtNode : domElement -> bool
-  [@@js.global "ReactDOM.unmountComponentAtNode"]
+  [@@js.custom
+    val unmountComponentAtNode_internal : Imports.reactDom -> domElement -> bool
+      [@@js.call "unmountComponentAtNode"]
 
-val render : Core.element -> domElement -> unit [@@js.global "ReactDOM.render"]
+    let unmountComponentAtNode domElement =
+      unmountComponentAtNode_internal Imports.reactDom domElement]
+
+val render : Core.element -> domElement -> unit
+  [@@js.custom
+    val render_internal : Imports.reactDom -> Core.element -> domElement -> unit
+      [@@js.call "render"]
+
+    let render element domElement =
+      render_internal Imports.reactDom element domElement]
 
 val renderToElementWithId : Core.element -> string -> unit
   [@@js.custom
@@ -67,12 +78,29 @@ val createDOMElementVariadic :
   -> props:
        domProps
        (* props has to be non-optional as otherwise gen_js_api will put an empty list and React will break *)
-  -> (Core.element list[@js.variadic])
+  -> Core.element list
   -> Core.element
-  [@@js.global "React.createElement"]
+  [@@js.custom
+    val createDOMElementVariadic_internal :
+         Imports.react
+      -> string
+      -> props:domProps
+      -> (Core.element list[@js.variadic])
+      -> Core.element
+      [@@js.call "createElement"]
+
+    let createDOMElementVariadic typ ~props elts =
+      createDOMElementVariadic_internal Imports.react typ ~props elts]
 
 val forwardRef : ('props -> domRef -> Core.element) -> 'props Core.component
-  [@@js.global "React.forwardRef"]
+  [@@js.custom
+    val forwardRef_internal :
+         Imports.react
+      -> ('props -> domRef -> Core.element)
+      -> 'props Core.component
+      [@@js.call "forwardRef"]
+
+    let forwardRef renderFunc = forwardRef_internal Imports.react renderFunc]
 
 module Style : sig
   type t = style
