@@ -341,6 +341,83 @@ let testUseCallback4 = () => {
   });
 };
 
+let testUseState = () => {
+  module DummyStateComponent = {
+    [@react.component]
+    let make = (~initialValue=0, ()) => {
+      let (counter, setCounter) = React.useState(() => initialValue);
+      <>
+        <div className="value"> {React.int(counter)} </div>
+        <button onClick={_ => setCounter(counter => counter + 1)}>
+          {React.string("Increment")}
+        </button>
+        <button onClick={_ => setCounter(counter => counter - 1)}>
+          {React.string("Decrement")}
+        </button>
+      </>;
+    };
+  };
+  withContainer(c => {
+    open ReactDOMTestUtils;
+    act(() => {React.Dom.render(<DummyStateComponent />, Html.element(c))});
+    assert_equal(
+      c##.innerHTML,
+      Js.string(
+        "<div class=\"value\">0</div><button>Increment</button><button>Decrement</button>",
+      ),
+    );
+    let button =
+      DOM.findBySelectorAndPartialTextContent(
+        unsafe_to_element(c),
+        "button",
+        "Increment",
+      );
+    act(() => {Simulate.click(button)});
+    assert_equal(
+      c##.innerHTML,
+      Js.string(
+        "<div class=\"value\">1</div><button>Increment</button><button>Decrement</button>",
+      ),
+    );
+    let button =
+      DOM.findBySelectorAndPartialTextContent(
+        unsafe_to_element(c),
+        "button",
+        "Decrement",
+      );
+    act(() => {Simulate.click(button)});
+    assert_equal(
+      c##.innerHTML,
+      Js.string(
+        "<div class=\"value\">0</div><button>Increment</button><button>Decrement</button>",
+      ),
+    );
+  });
+};
+
+let testUseStateUpdaterReference = () => {
+  module UseState = {
+    let prevSetCount = ref(None);
+    [@react.component]
+    let make = () => {
+      let (_count, setCount) = React.useState(() => 0);
+      let equal =
+        switch (setCount, prevSetCount^) {
+        | (r1, Some(r2)) when r1 === r2 => "true"
+        | _ => "false"
+        };
+      prevSetCount := Some(setCount);
+      <div> {equal |> React.string} </div>;
+    };
+  };
+  withContainer(c => {
+    act(() => {React.Dom.render(<UseState />, Html.element(c))});
+    assert_equal(c##.textContent, Js.Opt.return(Js.string("false")));
+    act(() => {React.Dom.render(<UseState />, Html.element(c))});
+    assert_equal(c##.textContent, Js.Opt.return(Js.string("true")));
+  });
+};
+
 let testUseReducer = () => {
   module DummyReducerComponent = {
     type action =
@@ -478,6 +555,29 @@ let testUseReducerWithMapState = () => {
         "<div class=\"value\">1</div><button>Increment</button><button>Decrement</button>",
       ),
     );
+  });
+};
+
+let testUseReducerDispatchReference = () => {
+  module UseReducer = {
+    let prevDispatch = ref(None);
+    [@react.component]
+    let make = () => {
+      let (_, dispatch) = React.useReducer((_, _) => 2, 2);
+      let equal =
+        switch (dispatch, prevDispatch^) {
+        | (r1, Some(r2)) when r1 === r2 => "true"
+        | _ => "false"
+        };
+      prevDispatch := Some(dispatch);
+      <div> {equal |> React.string} </div>;
+    };
+  };
+  withContainer(c => {
+    act(() => {React.Dom.render(<UseReducer />, Html.element(c))});
+    assert_equal(c##.textContent, Js.Opt.return(Js.string("false")));
+    act(() => {React.Dom.render(<UseReducer />, Html.element(c))});
+    assert_equal(c##.textContent, Js.Opt.return(Js.string("true")));
   });
 };
 
@@ -803,12 +903,21 @@ let useCallback =
     "useCallback4" >:: testUseCallback4,
   ];
 
+let useState =
+  "useState"
+  >::: [
+    "useState" >:: testUseState,
+    "useStateUpdaterReference" >:: testUseStateUpdaterReference,
+  ];
+
 let useReducer =
   "useReducer"
   >::: [
     "useReducer" >:: testUseReducer,
     "useReducerWithMapState" >:: testUseReducerWithMapState,
+    "useReducerDispatchReference" >:: testUseReducerDispatchReference,
   ];
+
 let memoization =
   "memo"
   >::: [
@@ -849,6 +958,7 @@ let suite =
     context,
     useEffect,
     useCallback,
+    useState,
     useReducer,
     memoization,
     refs,
