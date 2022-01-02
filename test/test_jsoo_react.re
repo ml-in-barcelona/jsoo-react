@@ -780,17 +780,19 @@ let testWithId = () => {
   module WithTestId = {
     [@react.component]
     let make = (~id, ~children, ()) =>
-      React.cloneElement(
-        children,
-        Js.Unsafe.obj([|
-          ("data-testid", Js.Unsafe.inject(Js.string(id))),
-        |]),
+      React.Children.map(children, child =>
+        React.cloneElement(
+          child,
+          Js.Unsafe.obj([|
+            ("data-testid", Js.Unsafe.inject(Js.string(id))),
+          |]),
+        )
       );
   };
   withContainer(c => {
     act(() => {
       React.Dom.render(
-        WithTestId.make(~id="feed-toggle", ~children=<div />, ()),
+        WithTestId.make(~id="feed-toggle", ~children=[<div />], ()),
         Html.element(c),
       )
     });
