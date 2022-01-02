@@ -12,8 +12,6 @@ val int : int -> element [@@js.cast]
 
 val float : float -> element [@@js.cast]
 
-val list : element list -> element [@@js.cast]
-
 [@@@js.stop]
 
 type 'a option_undefined = 'a option
@@ -631,54 +629,55 @@ module Children : sig
 
   let children_internal = children_internal' Imports.react]
 
-  val map : element -> (element -> element) -> element
+  val map : element list -> (element -> element) -> element
     [@@js.custom
-      val map_internal : Ojs.t -> element -> (element -> element) -> element
+      val map_internal :
+        Ojs.t -> element list -> (element -> element) -> element
         [@@js.call "map"]
 
       let map element mapper = map_internal children_internal element mapper]
 
-  val mapWithIndex : element -> (element -> int -> element) -> element
+  val mapWithIndex : element list -> (element -> int -> element) -> element
     [@@js.custom
       val mapWithIndex_internal :
-        Ojs.t -> element -> (element -> int -> element) -> element
+        Ojs.t -> element list -> (element -> int -> element) -> element
         [@@js.call "map"]
 
       let mapWithIndex element mapper =
         mapWithIndex_internal children_internal element mapper]
 
-  val forEach : element -> (element -> unit) -> unit
+  val forEach : element list -> (element -> unit) -> unit
     [@@js.custom
-      val forEach_internal : Ojs.t -> element -> (element -> unit) -> unit
+      val forEach_internal : Ojs.t -> element list -> (element -> unit) -> unit
         [@@js.call "forEach"]
 
       let forEach element iterator =
         forEach_internal children_internal element iterator]
 
-  val forEachWithIndex : element -> (element -> int -> unit) -> unit
+  val forEachWithIndex : element list -> (element -> int -> unit) -> unit
     [@@js.custom
       val forEachWithIndex_internal :
-        Ojs.t -> element -> (element -> int -> unit) -> unit
+        Ojs.t -> element list -> (element -> int -> unit) -> unit
         [@@js.call "forEach"]
 
       let forEachWithIndex element iterator =
         forEachWithIndex_internal children_internal element iterator]
 
-  val count : element -> int
+  val count : element list -> int
     [@@js.custom
-      val count_internal : Ojs.t -> element -> int [@@js.call "count"]
+      val count_internal : Ojs.t -> element list -> int [@@js.call "count"]
 
       let count element = count_internal children_internal element]
 
-  val only : element -> element
+  val only : element list -> element
     [@@js.custom
-      val only_internal : Ojs.t -> element -> element [@@js.call "only"]
+      val only_internal : Ojs.t -> element list -> element [@@js.call "only"]
 
       let only element = only_internal children_internal element]
 
-  val toArray : element -> element array
+  val toArray : element list -> element array
     [@@js.custom
-      val toArray_internal : Ojs.t -> element -> element array
+      val toArray_internal : Ojs.t -> element list -> element array
         [@@js.call "toArray"]
 
       let toArray element = toArray_internal children_internal element]
