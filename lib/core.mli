@@ -522,21 +522,40 @@ val useMemo7 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> 'value
 
 val useState : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
   [@@js.custom
-    val useState_internal :
-      Imports.react -> (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
-      [@@js.call "useState"]
+    let (useState_internal :
+             Imports.react
+          -> (unit -> 'state)
+          -> 'state * (('state -> 'state) -> unit) ) =
+     fun (react : Imports.react) (init : unit -> 'state) ->
+      let result =
+        Ojs.call
+          (Imports.react_to_js react)
+          "useState"
+          [|Ojs.fun_to_js 1 (fun _ -> Obj.magic (init ()))|]
+      in
+      (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
 
     let useState initial = useState_internal Imports.react initial]
 
 val useReducer :
   ('state -> 'action -> 'state) -> 'state -> 'state * ('action -> unit)
   [@@js.custom
-    val useReducer_internal :
-         Imports.react
-      -> ('state -> 'action -> 'state)
-      -> 'state
-      -> 'state * ('action -> unit)
-      [@@js.call "useReducer"]
+    let (useReducer_internal :
+             Imports.react
+          -> ('state -> 'action -> 'state)
+          -> 'state
+          -> 'state * ('action -> unit) ) =
+     fun (react : Imports.react) (reducer : 'state -> 'action -> 'state)
+         (init : 'state) ->
+      let result =
+        Ojs.call
+          (Imports.react_to_js react)
+          "useReducer"
+          [| Ojs.fun_to_js 2 (fun (state : Ojs.t) (action : Ojs.t) ->
+                 Obj.magic (reducer (Obj.magic state) (Obj.magic action)) )
+           ; Obj.magic init |]
+      in
+      (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
 
     let useReducer reducer initial =
       useReducer_internal Imports.react reducer initial]
@@ -547,13 +566,25 @@ val useReducerWithMapState :
   -> ('initialState -> 'state)
   -> 'state * ('action -> unit)
   [@@js.custom
-    val useReducerWithMapState_internal :
-         Imports.react
-      -> ('state -> 'action -> 'state)
-      -> 'initialState
-      -> ('initialState -> 'state)
-      -> 'state * ('action -> unit)
-      [@@js.call "useReducer"]
+    let (useReducerWithMapState_internal :
+             Imports.react
+          -> ('state -> 'action -> 'state)
+          -> 'initialState
+          -> ('initialState -> 'state)
+          -> 'state * ('action -> unit) ) =
+     fun (react : Imports.react) (reducer : 'state -> 'action -> 'state)
+         (init : 'initialState) (map_state : 'initialState -> 'state) ->
+      let result =
+        Ojs.call
+          (Imports.react_to_js react)
+          "useReducer"
+          [| Ojs.fun_to_js 2 (fun (state : Ojs.t) (action : Ojs.t) ->
+                 Obj.magic (reducer (Obj.magic state) (Obj.magic action)) )
+           ; Obj.magic init
+           ; Ojs.fun_to_js 1 (fun (state : Ojs.t) ->
+                 Obj.magic (map_state (Obj.magic state)) ) |]
+      in
+      (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
 
     let useReducerWithMapState reducer initial mapper =
       useReducerWithMapState_internal Imports.react reducer initial mapper]
