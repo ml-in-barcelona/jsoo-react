@@ -47,7 +47,7 @@ format-check: ## Checks if format is correct
 	$(DUNE) build @fmt
 
 publish-example: ## Publish example/ to gh-pages
-	git checkout master && $(DUNE) build --profile=prod @@default && cd example && yarn webpack:production \
+	git checkout main && $(DUNE) build --profile=prod @@default && cd example && yarn webpack:production \
 	&& cd - && git checkout gh-pages && cp example/build/* . && git commit -am "$(current_hash)"
 
 $(opam_file): dune-project ## Update the package dependencies when new deps are added to dune-project
