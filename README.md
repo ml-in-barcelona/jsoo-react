@@ -16,8 +16,6 @@ Bug reports and contributions are welcome!
 
 For new projects, the best way to start is by using [the jsoo-react template](https://github.com/ml-in-barcelona/jsoo-react-template).
 
-Getting started instructions can be found in the template [readme](https://github.com/ml-in-barcelona/jsoo-react-template/blob/main/README.md).
-
 ### Existing project
 
 1. Install the `jsoo-react` package:
