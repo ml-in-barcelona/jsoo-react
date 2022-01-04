@@ -71,7 +71,7 @@ let testKeys = () =>
     );
   });
 
-let testOptionalProps = () => {
+let testOptionalPropsUppercase = () => {
   module OptProps = {
     [@react.component]
     let make = (~name="joe") => {
@@ -88,6 +88,32 @@ let testOptionalProps = () => {
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`name` is jane")),
+    );
+  });
+};
+
+let testOptionalPropsLowercase = () => {
+  module LinkWithMaybeHref = {
+    [@react.component]
+    let make = (~href) => <a ?href />;
+  };
+
+  withContainer(c => {
+    act(() =>
+      React.Dom.render(<LinkWithMaybeHref href=None />, Html.element(c))
+    );
+    assert_equal(c##.innerHTML, Js.string("<a></a>"));
+    act(() =>
+      React.Dom.render(
+        <LinkWithMaybeHref href={Some("https://google.es")} />,
+        Html.element(c),
+      )
+    );
+
+    printInnerHTML(c);
+    assert_equal(
+      c##.innerHTML,
+      Js.string({|<a href="https://google.es"></a>|}),
     );
   });
 };
@@ -883,7 +909,8 @@ let basic =
     "testDom" >:: testDom,
     "testReact" >:: testReact,
     "testKey" >:: testKeys,
-    "testOptionalProps" >:: testOptionalProps,
+    "testOptionalPropsUppercase" >:: testOptionalPropsUppercase,
+    "testOptionalPropsLowercase" >:: testOptionalPropsLowercase,
   ];
 
 let context = "context" >::: ["testContext" >:: testContext];

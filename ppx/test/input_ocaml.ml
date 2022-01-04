@@ -17,3 +17,5 @@ let%component make ~children:(first, second) () =
   div ~children:[first; second] ()
 
 let%component make ?(name = "") = div ~children:[name] ()
+
+let%component make () = a ?href:(Some "https://opam.ocaml.org") ()

@@ -440,7 +440,7 @@ let rec makeFunsForMakePropsBody list args =
 let makeAttributeValue ~loc ~isOptional (type_ : Html.attributeType) value =
   match (type_, isOptional) with
   | String, true ->
-      [%expr Js_of_ocaml.Js.string ([%e value] : string option)]
+      [%expr Option.map Js_of_ocaml.Js.string ([%e value] : string option)]
   | String, false ->
       [%expr Js_of_ocaml.Js.string ([%e value] : string)]
   | Int, false ->

@@ -228,3 +228,24 @@ let make =
                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
   fun ?name ->
     fun ?key -> fun () -> React.createElement make (make_props ?key ?name ())
+let make =
+  let make_props : ?key:string -> unit -> <  >  Js_of_ocaml.Js.t =
+    fun ?key ->
+      fun () ->
+        let open Js_of_ocaml.Js.Unsafe in
+          obj
+            [|("key",
+                (inject
+                   (Js_of_ocaml.Js.Optdef.option
+                      (Option.map Js_of_ocaml.Js.string key))))|] in
+  let make () =
+    React.Dom.createDOMElementVariadic "a"
+      ~props:(Js_of_ocaml.Js.Unsafe.obj
+                [|("href",
+                    (Js_of_ocaml.Js.Unsafe.inject
+                       (Js_of_ocaml.Js.Optdef.option
+                          (Option.map Js_of_ocaml.Js.string
+                             (Some "https://opam.ocaml.org" : string option)))))|] : 
+      React.Dom.domProps) [] in
+  let make (Props : <  >  Js_of_ocaml.Js.t) = make () in
+  fun ?key -> fun () -> React.createElement make (make_props ?key ())
