@@ -14,17 +14,9 @@ Bug reports and contributions are welcome!
 
 ### New project
 
-For new projects, the best way to start is by using [Spin](https://github.com/tmattio/spin) with the [`spin-jsoo-react` template](https://github.com/tmattio/spin-jsoo-react/).
+For new projects, the best way to start is by using [the jsoo-react template](https://github.com/ml-in-barcelona/jsoo-react-template).
 
-1. First, install Spin [following the instructions](https://github.com/tmattio/spin#installation).
-
-2. Then run:
-
-    ```bash
-    spin new https://github.com/tmattio/spin-jsoo-react.git
-    ```
-
-    After that, check the newly created project readme to get started.
+Getting started instructions can be found in the template [readme](https://github.com/ml-in-barcelona/jsoo-react-template/blob/main/README.md).
 
 ### Existing project
 
