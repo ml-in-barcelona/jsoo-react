@@ -680,6 +680,13 @@ let rec recursivelyTransformNamedArgsForMake mapper ctxt expr list =
   | _ ->
       (list, None)
 
+let arg_to_concrete_type types (arg, loc, type_) =
+  match arg with
+  | Str_label.Labelled _ ->
+      (arg, [], type_) :: types
+  | Optional _ ->
+      (arg, [], Typ.constr ~loc {loc; txt= optionIdent} [type_]) :: types
+
 let argToType types (name, default, _noLabelName, _alias, loc, type_) =
   let open Str_label in
   match (type_, name, default) with
@@ -1109,6 +1116,125 @@ let jsxMapper () =
   let rec transformComponentDefinition ?(inside_component = false) mapper ctxt
       structure returnStructures =
     match structure with
+    (* external *)
+    | { pstr_loc
+      ; pstr_desc=
+          Pstr_primitive {pval_name= {txt= fn_name}; pval_attributes; pval_type}
+      } -> (
+      match (List.filter hasAttr pval_attributes, inside_component) with
+      | [], false ->
+          structure :: returnStructures
+      | ([_] as filtered_attrs), _ | (_ as filtered_attrs), true ->
+          let rec get_prop_types types ({ptyp_loc; ptyp_desc} as fullType) =
+            match ptyp_desc with
+            | Ptyp_arrow
+                ( ((Labelled _ | Optional _) as arg_label)
+                , type_
+                , ({ptyp_desc= Ptyp_arrow _} as rest) ) ->
+                get_prop_types
+                  ((Str_label.of_arg_label arg_label, ptyp_loc, type_) :: types)
+                  rest
+            | Ptyp_arrow (Nolabel, _type, rest) ->
+                get_prop_types types rest
+            | Ptyp_arrow
+                (((Labelled _ | Optional _) as arg_label), type_, returnValue)
+              ->
+                ( returnValue
+                , (Str_label.of_arg_label arg_label, returnValue.ptyp_loc, type_)
+                  :: types )
+            | _ ->
+                (fullType, types)
+          in
+          let _inner_type, prop_types = get_prop_types [] pval_type in
+          let named_type_list =
+            List.fold_left arg_to_concrete_type [] prop_types
+          in
+          let pluckLabelAndLoc (label, loc, type_) =
+            ( label
+            , None (* default *)
+            , Pat.var {txt= Str_label.str label; loc}
+            , Str_label.str label
+            , loc
+            , Some type_ )
+          in
+          let _retPropsType = makePropsType ~loc:pstr_loc named_type_list in
+          let named_arg_list_with_key =
+            ( Str_label.Optional "key"
+            , None
+            , Pat.var {txt= "key"; loc= pstr_loc}
+            , "key"
+            , pstr_loc
+            , Some (keyType pstr_loc) )
+            :: List.map pluckLabelAndLoc prop_types
+          in
+          let make_props =
+            make_make_props fn_name pstr_loc named_arg_list_with_key
+              named_type_list
+          in
+          let filename = filename_from_loc pstr_loc in
+          let empty_loc = Location.in_file filename in
+          let binding_pat_loc = empty_loc in
+          let outer_make expression =
+            Vb.mk ~loc:pstr_loc ~attrs:filtered_attrs
+              (Pat.var ~loc:binding_pat_loc
+                 {loc= binding_pat_loc; txt= fn_name} )
+              (let outer =
+                 makeFunsForMakePropsBody
+                   (List.map pluckLabelDefaultLocType named_arg_list_with_key)
+                   (let loc = empty_loc in
+                    [%expr
+                      fun () ->
+                        React.createElement [%e expression]
+                          [%e
+                            Exp.apply ~loc
+                              (Exp.ident ~loc
+                                 {loc; txt= Lident (make_props_name fn_name)} )
+                              ( List.map
+                                  (fun ( arg
+                                       , _default
+                                       , _pattern
+                                       , _alias
+                                       , _pattern_loc
+                                       , _type ) ->
+                                    ( Str_label.to_arg_label arg
+                                    , Exp.ident ~loc:empty_loc
+                                        { loc= empty_loc
+                                        ; txt= Lident (Str_label.str arg) } ) )
+                                  named_arg_list_with_key
+                              @ [ ( Nolabel
+                                  , Exp.construct {loc; txt= Lident "()"} None
+                                  ) ] )]] )
+               in
+               make_props @@ outer )
+          in
+          let inner_make_ident =
+            Exp.ident ~loc:empty_loc {loc= empty_loc; txt= Lident fn_name}
+          in
+          { pstr_loc
+          ; pstr_desc= Pstr_value (Nonrecursive, [outer_make inner_make_ident])
+          }
+          :: returnStructures
+          (* can't be an arrow because it will defensively uncurry *)
+          (* let newExternalType =
+               Ptyp_constr
+                 ( {loc= pstr_loc; txt= Ldot (Lident "React", "componentLike")}
+                 , [retPropsType; inner_type] )
+             in
+             let newStructure =
+               { pstr with
+                 pstr_desc=
+                   Pstr_primitive
+                     { value_description with
+                       pval_type= {pval_type with ptyp_desc= newExternalType}
+                     ; pval_attributes= List.filter otherAttrsPure pval_attributes
+                     } }
+             in
+             externalPropsDecl :: newStructure :: returnStructures *)
+      | _ ->
+          raise
+            (Invalid_argument
+               "Only one react.component call can exist on a component at one \
+                time" ) )
     (* let%component foo = ... *)
     | {pstr_desc= Pstr_extension (({txt= "component"}, PStr structure), _)} ->
         List.fold_right
