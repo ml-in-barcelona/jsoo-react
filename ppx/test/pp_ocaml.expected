@@ -269,5 +269,13 @@ let make =
                                                                     (
                                                                     inject
                                                                     name))|] in
+  let make
+    (Props :
+      < name: Js.js_string Js.t Js_of_ocaml.Js.readonly_prop   > 
+        Js_of_ocaml.Js.t)
+    =
+    (((Js_of_ocaml.Js.Unsafe.js_expr
+         "require(\"my-react-library\").MyReactComponent") Props)
+    [@warning "-20"]) in
   fun ~name ->
     fun ?key -> fun () -> React.createElement make (make_props ?key ~name ())
