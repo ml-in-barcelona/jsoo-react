@@ -109,8 +109,6 @@ let testOptionalPropsLowercase = () => {
         Html.element(c),
       )
     );
-
-    printInnerHTML(c);
     assert_equal(
       c##.innerHTML,
       Js.string({|<a href="https://google.es"></a>|}),
@@ -879,6 +877,20 @@ let testDangerouslySetInnerHTML = () => {
   });
 };
 
+let testExternals = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~name: Js.t(Js.js_string)) => React.element =
+      {|require("./external").Greeting|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(<JsComp name={Js.string("John")} />, Html.element(c))
+    });
+    assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
+  });
+};
+
 let testAliasedChildren = () => {
   module AliasedChildrenComponent = {
     [@react.component]
@@ -978,6 +990,8 @@ let fragments =
 
 let dangerouslySetInnerHTML =
   "dangerouslySetInnerHTML" >::: ["basic" >:: testDangerouslySetInnerHTML];
+let externals = "externals" >::: ["basic" >:: testExternals];
+
 let suite =
   "baseSuite"
   >::: [
@@ -992,6 +1006,7 @@ let suite =
     children,
     fragments,
     dangerouslySetInnerHTML,
+    externals,
   ];
 
 let () = Webtest_js.Runner.run(suite);
