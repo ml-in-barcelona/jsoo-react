@@ -1,4 +1,4 @@
 File "input_errors.ml", line 3, characters 24-38:
-3 | let%component make () = div ~lola:1 ()
+3 | let%component make () = div ~lolo:1 ()
                             ^^^^^^^^^^^^^^
 Error: prop 'lola' isn't a valid prop for a 'div'
