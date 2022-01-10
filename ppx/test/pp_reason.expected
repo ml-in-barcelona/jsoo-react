@@ -148,7 +148,7 @@ module External =
           fun ?key ->
             fun () ->
               React.createElement component (component_props ?key ~b ~a ())
-      [@@react.component ]
+      [@@otherAttribute (("bla")[@reason.raw_literal "bla"])]
   end
 module Bar =
   struct

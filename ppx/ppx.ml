@@ -422,10 +422,10 @@ let makePropsType ~loc namedTypeList =
              (Ptyp_object (List.map (makeObjectField loc) namedTypeList, Closed))
          ] ) )
 
-let rec makeFunsForMakePropsBody list args =
+let rec make_funs_for_make_props_body list args =
   match list with
   | (label, _default, loc, _interiorType) :: tl ->
-      makeFunsForMakePropsBody tl
+      make_funs_for_make_props_body tl
         (Exp.fun_ ~loc
            (Str_label.to_arg_label label)
            None
@@ -588,7 +588,7 @@ let make_make_props fn_name loc named_arg_list props_type rest =
                      ; ptyp_loc_stack= [] } ) ) )
              (Exp.mk ~loc
                 (Pexp_constraint
-                   ( makeFunsForMakePropsBody named_arg_list
+                   ( make_funs_for_make_props_body named_arg_list
                        [%expr
                          fun () ->
                            let open Js_of_ocaml.Js.Unsafe in
@@ -993,7 +993,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper ~ctxt binding =
         ~attrs:(List.filter otherAttrsPure binding.pvb_attributes)
         (Pat.var ~loc:binding_pat_loc {loc= binding_pat_loc; txt= fn_name})
         (let outer =
-           makeFunsForMakePropsBody
+           make_funs_for_make_props_body
              (List.map pluckLabelDefaultLocType named_arg_list_with_key_and_ref)
              (let loc = empty_loc in
               [%expr
@@ -1130,10 +1130,10 @@ let jsxMapper () =
           Location.raise_errorf ~loc:pval_loc
             "jsoo-react: externals only allow single primitive declarations"
       | [pval_prim] -> (
-        match (List.filter hasAttr pval_attributes, inside_component) with
-        | [], false ->
+        match (List.partition hasAttr pval_attributes, inside_component) with
+        | ([], _), false ->
             structure :: returnStructures
-        | (_ :: _ as filtered_attrs), _ | (_ as filtered_attrs), true ->
+        | (_ :: _, rest_attrs), _ | (_, rest_attrs), true ->
             let rec get_prop_types types {ptyp_loc; ptyp_desc} =
               match ptyp_desc with
               | Ptyp_arrow
@@ -1168,7 +1168,7 @@ let jsxMapper () =
             let named_type_list =
               List.fold_left arg_to_concrete_type [] prop_types
             in
-            let pluckLabelAndLoc (label, loc, type_) =
+            let pluck_label_and_loc (label, loc, type_) =
               ( label
               , None (* default *)
               , Pat.var {txt= Str_label.str label; loc}
@@ -1183,7 +1183,7 @@ let jsxMapper () =
               , "key"
               , pstr_loc
               , Some (keyType pstr_loc) )
-              :: List.map pluckLabelAndLoc prop_types
+              :: List.map pluck_label_and_loc prop_types
             in
             let make_props =
               make_make_props fn_name pstr_loc named_arg_list_with_key
@@ -1229,14 +1229,14 @@ let jsxMapper () =
                               inner_expr ) ]
                      , rest ) )
               in
-              Vb.mk ~loc:pstr_loc ~attrs:filtered_attrs
+              Vb.mk ~loc:pstr_loc ~attrs:rest_attrs
                 (Pat.var ~loc:binding_pat_loc
                    {loc= binding_pat_loc; txt= fn_name} )
                 (let js_comp =
                    make_js_comp ~loc:empty_loc ~fn_name ~named_type_list
                  in
                  let outer =
-                   makeFunsForMakePropsBody
+                   make_funs_for_make_props_body
                      (List.map pluckLabelDefaultLocType named_arg_list_with_key)
                      (let loc = empty_loc in
                       [%expr
