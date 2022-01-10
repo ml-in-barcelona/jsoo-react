@@ -56,11 +56,10 @@ let testKeys = () =>
     act(() => {
       React.Dom.render(
         <div>
-          {List.map(
-             str => <div key=str> {str |> React.string} </div>,
-             ["a", "b"],
-           )
-           |> React.list}
+          ...{List.map(
+            str => <div key=str> {str |> React.string} </div>,
+            ["a", "b"],
+          )}
         </div>,
         Html.element(c),
       )
@@ -770,7 +769,7 @@ let testChildrenMapWithIndex = () => {
     [@react.component]
     let make = (~children, ()) => {
       <div>
-        {React.Children.mapWithIndex(React.list(children), (element, index) => {
+        {React.Children.mapWithIndex(children, (element, index) => {
            React.cloneElement(
              element,
              Js_of_ocaml.Js.Unsafe.(
@@ -903,6 +902,33 @@ let testAliasedChildren = () => {
   });
 };
 
+let testWithId = () => {
+  module WithTestId = {
+    [@react.component]
+    let make = (~id, ~children, ()) =>
+      React.Children.map(children, child =>
+        React.cloneElement(
+          child,
+          Js.Unsafe.obj([|
+            ("data-testid", Js.Unsafe.inject(Js.string(id))),
+          |]),
+        )
+      );
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        WithTestId.make(~id="feed-toggle", ~children=[<div />], ()),
+        Html.element(c),
+      )
+    });
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<div data-testid=\"feed-toggle\"></div>"),
+    );
+  });
+};
+
 let basic =
   "basic"
   >::: [
@@ -967,6 +993,7 @@ let children =
     "mapWithIndex" >:: testChildrenMapWithIndex,
     "nonListChildren" >:: testNonListChildren,
     "aliasedChildren" >:: testAliasedChildren,
+    "testWithId" >:: testWithId,
   ];
 
 let fragments =
