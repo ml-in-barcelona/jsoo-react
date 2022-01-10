@@ -1,12 +1,8 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
+  push:
   schedule:
     # Prime the caches every Monday
     - cron: 0 1 * * MON
@@ -59,7 +55,3 @@ jobs:
 
       - name: Run tests
         run: make test
-
-      - name: Run error message test
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: make test-error-msg
