@@ -55,7 +55,3 @@ jobs:
 
       - name: Run tests
         run: make test
-
-      - name: Run error message test
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: make test-error-msg
