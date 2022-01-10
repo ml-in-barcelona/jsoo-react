@@ -1,4 +1,4 @@
-File "input_errors_02_external_component.ml", line 1, characters 0-79:
+File "input_errors_02_external_component_multi_prim.ml", line 1, characters 0-79:
 1 | external%component make : name:Js.js_string Js.t -> React.element = "foo" "bar"
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Error: jsoo-react: externals only allow single primitive declarations

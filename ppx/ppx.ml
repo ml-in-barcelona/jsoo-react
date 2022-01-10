@@ -1144,8 +1144,10 @@ let jsxMapper () =
                     ( (Str_label.of_arg_label arg_label, ptyp_loc, type_)
                     :: types )
                     rest
-              | Ptyp_arrow (Nolabel, _type, rest) ->
-                  get_prop_types types rest
+              | Ptyp_arrow (Nolabel, {ptyp_loc}, _rest) ->
+                  Location.raise_errorf ~loc:ptyp_loc
+                    "jsoo-react: externals only allow labelled or optional \
+                     labelled arguments"
               | Ptyp_arrow
                   (((Labelled _ | Optional _) as arg_label), type_, returnValue)
                 ->
