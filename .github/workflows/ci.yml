@@ -1,12 +1,8 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
+  push:
   schedule:
     # Prime the caches every Monday
     - cron: 0 1 * * MON
