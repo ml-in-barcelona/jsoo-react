@@ -17,15 +17,14 @@
    (run refmt --parse=re --print=ml %{deps}))))
 
 (rule
- (alias error-msg)
- (targets element_attribute_error.result)
+ (targets pp_errors.actual)
  (deps
-  (:main ./main.exe)
-  (:input element_attribute_error.ml))
+  (:pp main.exe)
+  (:input input_errors.ml))
  (action
   (with-stderr-to
    %{targets}
-   (bash "! ./%{main} %{input}"))))
+   (bash "! OCAML_COLOR=never ./%{pp} --impl %{input}"))))
 
 (rule
  (targets pp_ocaml.result)
@@ -37,5 +36,6 @@
  (alias runtest)
  (action
   (progn
+   (diff pp_errors.expected pp_errors.actual)
    (diff pp_reason.expected pp_reason.result)
    (diff pp_ocaml.expected pp_ocaml.result))))

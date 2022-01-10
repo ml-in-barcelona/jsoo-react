@@ -36,7 +36,7 @@ test-error-msg: ## Run the unit tests for error messages
 	$(DUNE) build @error-msg --diff-command "git --no-pager diff --no-index --color=never -u --minimal"
 
 test-error-msg-promote: ## Update snapshots and promotes it to correct only the unit tests for error messages
-	$(DUNE) build @error-msg --diff-command "git --no-pager diff --no-index --color=never -u --minimal"
+	$(DUNE) build @error-msg --diff-command "git --no-pager diff --no-index --color=never -u --minimal" --auto-promote
 
 deps: $(opam_file) ## Alias to update the opam file and install the needed deps
 
