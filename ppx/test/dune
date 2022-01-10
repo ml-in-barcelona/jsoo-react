@@ -22,9 +22,12 @@
   (:pp main.exe)
   (:input input_errors.ml))
  (action
-  (with-stderr-to
-   %{targets}
-   (bash "! OCAML_COLOR=never ./%{pp} --impl %{input}"))))
+  (setenv
+   "OCAML_COLOR"
+   "never"
+   (with-stderr-to
+    %{targets}
+    (bash "! ./%{pp} --impl %{input}")))))
 
 (rule
  (targets pp_ocaml.result)
