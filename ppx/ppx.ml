@@ -1134,7 +1134,7 @@ let jsxMapper () =
         | [], false ->
             structure :: returnStructures
         | (_ :: _ as filtered_attrs), _ | (_ as filtered_attrs), true ->
-            let rec get_prop_types types ({ptyp_loc; ptyp_desc} as fullType) =
+            let rec get_prop_types types {ptyp_loc; ptyp_desc} =
               match ptyp_desc with
               | Ptyp_arrow
                   ( ((Labelled _ | Optional _) as arg_label)
@@ -1149,15 +1149,22 @@ let jsxMapper () =
               | Ptyp_arrow
                   (((Labelled _ | Optional _) as arg_label), type_, returnValue)
                 ->
-                  ( returnValue
-                  , ( Str_label.of_arg_label arg_label
-                    , returnValue.ptyp_loc
-                    , type_ )
-                    :: types )
-              | _ ->
-                  (fullType, types)
+                  (Str_label.of_arg_label arg_label, returnValue.ptyp_loc, type_)
+                  :: types
+              | Ptyp_any
+              | Ptyp_var _
+              | Ptyp_tuple _
+              | Ptyp_constr (_, _)
+              | Ptyp_object (_, _)
+              | Ptyp_class (_, _)
+              | Ptyp_alias (_, _)
+              | Ptyp_variant (_, _, _)
+              | Ptyp_poly (_, _)
+              | Ptyp_package _
+              | Ptyp_extension _ ->
+                  types
             in
-            let _inner_type, prop_types = get_prop_types [] pval_type in
+            let prop_types = get_prop_types [] pval_type in
             let named_type_list =
               List.fold_left arg_to_concrete_type [] prop_types
             in
@@ -1190,12 +1197,12 @@ let jsxMapper () =
                 try Some (List.find hasAttr pval_attributes)
                 with Not_found -> None
               in
-              let _attr_loc, payload =
+              let payload =
                 match react_component_attr with
-                | Some {attr_loc; attr_payload} ->
-                    (attr_loc, Some attr_payload)
+                | Some {attr_payload} ->
+                    Some attr_payload
                 | None ->
-                    (empty_loc, None)
+                    None
               in
               let make_js_comp ~loc ~fn_name ~named_type_list rest =
                 let props = get_props_attr payload in
