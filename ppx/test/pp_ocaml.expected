@@ -20,9 +20,9 @@ let make =
                                                                     name))|] in
   let make =
     ((fun ?(name= "") ->
-        React.Dom.createDOMElementVariadic "div"
-          ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-          [React.string ("Hello " ^ name)])
+        (React.Dom.createDOMElementVariadic "div"
+           ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+           [React.string ("Hello " ^ name)] : React.element))
     [@warning "-16"]) in
   let make
     (Props :
@@ -76,12 +76,12 @@ let make =
                                                                     children))|] in
   let make =
     ((fun ~children:(first, second) ->
-        React.Dom.createDOMElementVariadic "div"
-          ~props:(Js_of_ocaml.Js.Unsafe.obj
-                    [|("id",
-                        (Js_of_ocaml.Js.Unsafe.inject
-                           (Js_of_ocaml.Js.string ("foo" : string))))|] : 
-          React.Dom.domProps) [first; second])
+        (React.Dom.createDOMElementVariadic "div"
+           ~props:(Js_of_ocaml.Js.Unsafe.obj
+                     [|("id",
+                         (Js_of_ocaml.Js.Unsafe.inject
+                            (Js_of_ocaml.Js.string ("foo" : string))))|] : 
+           React.Dom.domProps) [first; second] : React.element))
     [@warning "-16"]) in
   let make
     (Props :
@@ -122,12 +122,12 @@ let make =
                                                                     children))|] in
   let make =
     ((fun ~children:kids ->
-        React.Dom.createDOMElementVariadic "div"
-          ~props:(Js_of_ocaml.Js.Unsafe.obj
-                    [|("id",
-                        (Js_of_ocaml.Js.Unsafe.inject
-                           (Js_of_ocaml.Js.string ("foo" : string))))|] : 
-          React.Dom.domProps) kids)
+        (React.Dom.createDOMElementVariadic "div"
+           ~props:(Js_of_ocaml.Js.Unsafe.obj
+                     [|("id",
+                         (Js_of_ocaml.Js.Unsafe.inject
+                            (Js_of_ocaml.Js.string ("foo" : string))))|] : 
+           React.Dom.domProps) kids : React.element))
     [@warning "-16"]) in
   let make
     (Props :
@@ -169,9 +169,9 @@ let make =
   let make =
     ((fun ~children:(first, second) ->
         fun () ->
-          React.Dom.createDOMElementVariadic "div"
-            ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
-            [first; second])
+          (React.Dom.createDOMElementVariadic "div"
+             ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+             [first; second] : React.element))
     [@warning "-16"]) in
   let make
     (Props :
@@ -212,9 +212,9 @@ let make =
                                                                     name))|] in
   let make =
     ((fun ?(name= "") ->
-        React.Dom.createDOMElementVariadic "div"
-          ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps) 
-          [name])
+        (React.Dom.createDOMElementVariadic "div"
+           ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+           [name] : React.element))
     [@warning "-16"]) in
   let make
     (Props :
@@ -239,13 +239,13 @@ let make =
                    (Js_of_ocaml.Js.Optdef.option
                       (Option.map Js_of_ocaml.Js.string key))))|] in
   let make () =
-    React.Dom.createDOMElementVariadic "a"
-      ~props:(Js_of_ocaml.Js.Unsafe.obj
-                [|("href",
-                    (Js_of_ocaml.Js.Unsafe.inject
-                       (Js_of_ocaml.Js.Optdef.option
-                          (Option.map Js_of_ocaml.Js.string
-                             (Some "https://opam.ocaml.org" : string option)))))|] : 
-      React.Dom.domProps) [] in
+    (React.Dom.createDOMElementVariadic "a"
+       ~props:(Js_of_ocaml.Js.Unsafe.obj
+                 [|("href",
+                     (Js_of_ocaml.Js.Unsafe.inject
+                        (Js_of_ocaml.Js.Optdef.option
+                           (Option.map Js_of_ocaml.Js.string
+                              (Some "https://opam.ocaml.org" : string option)))))|] : 
+       React.Dom.domProps) [] : React.element) in
   let make (Props : <  >  Js_of_ocaml.Js.t) = make () in
   fun ?key -> fun () -> React.createElement make (make_props ?key ())

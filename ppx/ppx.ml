@@ -899,18 +899,38 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper ~ctxt binding =
         | { pexp_desc=
               Pexp_fun
                 ( Nolabel
-                , _default
-                , {ppat_desc= Ppat_construct ({txt= Lident "()"}, _) | Ppat_any}
-                , _internalExpression ) } ->
-            ((fun a -> a), true, expression)
+                , default
+                , ( { ppat_desc=
+                        Ppat_construct ({txt= Lident "()"}, _) | Ppat_any } as
+                  pattern )
+                , internalExpression ) } ->
+            let loc = expression.pexp_loc in
+            ( (fun a -> a)
+            , true
+            , { expression with
+                pexp_desc=
+                  Pexp_fun
+                    ( Nolabel
+                    , default
+                    , pattern
+                    , [%expr ([%e internalExpression] : React.element)] ) } )
         (* let make = (~prop) => ... *)
         | { pexp_desc=
               Pexp_fun
-                ( (Labelled _ | Optional _)
-                , _default
-                , _pattern
-                , _internalExpression ) } ->
-            ((fun a -> a), false, unerasable_ignore_exp expression)
+                ( ((Labelled _ | Optional _) as label)
+                , default
+                , pattern
+                , internalExpression ) } ->
+            let loc = expression.pexp_loc in
+            ( (fun a -> a)
+            , false
+            , { (unerasable_ignore_exp expression) with
+                pexp_desc=
+                  Pexp_fun
+                    ( label
+                    , default
+                    , pattern
+                    , [%expr ([%e internalExpression] : React.element)] ) } )
         (* let make = (prop) => ... *)
         | { pexp_desc=
               Pexp_fun (_nolabel, _default, pattern, _internalExpression) } ->
