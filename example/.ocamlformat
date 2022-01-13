@@ -1,1 +1,4 @@
 profile = ocamlformat
+break-separators=after
+dock-collection-brackets=true
+space-around-lists=true
