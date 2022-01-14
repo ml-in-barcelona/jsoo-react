@@ -9,7 +9,7 @@ let%component make () =
           target "_blank";
         |]
         [
-          i [| className "ion-social-github" |] []; React.string "Fork on GitHub";
+          i [| className "ion-social-github" |] []; text "Fork on GitHub";
         ];
       footer [||]
         [
@@ -18,9 +18,9 @@ let%component make () =
               span
                 [| className "attribution" |]
                 [
-                  React.string "An interactive learning project from ";
-                  a [| href "https://thinkster.io" |] [ React.string "Thinkster" ];
-                  React.string ". Code &amp; design licensed under MIT.";
+                  text "An interactive learning project from ";
+                  a [| href "https://thinkster.io" |] [ text "Thinkster" ];
+                  text ". Code &amp; design licensed under MIT.";
                 ];
             ];
         ];

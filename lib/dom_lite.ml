@@ -27,3 +27,5 @@ let footer = make_element "footer"
 let i = make_element "i"
 
 let span = make_element "span"
+
+let text = Core.string
