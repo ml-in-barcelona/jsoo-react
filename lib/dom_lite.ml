@@ -6,7 +6,9 @@ end
 
 module Html = struct
   let make_element name props children =
-    Dom.createDOMElementVariadic name ~props:(Js_of_ocaml.Js.Unsafe.obj props) children
+    Dom.createDOMElementVariadic name
+      ~props:(Js_of_ocaml.Js.Unsafe.obj props)
+      children
 
   let a = make_element "a"
 
@@ -21,7 +23,8 @@ module Html = struct
   let text = Core.string
 
   module Props = struct
-    let string_prop key value = (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value))
+    let string_prop key value =
+      (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value))
 
     let href = string_prop "href"
 
