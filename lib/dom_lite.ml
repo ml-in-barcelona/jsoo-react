@@ -4,18 +4,16 @@ module Fragment = struct
   let make children = make ~children ()
 end
 
-let href str = ("href", str)
+let string_prop key value = (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value))
 
-let target str = ("target", str)
+let href = string_prop "href"
 
-let className str = ("className", str)
+let target = string_prop "target"
+
+let className = string_prop "className"
 
 let make_props list : Dom.domProps =
-  Js_of_ocaml.Js.Unsafe.obj
-    ( Array.of_list list
-    |> Array.map (fun (key, value) ->
-           (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value)) )
-    )
+  Js_of_ocaml.Js.Unsafe.obj (Array.of_list list)
 
 let make_element name props children =
   Dom.createDOMElementVariadic name ~props:(make_props props) children
