@@ -4,28 +4,29 @@ module Fragment = struct
   let make children = make ~children ()
 end
 
-let string_prop key value = (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value))
+module Html = struct
+  let make_element name props children =
+    Dom.createDOMElementVariadic name ~props:(Js_of_ocaml.Js.Unsafe.obj props) children
 
-let href = string_prop "href"
+  let a = make_element "a"
 
-let target = string_prop "target"
+  let div = make_element "div"
 
-let className = string_prop "className"
+  let footer = make_element "footer"
 
-let make_props arr : Dom.domProps =
-  Js_of_ocaml.Js.Unsafe.obj arr
+  let i = make_element "i"
 
-let make_element name props children =
-  Dom.createDOMElementVariadic name ~props:(make_props props) children
+  let span = make_element "span"
 
-let a = make_element "a"
+  let text = Core.string
 
-let div = make_element "div"
+  module Props = struct
+    let string_prop key value = (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value))
 
-let footer = make_element "footer"
+    let href = string_prop "href"
 
-let i = make_element "i"
+    let target = string_prop "target"
 
-let span = make_element "span"
-
-let text = Core.string
+    let className = string_prop "className"
+  end
+end

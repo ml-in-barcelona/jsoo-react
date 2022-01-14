@@ -2,24 +2,24 @@ open React.Dom_lite
 
 let%component make () =
   Fragment.make
-    [
+    Html.[
       a
-        [|
+        Props.[|
           href "https://github.com/jihchi/jsoo-react-realworld-example-app";
           target "_blank";
         |]
         [
-          i [| className "ion-social-github" |] []; text "Fork on GitHub";
+          i Props.[| className "ion-social-github" |] []; text "Fork on GitHub";
         ];
       footer [||]
         [
-          div [| className "container" |]
+          div Props.[| className "container" |]
             [
               span
-                [| className "attribution" |]
+                Props.[| className "attribution" |]
                 [
                   text "An interactive learning project from ";
-                  a [| href "https://thinkster.io" |] [ text "Thinkster" ];
+                  a Props.[| href "https://thinkster.io" |] [ text "Thinkster" ];
                   text ". Code &amp; design licensed under MIT.";
                 ];
             ];
