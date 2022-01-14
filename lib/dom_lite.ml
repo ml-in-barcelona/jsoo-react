@@ -12,8 +12,8 @@ let target = string_prop "target"
 
 let className = string_prop "className"
 
-let make_props list : Dom.domProps =
-  Js_of_ocaml.Js.Unsafe.obj (Array.of_list list)
+let make_props arr : Dom.domProps =
+  Js_of_ocaml.Js.Unsafe.obj arr
 
 let make_element name props children =
   Dom.createDOMElementVariadic name ~props:(make_props props) children
