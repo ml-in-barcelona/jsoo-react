@@ -2,3 +2,4 @@ profile = ocamlformat
 break-separators=after
 dock-collection-brackets=true
 space-around-lists=true
+space-around-arrays=true

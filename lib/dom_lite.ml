@@ -10,9 +10,9 @@ let target str = ("target", str)
 
 let className str = ("className", str)
 
-let make_props list : Dom.domProps =
+let make_props attrs : Dom.domProps =
   Js_of_ocaml.Js.Unsafe.obj
-    ( Array.of_list list
+    ( attrs
     |> Array.map (fun (key, value) ->
            (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value)) )
     )
