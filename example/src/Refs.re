@@ -22,7 +22,7 @@ let make = () => {
     <button
       key="toggle"
       onClick={_ => setShow(s => !s)}
-      style={React.Dom.Style.make(~marginRight="15px", ())}>
+      style=React.Dom.Style.(make([|marginRight("15px")|]))>
       {"Toggle fancy link" |> React.string}
     </button>
     {show
