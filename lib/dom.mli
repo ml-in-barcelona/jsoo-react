@@ -175,8 +175,6 @@ module Style : sig
 
   val clear : string -> style_key
 
-  val clip : string -> style_key
-
   val color : string -> style_key
 
   val content : string -> style_key
@@ -190,8 +188,6 @@ module Style : sig
   val cueAfter : string -> style_key
 
   val cueBefore : string -> style_key
-
-  val cursor : string -> style_key
 
   val direction : string -> style_key
 
@@ -511,8 +507,6 @@ module Style : sig
 
   val all : string -> style_key
 
-  val glyphOrientationVertical : string -> style_key
-
   val textCombineUpright : string -> style_key
 
   val textOrientation : string -> style_key
@@ -524,10 +518,6 @@ module Style : sig
   val shapeMargin : string -> style_key
 
   val shapeOutside : string -> style_key
-
-  val clipPath : string -> style_key
-
-  val clipRule : string -> style_key
 
   val mask : string -> style_key
 
