@@ -46,8 +46,6 @@ val renderToElementWithId : Core.element -> string -> unit
       | Some element ->
           render reactElement element]
 
-type style
-
 type domRef = private Ojs.t
 
 module Ref : sig
@@ -102,1404 +100,1407 @@ val forwardRef : ('props -> domRef -> Core.element) -> 'props Core.component
 
     let forwardRef renderFunc = forwardRef_internal Imports.react renderFunc]
 
+type block
+
 module Style : sig
   [@@@js.stop]
 
-  type style_key
+  type decl
 
-  type t = style
+  type t = block
 
-  val make : style_key array -> style
+  val make : decl array -> block
 
-  val azimuth : string -> style_key
+  val azimuth : string -> decl
 
-  val background : string -> style_key
+  val background : string -> decl
 
-  val backgroundAttachment : string -> style_key
+  val backgroundAttachment : string -> decl
 
-  val backgroundColor : string -> style_key
+  val backgroundColor : string -> decl
 
-  val backgroundImage : string -> style_key
+  val backgroundImage : string -> decl
 
-  val backgroundPosition : string -> style_key
+  val backgroundPosition : string -> decl
 
-  val backgroundRepeat : string -> style_key
+  val backgroundRepeat : string -> decl
 
-  val border : string -> style_key
+  val border : string -> decl
 
-  val borderCollapse : string -> style_key
+  val borderCollapse : string -> decl
 
-  val borderColor : string -> style_key
+  val borderColor : string -> decl
 
-  val borderSpacing : string -> style_key
+  val borderSpacing : string -> decl
 
-  val borderStyle : string -> style_key
+  val borderStyle : string -> decl
 
-  val borderTop : string -> style_key
+  val borderTop : string -> decl
 
-  val borderRight : string -> style_key
+  val borderRight : string -> decl
 
-  val borderBottom : string -> style_key
+  val borderBottom : string -> decl
 
-  val borderLeft : string -> style_key
+  val borderLeft : string -> decl
 
-  val borderTopColor : string -> style_key
+  val borderTopColor : string -> decl
 
-  val borderRightColor : string -> style_key
+  val borderRightColor : string -> decl
 
-  val borderBottomColor : string -> style_key
+  val borderBottomColor : string -> decl
 
-  val borderLeftColor : string -> style_key
+  val borderLeftColor : string -> decl
 
-  val borderTopStyle : string -> style_key
+  val borderTopStyle : string -> decl
 
-  val borderRightStyle : string -> style_key
+  val borderRightStyle : string -> decl
 
-  val borderBottomStyle : string -> style_key
+  val borderBottomStyle : string -> decl
 
-  val borderLeftStyle : string -> style_key
+  val borderLeftStyle : string -> decl
 
-  val borderTopWidth : string -> style_key
+  val borderTopWidth : string -> decl
 
-  val borderRightWidth : string -> style_key
+  val borderRightWidth : string -> decl
 
-  val borderBottomWidth : string -> style_key
+  val borderBottomWidth : string -> decl
 
-  val borderLeftWidth : string -> style_key
+  val borderLeftWidth : string -> decl
 
-  val borderWidth : string -> style_key
+  val borderWidth : string -> decl
 
-  val bottom : string -> style_key
+  val bottom : string -> decl
 
-  val captionSide : string -> style_key
+  val captionSide : string -> decl
 
-  val clear : string -> style_key
+  val clear : string -> decl
 
-  val color : string -> style_key
+  val color : string -> decl
 
-  val content : string -> style_key
+  val content : string -> decl
 
-  val counterIncrement : string -> style_key
+  val counterIncrement : string -> decl
 
-  val counterReset : string -> style_key
+  val counterReset : string -> decl
 
-  val cue : string -> style_key
+  val cue : string -> decl
 
-  val cueAfter : string -> style_key
+  val cueAfter : string -> decl
 
-  val cueBefore : string -> style_key
+  val cueBefore : string -> decl
 
-  val direction : string -> style_key
+  val direction : string -> decl
 
-  val display : string -> style_key
+  val display : string -> decl
 
-  val elevation : string -> style_key
+  val elevation : string -> decl
 
-  val emptyCells : string -> style_key
+  val emptyCells : string -> decl
 
-  val float : string -> style_key
+  val float : string -> decl
 
-  val font : string -> style_key
+  val font : string -> decl
 
-  val fontFamily : string -> style_key
+  val fontFamily : string -> decl
 
-  val fontSize : string -> style_key
+  val fontSize : string -> decl
 
-  val fontSizeAdjust : string -> style_key
+  val fontSizeAdjust : string -> decl
 
-  val fontStretch : string -> style_key
+  val fontStretch : string -> decl
 
-  val fontStyle : string -> style_key
+  val fontStyle : string -> decl
 
-  val fontVariant : string -> style_key
+  val fontVariant : string -> decl
 
-  val fontWeight : string -> style_key
+  val fontWeight : string -> decl
 
-  val height : string -> style_key
+  val height : string -> decl
 
-  val left : string -> style_key
+  val left : string -> decl
 
-  val letterSpacing : string -> style_key
+  val letterSpacing : string -> decl
 
-  val lineHeight : string -> style_key
+  val lineHeight : string -> decl
 
-  val listStyle : string -> style_key
+  val listStyle : string -> decl
 
-  val listStyleImage : string -> style_key
+  val listStyleImage : string -> decl
 
-  val listStylePosition : string -> style_key
+  val listStylePosition : string -> decl
 
-  val listStyleType : string -> style_key
+  val listStyleType : string -> decl
 
-  val margin : string -> style_key
+  val margin : string -> decl
 
-  val marginTop : string -> style_key
+  val marginTop : string -> decl
 
-  val marginRight : string -> style_key
+  val marginRight : string -> decl
 
-  val marginBottom : string -> style_key
+  val marginBottom : string -> decl
 
-  val marginLeft : string -> style_key
+  val marginLeft : string -> decl
 
-  val markerOffset : string -> style_key
+  val markerOffset : string -> decl
 
-  val marks : string -> style_key
+  val marks : string -> decl
 
-  val maxHeight : string -> style_key
+  val maxHeight : string -> decl
 
-  val maxWidth : string -> style_key
+  val maxWidth : string -> decl
 
-  val minHeight : string -> style_key
+  val minHeight : string -> decl
 
-  val minWidth : string -> style_key
+  val minWidth : string -> decl
 
-  val orphans : string -> style_key
+  val orphans : string -> decl
 
-  val outline : string -> style_key
+  val outline : string -> decl
 
-  val outlineColor : string -> style_key
+  val outlineColor : string -> decl
 
-  val outlineStyle : string -> style_key
+  val outlineStyle : string -> decl
 
-  val outlineWidth : string -> style_key
+  val outlineWidth : string -> decl
 
-  val overflow : string -> style_key
+  val overflow : string -> decl
 
-  val overflowX : string -> style_key
+  val overflowX : string -> decl
 
-  val overflowY : string -> style_key
+  val overflowY : string -> decl
 
-  val padding : string -> style_key
+  val padding : string -> decl
 
-  val paddingTop : string -> style_key
+  val paddingTop : string -> decl
 
-  val paddingRight : string -> style_key
+  val paddingRight : string -> decl
 
-  val paddingBottom : string -> style_key
+  val paddingBottom : string -> decl
 
-  val paddingLeft : string -> style_key
+  val paddingLeft : string -> decl
 
-  val page : string -> style_key
+  val page : string -> decl
 
-  val pageBreakAfter : string -> style_key
+  val pageBreakAfter : string -> decl
 
-  val pageBreakBefore : string -> style_key
+  val pageBreakBefore : string -> decl
 
-  val pageBreakInside : string -> style_key
+  val pageBreakInside : string -> decl
 
-  val pause : string -> style_key
+  val pause : string -> decl
 
-  val pauseAfter : string -> style_key
+  val pauseAfter : string -> decl
 
-  val pauseBefore : string -> style_key
+  val pauseBefore : string -> decl
 
-  val pitch : string -> style_key
+  val pitch : string -> decl
 
-  val pitchRange : string -> style_key
+  val pitchRange : string -> decl
 
-  val playDuring : string -> style_key
+  val playDuring : string -> decl
 
-  val position : string -> style_key
+  val position : string -> decl
 
-  val quotes : string -> style_key
+  val quotes : string -> decl
 
-  val richness : string -> style_key
+  val richness : string -> decl
 
-  val right : string -> style_key
+  val right : string -> decl
 
-  val size : string -> style_key
+  val size : string -> decl
 
-  val speak : string -> style_key
+  val speak : string -> decl
 
-  val speakHeader : string -> style_key
+  val speakHeader : string -> decl
 
-  val speakNumeral : string -> style_key
+  val speakNumeral : string -> decl
 
-  val speakPunctuation : string -> style_key
+  val speakPunctuation : string -> decl
 
-  val speechRate : string -> style_key
+  val speechRate : string -> decl
 
-  val stress : string -> style_key
+  val stress : string -> decl
 
-  val tableLayout : string -> style_key
+  val tableLayout : string -> decl
 
-  val textAlign : string -> style_key
+  val textAlign : string -> decl
 
-  val textDecoration : string -> style_key
+  val textDecoration : string -> decl
 
-  val textIndent : string -> style_key
+  val textIndent : string -> decl
 
-  val textShadow : string -> style_key
+  val textShadow : string -> decl
 
-  val textTransform : string -> style_key
+  val textTransform : string -> decl
 
-  val top : string -> style_key
+  val top : string -> decl
 
-  val unicodeBidi : string -> style_key
+  val unicodeBidi : string -> decl
 
-  val verticalAlign : string -> style_key
+  val verticalAlign : string -> decl
 
-  val visibility : string -> style_key
+  val visibility : string -> decl
 
-  val voiceFamily : string -> style_key
+  val voiceFamily : string -> decl
 
-  val volume : string -> style_key
+  val volume : string -> decl
 
-  val whiteSpace : string -> style_key
+  val whiteSpace : string -> decl
 
-  val widows : string -> style_key
+  val widows : string -> decl
 
-  val width : string -> style_key
+  val width : string -> decl
 
-  val wordSpacing : string -> style_key
+  val wordSpacing : string -> decl
 
-  val zIndex : string -> style_key
+  val zIndex : string -> decl
 
-  val opacity : string -> style_key
+  val opacity : string -> decl
 
-  val backgroundOrigin : string -> style_key
+  val backgroundOrigin : string -> decl
 
-  val backgroundSize : string -> style_key
+  val backgroundSize : string -> decl
 
-  val backgroundClip : string -> style_key
+  val backgroundClip : string -> decl
 
-  val borderRadius : string -> style_key
+  val borderRadius : string -> decl
 
-  val borderTopLeftRadius : string -> style_key
+  val borderTopLeftRadius : string -> decl
 
-  val borderTopRightRadius : string -> style_key
+  val borderTopRightRadius : string -> decl
 
-  val borderBottomLeftRadius : string -> style_key
+  val borderBottomLeftRadius : string -> decl
 
-  val borderBottomRightRadius : string -> style_key
+  val borderBottomRightRadius : string -> decl
 
-  val borderImage : string -> style_key
+  val borderImage : string -> decl
 
-  val borderImageSource : string -> style_key
+  val borderImageSource : string -> decl
 
-  val borderImageSlice : string -> style_key
+  val borderImageSlice : string -> decl
 
-  val borderImageWidth : string -> style_key
+  val borderImageWidth : string -> decl
 
-  val borderImageOutset : string -> style_key
+  val borderImageOutset : string -> decl
 
-  val borderImageRepeat : string -> style_key
+  val borderImageRepeat : string -> decl
 
-  val boxShadow : string -> style_key
+  val boxShadow : string -> decl
 
-  val columns : string -> style_key
+  val columns : string -> decl
 
-  val columnCount : string -> style_key
+  val columnCount : string -> decl
 
-  val columnFill : string -> style_key
+  val columnFill : string -> decl
 
-  val columnGap : string -> style_key
+  val columnGap : string -> decl
 
-  val columnRule : string -> style_key
+  val columnRule : string -> decl
 
-  val columnRuleColor : string -> style_key
+  val columnRuleColor : string -> decl
 
-  val columnRuleStyle : string -> style_key
+  val columnRuleStyle : string -> decl
 
-  val columnRuleWidth : string -> style_key
+  val columnRuleWidth : string -> decl
 
-  val columnSpan : string -> style_key
+  val columnSpan : string -> decl
 
-  val columnWidth : string -> style_key
+  val columnWidth : string -> decl
 
-  val breakAfter : string -> style_key
+  val breakAfter : string -> decl
 
-  val breakBefore : string -> style_key
+  val breakBefore : string -> decl
 
-  val breakInside : string -> style_key
+  val breakInside : string -> decl
 
-  val rest : string -> style_key
+  val rest : string -> decl
 
-  val restAfter : string -> style_key
+  val restAfter : string -> decl
 
-  val restBefore : string -> style_key
+  val restBefore : string -> decl
 
-  val speakAs : string -> style_key
+  val speakAs : string -> decl
 
-  val voiceBalance : string -> style_key
+  val voiceBalance : string -> decl
 
-  val voiceDuration : string -> style_key
+  val voiceDuration : string -> decl
 
-  val voicePitch : string -> style_key
+  val voicePitch : string -> decl
 
-  val voiceRange : string -> style_key
+  val voiceRange : string -> decl
 
-  val voiceRate : string -> style_key
+  val voiceRate : string -> decl
 
-  val voiceStress : string -> style_key
+  val voiceStress : string -> decl
 
-  val voiceVolume : string -> style_key
+  val voiceVolume : string -> decl
 
-  val objectFit : string -> style_key
+  val objectFit : string -> decl
 
-  val objectPosition : string -> style_key
+  val objectPosition : string -> decl
 
-  val imageResolution : string -> style_key
+  val imageResolution : string -> decl
 
-  val imageOrientation : string -> style_key
+  val imageOrientation : string -> decl
 
-  val alignContent : string -> style_key
+  val alignContent : string -> decl
 
-  val alignItems : string -> style_key
+  val alignItems : string -> decl
 
-  val alignSelf : string -> style_key
+  val alignSelf : string -> decl
 
-  val flex : string -> style_key
+  val flex : string -> decl
 
-  val flexBasis : string -> style_key
+  val flexBasis : string -> decl
 
-  val flexDirection : string -> style_key
+  val flexDirection : string -> decl
 
-  val flexFlow : string -> style_key
+  val flexFlow : string -> decl
 
-  val flexGrow : string -> style_key
+  val flexGrow : string -> decl
 
-  val flexShrink : string -> style_key
+  val flexShrink : string -> decl
 
-  val flexWrap : string -> style_key
+  val flexWrap : string -> decl
 
-  val justifyContent : string -> style_key
+  val justifyContent : string -> decl
 
-  val order : string -> style_key
+  val order : string -> decl
 
-  val textDecorationColor : string -> style_key
+  val textDecorationColor : string -> decl
 
-  val textDecorationLine : string -> style_key
+  val textDecorationLine : string -> decl
 
-  val textDecorationSkip : string -> style_key
+  val textDecorationSkip : string -> decl
 
-  val textDecorationStyle : string -> style_key
+  val textDecorationStyle : string -> decl
 
-  val textEmphasis : string -> style_key
+  val textEmphasis : string -> decl
 
-  val textEmphasisColor : string -> style_key
+  val textEmphasisColor : string -> decl
 
-  val textEmphasisPosition : string -> style_key
+  val textEmphasisPosition : string -> decl
 
-  val textEmphasisStyle : string -> style_key
+  val textEmphasisStyle : string -> decl
 
-  val textUnderlinePosition : string -> style_key
+  val textUnderlinePosition : string -> decl
 
-  val fontFeatureSettings : string -> style_key
+  val fontFeatureSettings : string -> decl
 
-  val fontKerning : string -> style_key
+  val fontKerning : string -> decl
 
-  val fontLanguageOverride : string -> style_key
+  val fontLanguageOverride : string -> decl
 
-  val fontSynthesis : string -> style_key
+  val fontSynthesis : string -> decl
 
-  val forntVariantAlternates : string -> style_key
+  val forntVariantAlternates : string -> decl
 
-  val fontVariantCaps : string -> style_key
+  val fontVariantCaps : string -> decl
 
-  val fontVariantEastAsian : string -> style_key
+  val fontVariantEastAsian : string -> decl
 
-  val fontVariantLigatures : string -> style_key
+  val fontVariantLigatures : string -> decl
 
-  val fontVariantNumeric : string -> style_key
+  val fontVariantNumeric : string -> decl
 
-  val fontVariantPosition : string -> style_key
+  val fontVariantPosition : string -> decl
 
-  val all : string -> style_key
+  val all : string -> decl
 
-  val textCombineUpright : string -> style_key
+  val textCombineUpright : string -> decl
 
-  val textOrientation : string -> style_key
+  val textOrientation : string -> decl
 
-  val writingMode : string -> style_key
+  val writingMode : string -> decl
 
-  val shapeImageThreshold : string -> style_key
+  val shapeImageThreshold : string -> decl
 
-  val shapeMargin : string -> style_key
+  val shapeMargin : string -> decl
 
-  val shapeOutside : string -> style_key
+  val shapeOutside : string -> decl
 
-  val mask : string -> style_key
+  val mask : string -> decl
 
-  val maskBorder : string -> style_key
+  val maskBorder : string -> decl
 
-  val maskBorderMode : string -> style_key
+  val maskBorderMode : string -> decl
 
-  val maskBorderOutset : string -> style_key
+  val maskBorderOutset : string -> decl
 
-  val maskBorderRepeat : string -> style_key
+  val maskBorderRepeat : string -> decl
 
-  val maskBorderSlice : string -> style_key
+  val maskBorderSlice : string -> decl
 
-  val maskBorderSource : string -> style_key
+  val maskBorderSource : string -> decl
 
-  val maskBorderWidth : string -> style_key
+  val maskBorderWidth : string -> decl
 
-  val maskClip : string -> style_key
+  val maskClip : string -> decl
 
-  val maskComposite : string -> style_key
+  val maskComposite : string -> decl
 
-  val maskImage : string -> style_key
+  val maskImage : string -> decl
 
-  val maskMode : string -> style_key
+  val maskMode : string -> decl
 
-  val maskOrigin : string -> style_key
+  val maskOrigin : string -> decl
 
-  val maskPosition : string -> style_key
+  val maskPosition : string -> decl
 
-  val maskRepeat : string -> style_key
+  val maskRepeat : string -> decl
 
-  val maskSize : string -> style_key
+  val maskSize : string -> decl
 
-  val maskType : string -> style_key
+  val maskType : string -> decl
 
-  val backgroundBlendMode : string -> style_key
+  val backgroundBlendMode : string -> decl
 
-  val isolation : string -> style_key
+  val isolation : string -> decl
 
-  val mixBlendMode : string -> style_key
+  val mixBlendMode : string -> decl
 
-  val boxDecorationBreak : string -> style_key
+  val boxDecorationBreak : string -> decl
 
-  val boxSizing : string -> style_key
+  val boxSizing : string -> decl
 
-  val caretColor : string -> style_key
+  val caretColor : string -> decl
 
-  val navDown : string -> style_key
+  val navDown : string -> decl
 
-  val navLeft : string -> style_key
+  val navLeft : string -> decl
 
-  val navRight : string -> style_key
+  val navRight : string -> decl
 
-  val navUp : string -> style_key
+  val navUp : string -> decl
 
-  val outlineOffset : string -> style_key
+  val outlineOffset : string -> decl
 
-  val resize : string -> style_key
+  val resize : string -> decl
 
-  val textOverflow : string -> style_key
+  val textOverflow : string -> decl
 
-  val grid : string -> style_key
+  val grid : string -> decl
 
-  val gridArea : string -> style_key
+  val gridArea : string -> decl
 
-  val gridAutoColumns : string -> style_key
+  val gridAutoColumns : string -> decl
 
-  val gridAutoFlow : string -> style_key
+  val gridAutoFlow : string -> decl
 
-  val gridAutoRows : string -> style_key
+  val gridAutoRows : string -> decl
 
-  val gridColumn : string -> style_key
+  val gridColumn : string -> decl
 
-  val gridColumnEnd : string -> style_key
+  val gridColumnEnd : string -> decl
 
-  val gridColumnGap : string -> style_key
+  val gridColumnGap : string -> decl
 
-  val gridColumnStart : string -> style_key
+  val gridColumnStart : string -> decl
 
-  val gridGap : string -> style_key
+  val gridGap : string -> decl
 
-  val gridRow : string -> style_key
+  val gridRow : string -> decl
 
-  val gridRowEnd : string -> style_key
+  val gridRowEnd : string -> decl
 
-  val gridRowGap : string -> style_key
+  val gridRowGap : string -> decl
 
-  val gridRowStart : string -> style_key
+  val gridRowStart : string -> decl
 
-  val gridTemplate : string -> style_key
+  val gridTemplate : string -> decl
 
-  val gridTemplateAreas : string -> style_key
+  val gridTemplateAreas : string -> decl
 
-  val gridTemplateColumns : string -> style_key
+  val gridTemplateColumns : string -> decl
 
-  val gridTemplateRows : string -> style_key
+  val gridTemplateRows : string -> decl
 
-  val willChange : string -> style_key
+  val willChange : string -> decl
 
-  val hangingPunctuation : string -> style_key
+  val hangingPunctuation : string -> decl
 
-  val hyphens : string -> style_key
+  val hyphens : string -> decl
 
-  val lineBreak : string -> style_key
+  val lineBreak : string -> decl
 
-  val overflowWrap : string -> style_key
+  val overflowWrap : string -> decl
 
-  val tabSize : string -> style_key
+  val tabSize : string -> decl
 
-  val textAlignLast : string -> style_key
+  val textAlignLast : string -> decl
 
-  val textJustify : string -> style_key
+  val textJustify : string -> decl
 
-  val wordBreak : string -> style_key
+  val wordBreak : string -> decl
 
-  val wordWrap : string -> style_key
+  val wordWrap : string -> decl
 
-  val animation : string -> style_key
+  val animation : string -> decl
 
-  val animationDelay : string -> style_key
+  val animationDelay : string -> decl
 
-  val animationDirection : string -> style_key
+  val animationDirection : string -> decl
 
-  val animationDuration : string -> style_key
+  val animationDuration : string -> decl
 
-  val animationFillMode : string -> style_key
+  val animationFillMode : string -> decl
 
-  val animationIterationCount : string -> style_key
+  val animationIterationCount : string -> decl
 
-  val animationName : string -> style_key
+  val animationName : string -> decl
 
-  val animationPlayState : string -> style_key
+  val animationPlayState : string -> decl
 
-  val animationTimingFunction : string -> style_key
+  val animationTimingFunction : string -> decl
 
-  val transition : string -> style_key
+  val transition : string -> decl
 
-  val transitionDelay : string -> style_key
+  val transitionDelay : string -> decl
 
-  val transitionDuration : string -> style_key
+  val transitionDuration : string -> decl
 
-  val transitionProperty : string -> style_key
+  val transitionProperty : string -> decl
 
-  val transitionTimingFunction : string -> style_key
+  val transitionTimingFunction : string -> decl
 
-  val backfaceVisibility : string -> style_key
+  val backfaceVisibility : string -> decl
 
-  val perspective : string -> style_key
+  val perspective : string -> decl
 
-  val perspectiveOrigin : string -> style_key
+  val perspectiveOrigin : string -> decl
 
-  val transform : string -> style_key
+  val transform : string -> decl
 
-  val transformOrigin : string -> style_key
+  val transformOrigin : string -> decl
 
-  val transformStyle : string -> style_key
+  val transformStyle : string -> decl
 
-  val justifyItems : string -> style_key
+  val justifyItems : string -> decl
 
-  val justifySelf : string -> style_key
+  val justifySelf : string -> decl
 
-  val placeContent : string -> style_key
+  val placeContent : string -> decl
 
-  val placeItems : string -> style_key
+  val placeItems : string -> decl
 
-  val placeSelf : string -> style_key
+  val placeSelf : string -> decl
 
-  val appearance : string -> style_key
+  val appearance : string -> decl
 
-  val caret : string -> style_key
+  val caret : string -> decl
 
-  val caretAnimation : string -> style_key
+  val caretAnimation : string -> decl
 
-  val caretShape : string -> style_key
+  val caretShape : string -> decl
 
-  val userSelect : string -> style_key
+  val userSelect : string -> decl
 
-  val maxLines : string -> style_key
+  val maxLines : string -> decl
 
-  val marqueeDirection : string -> style_key
+  val marqueeDirection : string -> decl
 
-  val marqueeLoop : string -> style_key
+  val marqueeLoop : string -> decl
 
-  val marqueeSpeed : string -> style_key
+  val marqueeSpeed : string -> decl
 
-  val marqueeStyle : string -> style_key
+  val marqueeStyle : string -> decl
 
-  val overflowStyle : string -> style_key
+  val overflowStyle : string -> decl
 
-  val rotation : string -> style_key
+  val rotation : string -> decl
 
-  val rotationPoint : string -> style_key
+  val rotationPoint : string -> decl
 
-  val alignmentBaseline : string -> style_key
+  val alignmentBaseline : string -> decl
 
-  val baselineShift : string -> style_key
+  val baselineShift : string -> decl
 
-  val clip : string -> style_key
+  val clip : string -> decl
 
-  val clipPath : string -> style_key
+  val clipPath : string -> decl
 
-  val clipRule : string -> style_key
+  val clipRule : string -> decl
 
-  val colorInterpolation : string -> style_key
+  val colorInterpolation : string -> decl
 
-  val colorInterpolationFilters : string -> style_key
+  val colorInterpolationFilters : string -> decl
 
-  val colorProfile : string -> style_key
+  val colorProfile : string -> decl
 
-  val colorRendering : string -> style_key
+  val colorRendering : string -> decl
 
-  val cursor : string -> style_key
+  val cursor : string -> decl
 
-  val dominantBaseline : string -> style_key
+  val dominantBaseline : string -> decl
 
-  val fill : string -> style_key
+  val fill : string -> decl
 
-  val fillOpacity : string -> style_key
+  val fillOpacity : string -> decl
 
-  val fillRule : string -> style_key
+  val fillRule : string -> decl
 
-  val filter : string -> style_key
+  val filter : string -> decl
 
-  val floodColor : string -> style_key
+  val floodColor : string -> decl
 
-  val floodOpacity : string -> style_key
+  val floodOpacity : string -> decl
 
-  val glyphOrientationHorizontal : string -> style_key
+  val glyphOrientationHorizontal : string -> decl
 
-  val glyphOrientationVertical : string -> style_key
+  val glyphOrientationVertical : string -> decl
 
-  val imageRendering : string -> style_key
+  val imageRendering : string -> decl
 
-  val kerning : string -> style_key
+  val kerning : string -> decl
 
-  val lightingColor : string -> style_key
+  val lightingColor : string -> decl
 
-  val markerEnd : string -> style_key
+  val markerEnd : string -> decl
 
-  val markerMid : string -> style_key
+  val markerMid : string -> decl
 
-  val markerStart : string -> style_key
+  val markerStart : string -> decl
 
-  val pointerEvents : string -> style_key
+  val pointerEvents : string -> decl
 
-  val shapeRendering : string -> style_key
+  val shapeRendering : string -> decl
 
-  val stopColor : string -> style_key
+  val stopColor : string -> decl
 
-  val stopOpacity : string -> style_key
+  val stopOpacity : string -> decl
 
-  val stroke : string -> style_key
+  val stroke : string -> decl
 
-  val strokeDasharray : string -> style_key
+  val strokeDasharray : string -> decl
 
-  val strokeDashoffset : string -> style_key
+  val strokeDashoffset : string -> decl
 
-  val strokeLinecap : string -> style_key
+  val strokeLinecap : string -> decl
 
-  val strokeLinejoin : string -> style_key
+  val strokeLinejoin : string -> decl
 
-  val strokeMiterlimit : string -> style_key
+  val strokeMiterlimit : string -> decl
 
-  val strokeOpacity : string -> style_key
+  val strokeOpacity : string -> decl
 
-  val strokeWidth : string -> style_key
+  val strokeWidth : string -> decl
 
-  val textAnchor : string -> style_key
+  val textAnchor : string -> decl
 
-  val textRendering : string -> style_key
+  val textRendering : string -> decl
 
-  val rubyAlign : string -> style_key
+  val rubyAlign : string -> decl
 
-  val rubyMerge : string -> style_key
+  val rubyMerge : string -> decl
 
-  val rubyPosition : string -> style_key
+  val rubyPosition : string -> decl
 
   [@@@js.start]
 
   [@@@js.implem
-  type style_key = string * Js_of_ocaml.Js.Unsafe.any
+  type decl = string * Js_of_ocaml.Js.Unsafe.any
 
-  type t = style
+  type t = block
 
-  let string_style_key key value =
-    (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value))
+  let string_style_prop property value =
+    (property, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value))
 
   let make = Js_of_ocaml.Js.Unsafe.obj
 
-  let azimuth = string_style_key "azimuth"
+  let azimuth = string_style_prop "azimuth"
 
-  let background = string_style_key "background"
+  let background = string_style_prop "background"
 
-  let backgroundAttachment = string_style_key "backgroundAttachment"
+  let backgroundAttachment = string_style_prop "backgroundAttachment"
 
-  let backgroundColor = string_style_key "backgroundColor"
+  let backgroundColor = string_style_prop "backgroundColor"
 
-  let backgroundImage = string_style_key "backgroundImage"
+  let backgroundImage = string_style_prop "backgroundImage"
 
-  let backgroundPosition = string_style_key "backgroundPosition"
+  let backgroundPosition = string_style_prop "backgroundPosition"
 
-  let backgroundRepeat = string_style_key "backgroundRepeat"
+  let backgroundRepeat = string_style_prop "backgroundRepeat"
 
-  let border = string_style_key "border"
+  let border = string_style_prop "border"
 
-  let borderCollapse = string_style_key "borderCollapse"
+  let borderCollapse = string_style_prop "borderCollapse"
 
-  let borderColor = string_style_key "borderColor"
+  let borderColor = string_style_prop "borderColor"
 
-  let borderSpacing = string_style_key "borderSpacing"
+  let borderSpacing = string_style_prop "borderSpacing"
 
-  let borderStyle = string_style_key "borderStyle"
+  let borderStyle = string_style_prop "borderStyle"
 
-  let borderTop = string_style_key "borderTop"
+  let borderTop = string_style_prop "borderTop"
 
-  let borderRight = string_style_key "borderRight"
+  let borderRight = string_style_prop "borderRight"
 
-  let borderBottom = string_style_key "borderBottom"
+  let borderBottom = string_style_prop "borderBottom"
 
-  let borderLeft = string_style_key "borderLeft"
+  let borderLeft = string_style_prop "borderLeft"
 
-  let borderTopColor = string_style_key "borderTopColor"
+  let borderTopColor = string_style_prop "borderTopColor"
 
-  let borderRightColor = string_style_key "borderRightColor"
+  let borderRightColor = string_style_prop "borderRightColor"
 
-  let borderBottomColor = string_style_key "borderBottomColor"
+  let borderBottomColor = string_style_prop "borderBottomColor"
 
-  let borderLeftColor = string_style_key "borderLeftColor"
+  let borderLeftColor = string_style_prop "borderLeftColor"
 
-  let borderTopStyle = string_style_key "borderTopStyle"
+  let borderTopStyle = string_style_prop "borderTopStyle"
 
-  let borderRightStyle = string_style_key "borderRightStyle"
+  let borderRightStyle = string_style_prop "borderRightStyle"
 
-  let borderBottomStyle = string_style_key "borderBottomStyle"
+  let borderBottomStyle = string_style_prop "borderBottomStyle"
 
-  let borderLeftStyle = string_style_key "borderLeftStyle"
+  let borderLeftStyle = string_style_prop "borderLeftStyle"
 
-  let borderTopWidth = string_style_key "borderTopWidth"
+  let borderTopWidth = string_style_prop "borderTopWidth"
 
-  let borderRightWidth = string_style_key "borderRightWidth"
+  let borderRightWidth = string_style_prop "borderRightWidth"
 
-  let borderBottomWidth = string_style_key "borderBottomWidth"
+  let borderBottomWidth = string_style_prop "borderBottomWidth"
 
-  let borderLeftWidth = string_style_key "borderLeftWidth"
+  let borderLeftWidth = string_style_prop "borderLeftWidth"
 
-  let borderWidth = string_style_key "borderWidth"
+  let borderWidth = string_style_prop "borderWidth"
 
-  let bottom = string_style_key "bottom"
+  let bottom = string_style_prop "bottom"
 
-  let captionSide = string_style_key "captionSide"
+  let captionSide = string_style_prop "captionSide"
 
-  let clear = string_style_key "clear"
+  let clear = string_style_prop "clear"
 
-  let clip = string_style_key "clip"
+  let clip = string_style_prop "clip"
 
-  let color = string_style_key "color"
+  let color = string_style_prop "color"
 
-  let content = string_style_key "content"
+  let content = string_style_prop "content"
 
-  let counterIncrement = string_style_key "counterIncrement"
+  let counterIncrement = string_style_prop "counterIncrement"
 
-  let counterReset = string_style_key "counterReset"
+  let counterReset = string_style_prop "counterReset"
 
-  let cue = string_style_key "cue"
+  let cue = string_style_prop "cue"
 
-  let cueAfter = string_style_key "cueAfter"
+  let cueAfter = string_style_prop "cueAfter"
 
-  let cueBefore = string_style_key "cueBefore"
+  let cueBefore = string_style_prop "cueBefore"
 
-  let cursor = string_style_key "cursor"
+  let cursor = string_style_prop "cursor"
 
-  let direction = string_style_key "direction"
+  let direction = string_style_prop "direction"
 
-  let display = string_style_key "display"
+  let display = string_style_prop "display"
 
-  let elevation = string_style_key "elevation"
+  let elevation = string_style_prop "elevation"
 
-  let emptyCells = string_style_key "emptyCells"
+  let emptyCells = string_style_prop "emptyCells"
 
-  let float = string_style_key "float"
+  let float = string_style_prop "float"
 
-  let font = string_style_key "font"
+  let font = string_style_prop "font"
 
-  let fontFamily = string_style_key "fontFamily"
+  let fontFamily = string_style_prop "fontFamily"
 
-  let fontSize = string_style_key "fontSize"
+  let fontSize = string_style_prop "fontSize"
 
-  let fontSizeAdjust = string_style_key "fontSizeAdjust"
+  let fontSizeAdjust = string_style_prop "fontSizeAdjust"
 
-  let fontStretch = string_style_key "fontStretch"
+  let fontStretch = string_style_prop "fontStretch"
 
-  let fontStyle = string_style_key "fontStyle"
+  let fontStyle = string_style_prop "fontStyle"
 
-  let fontVariant = string_style_key "fontVariant"
+  let fontVariant = string_style_prop "fontVariant"
 
-  let fontWeight = string_style_key "fontWeight"
+  let fontWeight = string_style_prop "fontWeight"
 
-  let height = string_style_key "height"
+  let height = string_style_prop "height"
 
-  let left = string_style_key "left"
+  let left = string_style_prop "left"
 
-  let letterSpacing = string_style_key "letterSpacing"
+  let letterSpacing = string_style_prop "letterSpacing"
 
-  let lineHeight = string_style_key "lineHeight"
+  let lineHeight = string_style_prop "lineHeight"
 
-  let listStyle = string_style_key "listStyle"
+  let listStyle = string_style_prop "listStyle"
 
-  let listStyleImage = string_style_key "listStyleImage"
+  let listStyleImage = string_style_prop "listStyleImage"
 
-  let listStylePosition = string_style_key "listStylePosition"
+  let listStylePosition = string_style_prop "listStylePosition"
 
-  let listStyleType = string_style_key "listStyleType"
+  let listStyleType = string_style_prop "listStyleType"
 
-  let margin = string_style_key "margin"
+  let margin = string_style_prop "margin"
 
-  let marginTop = string_style_key "marginTop"
+  let marginTop = string_style_prop "marginTop"
 
-  let marginRight = string_style_key "marginRight"
+  let marginRight = string_style_prop "marginRight"
 
-  let marginBottom = string_style_key "marginBottom"
+  let marginBottom = string_style_prop "marginBottom"
 
-  let marginLeft = string_style_key "marginLeft"
+  let marginLeft = string_style_prop "marginLeft"
 
-  let markerOffset = string_style_key "markerOffset"
+  let markerOffset = string_style_prop "markerOffset"
 
-  let marks = string_style_key "marks"
+  let marks = string_style_prop "marks"
 
-  let maxHeight = string_style_key "maxHeight"
+  let maxHeight = string_style_prop "maxHeight"
 
-  let maxWidth = string_style_key "maxWidth"
+  let maxWidth = string_style_prop "maxWidth"
 
-  let minHeight = string_style_key "minHeight"
+  let minHeight = string_style_prop "minHeight"
 
-  let minWidth = string_style_key "minWidth"
+  let minWidth = string_style_prop "minWidth"
 
-  let orphans = string_style_key "orphans"
+  let orphans = string_style_prop "orphans"
 
-  let outline = string_style_key "outline"
+  let outline = string_style_prop "outline"
 
-  let outlineColor = string_style_key "outlineColor"
+  let outlineColor = string_style_prop "outlineColor"
 
-  let outlineStyle = string_style_key "outlineStyle"
+  let outlineStyle = string_style_prop "outlineStyle"
 
-  let outlineWidth = string_style_key "outlineWidth"
+  let outlineWidth = string_style_prop "outlineWidth"
 
-  let overflow = string_style_key "overflow"
+  let overflow = string_style_prop "overflow"
 
-  let overflowX = string_style_key "overflowX"
+  let overflowX = string_style_prop "overflowX"
 
-  let overflowY = string_style_key "overflowY"
+  let overflowY = string_style_prop "overflowY"
 
-  let padding = string_style_key "padding"
+  let padding = string_style_prop "padding"
 
-  let paddingTop = string_style_key "paddingTop"
+  let paddingTop = string_style_prop "paddingTop"
 
-  let paddingRight = string_style_key "paddingRight"
+  let paddingRight = string_style_prop "paddingRight"
 
-  let paddingBottom = string_style_key "paddingBottom"
+  let paddingBottom = string_style_prop "paddingBottom"
 
-  let paddingLeft = string_style_key "paddingLeft"
+  let paddingLeft = string_style_prop "paddingLeft"
 
-  let page = string_style_key "page"
+  let page = string_style_prop "page"
 
-  let pageBreakAfter = string_style_key "pageBreakAfter"
+  let pageBreakAfter = string_style_prop "pageBreakAfter"
 
-  let pageBreakBefore = string_style_key "pageBreakBefore"
+  let pageBreakBefore = string_style_prop "pageBreakBefore"
 
-  let pageBreakInside = string_style_key "pageBreakInside"
+  let pageBreakInside = string_style_prop "pageBreakInside"
 
-  let pause = string_style_key "pause"
+  let pause = string_style_prop "pause"
 
-  let pauseAfter = string_style_key "pauseAfter"
+  let pauseAfter = string_style_prop "pauseAfter"
 
-  let pauseBefore = string_style_key "pauseBefore"
+  let pauseBefore = string_style_prop "pauseBefore"
 
-  let pitch = string_style_key "pitch"
+  let pitch = string_style_prop "pitch"
 
-  let pitchRange = string_style_key "pitchRange"
+  let pitchRange = string_style_prop "pitchRange"
 
-  let playDuring = string_style_key "playDuring"
+  let playDuring = string_style_prop "playDuring"
 
-  let position = string_style_key "position"
+  let position = string_style_prop "position"
 
-  let quotes = string_style_key "quotes"
+  let quotes = string_style_prop "quotes"
 
-  let richness = string_style_key "richness"
+  let richness = string_style_prop "richness"
 
-  let right = string_style_key "right"
+  let right = string_style_prop "right"
 
-  let size = string_style_key "size"
+  let size = string_style_prop "size"
 
-  let speak = string_style_key "speak"
+  let speak = string_style_prop "speak"
 
-  let speakHeader = string_style_key "speakHeader"
+  let speakHeader = string_style_prop "speakHeader"
 
-  let speakNumeral = string_style_key "speakNumeral"
+  let speakNumeral = string_style_prop "speakNumeral"
 
-  let speakPunctuation = string_style_key "speakPunctuation"
+  let speakPunctuation = string_style_prop "speakPunctuation"
 
-  let speechRate = string_style_key "speechRate"
+  let speechRate = string_style_prop "speechRate"
 
-  let stress = string_style_key "stress"
+  let stress = string_style_prop "stress"
 
-  let tableLayout = string_style_key "tableLayout"
+  let tableLayout = string_style_prop "tableLayout"
 
-  let textAlign = string_style_key "textAlign"
+  let textAlign = string_style_prop "textAlign"
 
-  let textDecoration = string_style_key "textDecoration"
+  let textDecoration = string_style_prop "textDecoration"
 
-  let textIndent = string_style_key "textIndent"
+  let textIndent = string_style_prop "textIndent"
 
-  let textShadow = string_style_key "textShadow"
+  let textShadow = string_style_prop "textShadow"
 
-  let textTransform = string_style_key "textTransform"
+  let textTransform = string_style_prop "textTransform"
 
-  let top = string_style_key "top"
+  let top = string_style_prop "top"
 
-  let unicodeBidi = string_style_key "unicodeBidi"
+  let unicodeBidi = string_style_prop "unicodeBidi"
 
-  let verticalAlign = string_style_key "verticalAlign"
+  let verticalAlign = string_style_prop "verticalAlign"
 
-  let visibility = string_style_key "visibility"
+  let visibility = string_style_prop "visibility"
 
-  let voiceFamily = string_style_key "voiceFamily"
+  let voiceFamily = string_style_prop "voiceFamily"
 
-  let volume = string_style_key "volume"
+  let volume = string_style_prop "volume"
 
-  let whiteSpace = string_style_key "whiteSpace"
+  let whiteSpace = string_style_prop "whiteSpace"
 
-  let widows = string_style_key "widows"
+  let widows = string_style_prop "widows"
 
-  let width = string_style_key "width"
+  let width = string_style_prop "width"
 
-  let wordSpacing = string_style_key "wordSpacing"
+  let wordSpacing = string_style_prop "wordSpacing"
 
-  let zIndex = string_style_key "zIndex"
+  let zIndex = string_style_prop "zIndex"
 
-  let opacity = string_style_key "opacity"
+  let opacity = string_style_prop "opacity"
 
-  let backgroundOrigin = string_style_key "backgroundOrigin"
+  let backgroundOrigin = string_style_prop "backgroundOrigin"
 
-  let backgroundSize = string_style_key "backgroundSize"
+  let backgroundSize = string_style_prop "backgroundSize"
 
-  let backgroundClip = string_style_key "backgroundClip"
+  let backgroundClip = string_style_prop "backgroundClip"
 
-  let borderRadius = string_style_key "borderRadius"
+  let borderRadius = string_style_prop "borderRadius"
 
-  let borderTopLeftRadius = string_style_key "borderTopLeftRadius"
+  let borderTopLeftRadius = string_style_prop "borderTopLeftRadius"
 
-  let borderTopRightRadius = string_style_key "borderTopRightRadius"
+  let borderTopRightRadius = string_style_prop "borderTopRightRadius"
 
-  let borderBottomLeftRadius = string_style_key "borderBottomLeftRadius"
+  let borderBottomLeftRadius = string_style_prop "borderBottomLeftRadius"
 
-  let borderBottomRightRadius = string_style_key "borderBottomRightRadius"
+  let borderBottomRightRadius = string_style_prop "borderBottomRightRadius"
 
-  let borderImage = string_style_key "borderImage"
+  let borderImage = string_style_prop "borderImage"
 
-  let borderImageSource = string_style_key "borderImageSource"
+  let borderImageSource = string_style_prop "borderImageSource"
 
-  let borderImageSlice = string_style_key "borderImageSlice"
+  let borderImageSlice = string_style_prop "borderImageSlice"
 
-  let borderImageWidth = string_style_key "borderImageWidth"
+  let borderImageWidth = string_style_prop "borderImageWidth"
 
-  let borderImageOutset = string_style_key "borderImageOutset"
+  let borderImageOutset = string_style_prop "borderImageOutset"
 
-  let borderImageRepeat = string_style_key "borderImageRepeat"
+  let borderImageRepeat = string_style_prop "borderImageRepeat"
 
-  let boxShadow = string_style_key "boxShadow"
+  let boxShadow = string_style_prop "boxShadow"
 
-  let columns = string_style_key "columns"
+  let columns = string_style_prop "columns"
 
-  let columnCount = string_style_key "columnCount"
+  let columnCount = string_style_prop "columnCount"
 
-  let columnFill = string_style_key "columnFill"
+  let columnFill = string_style_prop "columnFill"
 
-  let columnGap = string_style_key "columnGap"
+  let columnGap = string_style_prop "columnGap"
 
-  let columnRule = string_style_key "columnRule"
+  let columnRule = string_style_prop "columnRule"
 
-  let columnRuleColor = string_style_key "columnRuleColor"
+  let columnRuleColor = string_style_prop "columnRuleColor"
 
-  let columnRuleStyle = string_style_key "columnRuleStyle"
+  let columnRuleStyle = string_style_prop "columnRuleStyle"
 
-  let columnRuleWidth = string_style_key "columnRuleWidth"
+  let columnRuleWidth = string_style_prop "columnRuleWidth"
 
-  let columnSpan = string_style_key "columnSpan"
+  let columnSpan = string_style_prop "columnSpan"
 
-  let columnWidth = string_style_key "columnWidth"
+  let columnWidth = string_style_prop "columnWidth"
 
-  let breakAfter = string_style_key "breakAfter"
+  let breakAfter = string_style_prop "breakAfter"
 
-  let breakBefore = string_style_key "breakBefore"
+  let breakBefore = string_style_prop "breakBefore"
 
-  let breakInside = string_style_key "breakInside"
+  let breakInside = string_style_prop "breakInside"
 
-  let rest = string_style_key "rest"
+  let rest = string_style_prop "rest"
 
-  let restAfter = string_style_key "restAfter"
+  let restAfter = string_style_prop "restAfter"
 
-  let restBefore = string_style_key "restBefore"
+  let restBefore = string_style_prop "restBefore"
 
-  let speakAs = string_style_key "speakAs"
+  let speakAs = string_style_prop "speakAs"
 
-  let voiceBalance = string_style_key "voiceBalance"
+  let voiceBalance = string_style_prop "voiceBalance"
 
-  let voiceDuration = string_style_key "voiceDuration"
+  let voiceDuration = string_style_prop "voiceDuration"
 
-  let voicePitch = string_style_key "voicePitch"
+  let voicePitch = string_style_prop "voicePitch"
 
-  let voiceRange = string_style_key "voiceRange"
+  let voiceRange = string_style_prop "voiceRange"
 
-  let voiceRate = string_style_key "voiceRate"
+  let voiceRate = string_style_prop "voiceRate"
 
-  let voiceStress = string_style_key "voiceStress"
+  let voiceStress = string_style_prop "voiceStress"
 
-  let voiceVolume = string_style_key "voiceVolume"
+  let voiceVolume = string_style_prop "voiceVolume"
 
-  let objectFit = string_style_key "objectFit"
+  let objectFit = string_style_prop "objectFit"
 
-  let objectPosition = string_style_key "objectPosition"
+  let objectPosition = string_style_prop "objectPosition"
 
-  let imageResolution = string_style_key "imageResolution"
+  let imageResolution = string_style_prop "imageResolution"
 
-  let imageOrientation = string_style_key "imageOrientation"
+  let imageOrientation = string_style_prop "imageOrientation"
 
-  let alignContent = string_style_key "alignContent"
+  let alignContent = string_style_prop "alignContent"
 
-  let alignItems = string_style_key "alignItems"
+  let alignItems = string_style_prop "alignItems"
 
-  let alignSelf = string_style_key "alignSelf"
+  let alignSelf = string_style_prop "alignSelf"
 
-  let flex = string_style_key "flex"
+  let flex = string_style_prop "flex"
 
-  let flexBasis = string_style_key "flexBasis"
+  let flexBasis = string_style_prop "flexBasis"
 
-  let flexDirection = string_style_key "flexDirection"
+  let flexDirection = string_style_prop "flexDirection"
 
-  let flexFlow = string_style_key "flexFlow"
+  let flexFlow = string_style_prop "flexFlow"
 
-  let flexGrow = string_style_key "flexGrow"
+  let flexGrow = string_style_prop "flexGrow"
 
-  let flexShrink = string_style_key "flexShrink"
+  let flexShrink = string_style_prop "flexShrink"
 
-  let flexWrap = string_style_key "flexWrap"
+  let flexWrap = string_style_prop "flexWrap"
 
-  let justifyContent = string_style_key "justifyContent"
+  let justifyContent = string_style_prop "justifyContent"
 
-  let order = string_style_key "order"
+  let order = string_style_prop "order"
 
-  let textDecorationColor = string_style_key "textDecorationColor"
+  let textDecorationColor = string_style_prop "textDecorationColor"
 
-  let textDecorationLine = string_style_key "textDecorationLine"
+  let textDecorationLine = string_style_prop "textDecorationLine"
 
-  let textDecorationSkip = string_style_key "textDecorationSkip"
+  let textDecorationSkip = string_style_prop "textDecorationSkip"
 
-  let textDecorationStyle = string_style_key "textDecorationStyle"
+  let textDecorationStyle = string_style_prop "textDecorationStyle"
 
-  let textEmphasis = string_style_key "textEmphasis"
+  let textEmphasis = string_style_prop "textEmphasis"
 
-  let textEmphasisColor = string_style_key "textEmphasisColor"
+  let textEmphasisColor = string_style_prop "textEmphasisColor"
 
-  let textEmphasisPosition = string_style_key "textEmphasisPosition"
+  let textEmphasisPosition = string_style_prop "textEmphasisPosition"
 
-  let textEmphasisStyle = string_style_key "textEmphasisStyle"
+  let textEmphasisStyle = string_style_prop "textEmphasisStyle"
 
-  let textUnderlinePosition = string_style_key "textUnderlinePosition"
+  let textUnderlinePosition = string_style_prop "textUnderlinePosition"
 
-  let fontFeatureSettings = string_style_key "fontFeatureSettings"
+  let fontFeatureSettings = string_style_prop "fontFeatureSettings"
 
-  let fontKerning = string_style_key "fontKerning"
+  let fontKerning = string_style_prop "fontKerning"
 
-  let fontLanguageOverride = string_style_key "fontLanguageOverride"
+  let fontLanguageOverride = string_style_prop "fontLanguageOverride"
 
-  let fontSynthesis = string_style_key "fontSynthesis"
+  let fontSynthesis = string_style_prop "fontSynthesis"
 
-  let forntVariantAlternates = string_style_key "forntVariantAlternates"
+  let forntVariantAlternates = string_style_prop "forntVariantAlternates"
 
-  let fontVariantCaps = string_style_key "fontVariantCaps"
+  let fontVariantCaps = string_style_prop "fontVariantCaps"
 
-  let fontVariantEastAsian = string_style_key "fontVariantEastAsian"
+  let fontVariantEastAsian = string_style_prop "fontVariantEastAsian"
 
-  let fontVariantLigatures = string_style_key "fontVariantLigatures"
+  let fontVariantLigatures = string_style_prop "fontVariantLigatures"
 
-  let fontVariantNumeric = string_style_key "fontVariantNumeric"
+  let fontVariantNumeric = string_style_prop "fontVariantNumeric"
 
-  let fontVariantPosition = string_style_key "fontVariantPosition"
+  let fontVariantPosition = string_style_prop "fontVariantPosition"
 
-  let all = string_style_key "all"
+  let all = string_style_prop "all"
 
-  let glyphOrientationVertical = string_style_key "glyphOrientationVertical"
+  let glyphOrientationVertical = string_style_prop "glyphOrientationVertical"
 
-  let textCombineUpright = string_style_key "textCombineUpright"
+  let textCombineUpright = string_style_prop "textCombineUpright"
 
-  let textOrientation = string_style_key "textOrientation"
+  let textOrientation = string_style_prop "textOrientation"
 
-  let writingMode = string_style_key "writingMode"
+  let writingMode = string_style_prop "writingMode"
 
-  let shapeImageThreshold = string_style_key "shapeImageThreshold"
+  let shapeImageThreshold = string_style_prop "shapeImageThreshold"
 
-  let shapeMargin = string_style_key "shapeMargin"
+  let shapeMargin = string_style_prop "shapeMargin"
 
-  let shapeOutside = string_style_key "shapeOutside"
+  let shapeOutside = string_style_prop "shapeOutside"
 
-  let clipPath = string_style_key "clipPath"
+  let clipPath = string_style_prop "clipPath"
 
-  let clipRule = string_style_key "clipRule"
+  let clipRule = string_style_prop "clipRule"
 
-  let mask = string_style_key "mask"
+  let mask = string_style_prop "mask"
 
-  let maskBorder = string_style_key "maskBorder"
+  let maskBorder = string_style_prop "maskBorder"
 
-  let maskBorderMode = string_style_key "maskBorderMode"
+  let maskBorderMode = string_style_prop "maskBorderMode"
 
-  let maskBorderOutset = string_style_key "maskBorderOutset"
+  let maskBorderOutset = string_style_prop "maskBorderOutset"
 
-  let maskBorderRepeat = string_style_key "maskBorderRepeat"
+  let maskBorderRepeat = string_style_prop "maskBorderRepeat"
 
-  let maskBorderSlice = string_style_key "maskBorderSlice"
+  let maskBorderSlice = string_style_prop "maskBorderSlice"
 
-  let maskBorderSource = string_style_key "maskBorderSource"
+  let maskBorderSource = string_style_prop "maskBorderSource"
 
-  let maskBorderWidth = string_style_key "maskBorderWidth"
+  let maskBorderWidth = string_style_prop "maskBorderWidth"
 
-  let maskClip = string_style_key "maskClip"
+  let maskClip = string_style_prop "maskClip"
 
-  let maskComposite = string_style_key "maskComposite"
+  let maskComposite = string_style_prop "maskComposite"
 
-  let maskImage = string_style_key "maskImage"
+  let maskImage = string_style_prop "maskImage"
 
-  let maskMode = string_style_key "maskMode"
+  let maskMode = string_style_prop "maskMode"
 
-  let maskOrigin = string_style_key "maskOrigin"
+  let maskOrigin = string_style_prop "maskOrigin"
 
-  let maskPosition = string_style_key "maskPosition"
+  let maskPosition = string_style_prop "maskPosition"
 
-  let maskRepeat = string_style_key "maskRepeat"
+  let maskRepeat = string_style_prop "maskRepeat"
 
-  let maskSize = string_style_key "maskSize"
+  let maskSize = string_style_prop "maskSize"
 
-  let maskType = string_style_key "maskType"
+  let maskType = string_style_prop "maskType"
 
-  let backgroundBlendMode = string_style_key "backgroundBlendMode"
+  let backgroundBlendMode = string_style_prop "backgroundBlendMode"
 
-  let isolation = string_style_key "isolation"
+  let isolation = string_style_prop "isolation"
 
-  let mixBlendMode = string_style_key "mixBlendMode"
+  let mixBlendMode = string_style_prop "mixBlendMode"
 
-  let boxDecorationBreak = string_style_key "boxDecorationBreak"
+  let boxDecorationBreak = string_style_prop "boxDecorationBreak"
 
-  let boxSizing = string_style_key "boxSizing"
+  let boxSizing = string_style_prop "boxSizing"
 
-  let caretColor = string_style_key "caretColor"
+  let caretColor = string_style_prop "caretColor"
 
-  let navDown = string_style_key "navDown"
+  let navDown = string_style_prop "navDown"
 
-  let navLeft = string_style_key "navLeft"
+  let navLeft = string_style_prop "navLeft"
 
-  let navRight = string_style_key "navRight"
+  let navRight = string_style_prop "navRight"
 
-  let navUp = string_style_key "navUp"
+  let navUp = string_style_prop "navUp"
 
-  let outlineOffset = string_style_key "outlineOffset"
+  let outlineOffset = string_style_prop "outlineOffset"
 
-  let resize = string_style_key "resize"
+  let resize = string_style_prop "resize"
 
-  let textOverflow = string_style_key "textOverflow"
+  let textOverflow = string_style_prop "textOverflow"
 
-  let grid = string_style_key "grid"
+  let grid = string_style_prop "grid"
 
-  let gridArea = string_style_key "gridArea"
+  let gridArea = string_style_prop "gridArea"
 
-  let gridAutoColumns = string_style_key "gridAutoColumns"
+  let gridAutoColumns = string_style_prop "gridAutoColumns"
 
-  let gridAutoFlow = string_style_key "gridAutoFlow"
+  let gridAutoFlow = string_style_prop "gridAutoFlow"
 
-  let gridAutoRows = string_style_key "gridAutoRows"
+  let gridAutoRows = string_style_prop "gridAutoRows"
 
-  let gridColumn = string_style_key "gridColumn"
+  let gridColumn = string_style_prop "gridColumn"
 
-  let gridColumnEnd = string_style_key "gridColumnEnd"
+  let gridColumnEnd = string_style_prop "gridColumnEnd"
 
-  let gridColumnGap = string_style_key "gridColumnGap"
+  let gridColumnGap = string_style_prop "gridColumnGap"
 
-  let gridColumnStart = string_style_key "gridColumnStart"
+  let gridColumnStart = string_style_prop "gridColumnStart"
 
-  let gridGap = string_style_key "gridGap"
+  let gridGap = string_style_prop "gridGap"
 
-  let gridRow = string_style_key "gridRow"
+  let gridRow = string_style_prop "gridRow"
 
-  let gridRowEnd = string_style_key "gridRowEnd"
+  let gridRowEnd = string_style_prop "gridRowEnd"
 
-  let gridRowGap = string_style_key "gridRowGap"
+  let gridRowGap = string_style_prop "gridRowGap"
 
-  let gridRowStart = string_style_key "gridRowStart"
+  let gridRowStart = string_style_prop "gridRowStart"
 
-  let gridTemplate = string_style_key "gridTemplate"
+  let gridTemplate = string_style_prop "gridTemplate"
 
-  let gridTemplateAreas = string_style_key "gridTemplateAreas"
+  let gridTemplateAreas = string_style_prop "gridTemplateAreas"
 
-  let gridTemplateColumns = string_style_key "gridTemplateColumns"
+  let gridTemplateColumns = string_style_prop "gridTemplateColumns"
 
-  let gridTemplateRows = string_style_key "gridTemplateRows"
+  let gridTemplateRows = string_style_prop "gridTemplateRows"
 
-  let willChange = string_style_key "willChange"
+  let willChange = string_style_prop "willChange"
 
-  let hangingPunctuation = string_style_key "hangingPunctuation"
+  let hangingPunctuation = string_style_prop "hangingPunctuation"
 
-  let hyphens = string_style_key "hyphens"
+  let hyphens = string_style_prop "hyphens"
 
-  let lineBreak = string_style_key "lineBreak"
+  let lineBreak = string_style_prop "lineBreak"
 
-  let overflowWrap = string_style_key "overflowWrap"
+  let overflowWrap = string_style_prop "overflowWrap"
 
-  let tabSize = string_style_key "tabSize"
+  let tabSize = string_style_prop "tabSize"
 
-  let textAlignLast = string_style_key "textAlignLast"
+  let textAlignLast = string_style_prop "textAlignLast"
 
-  let textJustify = string_style_key "textJustify"
+  let textJustify = string_style_prop "textJustify"
 
-  let wordBreak = string_style_key "wordBreak"
+  let wordBreak = string_style_prop "wordBreak"
 
-  let wordWrap = string_style_key "wordWrap"
+  let wordWrap = string_style_prop "wordWrap"
 
-  let animation = string_style_key "animation"
+  let animation = string_style_prop "animation"
 
-  let animationDelay = string_style_key "animationDelay"
+  let animationDelay = string_style_prop "animationDelay"
 
-  let animationDirection = string_style_key "animationDirection"
+  let animationDirection = string_style_prop "animationDirection"
 
-  let animationDuration = string_style_key "animationDuration"
+  let animationDuration = string_style_prop "animationDuration"
 
-  let animationFillMode = string_style_key "animationFillMode"
+  let animationFillMode = string_style_prop "animationFillMode"
 
-  let animationIterationCount = string_style_key "animationIterationCount"
+  let animationIterationCount = string_style_prop "animationIterationCount"
 
-  let animationName = string_style_key "animationName"
+  let animationName = string_style_prop "animationName"
 
-  let animationPlayState = string_style_key "animationPlayState"
+  let animationPlayState = string_style_prop "animationPlayState"
 
-  let animationTimingFunction = string_style_key "animationTimingFunction"
+  let animationTimingFunction = string_style_prop "animationTimingFunction"
 
-  let transition = string_style_key "transition"
+  let transition = string_style_prop "transition"
 
-  let transitionDelay = string_style_key "transitionDelay"
+  let transitionDelay = string_style_prop "transitionDelay"
 
-  let transitionDuration = string_style_key "transitionDuration"
+  let transitionDuration = string_style_prop "transitionDuration"
 
-  let transitionProperty = string_style_key "transitionProperty"
+  let transitionProperty = string_style_prop "transitionProperty"
 
-  let transitionTimingFunction = string_style_key "transitionTimingFunction"
+  let transitionTimingFunction = string_style_prop "transitionTimingFunction"
 
-  let backfaceVisibility = string_style_key "backfaceVisibility"
+  let backfaceVisibility = string_style_prop "backfaceVisibility"
 
-  let perspective = string_style_key "perspective"
+  let perspective = string_style_prop "perspective"
 
-  let perspectiveOrigin = string_style_key "perspectiveOrigin"
+  let perspectiveOrigin = string_style_prop "perspectiveOrigin"
 
-  let transform = string_style_key "transform"
+  let transform = string_style_prop "transform"
 
-  let transformOrigin = string_style_key "transformOrigin"
+  let transformOrigin = string_style_prop "transformOrigin"
 
-  let transformStyle = string_style_key "transformStyle"
+  let transformStyle = string_style_prop "transformStyle"
 
-  let justifyItems = string_style_key "justifyItems"
+  let justifyItems = string_style_prop "justifyItems"
 
-  let justifySelf = string_style_key "justifySelf"
+  let justifySelf = string_style_prop "justifySelf"
 
-  let placeContent = string_style_key "placeContent"
+  let placeContent = string_style_prop "placeContent"
 
-  let placeItems = string_style_key "placeItems"
+  let placeItems = string_style_prop "placeItems"
 
-  let placeSelf = string_style_key "placeSelf"
+  let placeSelf = string_style_prop "placeSelf"
 
-  let appearance = string_style_key "appearance"
+  let appearance = string_style_prop "appearance"
 
-  let caret = string_style_key "caret"
+  let caret = string_style_prop "caret"
 
-  let caretAnimation = string_style_key "caretAnimation"
+  let caretAnimation = string_style_prop "caretAnimation"
 
-  let caretShape = string_style_key "caretShape"
+  let caretShape = string_style_prop "caretShape"
 
-  let userSelect = string_style_key "userSelect"
+  let userSelect = string_style_prop "userSelect"
 
-  let maxLines = string_style_key "maxLines"
+  let maxLines = string_style_prop "maxLines"
 
-  let marqueeDirection = string_style_key "marqueeDirection"
+  let marqueeDirection = string_style_prop "marqueeDirection"
 
-  let marqueeLoop = string_style_key "marqueeLoop"
+  let marqueeLoop = string_style_prop "marqueeLoop"
 
-  let marqueeSpeed = string_style_key "marqueeSpeed"
+  let marqueeSpeed = string_style_prop "marqueeSpeed"
 
-  let marqueeStyle = string_style_key "marqueeStyle"
+  let marqueeStyle = string_style_prop "marqueeStyle"
 
-  let overflowStyle = string_style_key "overflowStyle"
+  let overflowStyle = string_style_prop "overflowStyle"
 
-  let rotation = string_style_key "rotation"
+  let rotation = string_style_prop "rotation"
 
-  let rotationPoint = string_style_key "rotationPoint"
+  let rotationPoint = string_style_prop "rotationPoint"
 
-  let alignmentBaseline = string_style_key "alignmentBaseline"
+  let alignmentBaseline = string_style_prop "alignmentBaseline"
 
-  let baselineShift = string_style_key "baselineShift"
+  let baselineShift = string_style_prop "baselineShift"
 
-  let clip = string_style_key "clip"
+  let clip = string_style_prop "clip"
 
-  let clipPath = string_style_key "clipPath"
+  let clipPath = string_style_prop "clipPath"
 
-  let clipRule = string_style_key "clipRule"
+  let clipRule = string_style_prop "clipRule"
 
-  let colorInterpolation = string_style_key "colorInterpolation"
+  let colorInterpolation = string_style_prop "colorInterpolation"
 
-  let colorInterpolationFilters = string_style_key "colorInterpolationFilters"
+  let colorInterpolationFilters = string_style_prop "colorInterpolationFilters"
 
-  let colorProfile = string_style_key "colorProfile"
+  let colorProfile = string_style_prop "colorProfile"
 
-  let colorRendering = string_style_key "colorRendering"
+  let colorRendering = string_style_prop "colorRendering"
 
-  let cursor = string_style_key "cursor"
+  let cursor = string_style_prop "cursor"
 
-  let dominantBaseline = string_style_key "dominantBaseline"
+  let dominantBaseline = string_style_prop "dominantBaseline"
 
-  let fill = string_style_key "fill"
+  let fill = string_style_prop "fill"
 
-  let fillOpacity = string_style_key "fillOpacity"
+  let fillOpacity = string_style_prop "fillOpacity"
 
-  let fillRule = string_style_key "fillRule"
+  let fillRule = string_style_prop "fillRule"
 
-  let filter = string_style_key "filter"
+  let filter = string_style_prop "filter"
 
-  let floodColor = string_style_key "floodColor"
+  let floodColor = string_style_prop "floodColor"
 
-  let floodOpacity = string_style_key "floodOpacity"
+  let floodOpacity = string_style_prop "floodOpacity"
 
-  let glyphOrientationHorizontal = string_style_key "glyphOrientationHorizontal"
+  let glyphOrientationHorizontal =
+    string_style_prop "glyphOrientationHorizontal"
 
-  let glyphOrientationVertical = string_style_key "glyphOrientationVertical"
+  let glyphOrientationVertical = string_style_prop "glyphOrientationVertical"
 
-  let imageRendering = string_style_key "imageRendering"
+  let imageRendering = string_style_prop "imageRendering"
 
-  let kerning = string_style_key "kerning"
+  let kerning = string_style_prop "kerning"
 
-  let lightingColor = string_style_key "lightingColor"
+  let lightingColor = string_style_prop "lightingColor"
 
-  let markerEnd = string_style_key "markerEnd"
+  let markerEnd = string_style_prop "markerEnd"
 
-  let markerMid = string_style_key "markerMid"
+  let markerMid = string_style_prop "markerMid"
 
-  let markerStart = string_style_key "markerStart"
+  let markerStart = string_style_prop "markerStart"
 
-  let pointerEvents = string_style_key "pointerEvents"
+  let pointerEvents = string_style_prop "pointerEvents"
 
-  let shapeRendering = string_style_key "shapeRendering"
+  let shapeRendering = string_style_prop "shapeRendering"
 
-  let stopColor = string_style_key "stopColor"
+  let stopColor = string_style_prop "stopColor"
 
-  let stopOpacity = string_style_key "stopOpacity"
+  let stopOpacity = string_style_prop "stopOpacity"
 
-  let stroke = string_style_key "stroke"
+  let stroke = string_style_prop "stroke"
 
-  let strokeDasharray = string_style_key "strokeDasharray"
+  let strokeDasharray = string_style_prop "strokeDasharray"
 
-  let strokeDashoffset = string_style_key "strokeDashoffset"
+  let strokeDashoffset = string_style_prop "strokeDashoffset"
 
-  let strokeLinecap = string_style_key "strokeLinecap"
+  let strokeLinecap = string_style_prop "strokeLinecap"
 
-  let strokeLinejoin = string_style_key "strokeLinejoin"
+  let strokeLinejoin = string_style_prop "strokeLinejoin"
 
-  let strokeMiterlimit = string_style_key "strokeMiterlimit"
+  let strokeMiterlimit = string_style_prop "strokeMiterlimit"
 
-  let strokeOpacity = string_style_key "strokeOpacity"
+  let strokeOpacity = string_style_prop "strokeOpacity"
 
-  let strokeWidth = string_style_key "strokeWidth"
+  let strokeWidth = string_style_prop "strokeWidth"
 
-  let textAnchor = string_style_key "textAnchor"
+  let textAnchor = string_style_prop "textAnchor"
 
-  let textRendering = string_style_key "textRendering"
+  let textRendering = string_style_prop "textRendering"
 
-  let rubyAlign = string_style_key "rubyAlign"
+  let rubyAlign = string_style_prop "rubyAlign"
 
-  let rubyMerge = string_style_key "rubyMerge"
+  let rubyMerge = string_style_prop "rubyMerge"
 
-  let rubyPosition = string_style_key "rubyPosition"]
+  let rubyPosition = string_style_prop "rubyPosition"]
 end
 
 module DangerouslySetInnerHTML : sig
