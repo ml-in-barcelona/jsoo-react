@@ -598,18 +598,16 @@ let make_make_props fn_name loc named_arg_list props_type rest =
 
 let rec recursivelyTransformNamedArgsForMake mapper ctxt expr list =
   let expr = mapper#expression ctxt expr in
+  let loc = expr.pexp_loc in
   match expr.pexp_desc with
-  (* TODO: make this show up with a loc. *)
   | Pexp_fun (Labelled "key", _, _, _) | Pexp_fun (Optional "key", _, _, _) ->
-      raise
-        (Invalid_argument
-           "Key cannot be accessed inside of a component. Don't worry - you \
-            can always key a component from its parent!" )
+      Location.raise_errorf ~loc
+        "jsoo-react: key cannot be accessed inside of a component. Don't worry \
+         - you can always key a component from its parent!"
   | Pexp_fun (Labelled "ref", _, _, _) | Pexp_fun (Optional "ref", _, _, _) ->
-      raise
-        (Invalid_argument
-           "Ref cannot be passed as a normal prop. Please use `forwardRef` API \
-            instead." )
+      Location.raise_errorf ~loc
+        "jsoo-react: ref cannot be passed as a normal prop. Please use \
+         `forwardRef` API instead."
   | Pexp_fun
       (((Labelled label | Optional label) as arg), default, pattern, expression)
     ->
