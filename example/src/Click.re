@@ -10,7 +10,7 @@ let reducer = (state, action) =>
 let make = () => {
   let (state, dispatch) = React.useReducer(reducer, []);
   <div
-    style={React.Dom.Style.make(~color="#ff5544", ~fontSize="68px", ())}
+    style=React.Dom.Style.(make([|color("#ff5544"), fontSize("68px")|]))
     onClick={event => {
       dispatch @@
       React.Event.Mouse.(Clicked(event |> clientX, event |> clientY))

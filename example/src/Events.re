@@ -8,7 +8,7 @@ type coords = {
 module Title = {
   [@react.component]
   let make = (~children) => {
-    <h5 style={React.Dom.Style.make(~margin="15px 0 0", ())}> children </h5>;
+    <h5 style=React.Dom.Style.(make([|margin("15px 0 0")|]))> children </h5>;
   };
 };
 
@@ -43,7 +43,7 @@ let make = () => {
           let value = React.Event.Form.target(event) |> Window.value;
           setInputText(_ => value);
         }}
-        style={React.Dom.Style.make(~marginRight="15px", ())}
+        style=React.Dom.Style.(make([|marginRight("15px")|]))
         value=inputText
       />
       <button type_="submit"> {"submit dis" |> React.string} </button>
