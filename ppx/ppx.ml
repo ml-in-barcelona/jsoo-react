@@ -373,17 +373,6 @@ let rec makeArgsForMakePropsType list args =
         (* ~foo: int=1 *)
         | _label, Some type_, Some _ ->
             type_
-        (* ~foo: option(int)=? *)
-        | ( _label
-          , Some {ptyp_desc= Ptyp_constr ({txt= Lident "option"; _}, [type_]); _}
-          , _ )
-        | ( _label
-          , Some
-              { ptyp_desc=
-                  Ptyp_constr
-                    ({txt= Ldot (Lident "*predef*", "option"); _}, [type_])
-              ; _ }
-          , _ )
         (* ~foo: int=? - note this isnt valid. but we want to get a type error *)
         | (Optional _ as _label), Some type_, _ ->
             type_
