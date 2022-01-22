@@ -170,7 +170,29 @@ module Touch = struct
 end
 
 module Pointer = struct
-  include CommonApi
+  include Mouse
+
+  include
+    [%js:
+    val pointerId : t -> int [@@js.get]
+
+    val pressure : t -> float [@@js.get]
+
+    val tangentialPressure : t -> float [@@js.get]
+
+    val tiltX : t -> float [@@js.get]
+
+    val tiltY : t -> float [@@js.get]
+
+    val twist : t -> float [@@js.get]
+
+    val width : t -> float [@@js.get]
+
+    val height : t -> float [@@js.get]
+
+    val pointerType : t -> string [@@js.get]
+
+    val isPrimary : t -> bool [@@js.get]]
 end
 
 type window = Js_of_ocaml.Dom_html.window

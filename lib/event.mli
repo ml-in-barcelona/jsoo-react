@@ -442,6 +442,86 @@ module Pointer : sig
   val t_of_js : Ojs.t -> t
 
   val t_to_js : t -> Ojs.t
+
+  val pointerId : t -> int
+
+  val pressure : t -> float
+
+  val tangentialPressure : t -> float
+
+  val tiltX : t -> float
+
+  val tiltY : t -> float
+
+  val twist : t -> float
+
+  val width : t -> float
+
+  val height : t -> float
+
+  val pointerType : t -> string (* 'mouse' | 'pen' | 'touch' *)
+
+  val isPrimary : t -> bool
+
+  (** Inherited from Mouse *)
+
+  val bubbles : t -> bool
+
+  val cancelable : t -> bool
+
+  val currentTarget : t -> Ojs.t
+
+  val defaultPrevented : t -> bool
+
+  val eventPhase : t -> int
+
+  val isTrusted : t -> bool
+
+  val nativeEvent : t -> Ojs.t
+
+  val preventDefault : t -> unit
+
+  val isDefaultPrevented : t -> bool
+
+  val stopPropagation : t -> unit
+
+  val isPropagationStopped : t -> bool
+
+  val target : t -> Ojs.t
+
+  val timeStamp : t -> float
+
+  val type_ : t -> string
+
+  val persist : t -> unit
+
+  val altKey : t -> bool
+
+  val button : t -> int
+
+  val buttons : t -> int
+
+  val clientX : t -> int
+
+  val clientY : t -> int
+
+  val ctrlKey : t -> bool
+
+  val getModifierState : t -> string -> bool
+
+  val metaKey : t -> bool
+
+  val pageX : t -> int
+
+  val pageY : t -> int
+
+  val relatedTarget : t -> Ojs.t option
+
+  val screenX : t -> int
+
+  val screenY : t -> int
+
+  val shiftKey : t -> bool
 end
 
 module UI : sig
