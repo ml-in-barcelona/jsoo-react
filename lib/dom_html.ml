@@ -1,18 +1,18 @@
 module Prop = struct
   type t = string * Js_of_ocaml.Js.Unsafe.any
 
-  let string key value =
-    (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value))
+  let any key value = (key, Js_of_ocaml.Js.Unsafe.inject value)
 
-  let bool key value =
-    (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.bool value))
+  let string key value = any key (Js_of_ocaml.Js.string value)
 
-  let int key (value : int) = (key, Js_of_ocaml.Js.Unsafe.inject value)
+  let bool key value = any key (Js_of_ocaml.Js.bool value)
 
-  let float key (value : float) = (key, Js_of_ocaml.Js.Unsafe.inject value)
+  let int key (value : int) = any key value
+
+  let float key (value : float) = any key value
 
   let event key (f : _ Event.synthetic -> unit) =
-    (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.wrap_callback f))
+    any key (Js_of_ocaml.Js.wrap_callback f)
 
   (* List of props adapted from rescript-react:
    * https://github.com/rescript-lang/rescript-react/blob/16dcbd8d079c7c20f3bd48fd677dfe7d70d0d020/src/ReactDOM.res#L51
