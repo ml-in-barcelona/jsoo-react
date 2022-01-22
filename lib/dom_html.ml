@@ -17,7 +17,7 @@ module Fragment = struct
   let make children = make ~children ()
 end
 
-let make_element name props children =
+let h name props children =
   Dom.createDOMElementVariadic name
     ~props:(Js_of_ocaml.Js.Unsafe.obj props)
     children
