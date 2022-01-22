@@ -1,3 +1,16 @@
+module Props = struct
+  let string_prop key value =
+    (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value))
+
+  let href = string_prop "href"
+
+  let target = string_prop "target"
+
+  let className = string_prop "className"
+end
+
+include Props
+
 module Fragment = struct
   include Core.Fragment
 
@@ -20,14 +33,3 @@ let i = make_element "i"
 let span = make_element "span"
 
 let text = Core.string
-
-module Props = struct
-  let string_prop key value =
-    (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value))
-
-  let href = string_prop "href"
-
-  let target = string_prop "target"
-
-  let className = string_prop "className"
-end
