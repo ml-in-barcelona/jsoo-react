@@ -726,5 +726,7 @@ let wbr = h "wbr"
 
 (* Convenience functions *)
 
-let text = Core.string
 let fragment children = Core.Fragment.make ~children ()
+let str = Core.string
+let int = Core.int
+let float = Core.float
