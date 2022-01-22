@@ -1,4 +1,4 @@
-module Props = struct
+module Prop = struct
   type t = string * Js_of_ocaml.Js.Unsafe.any
 
   let string key value =
@@ -14,7 +14,7 @@ module Props = struct
   let event key (f : _ Event.synthetic -> unit) =
     (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.wrap_callback f))
 
-  (* List of props dapted from rescript-react:
+  (* List of props adapted from rescript-react:
    * https://github.com/rescript-lang/rescript-react/blob/16dcbd8d079c7c20f3bd48fd677dfe7d70d0d020/src/ReactDOM.res#L51
    *)
 
@@ -374,17 +374,13 @@ module Props = struct
 
   (* Pointer events *)
 
-  let onPointerOver =
-    (event "onPointerOver" : (Event.Pointer.t -> unit) -> t)
+  let onPointerOver = (event "onPointerOver" : (Event.Pointer.t -> unit) -> t)
 
-  let onPointerEnter =
-    (event "onPointerEnter" : (Event.Pointer.t -> unit) -> t)
+  let onPointerEnter = (event "onPointerEnter" : (Event.Pointer.t -> unit) -> t)
 
-  let onPointerDown =
-    (event "onPointerDown" : (Event.Pointer.t -> unit) -> t)
+  let onPointerDown = (event "onPointerDown" : (Event.Pointer.t -> unit) -> t)
 
-  let onPointerMove =
-    (event "onPointerMove" : (Event.Pointer.t -> unit) -> t)
+  let onPointerMove = (event "onPointerMove" : (Event.Pointer.t -> unit) -> t)
 
   let onPointerUp = (event "onPointerUp" : (Event.Pointer.t -> unit) -> t)
 
@@ -393,8 +389,7 @@ module Props = struct
 
   let onPointerOut = (event "onPointerOut" : (Event.Pointer.t -> unit) -> t)
 
-  let onPointerLeave =
-    (event "onPointerLeave" : (Event.Pointer.t -> unit) -> t)
+  let onPointerLeave = (event "onPointerLeave" : (Event.Pointer.t -> unit) -> t)
 
   let onGotPointerCapture =
     (event "onGotPointerCapture" : (Event.Pointer.t -> unit) -> t)
@@ -457,15 +452,13 @@ module Props = struct
 
   let onTimeUpdate = (event "onTimeUpdate" : (Event.Media.t -> unit) -> t)
 
-  let onVolumeChange =
-    (event "onVolumeChange" : (Event.Media.t -> unit) -> t)
+  let onVolumeChange = (event "onVolumeChange" : (Event.Media.t -> unit) -> t)
 
   let onWaiting = (event "onWaiting" : (Event.Media.t -> unit) -> t)
 
   (* Image events *)
 
-  let onLoad =
-    (event "onLoad" (* duplicate *) : (Event.Image.t -> unit) -> t)
+  let onLoad = (event "onLoad" (* duplicate *) : (Event.Image.t -> unit) -> t)
 
   (* Animation events *)
 
@@ -487,11 +480,10 @@ module Props = struct
 
   (* TODO: dangerouslySetInnerHTML: {"__html": string} *)
 
-  let suppressContentEditableWarning =
-    bool "suppressContentEditableWarning"
+  let suppressContentEditableWarning = bool "suppressContentEditableWarning"
 end
 
-include Props
+include Prop
 
 let h name props children =
   Dom.createDOMElementVariadic name
@@ -727,6 +719,9 @@ let wbr = h "wbr"
 (* Convenience functions *)
 
 let fragment children = Core.Fragment.make ~children ()
+
 let string = Core.string
+
 let int = Core.int
+
 let float = Core.float
