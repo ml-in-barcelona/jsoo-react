@@ -1,8 +1,6 @@
-open React.Dom_lite
-
 let%component make () =
-  Fragment.make
-    Html.
+  React.Dom.Html.(
+    Fragment.make
       [
         a
           Props.
@@ -27,4 +25,4 @@ let%component make () =
                   ];
               ];
           ];
-      ]
+      ])
