@@ -1,4 +1,6 @@
 module Props = struct
+  type t = string * Js_of_ocaml.Js.Unsafe.any
+
   let string_prop key value =
     (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value))
 
@@ -9,6 +11,8 @@ module Props = struct
 
   let float_prop key (value : float) = (key, Js_of_ocaml.Js.Unsafe.inject value)
 
+  let event_prop key (f : _ Event.synthetic -> unit) =
+    (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.wrap_callback f))
 
   (* List of props dapted from rescript-react:
    * https://github.com/rescript-lang/rescript-react/blob/16dcbd8d079c7c20f3bd48fd677dfe7d70d0d020/src/ReactDOM.res#L51
@@ -272,6 +276,212 @@ module Props = struct
   (* in html5 this can only be a number, but in html4 it can ba a percentage as well *)
 
   let wrap = string_prop "wrap" (* "hard" or "soft" *)
+
+  (* Clipboard events *)
+
+  let onCopy = (event_prop "onCopy" : (Event.Clipboard.t -> unit) -> t)
+
+  let onCut = (event_prop "onCut" : (Event.Clipboard.t -> unit) -> t)
+
+  let onPaste = (event_prop "onPaste" : (Event.Clipboard.t -> unit) -> t)
+
+  (* Composition events *)
+
+  let onCompositionEnd =
+    (event_prop "onCompositionEnd" : (Event.Composition.t -> unit) -> t)
+
+  let onCompositionStart =
+    (event_prop "onCompositionStart" : (Event.Composition.t -> unit) -> t)
+
+  let onCompositionUpdate =
+    (event_prop "onCompositionUpdate" : (Event.Composition.t -> unit) -> t)
+
+  (* Keyboard events *)
+
+  let onKeyDown = (event_prop "onKeyDown" : (Event.Keyboard.t -> unit) -> t)
+
+  let onKeyPress = (event_prop "onKeyPress" : (Event.Keyboard.t -> unit) -> t)
+
+  let onKeyUp = (event_prop "onKeyUp" : (Event.Keyboard.t -> unit) -> t)
+
+  (* Focus events *)
+
+  let onFocus = (event_prop "onFocus" : (Event.Focus.t -> unit) -> t)
+
+  let onBlur = (event_prop "onBlur" : (Event.Focus.t -> unit) -> t)
+
+  (* Form events *)
+
+  let onChange = (event_prop "onChange" : (Event.Form.t -> unit) -> t)
+
+  let onInput = (event_prop "onInput" : (Event.Form.t -> unit) -> t)
+
+  let onSubmit = (event_prop "onSubmit" : (Event.Form.t -> unit) -> t)
+
+  let onInvalid = (event_prop "onInvalid" : (Event.Form.t -> unit) -> t)
+
+  (* Mouse events *)
+
+  let onClick = (event_prop "onClick" : (Event.Mouse.t -> unit) -> t)
+
+  let onContextMenu = (event_prop "onContextMenu" : (Event.Mouse.t -> unit) -> t)
+
+  let onDoubleClick = (event_prop "onDoubleClick" : (Event.Mouse.t -> unit) -> t)
+
+  let onDrag = (event_prop "onDrag" : (Event.Mouse.t -> unit) -> t)
+
+  let onDragEnd = (event_prop "onDragEnd" : (Event.Mouse.t -> unit) -> t)
+
+  let onDragEnter = (event_prop "onDragEnter" : (Event.Mouse.t -> unit) -> t)
+
+  let onDragExit = (event_prop "onDragExit" : (Event.Mouse.t -> unit) -> t)
+
+  let onDragLeave = (event_prop "onDragLeave" : (Event.Mouse.t -> unit) -> t)
+
+  let onDragOver = (event_prop "onDragOver" : (Event.Mouse.t -> unit) -> t)
+
+  let onDragStart = (event_prop "onDragStart" : (Event.Mouse.t -> unit) -> t)
+
+  let onDrop = (event_prop "onDrop" : (Event.Mouse.t -> unit) -> t)
+
+  let onMouseDown = (event_prop "onMouseDown" : (Event.Mouse.t -> unit) -> t)
+
+  let onMouseEnter = (event_prop "onMouseEnter" : (Event.Mouse.t -> unit) -> t)
+
+  let onMouseLeave = (event_prop "onMouseLeave" : (Event.Mouse.t -> unit) -> t)
+
+  let onMouseMove = (event_prop "onMouseMove" : (Event.Mouse.t -> unit) -> t)
+
+  let onMouseOut = (event_prop "onMouseOut" : (Event.Mouse.t -> unit) -> t)
+
+  let onMouseOver = (event_prop "onMouseOver" : (Event.Mouse.t -> unit) -> t)
+
+  let onMouseUp = (event_prop "onMouseUp" : (Event.Mouse.t -> unit) -> t)
+
+  (* Selection events *)
+
+  let onSelect = (event_prop "onSelect" : (Event.Selection.t -> unit) -> t)
+
+  (* Touch events *)
+
+  let onTouchCancel = (event_prop "onTouchCancel" : (Event.Touch.t -> unit) -> t)
+
+  let onTouchEnd = (event_prop "onTouchEnd" : (Event.Touch.t -> unit) -> t)
+
+  let onTouchMove = (event_prop "onTouchMove" : (Event.Touch.t -> unit) -> t)
+
+  let onTouchStart = (event_prop "onTouchStart" : (Event.Touch.t -> unit) -> t)
+
+  (* Pointer events *)
+
+  let onPointerOver =
+    (event_prop "onPointerOver" : (Event.Pointer.t -> unit) -> t)
+
+  let onPointerEnter =
+    (event_prop "onPointerEnter" : (Event.Pointer.t -> unit) -> t)
+
+  let onPointerDown =
+    (event_prop "onPointerDown" : (Event.Pointer.t -> unit) -> t)
+
+  let onPointerMove =
+    (event_prop "onPointerMove" : (Event.Pointer.t -> unit) -> t)
+
+  let onPointerUp = (event_prop "onPointerUp" : (Event.Pointer.t -> unit) -> t)
+
+  let onPointerCancel =
+    (event_prop "onPointerCancel" : (Event.Pointer.t -> unit) -> t)
+
+  let onPointerOut = (event_prop "onPointerOut" : (Event.Pointer.t -> unit) -> t)
+
+  let onPointerLeave =
+    (event_prop "onPointerLeave" : (Event.Pointer.t -> unit) -> t)
+
+  let onGotPointerCapture =
+    (event_prop "onGotPointerCapture" : (Event.Pointer.t -> unit) -> t)
+
+  let onLostPointerCapture =
+    (event_prop "onLostPointerCapture" : (Event.Pointer.t -> unit) -> t)
+
+  (* UI events *)
+
+  let onScroll = (event_prop "onScroll" : (Event.UI.t -> unit) -> t)
+
+  (* Wheel events *)
+
+  let onWheel = (event_prop "onWheel" : (Event.Wheel.t -> unit) -> t)
+
+  (* Media events *)
+
+  let onAbort = (event_prop "onAbort" : (Event.Media.t -> unit) -> t)
+
+  let onCanPlay = (event_prop "onCanPlay" : (Event.Media.t -> unit) -> t)
+
+  let onCanPlayThrough =
+    (event_prop "onCanPlayThrough" : (Event.Media.t -> unit) -> t)
+
+  let onDurationChange =
+    (event_prop "onDurationChange" : (Event.Media.t -> unit) -> t)
+
+  let onEmptied = (event_prop "onEmptied" : (Event.Media.t -> unit) -> t)
+
+  let onEncrypetd = (event_prop "onEncrypetd" : (Event.Media.t -> unit) -> t)
+
+  let onEnded = (event_prop "onEnded" : (Event.Media.t -> unit) -> t)
+
+  let onError = (event_prop "onError" : (Event.Media.t -> unit) -> t)
+
+  let onLoadedData = (event_prop "onLoadedData" : (Event.Media.t -> unit) -> t)
+
+  let onLoadedMetadata =
+    (event_prop "onLoadedMetadata" : (Event.Media.t -> unit) -> t)
+
+  let onLoadStart = (event_prop "onLoadStart" : (Event.Media.t -> unit) -> t)
+
+  let onPause = (event_prop "onPause" : (Event.Media.t -> unit) -> t)
+
+  let onPlay = (event_prop "onPlay" : (Event.Media.t -> unit) -> t)
+
+  let onPlaying = (event_prop "onPlaying" : (Event.Media.t -> unit) -> t)
+
+  let onProgress = (event_prop "onProgress" : (Event.Media.t -> unit) -> t)
+
+  let onRateChange = (event_prop "onRateChange" : (Event.Media.t -> unit) -> t)
+
+  let onSeeked = (event_prop "onSeeked" : (Event.Media.t -> unit) -> t)
+
+  let onSeeking = (event_prop "onSeeking" : (Event.Media.t -> unit) -> t)
+
+  let onStalled = (event_prop "onStalled" : (Event.Media.t -> unit) -> t)
+
+  let onSuspend = (event_prop "onSuspend" : (Event.Media.t -> unit) -> t)
+
+  let onTimeUpdate = (event_prop "onTimeUpdate" : (Event.Media.t -> unit) -> t)
+
+  let onVolumeChange =
+    (event_prop "onVolumeChange" : (Event.Media.t -> unit) -> t)
+
+  let onWaiting = (event_prop "onWaiting" : (Event.Media.t -> unit) -> t)
+
+  (* Image events *)
+
+  let onLoad =
+    (event_prop "onLoad" (* duplicate *) : (Event.Image.t -> unit) -> t)
+
+  (* Animation events *)
+
+  let onAnimationStart =
+    (event_prop "onAnimationStart" : (Event.Animation.t -> unit) -> t)
+
+  let onAnimationEnd =
+    (event_prop "onAnimationEnd" : (Event.Animation.t -> unit) -> t)
+
+  let onAnimationIteration =
+    (event_prop "onAnimationIteration" : (Event.Animation.t -> unit) -> t)
+
+  (* Transition events *)
+
+  let onTransitionEnd =
+    (event_prop "onTransitionEnd" : (Event.Transition.t -> unit) -> t)
 
   (* react-specific *)
 
