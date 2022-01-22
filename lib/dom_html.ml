@@ -493,12 +493,6 @@ end
 
 include Props
 
-module Fragment = struct
-  include Core.Fragment
-
-  let make children = make ~children ()
-end
-
 let h name props children =
   Dom.createDOMElementVariadic name
     ~props:(Js_of_ocaml.Js.Unsafe.obj props)
@@ -733,3 +727,4 @@ let wbr = h "wbr"
 (* Convenience functions *)
 
 let text = Core.string
+let fragment children = Core.Fragment.make ~children ()

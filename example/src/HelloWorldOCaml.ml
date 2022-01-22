@@ -1,6 +1,6 @@
 let%component make () =
   React.Dom.Html.(
-    Fragment.make
+    fragment
       [
         a
           [|
