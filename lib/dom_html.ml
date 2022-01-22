@@ -50,7 +50,7 @@ module Prop = struct
 
   let role = string "role" (* ARIA role *)
 
-  (* TODO: style: style *)
+  let style = (any "style" : Dom.Style.t -> t)
 
   let spellCheck = bool "spellCheck"
 
