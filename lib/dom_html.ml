@@ -1,494 +1,494 @@
 module Props = struct
   type t = string * Js_of_ocaml.Js.Unsafe.any
 
-  let string_prop key value =
+  let string key value =
     (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.string value))
 
-  let bool_prop key value =
+  let bool key value =
     (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.bool value))
 
-  let int_prop key (value : int) = (key, Js_of_ocaml.Js.Unsafe.inject value)
+  let int key (value : int) = (key, Js_of_ocaml.Js.Unsafe.inject value)
 
-  let float_prop key (value : float) = (key, Js_of_ocaml.Js.Unsafe.inject value)
+  let float key (value : float) = (key, Js_of_ocaml.Js.Unsafe.inject value)
 
-  let event_prop key (f : _ Event.synthetic -> unit) =
+  let event key (f : _ Event.synthetic -> unit) =
     (key, Js_of_ocaml.Js.Unsafe.inject (Js_of_ocaml.Js.wrap_callback f))
 
   (* List of props dapted from rescript-react:
    * https://github.com/rescript-lang/rescript-react/blob/16dcbd8d079c7c20f3bd48fd677dfe7d70d0d020/src/ReactDOM.res#L51
    *)
 
-  let key = string_prop "key"
+  let key = string "key"
 
   (* TODO: ref: domRef, *)
 
   (* react textarea/input *)
 
-  let defaultChecked = bool_prop "defaultChecked"
+  let defaultChecked = bool "defaultChecked"
 
-  let defaultValue = string_prop "defaultValue"
+  let defaultValue = string "defaultValue"
 
   (* global html attributes *)
 
-  let accessKey = string_prop "accessKey"
+  let accessKey = string "accessKey"
 
-  let className = string_prop "className" (* substitute for "class" *)
+  let className = string "className" (* substitute for "class" *)
 
-  let contentEditable = bool_prop "contentEditable"
+  let contentEditable = bool "contentEditable"
 
-  let contextMenu = string_prop "contextMenu"
+  let contextMenu = string "contextMenu"
 
-  let dir = string_prop "dir" (* "ltr", "rtl" or "auto" *)
+  let dir = string "dir" (* "ltr", "rtl" or "auto" *)
 
-  let draggable = bool_prop "draggable"
+  let draggable = bool "draggable"
 
-  let hidden = bool_prop "hidden"
+  let hidden = bool "hidden"
 
-  let id = string_prop "id"
+  let id = string "id"
 
-  let lang = string_prop "lang"
+  let lang = string "lang"
 
-  let role = string_prop "role" (* ARIA role *)
+  let role = string "role" (* ARIA role *)
 
   (* TODO: style: style *)
 
-  let spellCheck = bool_prop "spellCheck"
+  let spellCheck = bool "spellCheck"
 
-  let tabIndex = int_prop "tabIndex"
+  let tabIndex = int "tabIndex"
 
-  let title = string_prop "title"
+  let title = string "title"
 
   (* html5 microdata *)
 
-  let itemID = string_prop "itemID"
+  let itemID = string "itemID"
 
-  let itemProp = string_prop "itemProp"
+  let itemProp = string "itemProp"
 
-  let itemRef = string_prop "itemRef"
+  let itemRef = string "itemRef"
 
-  let itemScope = bool_prop "itemScope"
+  let itemScope = bool "itemScope"
 
-  let itemType = string_prop "itemType" (* uri *)
+  let itemType = string "itemType" (* uri *)
 
   (* tag-specific html attributes *)
 
-  let accept = string_prop "accept"
+  let accept = string "accept"
 
-  let acceptCharset = string_prop "acceptCharset"
+  let acceptCharset = string "acceptCharset"
 
-  let action = string_prop "action" (* uri *)
+  let action = string "action" (* uri *)
 
-  let allowFullScreen = bool_prop "allowFullScreen"
+  let allowFullScreen = bool "allowFullScreen"
 
-  let alt = string_prop "alt"
+  let alt = string "alt"
 
-  let async = bool_prop "async"
+  let async = bool "async"
 
-  let autoComplete = string_prop "autoComplete"
+  let autoComplete = string "autoComplete"
   (* has a fixed, but large-ish, set of possible values *)
 
-  let autoCapitalize = string_prop "autoCapitalize" (* Mobile Safari specific *)
+  let autoCapitalize = string "autoCapitalize" (* Mobile Safari specific *)
 
-  let autoFocus = bool_prop "autoFocus"
+  let autoFocus = bool "autoFocus"
 
-  let autoPlay = bool_prop "autoPlay"
+  let autoPlay = bool "autoPlay"
 
-  let challenge = string_prop "challenge"
+  let challenge = string "challenge"
 
-  let charSet = string_prop "charSet"
+  let charSet = string "charSet"
 
-  let checked = bool_prop "checked"
+  let checked = bool "checked"
 
-  let cite = string_prop "cite" (* uri *)
+  let cite = string "cite" (* uri *)
 
-  let crossOrigin = string_prop "crossOrigin" (* anonymous, use-credentials *)
+  let crossOrigin = string "crossOrigin" (* anonymous, use-credentials *)
 
-  let cols = int_prop "cols"
+  let cols = int "cols"
 
-  let colSpan = int_prop "colSpan"
+  let colSpan = int "colSpan"
 
-  let content = string_prop "content"
+  let content = string "content"
 
-  let controls = bool_prop "controls"
+  let controls = bool "controls"
 
-  let coords = string_prop "coords"
+  let coords = string "coords"
   (* set of values specifying the coordinates of a region *)
 
-  let data = string_prop "data" (* uri *)
+  let data = string "data" (* uri *)
 
-  let dateTime = string_prop "dateTime"
+  let dateTime = string "dateTime"
   (* "valid date string with optional time" *)
 
-  let default = bool_prop "default"
+  let default = bool "default"
 
-  let defer = bool_prop "defer"
+  let defer = bool "defer"
 
-  let disabled = bool_prop "disabled"
+  let disabled = bool "disabled"
 
-  let download = string_prop "download"
+  let download = string "download"
   (* should really be either a boolean, signifying presence, or a string *)
 
-  let encType = string_prop "encType"
+  let encType = string "encType"
   (* "application/x-www-form-urlencoded", "multipart/form-data" or "text/plain" *)
 
-  let form = string_prop "form"
+  let form = string "form"
 
-  let formAction = string_prop "formAction" (* uri *)
+  let formAction = string "formAction" (* uri *)
 
-  let formTarget = string_prop "formTarget" (* "_blank", "_self", etc. *)
+  let formTarget = string "formTarget" (* "_blank", "_self", etc. *)
 
-  let formMethod = string_prop "formMethod" (* "post", "get", "put" *)
+  let formMethod = string "formMethod" (* "post", "get", "put" *)
 
-  let headers = string_prop "headers"
+  let headers = string "headers"
 
-  let height = string_prop "height"
+  let height = string "height"
   (* in html5 this can only be a number, but in html4 it can ba a percentage as well *)
 
-  let high = int_prop "high"
+  let high = int "high"
 
-  let href = string_prop "href" (* uri *)
+  let href = string "href" (* uri *)
 
-  let hrefLang = string_prop "hrefLang"
+  let hrefLang = string "hrefLang"
 
-  let htmlFor = string_prop "htmlFor" (* substitute for "for" *)
+  let htmlFor = string "htmlFor" (* substitute for "for" *)
 
-  let httpEquiv = string_prop "httpEquiv"
+  let httpEquiv = string "httpEquiv"
   (* has a fixed set of possible values *)
 
-  let icon = string_prop "icon" (* uri? *)
+  let icon = string "icon" (* uri? *)
 
-  let inputMode = string_prop "inputMode"
+  let inputMode = string "inputMode"
   (* "verbatim", "latin", "numeric", etc. *)
 
-  let integrity = string_prop "integrity"
+  let integrity = string "integrity"
 
-  let keyType = string_prop "keyType"
+  let keyType = string "keyType"
 
-  let kind = string_prop "kind" (* has a fixed set of possible values *)
+  let kind = string "kind" (* has a fixed set of possible values *)
 
-  let label = string_prop "label"
+  let label = string "label"
 
-  let list = string_prop "list"
+  let list = string "list"
 
-  let loop = bool_prop "loop"
+  let loop = bool "loop"
 
-  let low = int_prop "low"
+  let low = int "low"
 
-  let manifest = string_prop "manifest" (* uri *)
+  let manifest = string "manifest" (* uri *)
 
-  let max = string_prop "max" (* should be int or Js.Date.t *)
+  let max = string "max" (* should be int or Js.Date.t *)
 
-  let maxLength = int_prop "maxLength"
+  let maxLength = int "maxLength"
 
-  let media = string_prop "media" (* a valid media query *)
+  let media = string "media" (* a valid media query *)
 
-  let mediaGroup = string_prop "mediaGroup"
+  let mediaGroup = string "mediaGroup"
 
-  let method_ = string_prop "method" (* "post" or "get", reserved keyword *)
+  let method_ = string "method" (* "post" or "get", reserved keyword *)
 
-  let min = string_prop "min"
+  let min = string "min"
 
-  let minLength = int_prop "minLength"
+  let minLength = int "minLength"
 
-  let multiple = bool_prop "multiple"
+  let multiple = bool "multiple"
 
-  let muted = bool_prop "muted"
+  let muted = bool "muted"
 
-  let name = string_prop "name"
+  let name = string "name"
 
-  let nonce = string_prop "nonce"
+  let nonce = string "nonce"
 
-  let noValidate = bool_prop "noValidate"
+  let noValidate = bool "noValidate"
 
-  let open_ = bool_prop "open" (* reserved keyword *)
+  let open_ = bool "open" (* reserved keyword *)
 
-  let optimum = int_prop "optimum"
+  let optimum = int "optimum"
 
-  let pattern = string_prop "pattern" (* valid Js RegExp *)
+  let pattern = string "pattern" (* valid Js RegExp *)
 
-  let placeholder = string_prop "placeholder"
+  let placeholder = string "placeholder"
 
-  let playsInline = bool_prop "playsInline"
+  let playsInline = bool "playsInline"
 
-  let poster = string_prop "poster" (* uri *)
+  let poster = string "poster" (* uri *)
 
-  let preload = string_prop "preload"
+  let preload = string "preload"
   (* "none", "metadata" or "auto" (and "" as a synonym for "auto") *)
 
-  let radioGroup = string_prop "radioGroup"
+  let radioGroup = string "radioGroup"
 
-  let readOnly = bool_prop "readOnly"
+  let readOnly = bool "readOnly"
 
-  let rel = string_prop "rel"
+  let rel = string "rel"
   (* a space- or comma-separated (depending on the element) list of a fixed set of "link types" *)
 
-  let required = bool_prop "required"
+  let required = bool "required"
 
-  let reversed = bool_prop "reversed"
+  let reversed = bool "reversed"
 
-  let rows = int_prop "rows"
+  let rows = int "rows"
 
-  let rowSpan = int_prop "rowSpan"
+  let rowSpan = int "rowSpan"
 
-  let sandbox = string_prop "sandbox" (* has a fixed set of possible values *)
+  let sandbox = string "sandbox" (* has a fixed set of possible values *)
 
-  let scope = string_prop "scope" (* has a fixed set of possible values *)
+  let scope = string "scope" (* has a fixed set of possible values *)
 
-  let scoped = bool_prop "scoped"
+  let scoped = bool "scoped"
 
-  let scrolling = string_prop "scrolling"
+  let scrolling = string "scrolling"
   (* html4 only, "auto", "yes" or "no" *)
 
-  let selected = bool_prop "selected"
+  let selected = bool "selected"
 
-  let shape = string_prop "shape"
+  let shape = string "shape"
 
-  let size = int_prop "size"
+  let size = int "size"
 
-  let sizes = string_prop "sizes"
+  let sizes = string "sizes"
 
-  let span = int_prop "span"
+  let span = int "span"
 
-  let src = string_prop "src" (* uri *)
+  let src = string "src" (* uri *)
 
-  let srcDoc = string_prop "srcDoc"
+  let srcDoc = string "srcDoc"
 
-  let srcLang = string_prop "srcLang"
+  let srcLang = string "srcLang"
 
-  let srcSet = string_prop "srcSet"
+  let srcSet = string "srcSet"
 
-  let start = int_prop "start"
+  let start = int "start"
 
-  let step = float_prop "step"
+  let step = float "step"
 
-  let summary = string_prop "summary" (* deprecated *)
+  let summary = string "summary" (* deprecated *)
 
-  let target = string_prop "target"
+  let target = string "target"
 
-  let type_ = string_prop "type"
+  let type_ = string "type"
   (* has a fixed but large-ish set of possible values, reserved keyword *)
 
-  let useMap = string_prop "useMap"
+  let useMap = string "useMap"
 
-  let value = string_prop "value"
+  let value = string "value"
 
-  let width = string_prop "width"
+  let width = string "width"
   (* in html5 this can only be a number, but in html4 it can ba a percentage as well *)
 
-  let wrap = string_prop "wrap" (* "hard" or "soft" *)
+  let wrap = string "wrap" (* "hard" or "soft" *)
 
   (* Clipboard events *)
 
-  let onCopy = (event_prop "onCopy" : (Event.Clipboard.t -> unit) -> t)
+  let onCopy = (event "onCopy" : (Event.Clipboard.t -> unit) -> t)
 
-  let onCut = (event_prop "onCut" : (Event.Clipboard.t -> unit) -> t)
+  let onCut = (event "onCut" : (Event.Clipboard.t -> unit) -> t)
 
-  let onPaste = (event_prop "onPaste" : (Event.Clipboard.t -> unit) -> t)
+  let onPaste = (event "onPaste" : (Event.Clipboard.t -> unit) -> t)
 
   (* Composition events *)
 
   let onCompositionEnd =
-    (event_prop "onCompositionEnd" : (Event.Composition.t -> unit) -> t)
+    (event "onCompositionEnd" : (Event.Composition.t -> unit) -> t)
 
   let onCompositionStart =
-    (event_prop "onCompositionStart" : (Event.Composition.t -> unit) -> t)
+    (event "onCompositionStart" : (Event.Composition.t -> unit) -> t)
 
   let onCompositionUpdate =
-    (event_prop "onCompositionUpdate" : (Event.Composition.t -> unit) -> t)
+    (event "onCompositionUpdate" : (Event.Composition.t -> unit) -> t)
 
   (* Keyboard events *)
 
-  let onKeyDown = (event_prop "onKeyDown" : (Event.Keyboard.t -> unit) -> t)
+  let onKeyDown = (event "onKeyDown" : (Event.Keyboard.t -> unit) -> t)
 
-  let onKeyPress = (event_prop "onKeyPress" : (Event.Keyboard.t -> unit) -> t)
+  let onKeyPress = (event "onKeyPress" : (Event.Keyboard.t -> unit) -> t)
 
-  let onKeyUp = (event_prop "onKeyUp" : (Event.Keyboard.t -> unit) -> t)
+  let onKeyUp = (event "onKeyUp" : (Event.Keyboard.t -> unit) -> t)
 
   (* Focus events *)
 
-  let onFocus = (event_prop "onFocus" : (Event.Focus.t -> unit) -> t)
+  let onFocus = (event "onFocus" : (Event.Focus.t -> unit) -> t)
 
-  let onBlur = (event_prop "onBlur" : (Event.Focus.t -> unit) -> t)
+  let onBlur = (event "onBlur" : (Event.Focus.t -> unit) -> t)
 
   (* Form events *)
 
-  let onChange = (event_prop "onChange" : (Event.Form.t -> unit) -> t)
+  let onChange = (event "onChange" : (Event.Form.t -> unit) -> t)
 
-  let onInput = (event_prop "onInput" : (Event.Form.t -> unit) -> t)
+  let onInput = (event "onInput" : (Event.Form.t -> unit) -> t)
 
-  let onSubmit = (event_prop "onSubmit" : (Event.Form.t -> unit) -> t)
+  let onSubmit = (event "onSubmit" : (Event.Form.t -> unit) -> t)
 
-  let onInvalid = (event_prop "onInvalid" : (Event.Form.t -> unit) -> t)
+  let onInvalid = (event "onInvalid" : (Event.Form.t -> unit) -> t)
 
   (* Mouse events *)
 
-  let onClick = (event_prop "onClick" : (Event.Mouse.t -> unit) -> t)
+  let onClick = (event "onClick" : (Event.Mouse.t -> unit) -> t)
 
-  let onContextMenu = (event_prop "onContextMenu" : (Event.Mouse.t -> unit) -> t)
+  let onContextMenu = (event "onContextMenu" : (Event.Mouse.t -> unit) -> t)
 
-  let onDoubleClick = (event_prop "onDoubleClick" : (Event.Mouse.t -> unit) -> t)
+  let onDoubleClick = (event "onDoubleClick" : (Event.Mouse.t -> unit) -> t)
 
-  let onDrag = (event_prop "onDrag" : (Event.Mouse.t -> unit) -> t)
+  let onDrag = (event "onDrag" : (Event.Mouse.t -> unit) -> t)
 
-  let onDragEnd = (event_prop "onDragEnd" : (Event.Mouse.t -> unit) -> t)
+  let onDragEnd = (event "onDragEnd" : (Event.Mouse.t -> unit) -> t)
 
-  let onDragEnter = (event_prop "onDragEnter" : (Event.Mouse.t -> unit) -> t)
+  let onDragEnter = (event "onDragEnter" : (Event.Mouse.t -> unit) -> t)
 
-  let onDragExit = (event_prop "onDragExit" : (Event.Mouse.t -> unit) -> t)
+  let onDragExit = (event "onDragExit" : (Event.Mouse.t -> unit) -> t)
 
-  let onDragLeave = (event_prop "onDragLeave" : (Event.Mouse.t -> unit) -> t)
+  let onDragLeave = (event "onDragLeave" : (Event.Mouse.t -> unit) -> t)
 
-  let onDragOver = (event_prop "onDragOver" : (Event.Mouse.t -> unit) -> t)
+  let onDragOver = (event "onDragOver" : (Event.Mouse.t -> unit) -> t)
 
-  let onDragStart = (event_prop "onDragStart" : (Event.Mouse.t -> unit) -> t)
+  let onDragStart = (event "onDragStart" : (Event.Mouse.t -> unit) -> t)
 
-  let onDrop = (event_prop "onDrop" : (Event.Mouse.t -> unit) -> t)
+  let onDrop = (event "onDrop" : (Event.Mouse.t -> unit) -> t)
 
-  let onMouseDown = (event_prop "onMouseDown" : (Event.Mouse.t -> unit) -> t)
+  let onMouseDown = (event "onMouseDown" : (Event.Mouse.t -> unit) -> t)
 
-  let onMouseEnter = (event_prop "onMouseEnter" : (Event.Mouse.t -> unit) -> t)
+  let onMouseEnter = (event "onMouseEnter" : (Event.Mouse.t -> unit) -> t)
 
-  let onMouseLeave = (event_prop "onMouseLeave" : (Event.Mouse.t -> unit) -> t)
+  let onMouseLeave = (event "onMouseLeave" : (Event.Mouse.t -> unit) -> t)
 
-  let onMouseMove = (event_prop "onMouseMove" : (Event.Mouse.t -> unit) -> t)
+  let onMouseMove = (event "onMouseMove" : (Event.Mouse.t -> unit) -> t)
 
-  let onMouseOut = (event_prop "onMouseOut" : (Event.Mouse.t -> unit) -> t)
+  let onMouseOut = (event "onMouseOut" : (Event.Mouse.t -> unit) -> t)
 
-  let onMouseOver = (event_prop "onMouseOver" : (Event.Mouse.t -> unit) -> t)
+  let onMouseOver = (event "onMouseOver" : (Event.Mouse.t -> unit) -> t)
 
-  let onMouseUp = (event_prop "onMouseUp" : (Event.Mouse.t -> unit) -> t)
+  let onMouseUp = (event "onMouseUp" : (Event.Mouse.t -> unit) -> t)
 
   (* Selection events *)
 
-  let onSelect = (event_prop "onSelect" : (Event.Selection.t -> unit) -> t)
+  let onSelect = (event "onSelect" : (Event.Selection.t -> unit) -> t)
 
   (* Touch events *)
 
-  let onTouchCancel = (event_prop "onTouchCancel" : (Event.Touch.t -> unit) -> t)
+  let onTouchCancel = (event "onTouchCancel" : (Event.Touch.t -> unit) -> t)
 
-  let onTouchEnd = (event_prop "onTouchEnd" : (Event.Touch.t -> unit) -> t)
+  let onTouchEnd = (event "onTouchEnd" : (Event.Touch.t -> unit) -> t)
 
-  let onTouchMove = (event_prop "onTouchMove" : (Event.Touch.t -> unit) -> t)
+  let onTouchMove = (event "onTouchMove" : (Event.Touch.t -> unit) -> t)
 
-  let onTouchStart = (event_prop "onTouchStart" : (Event.Touch.t -> unit) -> t)
+  let onTouchStart = (event "onTouchStart" : (Event.Touch.t -> unit) -> t)
 
   (* Pointer events *)
 
   let onPointerOver =
-    (event_prop "onPointerOver" : (Event.Pointer.t -> unit) -> t)
+    (event "onPointerOver" : (Event.Pointer.t -> unit) -> t)
 
   let onPointerEnter =
-    (event_prop "onPointerEnter" : (Event.Pointer.t -> unit) -> t)
+    (event "onPointerEnter" : (Event.Pointer.t -> unit) -> t)
 
   let onPointerDown =
-    (event_prop "onPointerDown" : (Event.Pointer.t -> unit) -> t)
+    (event "onPointerDown" : (Event.Pointer.t -> unit) -> t)
 
   let onPointerMove =
-    (event_prop "onPointerMove" : (Event.Pointer.t -> unit) -> t)
+    (event "onPointerMove" : (Event.Pointer.t -> unit) -> t)
 
-  let onPointerUp = (event_prop "onPointerUp" : (Event.Pointer.t -> unit) -> t)
+  let onPointerUp = (event "onPointerUp" : (Event.Pointer.t -> unit) -> t)
 
   let onPointerCancel =
-    (event_prop "onPointerCancel" : (Event.Pointer.t -> unit) -> t)
+    (event "onPointerCancel" : (Event.Pointer.t -> unit) -> t)
 
-  let onPointerOut = (event_prop "onPointerOut" : (Event.Pointer.t -> unit) -> t)
+  let onPointerOut = (event "onPointerOut" : (Event.Pointer.t -> unit) -> t)
 
   let onPointerLeave =
-    (event_prop "onPointerLeave" : (Event.Pointer.t -> unit) -> t)
+    (event "onPointerLeave" : (Event.Pointer.t -> unit) -> t)
 
   let onGotPointerCapture =
-    (event_prop "onGotPointerCapture" : (Event.Pointer.t -> unit) -> t)
+    (event "onGotPointerCapture" : (Event.Pointer.t -> unit) -> t)
 
   let onLostPointerCapture =
-    (event_prop "onLostPointerCapture" : (Event.Pointer.t -> unit) -> t)
+    (event "onLostPointerCapture" : (Event.Pointer.t -> unit) -> t)
 
   (* UI events *)
 
-  let onScroll = (event_prop "onScroll" : (Event.UI.t -> unit) -> t)
+  let onScroll = (event "onScroll" : (Event.UI.t -> unit) -> t)
 
   (* Wheel events *)
 
-  let onWheel = (event_prop "onWheel" : (Event.Wheel.t -> unit) -> t)
+  let onWheel = (event "onWheel" : (Event.Wheel.t -> unit) -> t)
 
   (* Media events *)
 
-  let onAbort = (event_prop "onAbort" : (Event.Media.t -> unit) -> t)
+  let onAbort = (event "onAbort" : (Event.Media.t -> unit) -> t)
 
-  let onCanPlay = (event_prop "onCanPlay" : (Event.Media.t -> unit) -> t)
+  let onCanPlay = (event "onCanPlay" : (Event.Media.t -> unit) -> t)
 
   let onCanPlayThrough =
-    (event_prop "onCanPlayThrough" : (Event.Media.t -> unit) -> t)
+    (event "onCanPlayThrough" : (Event.Media.t -> unit) -> t)
 
   let onDurationChange =
-    (event_prop "onDurationChange" : (Event.Media.t -> unit) -> t)
+    (event "onDurationChange" : (Event.Media.t -> unit) -> t)
 
-  let onEmptied = (event_prop "onEmptied" : (Event.Media.t -> unit) -> t)
+  let onEmptied = (event "onEmptied" : (Event.Media.t -> unit) -> t)
 
-  let onEncrypetd = (event_prop "onEncrypetd" : (Event.Media.t -> unit) -> t)
+  let onEncrypetd = (event "onEncrypetd" : (Event.Media.t -> unit) -> t)
 
-  let onEnded = (event_prop "onEnded" : (Event.Media.t -> unit) -> t)
+  let onEnded = (event "onEnded" : (Event.Media.t -> unit) -> t)
 
-  let onError = (event_prop "onError" : (Event.Media.t -> unit) -> t)
+  let onError = (event "onError" : (Event.Media.t -> unit) -> t)
 
-  let onLoadedData = (event_prop "onLoadedData" : (Event.Media.t -> unit) -> t)
+  let onLoadedData = (event "onLoadedData" : (Event.Media.t -> unit) -> t)
 
   let onLoadedMetadata =
-    (event_prop "onLoadedMetadata" : (Event.Media.t -> unit) -> t)
+    (event "onLoadedMetadata" : (Event.Media.t -> unit) -> t)
 
-  let onLoadStart = (event_prop "onLoadStart" : (Event.Media.t -> unit) -> t)
+  let onLoadStart = (event "onLoadStart" : (Event.Media.t -> unit) -> t)
 
-  let onPause = (event_prop "onPause" : (Event.Media.t -> unit) -> t)
+  let onPause = (event "onPause" : (Event.Media.t -> unit) -> t)
 
-  let onPlay = (event_prop "onPlay" : (Event.Media.t -> unit) -> t)
+  let onPlay = (event "onPlay" : (Event.Media.t -> unit) -> t)
 
-  let onPlaying = (event_prop "onPlaying" : (Event.Media.t -> unit) -> t)
+  let onPlaying = (event "onPlaying" : (Event.Media.t -> unit) -> t)
 
-  let onProgress = (event_prop "onProgress" : (Event.Media.t -> unit) -> t)
+  let onProgress = (event "onProgress" : (Event.Media.t -> unit) -> t)
 
-  let onRateChange = (event_prop "onRateChange" : (Event.Media.t -> unit) -> t)
+  let onRateChange = (event "onRateChange" : (Event.Media.t -> unit) -> t)
 
-  let onSeeked = (event_prop "onSeeked" : (Event.Media.t -> unit) -> t)
+  let onSeeked = (event "onSeeked" : (Event.Media.t -> unit) -> t)
 
-  let onSeeking = (event_prop "onSeeking" : (Event.Media.t -> unit) -> t)
+  let onSeeking = (event "onSeeking" : (Event.Media.t -> unit) -> t)
 
-  let onStalled = (event_prop "onStalled" : (Event.Media.t -> unit) -> t)
+  let onStalled = (event "onStalled" : (Event.Media.t -> unit) -> t)
 
-  let onSuspend = (event_prop "onSuspend" : (Event.Media.t -> unit) -> t)
+  let onSuspend = (event "onSuspend" : (Event.Media.t -> unit) -> t)
 
-  let onTimeUpdate = (event_prop "onTimeUpdate" : (Event.Media.t -> unit) -> t)
+  let onTimeUpdate = (event "onTimeUpdate" : (Event.Media.t -> unit) -> t)
 
   let onVolumeChange =
-    (event_prop "onVolumeChange" : (Event.Media.t -> unit) -> t)
+    (event "onVolumeChange" : (Event.Media.t -> unit) -> t)
 
-  let onWaiting = (event_prop "onWaiting" : (Event.Media.t -> unit) -> t)
+  let onWaiting = (event "onWaiting" : (Event.Media.t -> unit) -> t)
 
   (* Image events *)
 
   let onLoad =
-    (event_prop "onLoad" (* duplicate *) : (Event.Image.t -> unit) -> t)
+    (event "onLoad" (* duplicate *) : (Event.Image.t -> unit) -> t)
 
   (* Animation events *)
 
   let onAnimationStart =
-    (event_prop "onAnimationStart" : (Event.Animation.t -> unit) -> t)
+    (event "onAnimationStart" : (Event.Animation.t -> unit) -> t)
 
   let onAnimationEnd =
-    (event_prop "onAnimationEnd" : (Event.Animation.t -> unit) -> t)
+    (event "onAnimationEnd" : (Event.Animation.t -> unit) -> t)
 
   let onAnimationIteration =
-    (event_prop "onAnimationIteration" : (Event.Animation.t -> unit) -> t)
+    (event "onAnimationIteration" : (Event.Animation.t -> unit) -> t)
 
   (* Transition events *)
 
   let onTransitionEnd =
-    (event_prop "onTransitionEnd" : (Event.Transition.t -> unit) -> t)
+    (event "onTransitionEnd" : (Event.Transition.t -> unit) -> t)
 
   (* react-specific *)
 
   (* TODO: dangerouslySetInnerHTML: {"__html": string} *)
 
   let suppressContentEditableWarning =
-    bool_prop "suppressContentEditableWarning"
+    bool "suppressContentEditableWarning"
 end
 
 include Props
@@ -727,6 +727,6 @@ let wbr = h "wbr"
 (* Convenience functions *)
 
 let fragment children = Core.Fragment.make ~children ()
-let str = Core.string
+let string = Core.string
 let int = Core.int
 let float = Core.float
