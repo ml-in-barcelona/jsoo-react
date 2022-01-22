@@ -434,6 +434,16 @@ module Touch : sig
   val touches : t -> Ojs.t
 end
 
+module Pointer : sig
+  type tag
+
+  type t = tag synthetic
+
+  val t_of_js : Ojs.t -> t
+
+  val t_to_js : t -> Ojs.t
+end
+
 module UI : sig
   type tag
 

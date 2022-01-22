@@ -169,6 +169,10 @@ module Touch = struct
   (* Should return Dom.touchList *)
 end
 
+module Pointer = struct
+  include CommonApi
+end
+
 type window = Js_of_ocaml.Dom_html.window
 
 module UI = struct
