@@ -419,7 +419,7 @@ module Prop = struct
 
   let onEmptied = (event "onEmptied" : (Event.Media.t -> unit) -> t)
 
-  let onEncrypetd = (event "onEncrypetd" : (Event.Media.t -> unit) -> t)
+  let onEncrypted = (event "onEncrypted" : (Event.Media.t -> unit) -> t)
 
   let onEnded = (event "onEnded" : (Event.Media.t -> unit) -> t)
 
