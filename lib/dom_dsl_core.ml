@@ -27,6 +27,18 @@ module PropHelpers = struct
 end
 
 module Common = struct
+  module Context = struct
+    module Provider = struct
+      let makeProps value =
+        Js_of_ocaml.Js.Unsafe.(obj [|("value", inject value)|])
+
+      let make context ~value children =
+        Core.createElementVariadic
+          (Core.Context.provider context)
+          (makeProps value) children
+    end
+  end
+
   let fragment children = Core.Fragment.make ~children ()
 
   let string = Core.string

@@ -95,7 +95,7 @@ let testContext () =
     let context = React.createContext "foo"
 
     module Provider = struct
-      let make = React.Context.Provider.make context
+      let make = Context.Provider.make context
     end
 
     module Consumer = struct
@@ -107,10 +107,8 @@ let testContext () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            (* NOTE: inconsistent context API *)
             (DummyContext.Provider.make ~value:"bar"
-               ~children:[DummyContext.Consumer.make ()]
-               () )
+               [DummyContext.Consumer.make ()] )
             (Html.element c) ) ;
       assert_equal c##.textContent (Js.Opt.return (Js.string "bar")) )
 
