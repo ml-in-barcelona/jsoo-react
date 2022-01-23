@@ -1,3 +1,4 @@
+open React.Dom.Html
 open Webtest.Suite
 module Js = Js_of_ocaml.Js
 module Html = Js_of_ocaml.Dom_html
@@ -41,7 +42,7 @@ let testReact () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            React.Dom.Html.(div [||] ["Hello world!" |> string])
+            (div [||] ["Hello world!" |> string])
             (Html.element c) ) ;
       assert_equal c##.textContent (Js.Opt.return (Js.string "Hello world!")) )
 
@@ -49,20 +50,18 @@ let testKeys () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            React.Dom.Html.(
-              div [||]
-                (List.map
-                   (fun str -> div [|key str|] [str |> string])
-                   ["a"; "b"] ))
+            (div [||]
+               (List.map
+                  (fun str -> div [|key str|] [str |> string])
+                  ["a"; "b"] ) )
             (Html.element c) ) ;
       assert_equal c##.innerHTML
         (Js.string "<div><div>a</div><div>b</div></div>") )
 
 let testOptionalPropsUppercase () =
   let module OptProps = struct
-    (* NOTE: collision caused by namespace pollution *)
-    let%component make ?name:(name_ = "joe") =
-      React.Dom.Html.(div [||] [Printf.sprintf "`name` is %s" name_ |> string])
+    let%component make ?(name = "joe") =
+      div [||] [Printf.sprintf "`name` is %s" name |> string]
   end in
   withContainer (fun c ->
       act (fun () -> React.Dom.render (OptProps.make ()) (Html.element c)) ;
@@ -74,11 +73,7 @@ let testOptionalPropsUppercase () =
 let testOptionalPropsLowercase () =
   let module LinkWithMaybeHref = struct
     (* NOTE: collision caused by namespace pollution *)
-    let%component make ~href:href_ =
-      React.Dom.Html.(
-        a
-          [|maybe href href_|]
-          [])
+    let%component make ~href = a [|maybe Prop.href href|] []
   end in
   withContainer (fun c ->
       act (fun () ->
@@ -104,9 +99,8 @@ let testContext () =
 
     module Consumer = struct
       let%component make () =
-        (* NOTE: collision caused by namespace pollution *)
-        let value_ = React.useContext context in
-        React.Dom.Html.(div [||] [value_ |> string])
+        let value = React.useContext context in
+        div [||] [value |> string]
     end
   end in
   withContainer (fun c ->
@@ -126,7 +120,7 @@ let testUseEffect () =
       React.useEffect0 (fun () ->
           setCount (fun count -> count + 1) ;
           None ) ;
-      React.Dom.Html.(div [||] [Printf.sprintf "`count` is %d" count |> string])
+      div [||] [Printf.sprintf "`count` is %d" count |> string]
   end in
   withContainer (fun c ->
       act (fun () -> React.Dom.render (UseEffect.make ()) (Html.element c)) ;
@@ -141,7 +135,7 @@ let testUseEffect2 () =
           setCount (fun _ -> a + b) ;
           None )
         (a, b) ;
-      React.Dom.Html.(div [||] [Printf.sprintf "`a + b` is %d" count |> string])
+      div [||] [Printf.sprintf "`a + b` is %d" count |> string]
   end in
   withContainer (fun c ->
       act (fun () ->
@@ -163,7 +157,7 @@ let testUseEffect3 () =
           setCount (fun count -> count + 1) ;
           None )
         (a, b, c) ;
-      React.Dom.Html.(div [||] [Printf.sprintf "`count` is %d" count |> string])
+      div [||] [Printf.sprintf "`count` is %d" count |> string]
   end in
   withContainer (fun c ->
       let emptyList = [] in
@@ -209,9 +203,7 @@ let testUseCallback1 () =
           setCountStr (fun (count, str) -> (count + 1, f str)) ;
           None )
         [|f|] ;
-      React.Dom.Html.(
-        div [||]
-          [Printf.sprintf "`count` is %d, `str` is %s" count str |> string])
+      div [||] [Printf.sprintf "`count` is %d, `str` is %s" count str |> string]
   end in
   withContainer (fun c ->
       let fooString = "foo" in
@@ -245,9 +237,7 @@ let testUseCallback4 () =
           setCountStr (fun (count, str) -> (count + 1, f str)) ;
           None )
         [|f|] ;
-      React.Dom.Html.(
-        div [||]
-          [Printf.sprintf "`count` is %d, `str` is %s" count str |> string])
+      div [||] [Printf.sprintf "`count` is %d, `str` is %s" count str |> string]
   end in
   withContainer (fun c ->
       let a = "foo" in
@@ -294,15 +284,14 @@ let testUseState () =
   let module DummyStateComponent = struct
     let%component make ?(initialValue = 0) () =
       let counter, setCounter = React.useState (fun () -> initialValue) in
-      React.Dom.Html.(
-        fragment
-          [ div [|className "value"|] [React.int counter]
-          ; button
-              [|onClick (fun _ -> setCounter (fun counter -> counter + 1))|]
-              [React.string "Increment"]
-          ; button
-              [|onClick (fun _ -> setCounter (fun counter -> counter - 1))|]
-              [React.string "Decrement"] ])
+      fragment
+        [ div [|className "value"|] [React.int counter]
+        ; button
+            [|onClick (fun _ -> setCounter (fun counter -> counter + 1))|]
+            [string "Increment"]
+        ; button
+            [|onClick (fun _ -> setCounter (fun counter -> counter - 1))|]
+            [string "Decrement"] ]
   end in
   withContainer (fun c ->
       let open ReactDOMTestUtils in
@@ -345,7 +334,7 @@ let testUseStateUpdaterReference () =
             "false"
       in
       prevSetCount := Some setCount ;
-      React.Dom.Html.(div [||] [equal |> string])
+      div [||] [equal |> string]
   end in
   withContainer (fun c ->
       act (fun () -> React.Dom.render (UseState.make ()) (Html.element c)) ;
@@ -364,15 +353,10 @@ let testUseReducer () =
             match action with Increment -> state + 1 | Decrement -> state - 1 )
           initialValue
       in
-      React.Dom.Html.(
-        fragment
-          [ div [|className "value"|] [int state]
-          ; button
-              [|onClick (fun _ -> send Increment)|]
-              [React.string "Increment"]
-          ; button
-              [|onClick (fun _ -> send Decrement)|]
-              [React.string "Decrement"] ])
+      fragment
+        [ div [|className "value"|] [int state]
+        ; button [|onClick (fun _ -> send Increment)|] [string "Increment"]
+        ; button [|onClick (fun _ -> send Decrement)|] [string "Decrement"] ]
   end in
   withContainer (fun c ->
       let open ReactDOMTestUtils in
@@ -413,15 +397,10 @@ let testUseReducerWithMapState () =
           initialValue
           (fun initialValue -> initialValue + 1)
       in
-      React.Dom.Html.(
-        fragment
-          [ div [|className "value"|] [int state]
-          ; button
-              [|onClick (fun _ -> send Increment)|]
-              [React.string "Increment"]
-          ; button
-              [|onClick (fun _ -> send Decrement)|]
-              [React.string "Decrement"] ])
+      fragment
+        [ div [|className "value"|] [int state]
+        ; button [|onClick (fun _ -> send Increment)|] [string "Increment"]
+        ; button [|onClick (fun _ -> send Decrement)|] [string "Decrement"] ]
   end in
   withContainer (fun c ->
       let open ReactDOMTestUtils in
@@ -466,7 +445,7 @@ let testUseReducerDispatchReference () =
             "false"
       in
       prevDispatch := Some dispatch ;
-      React.Dom.Html.(div [||] [equal |> string])
+      div [||] [equal |> string]
   end in
   withContainer (fun c ->
       act (fun () -> React.Dom.render (UseReducer.make ()) (Html.element c)) ;
@@ -484,7 +463,7 @@ let testUseMemo1 () =
           setCount (fun count -> count + 1) ;
           None )
         [|result|] ;
-      React.Dom.Html.(div [||] [Printf.sprintf "`count` is %d" count |> string])
+      div [||] [Printf.sprintf "`count` is %d" count |> string]
   end in
   withContainer (fun c ->
       let fooString = "foo" in
@@ -502,13 +481,11 @@ let testMemo () =
   let numRenders = ref 0 in
   let module Memoized = struct
     let%component make =
-      (* NOTE: naming collision due to namespace pollution *)
-      React.memo (fun ~a:a_ ->
+      React.memo (fun ~a ->
           numRenders := !numRenders + 1 ;
-          React.Dom.Html.(
-            div [||]
-              [ Printf.sprintf "`a` is %s, `numRenders` is %d" a_ !numRenders
-                |> string ]) )
+          div [||]
+            [ Printf.sprintf "`a` is %s, `numRenders` is %d" a !numRenders
+              |> string ] )
   end in
   withContainer (fun c ->
       let fooString = "foo" in
@@ -530,13 +507,11 @@ let testMemoCustomCompareProps () =
   let module Memoized = struct
     let%component make =
       React.memoCustomCompareProps
-        (* NOTE: naming collision due to namespace pollution *)
-          (fun ~a:a_ ->
+        (fun ~a ->
           numRenders := !numRenders + 1 ;
-          React.Dom.Html.(
-            div [||]
-              [ Printf.sprintf "`a` is %s, `numRenders` is %d" a_ !numRenders
-                |> string ]) )
+          div [||]
+            [ Printf.sprintf "`a` is %s, `numRenders` is %d" a !numRenders
+              |> string ] )
         (fun _prevPros _nextProps -> true)
   end in
   withContainer (fun c ->
@@ -565,9 +540,8 @@ let testForwardRef () = ()
 (* let testForwardRef () = *)
 (*   let module FancyButton = struct *)
 (*     let make = *)
-(*       (\* NOTE: naming collision due to namespace pollution *\) *)
-(*       React.Dom.forwardRef (fun ~children ref_ -> *)
-(*           React.Dom.Html.(button [|ref ref_; className "FancyButton"|] children) ) *)
+(*       React.Dom.forwardRef (fun ~children ref -> *)
+(*           (button [|ref_ ref; className "FancyButton"|] children) ) *)
 (*   end in *)
 (*   withContainer (fun c -> *)
 (*       let count = ref 0 in *)
@@ -576,7 +550,7 @@ let testForwardRef () = ()
 (*       in *)
 (*       act (fun () -> *)
 (*           React.Dom.render *)
-(*             React.Dom.Html.(FancyButton.make ~ref:buttonRef [div [||] []]) *)
+(*             (FancyButton.make ~ref:buttonRef [div [||] []]) *)
 (*             (Html.element c) ) ; *)
 (*       assert_equal !count 1 ) *)
 
@@ -589,7 +563,7 @@ let testUseRef () =
           setCurrent myRef (current myRef + 1) ;
           cb myRef ;
           None ) ;
-      React.Dom.Html.div [||] []
+      div [||] []
   end in
   withContainer (fun c ->
       let myRef = ref None in
@@ -605,21 +579,19 @@ let testUseRef () =
 let testChildrenMapWithIndex () =
   let module DummyComponentThatMapsChildren = struct
     let%component make ~children () =
-      React.Dom.Html.(
-        div [||]
-          [ React.Children.mapWithIndex children (fun element index ->
-                React.cloneElement element
-                  (let open Js_of_ocaml.Js.Unsafe in
-                  obj [|("key", inject index); ("data-index", inject index)|]) )
-          ])
+      div [||]
+        [ React.Children.mapWithIndex children (fun element index ->
+              React.cloneElement element
+                (let open Js_of_ocaml.Js.Unsafe in
+                obj [|("key", inject index); ("data-index", inject index)|]) )
+        ]
   end in
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            React.Dom.Html.(
-              DummyComponentThatMapsChildren.make
-                ~children:[div [||] [int 1]; div [||] [int 2]; div [||] [int 3]]
-                ())
+            (DummyComponentThatMapsChildren.make
+               ~children:[div [||] [int 1]; div [||] [int 2]; div [||] [int 3]]
+               () )
             (Html.element c) ) ;
       assert_equal c##.innerHTML
         (Js.string
@@ -630,8 +602,7 @@ let testFragmentModule () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            React.Dom.Html.(
-              fragment [div [||] [string "Hello"]; div [||] [string "World"]])
+            (fragment [div [||] [string "Hello"]; div [||] [string "World"]])
             (Html.element c) ) ;
       assert_equal c##.innerHTML (Js.string "<div>Hello</div><div>World</div>") )
 
@@ -640,23 +611,20 @@ let testFragmentSyntax () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            React.Dom.Html.(
-              fragment [div [||] [string "Hello"]; div [||] [string "World"]])
+            (fragment [div [||] [string "Hello"]; div [||] [string "World"]])
             (Html.element c) ) ;
       assert_equal c##.innerHTML (Js.string "<div>Hello</div><div>World</div>") )
 
 let testNonListChildren () =
   let module NonListChildrenComponent = struct
-    let%component make ~children:(first, second) () =
-      React.Dom.Html.(div [||] [first; second])
+    let%component make ~children:(first, second) () = div [||] [first; second]
   end in
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            React.Dom.Html.(
-              NonListChildrenComponent.make
-                ~children:(div [||] [int 1], div [||] [int 3])
-                ())
+            (NonListChildrenComponent.make
+               ~children:(div [||] [int 1], div [||] [int 3])
+               () )
             (Html.element c) ) ;
       assert_equal c##.innerHTML
         (Js.string "<div><div>1</div><div>3</div></div>") )
@@ -665,22 +633,20 @@ let testDangerouslySetInnerHTML () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            React.Dom.Html.(
-              div [|dangerouslySetInnerHTML ~__html:"<lol></lol>"|] [])
+            (div [|dangerouslySetInnerHTML ~__html:"<lol></lol>"|] [])
             (Html.element c) ) ;
       assert_equal c##.innerHTML (Js.string "<div><lol></lol></div>") )
 
 let testAliasedChildren () =
   let module AliasedChildrenComponent = struct
-    let%component make ~children:kids () = React.Dom.Html.div [||] kids
+    let%component make ~children:kids () = div [||] kids
   end in
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            React.Dom.Html.(
-              AliasedChildrenComponent.make
-                ~children:[div [||] [int 1]; div [||] [int 3]]
-                ())
+            (AliasedChildrenComponent.make
+               ~children:[div [||] [int 1]; div [||] [int 3]]
+               () )
             (Html.element c) ) ;
       assert_equal c##.innerHTML
         (Js.string "<div><div>1</div><div>3</div></div>") )
@@ -696,8 +662,7 @@ let testWithId () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            React.Dom.Html.(
-              WithTestId.make ~id:"feed-toggle" ~children:[div [||] []] ())
+            (WithTestId.make ~id:"feed-toggle" ~children:[div [||] []] ())
             (Html.element c) ) ;
       assert_equal c##.innerHTML
         (Js.string "<div data-testid=\"feed-toggle\"></div>") )
