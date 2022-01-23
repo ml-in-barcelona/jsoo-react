@@ -534,24 +534,23 @@ let testCreateRef () =
   React.Ref.setCurrent reactRef (Js_of_ocaml.Js.Opt.return 1) ;
   assert_equal (React.Ref.current reactRef) (Js_of_ocaml.Js.Opt.return 1)
 
-(* TODO: figure out the `forwardRef` API *)
-let testForwardRef () = ()
-(* let testForwardRef () = *)
-(*   let module FancyButton = struct *)
-(*     let make = *)
-(*       React.Dom.forwardRef (fun ~children ref -> *)
-(*           (button [|ref_ ref; className "FancyButton"|] children) ) *)
-(*   end in *)
-(*   withContainer (fun c -> *)
-(*       let count = ref 0 in *)
-(*       let buttonRef = *)
-(*         React.Dom.Ref.callbackDomRef (fun _ref -> count := !count + 1) *)
-(*       in *)
-(*       act (fun () -> *)
-(*           React.Dom.render *)
-(*             (FancyButton.make ~ref:buttonRef [div [||] []]) *)
-(*             (Html.element c) ) ; *)
-(*       assert_equal !count 1 ) *)
+let testForwardRef () =
+  let module FancyButton = struct
+    let make ~ref children =
+      div [||]
+        [ button [|ref_ ref; className "FancyButton"|] children
+        ; button [|ref_ ref; className "FancyButton"|] children ]
+  end in
+  withContainer (fun c ->
+      let count = ref 0 in
+      let buttonRef =
+        React.Dom.Ref.callbackDomRef (fun _ref -> count := !count + 1)
+      in
+      act (fun () ->
+          React.Dom.render
+            (FancyButton.make ~ref:buttonRef [div [||] []])
+            (Html.element c) ) ;
+      assert_equal !count 2 )
 
 let testUseRef () =
   let module DummyComponentWithRefAndEffect = struct
