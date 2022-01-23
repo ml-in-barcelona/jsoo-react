@@ -74,11 +74,10 @@ let testOptionalPropsUppercase () =
 let testOptionalPropsLowercase () =
   let module LinkWithMaybeHref = struct
     (* NOTE: collision caused by namespace pollution *)
-    (* NOTE: optional props not really supported *)
     let%component make ~href:href_ =
       React.Dom.Html.(
         a
-          [|(match href_ with Some href_ -> href href_ | None -> any "" "")|]
+          [|maybe href href_|]
           [])
   end in
   withContainer (fun c ->

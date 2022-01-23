@@ -14,6 +14,8 @@ module Prop = struct
   let event key (f : _ Event.synthetic -> unit) =
     any key (Js_of_ocaml.Js.wrap_callback f)
 
+  let maybe prop = function Some value -> prop value | None -> any "" ""
+
   (* List of props adapted from rescript-react:
    * https://github.com/rescript-lang/rescript-react/blob/16dcbd8d079c7c20f3bd48fd677dfe7d70d0d020/src/ReactDOM.res#L51
    *)
