@@ -1,4 +1,5 @@
-open React.Dom.Html
+open React.Dom.Dsl
+open Html
 open Webtest.Suite
 module Js = Js_of_ocaml.Js
 module Html = Js_of_ocaml.Dom_html
