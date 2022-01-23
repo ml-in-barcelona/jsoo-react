@@ -22,7 +22,7 @@ module Prop = struct
 
   let key = string "key"
 
-  let ref = (any "ref" : Dom.domRef -> t)
+  let ref_ = (any "ref" : Dom.domRef -> t)
 
   (* react textarea/input *)
 
