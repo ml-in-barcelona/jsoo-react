@@ -1,5 +1,5 @@
 module Props = struct
-  let string = Dom_html.Prop.string
+  include Dom_dsl_core.PropHelpers
 
   let accentHeight = string "accentHeight"
 
@@ -486,7 +486,8 @@ module Props = struct
   let zoomAndPan = string "zoomAndPan"
 end
 
-let h = Dom_html.h
+include Dom_dsl_core.Helpers
+include Dom_dsl_core.Common
 
 let a = h "a"
 

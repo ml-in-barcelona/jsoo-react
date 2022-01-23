@@ -1,26 +1,9 @@
 module Prop = struct
-  type t = string * Js_of_ocaml.Js.Unsafe.any
-
-  let any key value = (key, Js_of_ocaml.Js.Unsafe.inject value)
-
-  let string key value = any key (Js_of_ocaml.Js.string value)
-
-  let bool key value = any key (Js_of_ocaml.Js.bool value)
-
-  let int key (value : int) = any key value
-
-  let float key (value : float) = any key value
-
-  let event key (f : _ Event.synthetic -> unit) =
-    any key (Js_of_ocaml.Js.wrap_callback f)
-
-  let maybe prop = function Some value -> prop value | None -> any "" ""
+  include Dom_dsl_core.PropHelpers
 
   (* List of props adapted from rescript-react:
    * https://github.com/rescript-lang/rescript-react/blob/16dcbd8d079c7c20f3bd48fd677dfe7d70d0d020/src/ReactDOM.res#L51
    *)
-
-  let key = string "key"
 
   let ref_ = (any "ref" : Dom.domRef -> t)
 
@@ -487,11 +470,8 @@ module Prop = struct
 end
 
 include Prop
-
-let h name props children =
-  Dom.createDOMElementVariadic name
-    ~props:(Js_of_ocaml.Js.Unsafe.obj props)
-    children
+include Dom_dsl_core.Helpers
+include Dom_dsl_core.Common
 
 (* Elements *)
 
@@ -718,13 +698,3 @@ let var = h "var"
 let video = h "video"
 
 let wbr = h "wbr"
-
-(* Convenience functions *)
-
-let fragment children = Core.Fragment.make ~children ()
-
-let string = Core.string
-
-let int = Core.int
-
-let float = Core.float
