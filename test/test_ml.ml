@@ -599,16 +599,7 @@ let testChildrenMapWithIndex () =
            "<div><div data-index=\"0\">1</div><div \
             data-index=\"1\">2</div><div data-index=\"2\">3</div></div>" ) )
 
-let testFragmentModule () =
-  withContainer (fun c ->
-      act (fun () ->
-          React.Dom.render
-            (fragment [div [||] [string "Hello"]; div [||] [string "World"]])
-            (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<div>Hello</div><div>World</div>") )
-
-(* NOTE: Effectively a duplicate of the previous test *)
-let testFragmentSyntax () =
+let testFragment () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
@@ -718,10 +709,7 @@ let children =
        ; "aliasedChildren" >:: testAliasedChildren
        ; "testWithId" >:: testWithId ]
 
-let fragments =
-  "fragments"
-  >::: [ "fragmentModule" >:: testFragmentModule
-       ; "fragmentSyntax" >:: testFragmentSyntax ]
+let fragments = "fragments" >::: ["basic" >:: testFragment]
 
 let dangerouslySetInnerHTML =
   "dangerouslySetInnerHTML" >::: ["basic" >:: testDangerouslySetInnerHTML]
