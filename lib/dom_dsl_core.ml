@@ -1,11 +1,4 @@
-module Helpers = struct
-  let h name props children =
-    Dom.createDOMElementVariadic name
-      ~props:(Js_of_ocaml.Js.Unsafe.obj props)
-      children
-end
-
-module PropHelpers = struct
+module Prop = struct
   type t = string * Js_of_ocaml.Js.Unsafe.any
 
   let any key value = (key, Js_of_ocaml.Js.Unsafe.inject value)
@@ -24,6 +17,15 @@ module PropHelpers = struct
   let maybe prop = function Some value -> prop value | None -> any "" ""
 
   let key = string "key"
+
+  let ref_ = (any "ref" : Dom.domRef -> t)
+end
+
+module Element = struct
+  let h name props children =
+    Dom.createDOMElementVariadic name
+      ~props:(Js_of_ocaml.Js.Unsafe.obj props)
+      children
 end
 
 module Common = struct
