@@ -620,24 +620,18 @@ val createRef : unit -> 'a js_nullable Ref.t
 module Context : sig
   type 'props t
 
-  val provider :
-    'props t -> value:'props -> children:element list -> unit -> element
-    [@@js.custom
-      external of_ojs :
-           Ojs.t
-        -> < value: 'props ; children: element Js_of_ocaml.Js.readonly_prop >
-           Js_of_ocaml.Js.t
-           component = "%identity"
+  val provider : 'props t -> 'props component [@@js.get "Provider"]
 
-      val provider_internal : 'props t -> Ojs.t [@@js.get "Provider"]
+  module Provider : sig
+    val make :
+      'props t -> value:'props -> children:element list -> unit -> element
+      [@@js.custom
+        let makeProps value =
+          Js_of_ocaml.Js.Unsafe.(obj [|("value", inject value)|])
 
-      let makeProps ~value () =
-        Js_of_ocaml.Js.Unsafe.(obj [|("value", inject value)|])
-
-      let provider c ~value ~children () =
-        createElementVariadic
-          (of_ojs (provider_internal c))
-          (makeProps ~value ()) children]
+        let make context ~value ~children () =
+          createElementVariadic (provider context) (makeProps value) children]
+  end
 end
 
 val createContext : 'a -> 'a Context.t

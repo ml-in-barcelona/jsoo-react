@@ -119,7 +119,7 @@ let testContext = () => {
   module DummyContext = {
     let context = React.createContext("foo");
     module Provider = {
-      let make = React.Context.provider(context);
+      let make = React.Context.Provider.make(context);
     };
     module Consumer = {
       [@react.component]

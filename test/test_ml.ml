@@ -95,7 +95,7 @@ let testContext () =
     let context = React.createContext "foo"
 
     module Provider = struct
-      let make = React.Context.provider context
+      let make = React.Context.Provider.make context
     end
 
     module Consumer = struct
