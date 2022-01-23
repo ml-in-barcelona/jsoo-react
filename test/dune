@@ -1,5 +1,5 @@
 (executable
- (name test_jsoo_react)
+ (name test_jsoo_react_ml)
  (libraries webtest webtest-js gen_js_api react jsoo_react_test js_of_ocaml)
  (preprocess
   (pps jsoo-react.ppx js_of_ocaml-ppx))
@@ -17,7 +17,7 @@
  (alias runtest)
  (deps
   external.js
-  test_jsoo_react.bc.js
+  test_jsoo_react_ml.bc.js
   (source_tree node_modules))
  (action
-  (run node test_jsoo_react.bc.js)))
+  (run node test_jsoo_react_ml.bc.js)))
