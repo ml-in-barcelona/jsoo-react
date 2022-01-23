@@ -1061,7 +1061,7 @@ let externals =
   ];
 
 let suite =
-  "baseSuite"
+  "reason"
   >::: [
     basic,
     context,
@@ -1076,5 +1076,3 @@ let suite =
     dangerouslySetInnerHTML,
     externals,
   ];
-
-let () = Webtest_js.Runner.run(suite);

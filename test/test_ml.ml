@@ -727,7 +727,7 @@ let dangerouslySetInnerHTML =
   "dangerouslySetInnerHTML" >::: ["basic" >:: testDangerouslySetInnerHTML]
 
 let suite =
-  "baseSuite"
+  "ocaml"
   >::: [ basic
        ; context
        ; useEffect
@@ -739,5 +739,3 @@ let suite =
        ; children
        ; fragments
        ; dangerouslySetInnerHTML ]
-
-let () = Webtest_js.Runner.run suite
