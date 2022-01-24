@@ -19,3 +19,6 @@ let%component make ~children:(first, second) () =
 let%component make ?(name = "") = div ~children:[name] ()
 
 let%component make () = a ?href:(Some "https://opam.ocaml.org") ()
+
+let%component make ~(bar : int option) =
+  div ~children:[React.string (string_of_int (Option.value ~default:0 bar))] ()

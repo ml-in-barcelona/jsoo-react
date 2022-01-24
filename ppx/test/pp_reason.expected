@@ -1,7 +1,7 @@
 let make =
   let make_props
     : ?name:'name ->
-        ?key:string option ->
+        ?key:string ->
           unit ->
             < name: 'name option Js_of_ocaml.Js.readonly_prop   > 
               Js_of_ocaml.Js.t
@@ -51,7 +51,7 @@ let make =
   let make_props
     : a:'a ->
         b:'b ->
-          ?key:string option ->
+          ?key:string ->
             unit ->
               <
                 a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
@@ -121,7 +121,7 @@ module Bar =
       let make_props
         : a:'a ->
             b:'b ->
-              ?key:string option ->
+              ?key:string ->
                 unit ->
                   <
                     a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
@@ -181,7 +181,7 @@ module Bar =
       let component_props
         : a:'a ->
             b:'b ->
-              ?key:string option ->
+              ?key:string ->
                 unit ->
                   <
                     a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
@@ -247,7 +247,7 @@ module Func(M:X_int) =
       let make_props
         : a:'a ->
             b:'b ->
-              ?key:string option ->
+              ?key:string ->
                 unit ->
                   <
                     a: 'a Js_of_ocaml.Js.readonly_prop  ;b: 'b
@@ -308,7 +308,7 @@ module ForwardRef =
   struct
     let make =
       let make_props
-        : ?key:string option ->
+        : ?key:string ->
             ?ref:React.Dom.domRef -> unit -> <  >  Js_of_ocaml.Js.t
         =
         fun ?key ->
@@ -346,7 +346,7 @@ module Memo =
     let make =
       let make_props
         : a:'a ->
-            ?key:string option ->
+            ?key:string ->
               unit ->
                 < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t
         =
@@ -393,7 +393,7 @@ module MemoCustomCompareProps =
     let make =
       let make_props
         : a:'a ->
-            ?key:string option ->
+            ?key:string ->
               unit ->
                 < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t
         =
@@ -592,7 +592,7 @@ let make =
   let make_props
     : title:'title ->
         children:'children ->
-          ?key:string option ->
+          ?key:string ->
             unit ->
               <
                 title: 'title Js_of_ocaml.Js.readonly_prop  ;children: 
@@ -671,7 +671,7 @@ let t =
 let make =
   let make_props
     : children:'children ->
-        ?key:string option ->
+        ?key:string ->
           ?ref:React.Dom.domRef ->
             unit ->
               < children: 'children Js_of_ocaml.Js.readonly_prop   > 
@@ -809,7 +809,7 @@ let make =
     : name:'name ->
         ?isDisabled:'isDisabled ->
           ?onClick:'onClick ->
-            ?key:string option ->
+            ?key:string ->
               unit ->
                 <
                   name: 'name Js_of_ocaml.Js.readonly_prop  ;isDisabled: 
@@ -902,7 +902,7 @@ let make =
 let make =
   let make_props
     : ?name:'name ->
-        ?key:string option ->
+        ?key:string ->
           unit ->
             < name: 'name option Js_of_ocaml.Js.readonly_prop   > 
               Js_of_ocaml.Js.t
