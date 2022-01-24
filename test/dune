@@ -16,6 +16,7 @@
 (rule
  (alias runtest)
  (deps
+  external.js
   test_jsoo_react.bc.js
   (source_tree node_modules))
  (action

@@ -17,10 +17,36 @@
    (run refmt --parse=re --print=ml %{deps}))))
 
 (rule
- (targets pp_errors.actual)
+ (targets pp_errors_01_element_attribute.actual)
  (deps
   (:pp main.exe)
-  (:input input_errors.ml))
+  (:input input_errors_01_element_attribute.ml))
+ (action
+  (setenv
+   "OCAML_COLOR"
+   "never"
+   (with-stderr-to
+    %{targets}
+    (bash "! ./%{pp} --impl %{input}")))))
+
+(rule
+ (targets pp_errors_02_external_component_multi_prim.actual)
+ (deps
+  (:pp main.exe)
+  (:input input_errors_02_external_component_multi_prim.ml))
+ (action
+  (setenv
+   "OCAML_COLOR"
+   "never"
+   (with-stderr-to
+    %{targets}
+    (bash "! ./%{pp} --impl %{input}")))))
+
+(rule
+ (targets pp_errors_03_external_component_unlabelled_arg.actual)
+ (deps
+  (:pp main.exe)
+  (:input input_errors_03_external_component_unlabelled_arg.ml))
  (action
   (setenv
    "OCAML_COLOR"
@@ -39,6 +65,11 @@
  (alias runtest)
  (action
   (progn
-   (diff pp_errors.expected pp_errors.actual)
+   (diff pp_errors_01_element_attribute.expected
+     pp_errors_01_element_attribute.actual)
+   (diff pp_errors_02_external_component_multi_prim.expected
+     pp_errors_02_external_component_multi_prim.actual)
+   (diff pp_errors_03_external_component_unlabelled_arg.expected
+     pp_errors_03_external_component_unlabelled_arg.actual)
    (diff pp_reason.expected pp_reason.result)
    (diff pp_ocaml.expected pp_ocaml.result))))

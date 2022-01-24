@@ -19,3 +19,6 @@ let%component make ~children:(first, second) () =
 let%component make ?(name = "") = div ~children:[name] ()
 
 let%component make () = a ?href:(Some "https://opam.ocaml.org") ()
+
+external%component make : name:Js.js_string Js.t -> React.element
+  = "require(\"my-react-library\").MyReactComponent"
