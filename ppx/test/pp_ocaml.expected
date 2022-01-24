@@ -249,3 +249,42 @@ let make =
        React.Dom.domProps) [] : React.element) in
   let make (Props : <  >  Js_of_ocaml.Js.t) = make () in
   fun ?key -> fun () -> React.createElement make (make_props ?key ())
+let make =
+  let make_props
+    : bar:int option ->
+        ?key:string ->
+          unit ->
+            < bar: int option Js_of_ocaml.Js.readonly_prop   > 
+              Js_of_ocaml.Js.t
+    =
+    fun ~bar ->
+      fun ?key ->
+        fun () ->
+          let open Js_of_ocaml.Js.Unsafe in
+            obj
+              [|("key",
+                  (inject
+                     (Js_of_ocaml.Js.Optdef.option
+                        (Option.map Js_of_ocaml.Js.string key))));("bar",
+                                                                    (
+                                                                    inject
+                                                                    bar))|] in
+  let make =
+    ((fun ~bar:(bar : int option) ->
+        (React.Dom.createDOMElementVariadic "div"
+           ~props:(Js_of_ocaml.Js.Unsafe.obj [||] : React.Dom.domProps)
+           [React.string (string_of_int (Option.value ~default:0 bar))] : 
+        React.element))
+    [@warning "-16"]) in
+  let make
+    (Props :
+      < bar: int option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+    =
+    make
+      ~bar:(fun (type res) -> fun (type a0) ->
+              fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                  -> (Js_of_ocaml.Js.Unsafe.get a0 "bar" : res)
+              (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#bar)) in
+  fun ~bar ->
+    fun ?key -> fun () -> React.createElement make (make_props ?key ~bar ())
