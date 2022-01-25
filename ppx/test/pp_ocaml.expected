@@ -288,3 +288,33 @@ let make =
               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#bar)) in
   fun ~bar ->
     fun ?key -> fun () -> React.createElement make (make_props ?key ~bar ())
+let make =
+  let make_props
+    : name:Js.js_string Js.t ->
+        ?key:string ->
+          unit ->
+            < name: Js.js_string Js.t Js_of_ocaml.Js.readonly_prop   > 
+              Js_of_ocaml.Js.t
+    =
+    fun ~name ->
+      fun ?key ->
+        fun () ->
+          let open Js_of_ocaml.Js.Unsafe in
+            obj
+              [|("key",
+                  (inject
+                     (Js_of_ocaml.Js.Optdef.option
+                        (Option.map Js_of_ocaml.Js.string key))));("name",
+                                                                    (
+                                                                    inject
+                                                                    name))|] in
+  let make
+    (Props :
+      < name: Js.js_string Js.t Js_of_ocaml.Js.readonly_prop   > 
+        Js_of_ocaml.Js.t)
+    =
+    (((Js_of_ocaml.Js.Unsafe.js_expr
+         "require(\"my-react-library\").MyReactComponent") Props)
+    [@warning "-20"]) in
+  fun ~name ->
+    fun ?key -> fun () -> React.createElement make (make_props ?key ~name ())
