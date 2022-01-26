@@ -269,8 +269,10 @@ let make =
                                                                     (
                                                                     inject
                                                                     name))|] in
-  let make =
-    Js_of_ocaml.Js.Unsafe.js_expr
-      "require(\"my-react-library\").MyReactComponent" in
   fun ~name ->
-    fun ?key -> fun () -> React.createElement make (make_props ?key ~name ())
+    fun ?key ->
+      fun () ->
+        React.createElement
+          (Js_of_ocaml.Js.Unsafe.js_expr
+             "require(\"my-react-library\").MyReactComponent")
+          (make_props ?key ~name ())

@@ -1215,23 +1215,10 @@ let jsxMapper () =
             let empty_loc = Location.in_file filename in
             let binding_pat_loc = empty_loc in
             let outer_make expression =
-              let make_js_comp ~loc ~fn_name rest =
-                let inner_expr =
-                  [%expr
-                    Js_of_ocaml.Js.Unsafe.js_expr
-                      [%e constantString ~loc pval_prim]]
-                in
-                Exp.mk ~loc
-                  (Pexp_let
-                     ( Nonrecursive
-                     , [Vb.mk (Pat.var {loc; txt= fn_name}) inner_expr]
-                     , rest ) )
-              in
               Vb.mk ~loc:pstr_loc ~attrs:rest_attrs
                 (Pat.var ~loc:binding_pat_loc
                    {loc= binding_pat_loc; txt= fn_name} )
-                (let js_comp = make_js_comp ~loc:empty_loc ~fn_name in
-                 let outer =
+                (let outer =
                    make_funs_for_make_props_body
                      (List.map pluckLabelDefaultLocType named_arg_list_with_key)
                      (let loc = empty_loc in
@@ -1259,14 +1246,16 @@ let jsxMapper () =
                                     , Exp.construct {loc; txt= Lident "()"} None
                                     ) ] )]] )
                  in
-                 make_props (js_comp outer) )
+                 make_props outer )
             in
-            let inner_make_ident =
-              Exp.ident ~loc:empty_loc {loc= empty_loc; txt= Lident fn_name}
+            let js_component_expr =
+              let loc = pstr_loc in
+              [%expr
+                Js_of_ocaml.Js.Unsafe.js_expr [%e constantString ~loc pval_prim]]
             in
             { pstr_loc
-            ; pstr_desc= Pstr_value (Nonrecursive, [outer_make inner_make_ident])
-            }
+            ; pstr_desc=
+                Pstr_value (Nonrecursive, [outer_make js_component_expr]) }
             :: returnStructures ) )
     (* let%component foo = ... or external%component foo = ... *)
     | {pstr_desc= Pstr_extension (({txt= "component"}, PStr structure), _)} ->
