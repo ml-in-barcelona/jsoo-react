@@ -6,7 +6,7 @@ let%component make () =
     [
       a
         [|
-          href "https://github.com/jihchi/jsoo-react-realworld-example-app";
+          href "https://github.com/jchavarri/jsoo-react-realworld-example-app";
           target "_blank";
         |]
         [ i [|className "ion-social-github"|] []; string "Fork on GitHub" ];
