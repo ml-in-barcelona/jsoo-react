@@ -31,13 +31,8 @@ end
 module Common = struct
   module Context = struct
     module Provider = struct
-      let makeProps value =
-        Js_of_ocaml.Js.Unsafe.(obj [|("value", inject value)|])
-
       let make context ~value children =
-        Core.createElementVariadic
-          (Core.Context.provider context)
-          (makeProps value) children
+        Core.Context.Provider.make context ~value ~children ()
     end
   end
 
