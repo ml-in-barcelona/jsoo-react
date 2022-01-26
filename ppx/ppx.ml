@@ -1215,48 +1215,22 @@ let jsxMapper () =
             let empty_loc = Location.in_file filename in
             let binding_pat_loc = empty_loc in
             let outer_make expression =
-              let react_component_attr =
-                try Some (List.find hasAttr pval_attributes)
-                with Not_found -> None
-              in
-              let payload =
-                match react_component_attr with
-                | Some {attr_payload} ->
-                    Some attr_payload
-                | None ->
-                    None
-              in
-              let make_js_comp ~loc ~fn_name ~named_type_list rest =
-                let props = get_props_attr payload in
+              let make_js_comp ~loc ~fn_name rest =
                 let inner_expr =
                   [%expr
-                    (Js_of_ocaml.Js.Unsafe.js_expr
-                       [%e constantString ~loc pval_prim] )
-                      [%e Exp.ident ~loc {txt= Lident props.propsName; loc}]
-                    [@warning "-20"]]
+                    Js_of_ocaml.Js.Unsafe.js_expr
+                      [%e constantString ~loc pval_prim]]
                 in
                 Exp.mk ~loc
                   (Pexp_let
                      ( Nonrecursive
-                     , [ Vb.mk
-                           (Pat.var {loc; txt= fn_name})
-                           (Exp.fun_ nolabel None
-                              { ppat_desc=
-                                  Ppat_constraint
-                                    ( makePropsName ~loc props.propsName
-                                    , makePropsType ~loc named_type_list )
-                              ; ppat_loc= loc
-                              ; ppat_attributes= []
-                              ; ppat_loc_stack= [] }
-                              inner_expr ) ]
+                     , [Vb.mk (Pat.var {loc; txt= fn_name}) inner_expr]
                      , rest ) )
               in
               Vb.mk ~loc:pstr_loc ~attrs:rest_attrs
                 (Pat.var ~loc:binding_pat_loc
                    {loc= binding_pat_loc; txt= fn_name} )
-                (let js_comp =
-                   make_js_comp ~loc:empty_loc ~fn_name ~named_type_list
-                 in
+                (let js_comp = make_js_comp ~loc:empty_loc ~fn_name in
                  let outer =
                    make_funs_for_make_props_body
                      (List.map pluckLabelDefaultLocType named_arg_list_with_key)
@@ -1285,7 +1259,7 @@ let jsxMapper () =
                                     , Exp.construct {loc; txt= Lident "()"} None
                                     ) ] )]] )
                  in
-                 make_props @@ js_comp @@ outer )
+                 make_props (js_comp outer) )
             in
             let inner_make_ident =
               Exp.ident ~loc:empty_loc {loc= empty_loc; txt= Lident fn_name}

@@ -132,17 +132,9 @@ module External =
                            (Js_of_ocaml.Js.Optdef.option
                               (Option.map Js_of_ocaml.Js.string key))));
                       ("b", (inject b));("a", (inject a))|] in
-      let component
-        (Props :
-          <
-            a: int Js_of_ocaml.Js.readonly_prop  ;b: string
-                                                       Js_of_ocaml.Js.readonly_prop
-                                                      > 
-            Js_of_ocaml.Js.t)
-        =
-        (((Js_of_ocaml.Js.Unsafe.js_expr
-             "require(\"my-react-library\").MyReactComponent") Props)
-        [@warning "-20"]) in
+      let component =
+        Js_of_ocaml.Js.Unsafe.js_expr
+          "require(\"my-react-library\").MyReactComponent" in
       fun ~a ->
         fun ~b ->
           fun ?key ->
