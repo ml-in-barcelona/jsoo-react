@@ -132,23 +132,17 @@ module External =
                            (Js_of_ocaml.Js.Optdef.option
                               (Option.map Js_of_ocaml.Js.string key))));
                       ("b", (inject b));("a", (inject a))|] in
-      let component
-        (Props :
-          <
-            a: int Js_of_ocaml.Js.readonly_prop  ;b: string
-                                                       Js_of_ocaml.Js.readonly_prop
-                                                      > 
-            Js_of_ocaml.Js.t)
-        =
-        (((Js_of_ocaml.Js.Unsafe.js_expr
-             "require(\"my-react-library\").MyReactComponent") Props)
-        [@warning "-20"]) in
       fun ~a ->
         fun ~b ->
           fun ?key ->
             fun () ->
-              React.createElement component (component_props ?key ~b ~a ())
-      [@@otherAttribute (("bla")[@reason.raw_literal "bla"])]
+              React.createElement
+                (Js_of_ocaml.Js.Unsafe.js_expr
+                   "require(\"my-react-library\").MyReactComponent")
+                (component_props ?key ~b ~a ())[@@otherAttribute
+                                                 (("bla")
+                                                   [@reason.raw_literal
+                                                     "bla"])]
   end
 module Bar =
   struct
