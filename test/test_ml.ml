@@ -626,6 +626,45 @@ let testDangerouslySetInnerHTML () =
             (Html.element c) ) ;
       assert_equal c##.innerHTML (Js.string "<div><lol></lol></div>") )
 
+let testExternals () =
+  let module JsComp = struct
+    external%component make : name:Js.js_string Js.t -> React.element
+      = "require(\"./external\").Greeting"
+  end in
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render
+            (JsComp.make ~name:(Js.string "John") ())
+            (Html.element c) ) ;
+      assert_equal c##.innerHTML (Js.string "<span>Hey John</span>") )
+
+let testExternalChildren () =
+  let module JsComp = struct
+    external%component make :
+      children:React.element Js.js_array Js.t -> React.element
+      = "require(\"./external\").GreetingChildren"
+  end in
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render
+            (JsComp.make
+               ~children:(Js.array [|em [||] [React.string "John"]|])
+               () )
+            (Html.element c) ) ;
+      assert_equal c##.innerHTML (Js.string "<span>Hey <em>John</em></span>") )
+
+let testExternalNonFunction () =
+  let module JsComp = struct
+    external%component make : name:Js.js_string Js.t -> React.element
+      = "require(\"./external\").NonFunctionGreeting"
+  end in
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render
+            (JsComp.make ~name:(Js.string "John") ())
+            (Html.element c) ) ;
+      assert_equal c##.innerHTML (Js.string "<span>Hey John</span>") )
+
 let testAliasedChildren () =
   let module AliasedChildrenComponent = struct
     let%component make ~children:kids () = div [||] kids
@@ -711,6 +750,12 @@ let fragments = "fragments" >::: ["basic" >:: testFragment]
 let dangerouslySetInnerHTML =
   "dangerouslySetInnerHTML" >::: ["basic" >:: testDangerouslySetInnerHTML]
 
+let externals =
+  "externals"
+  >::: [ "basic" >:: testExternals
+       ; "children" >:: testExternalChildren
+       ; "non-function" >:: testExternalNonFunction ]
+
 let suite =
   "ocaml"
   >::: [ basic
@@ -723,4 +768,5 @@ let suite =
        ; refs
        ; children
        ; fragments
-       ; dangerouslySetInnerHTML ]
+       ; dangerouslySetInnerHTML
+       ; externals ]
