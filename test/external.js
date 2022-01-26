@@ -7,3 +7,11 @@ function Greeting({
 }
 
 exports.Greeting = Greeting;
+
+function GreetingChildren({
+  children
+}) {
+  return React.createElement("span", null, "Hey ", children);
+}
+
+exports.GreetingChildren = GreetingChildren;

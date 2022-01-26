@@ -890,6 +890,26 @@ let testExternals = () => {
   });
 };
 
+let testExternalChildren = () => {
+  module JsComp = {
+    [@react.component]
+    external make:
+      (~children: Js.t(Js.js_array(React.element))) => React.element =
+      {|require("./external").GreetingChildren|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <JsComp>
+          ...{Js.array([|<em> {React.string("John")} </em>|])}
+        </JsComp>,
+        Html.element(c),
+      )
+    });
+    assert_equal(c##.innerHTML, Js.string("<span>Hey <em>John</em></span>"));
+  });
+};
+
 let testAliasedChildren = () => {
   module AliasedChildrenComponent = {
     [@react.component]
@@ -1017,7 +1037,10 @@ let fragments =
 
 let dangerouslySetInnerHTML =
   "dangerouslySetInnerHTML" >::: ["basic" >:: testDangerouslySetInnerHTML];
-let externals = "externals" >::: ["basic" >:: testExternals];
+
+let externals =
+  "externals"
+  >::: ["basic" >:: testExternals, "children" >:: testExternalChildren];
 
 let suite =
   "baseSuite"
