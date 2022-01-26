@@ -756,6 +756,27 @@ let testCustomElement () =
            "<cool-element coolness=\"max\"><chill \
             data-out=\"true\"></chill></cool-element>" ) )
 
+let testSvg () =
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render
+            Svg.(
+              svg
+                [|width "100"; height "100"|]
+                [ circle
+                    [| cx "50"
+                     ; cy "50"
+                     ; strokeWidth "2"
+                     ; stroke "magenta"
+                     ; fill "pink" |]
+                    [] ])
+            (Html.element c) ) ;
+      assert_equal c##.innerHTML
+        (Js.string
+           "<svg width=\"100\" height=\"100\"><circle cx=\"50\" cy=\"50\" \
+            stroke-width=\"2\" stroke=\"magenta\" \
+            fill=\"pink\"></circle></svg>" ) )
+
 let basic =
   "basic"
   >::: [ "testDom" >:: testDom
@@ -829,6 +850,8 @@ let props =
 
 let elements = "elements" >::: ["custom" >:: testCustomElement]
 
+let svg = "svg" >::: ["basic" >:: testSvg]
+
 let suite =
   "ocaml"
   >::: [ basic
@@ -844,4 +867,5 @@ let suite =
        ; dangerouslySetInnerHTML
        ; externals
        ; props
-       ; elements ]
+       ; elements
+       ; svg ]
