@@ -910,6 +910,20 @@ let testExternalChildren = () => {
   });
 };
 
+let testExternalNonFunction = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~name: Js.t(Js.js_string)) => React.element =
+      {|require("./external").NonFunctionGreeting|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(<JsComp name={Js.string("John")} />, Html.element(c))
+    });
+    assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
+  });
+};
+
 let testAliasedChildren = () => {
   module AliasedChildrenComponent = {
     [@react.component]
@@ -1040,7 +1054,11 @@ let dangerouslySetInnerHTML =
 
 let externals =
   "externals"
-  >::: ["basic" >:: testExternals, "children" >:: testExternalChildren];
+  >::: [
+    "basic" >:: testExternals,
+    "children" >:: testExternalChildren,
+    "non-function" >:: testExternalNonFunction,
+  ];
 
 let suite =
   "baseSuite"

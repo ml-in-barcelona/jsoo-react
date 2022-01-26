@@ -15,3 +15,6 @@ function GreetingChildren({
 }
 
 exports.GreetingChildren = GreetingChildren;
+
+// React.forwardRef is a non-function wrapper component, at least at time of writing
+exports.NonFunctionGreeting = React.forwardRef(Greeting);
