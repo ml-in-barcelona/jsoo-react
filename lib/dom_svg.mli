@@ -373,139 +373,139 @@ module Prop : sig
 
   val string : string -> t
 
-  val stroke : t
+  val stroke : string -> t
 
-  val strokeDasharray : t
+  val strokeDasharray : string -> t
 
-  val strokeDashoffset : t
+  val strokeDashoffset : string -> t
 
-  val strokeLinecap : t
+  val strokeLinecap : string -> t
 
-  val strokeLinejoin : t
+  val strokeLinejoin : string -> t
 
-  val strokeMiterlimit : t
+  val strokeMiterlimit : string -> t
 
-  val strokeOpacity : t
+  val strokeOpacity : string -> t
 
-  val strokeWidth : t
+  val strokeWidth : string -> t
 
-  val surfaceScale : t
+  val surfaceScale : string -> t
 
-  val systemLanguage : t
+  val systemLanguage : string -> t
 
-  val tableValues : t
+  val tableValues : string -> t
 
-  val targetX : t
+  val targetX : string -> t
 
-  val targetY : t
+  val targetY : string -> t
 
-  val textAnchor : t
+  val textAnchor : string -> t
 
-  val textDecoration : t
+  val textDecoration : string -> t
 
-  val textLength : t
+  val textLength : string -> t
 
-  val textRendering : t
+  val textRendering : string -> t
 
-  val to_ : t
+  val to_ : string -> t
 
-  val transform : t
+  val transform : string -> t
 
-  val u1 : t
+  val u1 : string -> t
 
-  val u2 : t
+  val u2 : string -> t
 
-  val underlinePosition : t
+  val underlinePosition : string -> t
 
-  val underlineThickness : t
+  val underlineThickness : string -> t
 
-  val unicode : t
+  val unicode : string -> t
 
-  val unicodeBidi : t
+  val unicodeBidi : string -> t
 
-  val unicodeRange : t
+  val unicodeRange : string -> t
 
-  val unitsPerEm : t
+  val unitsPerEm : string -> t
 
-  val vAlphabetic : t
+  val vAlphabetic : string -> t
 
-  val vHanging : t
+  val vHanging : string -> t
 
-  val vIdeographic : t
+  val vIdeographic : string -> t
 
-  val vMathematical : t
+  val vMathematical : string -> t
 
-  val values : t
+  val values : string -> t
 
-  val vectorEffect : t
+  val vectorEffect : string -> t
 
-  val version : t
+  val version : string -> t
 
-  val vertAdvX : t
+  val vertAdvX : string -> t
 
-  val vertAdvY : t
+  val vertAdvY : string -> t
 
-  val vertOriginX : t
+  val vertOriginX : string -> t
 
-  val vertOriginY : t
+  val vertOriginY : string -> t
 
-  val viewBox : t
+  val viewBox : string -> t
 
-  val viewTarget : t
+  val viewTarget : string -> t
 
-  val visibility : t
+  val visibility : string -> t
 
-  val widths : t
+  val widths : string -> t
 
-  val wordSpacing : t
+  val wordSpacing : string -> t
 
-  val writingMode : t
+  val writingMode : string -> t
 
-  val x : t
+  val x : string -> t
 
-  val x1 : t
+  val x1 : string -> t
 
-  val x2 : t
+  val x2 : string -> t
 
-  val xChannelSelector : t
+  val xChannelSelector : string -> t
 
-  val xHeight : t
+  val xHeight : string -> t
 
-  val xlinkActuate : t
+  val xlinkActuate : string -> t
 
-  val xlinkArcrole : t
+  val xlinkArcrole : string -> t
 
-  val xlinkHref : t
+  val xlinkHref : string -> t
 
-  val xlinkRole : t
+  val xlinkRole : string -> t
 
-  val xlinkShow : t
+  val xlinkShow : string -> t
 
-  val xlinkTitle : t
+  val xlinkTitle : string -> t
 
-  val xlinkType : t
+  val xlinkType : string -> t
 
-  val xmlns : t
+  val xmlns : string -> t
 
-  val xmlnsXlink : t
+  val xmlnsXlink : string -> t
 
-  val xmlBase : t
+  val xmlBase : string -> t
 
-  val xmlLang : t
+  val xmlLang : string -> t
 
-  val xmlSpace : t
+  val xmlSpace : string -> t
 
-  val y : t
+  val y : string -> t
 
-  val y1 : t
+  val y1 : string -> t
 
-  val y2 : t
+  val y2 : string -> t
 
-  val yChannelSelector : t
+  val yChannelSelector : string -> t
 
-  val z : t
+  val z : string -> t
 
-  val zoomAndPan : t
+  val zoomAndPan : string -> t
 end
 
 include module type of Prop

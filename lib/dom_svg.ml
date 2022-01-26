@@ -1,489 +1,493 @@
 module Prop = struct
   include Dom_dsl_core.Prop
 
-  let accentHeight = string "accentHeight"
+  open struct
+    let string_prop = string
+  end
 
-  let accumulate = string "accumulate"
+  let accentHeight = string_prop "accentHeight"
 
-  let additive = string "additive"
+  let accumulate = string_prop "accumulate"
 
-  let alignmentBaseline = string "alignmentBaseline"
+  let additive = string_prop "additive"
 
-  let allowReorder = string "allowReorder"
+  let alignmentBaseline = string_prop "alignmentBaseline"
 
-  let alphabetic = string "alphabetic"
+  let allowReorder = string_prop "allowReorder"
 
-  let amplitude = string "amplitude"
+  let alphabetic = string_prop "alphabetic"
 
-  let arabicForm = string "arabicForm"
+  let amplitude = string_prop "amplitude"
 
-  let ascent = string "ascent"
+  let arabicForm = string_prop "arabicForm"
 
-  let attributeName = string "attributeName"
+  let ascent = string_prop "ascent"
 
-  let attributeType = string "attributeType"
+  let attributeName = string_prop "attributeName"
 
-  let autoReverse = string "autoReverse"
+  let attributeType = string_prop "attributeType"
 
-  let azimuth = string "azimuth"
+  let autoReverse = string_prop "autoReverse"
 
-  let baseFrequency = string "baseFrequency"
+  let azimuth = string_prop "azimuth"
 
-  let baseProfile = string "baseProfile"
+  let baseFrequency = string_prop "baseFrequency"
 
-  let baselineShift = string "baselineShift"
+  let baseProfile = string_prop "baseProfile"
 
-  let bbox = string "bbox"
+  let baselineShift = string_prop "baselineShift"
 
-  let begin_ = string "begin" (* reserved keyword *)
+  let bbox = string_prop "bbox"
 
-  let bias = string "bias"
+  let begin_ = string_prop "begin" (* reserved keyword *)
 
-  let by = string "by"
+  let bias = string_prop "bias"
 
-  let calcMode = string "calcMode"
+  let by = string_prop "by"
 
-  let capHeight = string "capHeight"
+  let calcMode = string_prop "calcMode"
 
-  let clip = string "clip"
+  let capHeight = string_prop "capHeight"
 
-  let clipPath = string "clipPath"
+  let clip = string_prop "clip"
 
-  let clipPathUnits = string "clipPathUnits"
+  let clipPath = string_prop "clipPath"
 
-  let clipRule = string "clipRule"
+  let clipPathUnits = string_prop "clipPathUnits"
 
-  let colorInterpolation = string "colorInterpolation"
+  let clipRule = string_prop "clipRule"
 
-  let colorInterpolationFilters = string "colorInterpolationFilters"
+  let colorInterpolation = string_prop "colorInterpolation"
 
-  let colorProfile = string "colorProfile"
+  let colorInterpolationFilters = string_prop "colorInterpolationFilters"
 
-  let colorRendering = string "colorRendering"
+  let colorProfile = string_prop "colorProfile"
 
-  let contentScriptType = string "contentScriptType"
+  let colorRendering = string_prop "colorRendering"
 
-  let contentStyleType = string "contentStyleType"
+  let contentScriptType = string_prop "contentScriptType"
 
-  let cursor = string "cursor"
+  let contentStyleType = string_prop "contentStyleType"
 
-  let cx = string "cx"
+  let cursor = string_prop "cursor"
 
-  let cy = string "cy"
+  let cx = string_prop "cx"
 
-  let d = string "d"
+  let cy = string_prop "cy"
 
-  let decelerate = string "decelerate"
+  let d = string_prop "d"
 
-  let descent = string "descent"
+  let decelerate = string_prop "decelerate"
 
-  let diffuseConstant = string "diffuseConstant"
+  let descent = string_prop "descent"
 
-  let direction = string "direction"
+  let diffuseConstant = string_prop "diffuseConstant"
 
-  let display = string "display"
+  let direction = string_prop "direction"
 
-  let divisor = string "divisor"
+  let display = string_prop "display"
 
-  let dominantBaseline = string "dominantBaseline"
+  let divisor = string_prop "divisor"
 
-  let dur = string "dur"
+  let dominantBaseline = string_prop "dominantBaseline"
 
-  let dx = string "dx"
+  let dur = string_prop "dur"
 
-  let dy = string "dy"
+  let dx = string_prop "dx"
 
-  let edgeMode = string "edgeMode"
+  let dy = string_prop "dy"
 
-  let elevation = string "elevation"
+  let edgeMode = string_prop "edgeMode"
 
-  let enableBackground = string "enableBackground"
+  let elevation = string_prop "elevation"
 
-  let end_ = string "end" (* reserved keyword *)
+  let enableBackground = string_prop "enableBackground"
 
-  let exponent = string "exponent"
+  let end_ = string_prop "end" (* reserved keyword *)
 
-  let externalResourcesRequired = string "externalResourcesRequired"
+  let exponent = string_prop "exponent"
 
-  let fill = string "fill"
+  let externalResourcesRequired = string_prop "externalResourcesRequired"
 
-  let fillOpacity = string "fillOpacity"
+  let fill = string_prop "fill"
 
-  let fillRule = string "fillRule"
+  let fillOpacity = string_prop "fillOpacity"
 
-  let filter = string "filter"
+  let fillRule = string_prop "fillRule"
 
-  let filterRes = string "filterRes"
+  let filter = string_prop "filter"
 
-  let filterUnits = string "filterUnits"
+  let filterRes = string_prop "filterRes"
 
-  let floodColor = string "floodColor"
+  let filterUnits = string_prop "filterUnits"
 
-  let floodOpacity = string "floodOpacity"
+  let floodColor = string_prop "floodColor"
 
-  let focusable = string "focusable"
+  let floodOpacity = string_prop "floodOpacity"
 
-  let fontFamily = string "fontFamily"
+  let focusable = string_prop "focusable"
 
-  let fontSize = string "fontSize"
+  let fontFamily = string_prop "fontFamily"
 
-  let fontSizeAdjust = string "fontSizeAdjust"
+  let fontSize = string_prop "fontSize"
 
-  let fontStretch = string "fontStretch"
+  let fontSizeAdjust = string_prop "fontSizeAdjust"
 
-  let fontStyle = string "fontStyle"
+  let fontStretch = string_prop "fontStretch"
 
-  let fontVariant = string "fontVariant"
+  let fontStyle = string_prop "fontStyle"
 
-  let fontWeight = string "fontWeight"
+  let fontVariant = string_prop "fontVariant"
 
-  let fomat = string "fomat"
+  let fontWeight = string_prop "fontWeight"
 
-  let from = string "from"
+  let fomat = string_prop "fomat"
 
-  let fx = string "fx"
+  let from = string_prop "from"
 
-  let fy = string "fy"
+  let fx = string_prop "fx"
 
-  let g1 = string "g1"
+  let fy = string_prop "fy"
 
-  let g2 = string "g2"
+  let g1 = string_prop "g1"
 
-  let glyphName = string "glyphName"
+  let g2 = string_prop "g2"
 
-  let glyphOrientationHorizontal = string "glyphOrientationHorizontal"
+  let glyphName = string_prop "glyphName"
 
-  let glyphOrientationVertical = string "glyphOrientationVertical"
+  let glyphOrientationHorizontal = string_prop "glyphOrientationHorizontal"
 
-  let glyphRef = string "glyphRef"
+  let glyphOrientationVertical = string_prop "glyphOrientationVertical"
 
-  let gradientTransform = string "gradientTransform"
+  let glyphRef = string_prop "glyphRef"
 
-  let gradientUnits = string "gradientUnits"
+  let gradientTransform = string_prop "gradientTransform"
 
-  let hanging = string "hanging"
+  let gradientUnits = string_prop "gradientUnits"
 
-  let horizAdvX = string "horizAdvX"
+  let hanging = string_prop "hanging"
 
-  let horizOriginX = string "horizOriginX"
+  let horizAdvX = string_prop "horizAdvX"
 
-  let ideographic = string "ideographic"
+  let horizOriginX = string_prop "horizOriginX"
 
-  let imageRendering = string "imageRendering"
+  let ideographic = string_prop "ideographic"
 
-  let in_ = string "in" (* reserved keyword *)
+  let imageRendering = string_prop "imageRendering"
 
-  let in2 = string "in2"
+  let in_ = string_prop "in" (* reserved keyword *)
 
-  let intercept = string "intercept"
+  let in2 = string_prop "in2"
 
-  let k = string "k"
+  let intercept = string_prop "intercept"
 
-  let k1 = string "k1"
+  let k = string_prop "k"
 
-  let k2 = string "k2"
+  let k1 = string_prop "k1"
 
-  let k3 = string "k3"
+  let k2 = string_prop "k2"
 
-  let k4 = string "k4"
+  let k3 = string_prop "k3"
 
-  let kernelMatrix = string "kernelMatrix"
+  let k4 = string_prop "k4"
 
-  let kernelUnitLength = string "kernelUnitLength"
+  let kernelMatrix = string_prop "kernelMatrix"
 
-  let kerning = string "kerning"
+  let kernelUnitLength = string_prop "kernelUnitLength"
 
-  let keyPoints = string "keyPoints"
+  let kerning = string_prop "kerning"
 
-  let keySplines = string "keySplines"
+  let keyPoints = string_prop "keyPoints"
 
-  let keyTimes = string "keyTimes"
+  let keySplines = string_prop "keySplines"
 
-  let lengthAdjust = string "lengthAdjust"
+  let keyTimes = string_prop "keyTimes"
 
-  let letterSpacing = string "letterSpacing"
+  let lengthAdjust = string_prop "lengthAdjust"
 
-  let lightingColor = string "lightingColor"
+  let letterSpacing = string_prop "letterSpacing"
 
-  let limitingConeAngle = string "limitingConeAngle"
+  let lightingColor = string_prop "lightingColor"
 
-  let local = string "local"
+  let limitingConeAngle = string_prop "limitingConeAngle"
 
-  let markerEnd = string "markerEnd"
+  let local = string_prop "local"
 
-  let markerHeight = string "markerHeight"
+  let markerEnd = string_prop "markerEnd"
 
-  let markerMid = string "markerMid"
+  let markerHeight = string_prop "markerHeight"
 
-  let markerStart = string "markerStart"
+  let markerMid = string_prop "markerMid"
 
-  let markerUnits = string "markerUnits"
+  let markerStart = string_prop "markerStart"
 
-  let markerWidth = string "markerWidth"
+  let markerUnits = string_prop "markerUnits"
 
-  let mask = string "mask"
+  let markerWidth = string_prop "markerWidth"
 
-  let maskContentUnits = string "maskContentUnits"
+  let mask = string_prop "mask"
 
-  let maskUnits = string "maskUnits"
+  let maskContentUnits = string_prop "maskContentUnits"
 
-  let mathematical = string "mathematical"
+  let maskUnits = string_prop "maskUnits"
 
-  let mode = string "mode"
+  let mathematical = string_prop "mathematical"
 
-  let numOctaves = string "numOctaves"
+  let mode = string_prop "mode"
 
-  let offset = string "offset"
+  let numOctaves = string_prop "numOctaves"
 
-  let opacity = string "opacity"
+  let offset = string_prop "offset"
 
-  let operator = string "operator"
+  let opacity = string_prop "opacity"
 
-  let order = string "order"
+  let operator = string_prop "operator"
 
-  let orient = string "orient"
+  let order = string_prop "order"
 
-  let orientation = string "orientation"
+  let orient = string_prop "orient"
 
-  let origin = string "origin"
+  let orientation = string_prop "orientation"
 
-  let overflow = string "overflow"
+  let origin = string_prop "origin"
 
-  let overflowX = string "overflowX"
+  let overflow = string_prop "overflow"
 
-  let overflowY = string "overflowY"
+  let overflowX = string_prop "overflowX"
 
-  let overlinePosition = string "overlinePosition"
+  let overflowY = string_prop "overflowY"
 
-  let overlineThickness = string "overlineThickness"
+  let overlinePosition = string_prop "overlinePosition"
 
-  let paintOrder = string "paintOrder"
+  let overlineThickness = string_prop "overlineThickness"
 
-  let panose1 = string "panose1"
+  let paintOrder = string_prop "paintOrder"
 
-  let pathLength = string "pathLength"
+  let panose1 = string_prop "panose1"
 
-  let patternContentUnits = string "patternContentUnits"
+  let pathLength = string_prop "pathLength"
 
-  let patternTransform = string "patternTransform"
+  let patternContentUnits = string_prop "patternContentUnits"
 
-  let patternUnits = string "patternUnits"
+  let patternTransform = string_prop "patternTransform"
 
-  let pointerEvents = string "pointerEvents"
+  let patternUnits = string_prop "patternUnits"
 
-  let points = string "points"
+  let pointerEvents = string_prop "pointerEvents"
 
-  let pointsAtX = string "pointsAtX"
+  let points = string_prop "points"
 
-  let pointsAtY = string "pointsAtY"
+  let pointsAtX = string_prop "pointsAtX"
 
-  let pointsAtZ = string "pointsAtZ"
+  let pointsAtY = string_prop "pointsAtY"
 
-  let preserveAlpha = string "preserveAlpha"
+  let pointsAtZ = string_prop "pointsAtZ"
 
-  let preserveAspectRatio = string "preserveAspectRatio"
+  let preserveAlpha = string_prop "preserveAlpha"
 
-  let primitiveUnits = string "primitiveUnits"
+  let preserveAspectRatio = string_prop "preserveAspectRatio"
 
-  let r = string "r"
+  let primitiveUnits = string_prop "primitiveUnits"
 
-  let radius = string "radius"
+  let r = string_prop "r"
 
-  let refX = string "refX"
+  let radius = string_prop "radius"
 
-  let refY = string "refY"
+  let refX = string_prop "refX"
 
-  let renderingIntent = string "renderingIntent"
+  let refY = string_prop "refY"
 
-  let repeatCount = string "repeatCount"
+  let renderingIntent = string_prop "renderingIntent"
 
-  let repeatDur = string "repeatDur"
+  let repeatCount = string_prop "repeatCount"
 
-  let requiredExtensions = string "requiredExtensions"
+  let repeatDur = string_prop "repeatDur"
 
-  let requiredFeatures = string "requiredFeatures"
+  let requiredExtensions = string_prop "requiredExtensions"
 
-  let restart = string "restart"
+  let requiredFeatures = string_prop "requiredFeatures"
 
-  let result = string "result"
+  let restart = string_prop "restart"
 
-  let rotate = string "rotate"
+  let result = string_prop "result"
 
-  let rx = string "rx"
+  let rotate = string_prop "rotate"
 
-  let ry = string "ry"
+  let rx = string_prop "rx"
 
-  let scale = string "scale"
+  let ry = string_prop "ry"
 
-  let seed = string "seed"
+  let scale = string_prop "scale"
 
-  let shapeRendering = string "shapeRendering"
+  let seed = string_prop "seed"
 
-  let slope = string "slope"
+  let shapeRendering = string_prop "shapeRendering"
 
-  let spacing = string "spacing"
+  let slope = string_prop "slope"
 
-  let specularConstant = string "specularConstant"
+  let spacing = string_prop "spacing"
 
-  let specularExponent = string "specularExponent"
+  let specularConstant = string_prop "specularConstant"
 
-  let speed = string "speed"
+  let specularExponent = string_prop "specularExponent"
 
-  let spreadMethod = string "spreadMethod"
+  let speed = string_prop "speed"
 
-  let startOffset = string "startOffset"
+  let spreadMethod = string_prop "spreadMethod"
 
-  let stdDeviation = string "stdDeviation"
+  let startOffset = string_prop "startOffset"
 
-  let stemh = string "stemh"
+  let stdDeviation = string_prop "stdDeviation"
 
-  let stemv = string "stemv"
+  let stemh = string_prop "stemh"
 
-  let stitchTiles = string "stitchTiles"
+  let stemv = string_prop "stemv"
 
-  let stopColor = string "stopColor"
+  let stitchTiles = string_prop "stitchTiles"
 
-  let stopOpacity = string "stopOpacity"
+  let stopColor = string_prop "stopColor"
 
-  let strikethroughPosition = string "strikethroughPosition"
+  let stopOpacity = string_prop "stopOpacity"
 
-  let strikethroughThickness = string "strikethroughThickness"
+  let strikethroughPosition = string_prop "strikethroughPosition"
 
-  let string = string "string"
+  let strikethroughThickness = string_prop "strikethroughThickness"
 
-  let stroke = string "stroke"
+  let string = string_prop "string"
 
-  let strokeDasharray = string "strokeDasharray"
+  let stroke = string_prop "stroke"
 
-  let strokeDashoffset = string "strokeDashoffset"
+  let strokeDasharray = string_prop "strokeDasharray"
 
-  let strokeLinecap = string "strokeLinecap"
+  let strokeDashoffset = string_prop "strokeDashoffset"
 
-  let strokeLinejoin = string "strokeLinejoin"
+  let strokeLinecap = string_prop "strokeLinecap"
 
-  let strokeMiterlimit = string "strokeMiterlimit"
+  let strokeLinejoin = string_prop "strokeLinejoin"
 
-  let strokeOpacity = string "strokeOpacity"
+  let strokeMiterlimit = string_prop "strokeMiterlimit"
 
-  let strokeWidth = string "strokeWidth"
+  let strokeOpacity = string_prop "strokeOpacity"
 
-  let surfaceScale = string "surfaceScale"
+  let strokeWidth = string_prop "strokeWidth"
 
-  let systemLanguage = string "systemLanguage"
+  let surfaceScale = string_prop "surfaceScale"
 
-  let tableValues = string "tableValues"
+  let systemLanguage = string_prop "systemLanguage"
 
-  let targetX = string "targetX"
+  let tableValues = string_prop "tableValues"
 
-  let targetY = string "targetY"
+  let targetX = string_prop "targetX"
 
-  let textAnchor = string "textAnchor"
+  let targetY = string_prop "targetY"
 
-  let textDecoration = string "textDecoration"
+  let textAnchor = string_prop "textAnchor"
 
-  let textLength = string "textLength"
+  let textDecoration = string_prop "textDecoration"
 
-  let textRendering = string "textRendering"
+  let textLength = string_prop "textLength"
 
-  let to_ = string "to" (* reserved keyword *)
+  let textRendering = string_prop "textRendering"
 
-  let transform = string "transform"
+  let to_ = string_prop "to" (* reserved keyword *)
 
-  let u1 = string "u1"
+  let transform = string_prop "transform"
 
-  let u2 = string "u2"
+  let u1 = string_prop "u1"
 
-  let underlinePosition = string "underlinePosition"
+  let u2 = string_prop "u2"
 
-  let underlineThickness = string "underlineThickness"
+  let underlinePosition = string_prop "underlinePosition"
 
-  let unicode = string "unicode"
+  let underlineThickness = string_prop "underlineThickness"
 
-  let unicodeBidi = string "unicodeBidi"
+  let unicode = string_prop "unicode"
 
-  let unicodeRange = string "unicodeRange"
+  let unicodeBidi = string_prop "unicodeBidi"
 
-  let unitsPerEm = string "unitsPerEm"
+  let unicodeRange = string_prop "unicodeRange"
 
-  let vAlphabetic = string "vAlphabetic"
+  let unitsPerEm = string_prop "unitsPerEm"
 
-  let vHanging = string "vHanging"
+  let vAlphabetic = string_prop "vAlphabetic"
 
-  let vIdeographic = string "vIdeographic"
+  let vHanging = string_prop "vHanging"
 
-  let vMathematical = string "vMathematical"
+  let vIdeographic = string_prop "vIdeographic"
 
-  let values = string "values"
+  let vMathematical = string_prop "vMathematical"
 
-  let vectorEffect = string "vectorEffect"
+  let values = string_prop "values"
 
-  let version = string "version"
+  let vectorEffect = string_prop "vectorEffect"
 
-  let vertAdvX = string "vertAdvX"
+  let version = string_prop "version"
 
-  let vertAdvY = string "vertAdvY"
+  let vertAdvX = string_prop "vertAdvX"
 
-  let vertOriginX = string "vertOriginX"
+  let vertAdvY = string_prop "vertAdvY"
 
-  let vertOriginY = string "vertOriginY"
+  let vertOriginX = string_prop "vertOriginX"
 
-  let viewBox = string "viewBox"
+  let vertOriginY = string_prop "vertOriginY"
 
-  let viewTarget = string "viewTarget"
+  let viewBox = string_prop "viewBox"
 
-  let visibility = string "visibility"
+  let viewTarget = string_prop "viewTarget"
 
-  let widths = string "widths"
+  let visibility = string_prop "visibility"
 
-  let wordSpacing = string "wordSpacing"
+  let widths = string_prop "widths"
 
-  let writingMode = string "writingMode"
+  let wordSpacing = string_prop "wordSpacing"
 
-  let x = string "x"
+  let writingMode = string_prop "writingMode"
 
-  let x1 = string "x1"
+  let x = string_prop "x"
 
-  let x2 = string "x2"
+  let x1 = string_prop "x1"
 
-  let xChannelSelector = string "xChannelSelector"
+  let x2 = string_prop "x2"
 
-  let xHeight = string "xHeight"
+  let xChannelSelector = string_prop "xChannelSelector"
 
-  let xlinkActuate = string "xlinkActuate"
+  let xHeight = string_prop "xHeight"
 
-  let xlinkArcrole = string "xlinkArcrole"
+  let xlinkActuate = string_prop "xlinkActuate"
 
-  let xlinkHref = string "xlinkHref"
+  let xlinkArcrole = string_prop "xlinkArcrole"
 
-  let xlinkRole = string "xlinkRole"
+  let xlinkHref = string_prop "xlinkHref"
 
-  let xlinkShow = string "xlinkShow"
+  let xlinkRole = string_prop "xlinkRole"
 
-  let xlinkTitle = string "xlinkTitle"
+  let xlinkShow = string_prop "xlinkShow"
 
-  let xlinkType = string "xlinkType"
+  let xlinkTitle = string_prop "xlinkTitle"
 
-  let xmlns = string "xmlns"
+  let xlinkType = string_prop "xlinkType"
 
-  let xmlnsXlink = string "xmlnsXlink"
+  let xmlns = string_prop "xmlns"
 
-  let xmlBase = string "xmlBase"
+  let xmlnsXlink = string_prop "xmlnsXlink"
 
-  let xmlLang = string "xmlLang"
+  let xmlBase = string_prop "xmlBase"
 
-  let xmlSpace = string "xmlSpace"
+  let xmlLang = string_prop "xmlLang"
 
-  let y = string "y"
+  let xmlSpace = string_prop "xmlSpace"
 
-  let y1 = string "y1"
+  let y = string_prop "y"
 
-  let y2 = string "y2"
+  let y1 = string_prop "y1"
 
-  let yChannelSelector = string "yChannelSelector"
+  let y2 = string_prop "y2"
 
-  let z = string "z"
+  let yChannelSelector = string_prop "yChannelSelector"
 
-  let zoomAndPan = string "zoomAndPan"
+  let z = string_prop "z"
+
+  let zoomAndPan = string_prop "zoomAndPan"
 end
 
 include Prop
