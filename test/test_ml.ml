@@ -695,6 +695,56 @@ let testWithId () =
       assert_equal c##.innerHTML
         (Js.string "<div data-testid=\"feed-toggle\"></div>") )
 
+let testPropMaybeNone () =
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render (div [|maybe className None|] []) (Html.element c) ) ;
+      assert_equal c##.innerHTML (Js.string "<div></div>") )
+
+let testPropMaybeSome () =
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render
+            (div [|maybe className (Some "foo")|] [])
+            (Html.element c) ) ;
+      assert_equal c##.innerHTML (Js.string "<div class=\"foo\"></div>") )
+
+let testPropCustomString () =
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render (div [|Prop.string "foo" "bar"|] []) (Html.element c) ) ;
+      assert_equal c##.innerHTML (Js.string "<div foo=\"bar\"></div>") )
+
+let testPropCustomBool () =
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render
+            (div [|Prop.bool "disabled" true|] [])
+            (Html.element c) ) ;
+      assert_equal c##.innerHTML (Js.string "<div disabled=\"\"></div>") )
+
+let testPropCustomInt () =
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render (div [|Prop.int "foo" 42|] []) (Html.element c) ) ;
+      assert_equal c##.innerHTML (Js.string "<div foo=\"42\"></div>") )
+
+let testPropCustomFloat () =
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render (div [|Prop.float "foo" 42.5|] []) (Html.element c) ) ;
+      assert_equal c##.innerHTML (Js.string "<div foo=\"42.5\"></div>") )
+
+let testPropCustomAny () =
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render
+            (div [|Prop.any "foo" (Js.array [|"bar"; "baz"|])|] [])
+            (Html.element c) ) ;
+      assert_equal c##.innerHTML (Js.string "<div foo=\"bar,baz\"></div>") )
+      assert_equal c##.innerHTML
+        (Js.string "<div foo=\"bar,baz\"></div>") )
+
 let basic =
   "basic"
   >::: [ "testDom" >:: testDom
@@ -756,6 +806,16 @@ let externals =
        ; "children" >:: testExternalChildren
        ; "non-function" >:: testExternalNonFunction ]
 
+let props =
+  "props"
+  >::: [ "maybe-none" >:: testPropMaybeNone
+       ; "maybe-some" >:: testPropMaybeSome
+       ; "custom-string" >:: testPropCustomString
+       ; "custom-bool" >:: testPropCustomBool
+       ; "custom-int" >:: testPropCustomInt
+       ; "custom-float" >:: testPropCustomFloat
+       ; "custom-any" >:: testPropCustomAny ]
+
 let suite =
   "ocaml"
   >::: [ basic
@@ -769,4 +829,6 @@ let suite =
        ; children
        ; fragments
        ; dangerouslySetInnerHTML
-       ; externals ]
+       ; externals
+           ]
+       ; props
