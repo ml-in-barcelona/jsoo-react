@@ -742,8 +742,19 @@ let testPropCustomAny () =
             (div [|Prop.any "foo" (Js.array [|"bar"; "baz"|])|] [])
             (Html.element c) ) ;
       assert_equal c##.innerHTML (Js.string "<div foo=\"bar,baz\"></div>") )
+
+let testCustomElement () =
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render
+            (h "cool-element"
+               [|Prop.string "coolness" "max"|]
+               [h "chill" [|Prop.bool "data-out" true|] []] )
+            (Html.element c) ) ;
       assert_equal c##.innerHTML
-        (Js.string "<div foo=\"bar,baz\"></div>") )
+        (Js.string
+           "<cool-element coolness=\"max\"><chill \
+            data-out=\"true\"></chill></cool-element>" ) )
 
 let basic =
   "basic"
@@ -816,6 +827,8 @@ let props =
        ; "custom-float" >:: testPropCustomFloat
        ; "custom-any" >:: testPropCustomAny ]
 
+let elements = "elements" >::: ["custom" >:: testCustomElement]
+
 let suite =
   "ocaml"
   >::: [ basic
@@ -830,5 +843,5 @@ let suite =
        ; fragments
        ; dangerouslySetInnerHTML
        ; externals
-           ]
        ; props
+       ; elements ]
