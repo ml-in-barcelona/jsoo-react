@@ -596,6 +596,63 @@ let make_make_props fn_name loc named_arg_list props_type rest =
                    , core_type ) ) ) ]
        , rest ) )
 
+let make_external_js_props_obj ~loc named_arg_list_with_key_and_ref =
+  let label_to_tuple label =
+    let l = Str_label.str label in
+    let id = Exp.ident ~loc {txt= Lident l; loc} in
+    match label with
+    | Optional "key" ->
+        [%expr
+          [%e Exp.constant ~loc (Const.string l)]
+          , inject
+              (Js_of_ocaml.Js.Optdef.option
+                 (Option.map Js_of_ocaml.Js.string [%e id]) )]
+    | Optional "ref" ->
+        [%expr
+          [%e Exp.constant ~loc (Const.string l)]
+          , inject (Js_of_ocaml.Js.Optdef.option [%e id])]
+    | Optional l ->
+        [%expr
+          [%e Exp.constant ~loc (Const.string l)]
+          , inject (Js_of_ocaml.Js.Optdef.option [%e id])]
+    | Labelled l ->
+        [%expr [%e Exp.constant ~loc (Const.string l)], inject [%e id]]
+  in
+  [%expr
+    obj
+      [%e
+        Exp.array ~loc
+          (List.map
+             (fun (label, _, _, _) -> label_to_tuple label)
+             named_arg_list_with_key_and_ref )]]
+
+let make_external_make_props fn_name loc named_arg_list props_type rest =
+  let named_arg_list = List.map pluckLabelDefaultLocType named_arg_list in
+  let props_type = makePropsType ~loc props_type in
+  let core_type =
+    makeArgsForMakePropsType named_arg_list [%type: unit -> [%t props_type]]
+  in
+  Exp.mk ~loc
+    (Pexp_let
+       ( Nonrecursive
+       , [ Vb.mk ~loc
+             (Pat.mk ~loc
+                (Ppat_constraint
+                   ( makePropsName ~loc (make_props_name fn_name)
+                   , { ptyp_desc= Ptyp_poly ([], core_type)
+                     ; ptyp_loc= loc
+                     ; ptyp_attributes= []
+                     ; ptyp_loc_stack= [] } ) ) )
+             (Exp.mk ~loc
+                (Pexp_constraint
+                   ( make_funs_for_make_props_body named_arg_list
+                       [%expr
+                         fun () ->
+                           let open Js_of_ocaml.Js.Unsafe in
+                           [%e make_external_js_props_obj ~loc named_arg_list]]
+                   , core_type ) ) ) ]
+       , rest ) )
+
 let rec recursivelyTransformNamedArgsForMake mapper ctxt expr list =
   let expr = mapper#expression ctxt expr in
   let loc = expr.pexp_loc in
@@ -1206,7 +1263,7 @@ let jsxMapper () =
               :: List.map pluck_label_and_loc prop_types
             in
             let make_props =
-              make_make_props fn_name pstr_loc named_arg_list_with_key
+              make_external_make_props fn_name pstr_loc named_arg_list_with_key
                 named_type_list
             in
             let filename = filename_from_loc pstr_loc in
