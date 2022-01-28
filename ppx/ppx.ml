@@ -568,51 +568,40 @@ let make_js_props_obj ~loc named_arg_list_with_key_and_ref =
              (fun (label, _, _, _) -> label_to_tuple label)
              named_arg_list_with_key_and_ref )]]
 
+let get_wrap_fn_for_type ~loc typ =
+  match typ with
+  | Some [%type: React.element list] ->
+      Some [%expr fun v -> Js_of_ocaml.Js.array (Array.of_list v)]
+  | Some [%type: string] ->
+      Some [%expr Js_of_ocaml.Js.string]
+  | Some [%type: bool] ->
+      Some [%expr Js_of_ocaml.Js.bool]
+  | Some [%type: [%t? _] array] ->
+      Some [%expr Js_of_ocaml.Js.array]
+  | _ ->
+      None
+
 let make_external_js_props_obj ~loc named_arg_list =
   let label_to_tuple label typ =
-    let label_str = Str_label.str label in
-    let id = Exp.ident ~loc {txt= Lident label_str; loc} in
-    match (label, typ) with
-    | Labelled "children", Some [%type: React.element list] ->
-        [%expr
-          [%e Exp.constant ~loc (Const.string label_str)]
-          , inject (Js_of_ocaml.Js.array (Array.of_list [%e id]))]
-    | Labelled l, Some [%type: string] ->
+    let label_ident = Exp.ident ~loc {txt= Lident (Str_label.str label); loc} in
+    let maybe_wrap_fn = get_wrap_fn_for_type ~loc typ in
+    match (label, maybe_wrap_fn) with
+    | Labelled l, Some wrapf ->
         [%expr
           [%e Exp.constant ~loc (Const.string l)]
-          , inject (Js_of_ocaml.Js.string [%e id])]
-    | Optional l, Some [%type: string] ->
+          , inject ([%e wrapf] [%e label_ident])]
+    | Labelled l, None ->
+        [%expr [%e Exp.constant ~loc (Const.string l)], inject [%e label_ident]]
+    | Optional l, Some wrapf ->
         [%expr
           [%e Exp.constant ~loc (Const.string l)]
           , inject
               (Js_of_ocaml.Js.Optdef.option
-                 (Option.map Js_of_ocaml.Js.string [%e id]) )]
-    | Labelled l, Some [%type: bool] ->
+                 (Option.map [%e wrapf] [%e label_ident]) )]
+    | Optional l, None ->
         [%expr
           [%e Exp.constant ~loc (Const.string l)]
-          , inject (Js_of_ocaml.Js.bool [%e id])]
-    | Optional l, Some [%type: bool] ->
-        [%expr
-          [%e Exp.constant ~loc (Const.string l)]
-          , inject
-              (Js_of_ocaml.Js.Optdef.option
-                 (Option.map Js_of_ocaml.Js.bool [%e id]) )]
-    | Labelled l, Some [%type: [%t? _] array] ->
-        [%expr
-          [%e Exp.constant ~loc (Const.string l)]
-          , inject (Js_of_ocaml.Js.array [%e id])]
-    | Optional l, Some [%type: [%t? _] array] ->
-        [%expr
-          [%e Exp.constant ~loc (Const.string l)]
-          , inject
-              (Js_of_ocaml.Js.Optdef.option
-                 (Option.map Js_of_ocaml.Js.array [%e id]) )]
-    | Labelled l, _ ->
-        [%expr [%e Exp.constant ~loc (Const.string l)], inject [%e id]]
-    | Optional l, _ ->
-        [%expr
-          [%e Exp.constant ~loc (Const.string l)]
-          , inject (Js_of_ocaml.Js.Optdef.option [%e id])]
+          , inject (Js_of_ocaml.Js.Optdef.option [%e label_ident])]
   in
   [%expr
     obj
