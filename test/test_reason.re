@@ -893,16 +893,13 @@ let testExternals = () => {
 let testExternalChildren = () => {
   module JsComp = {
     [@react.component]
-    external make:
-      (~children: Js.t(Js.js_array(React.element))) => React.element =
+    external make: (~children: list(React.element)) => React.element =
       {|require("./external").GreetingChildren|};
   };
   withContainer(c => {
     act(() => {
       React.Dom.render(
-        <JsComp>
-          ...{Js.array([|<em> {React.string("John")} </em>|])}
-        </JsComp>,
+        <JsComp> <em> {React.string("John")} </em> </JsComp>,
         Html.element(c),
       )
     });

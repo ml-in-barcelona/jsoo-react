@@ -573,6 +573,10 @@ let make_external_js_props_obj ~loc named_arg_list =
     let label_str = Str_label.str label in
     let id = Exp.ident ~loc {txt= Lident label_str; loc} in
     match (label, typ) with
+    | Labelled "children", Some [%type: React.element list] ->
+        [%expr
+          [%e Exp.constant ~loc (Const.string label_str)]
+          , inject (Js_of_ocaml.Js.array (Array.of_list [%e id]))]
     | Labelled l, Some [%type: string] ->
         [%expr
           [%e Exp.constant ~loc (Const.string l)]
