@@ -21,5 +21,13 @@ function GreetingChildren({
 
 exports.GreetingChildren = GreetingChildren;
 
+function Greetings({
+  names
+}) {
+  return React.createElement("span", null, "Hey ", names.join(", "));
+}
+
+exports.Greetings = Greetings;
+
 // React.forwardRef is a non-function wrapper component, at least at time of writing
 exports.NonFunctionGreeting = React.forwardRef(Greeting);

@@ -25,3 +25,6 @@ external%component make : name:Js.js_string Js.t -> React.element
 
 external%component make : ?name:Js.js_string Js.t -> React.element
   = "require(\"my-react-library\").MyReactComponent"
+
+external%component make : names:string array -> React.element
+  = "require(\"my-react-library\").MyReactComponent"

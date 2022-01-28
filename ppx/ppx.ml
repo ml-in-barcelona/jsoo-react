@@ -568,7 +568,7 @@ let make_js_props_obj ~loc named_arg_list_with_key_and_ref =
              (fun (label, _, _, _) -> label_to_tuple label)
              named_arg_list_with_key_and_ref )]]
 
-let get_wrap_fn_for_type ~loc typ =
+let rec get_wrap_fn_for_type ~loc typ =
   match typ with
   | Some [%type: React.element list] ->
       Some [%expr fun v -> Js_of_ocaml.Js.array (Array.of_list v)]
@@ -576,8 +576,13 @@ let get_wrap_fn_for_type ~loc typ =
       Some [%expr Js_of_ocaml.Js.string]
   | Some [%type: bool] ->
       Some [%expr Js_of_ocaml.Js.bool]
-  | Some [%type: [%t? _] array] ->
-      Some [%expr Js_of_ocaml.Js.array]
+  | Some [%type: [%t? inner_typ] array] ->
+      Some
+        ( match get_wrap_fn_for_type ~loc (Some inner_typ) with
+        | Some inner_wrapf ->
+            [%expr fun v -> Js_of_ocaml.Js.array (Array.map [%e inner_wrapf] v)]
+        | None ->
+            [%expr Js_of_ocaml.Js.array] )
   | _ ->
       None
 

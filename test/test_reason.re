@@ -1022,6 +1022,26 @@ let testExternalOptionalArrayArg = () => {
   });
 };
 
+let testExternalSecondOrderArgConversion = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~names: array(string)=?) => React.element =
+      {|require("./external").Greetings|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <JsComp names=[|"John", "Jerry", "Fred"|] />,
+        Html.element(c),
+      )
+    });
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<span>Hey John, Jerry, Fred</span>"),
+    );
+  });
+};
+
 let testAliasedChildren = () => {
   module AliasedChildrenComponent = {
     [@react.component]
@@ -1163,6 +1183,7 @@ let externals =
     "optional-bool-arg" >:: testExternalOptionalBoolArg,
     "array-arg" >:: testExternalArrayArg,
     "optional-array-arg" >:: testExternalOptionalArrayArg,
+    "second-order-arg-conversion" >:: testExternalSecondOrderArgConversion,
   ];
 
 let suite =
