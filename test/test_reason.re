@@ -991,6 +991,40 @@ let testExternalOptionalBoolArg = () => {
   });
 };
 
+let testExternalArrayArg = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~children: array(React.element)) => React.element =
+      {|require("./external").GreetingChildren|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <JsComp> ...[|<em> {React.string("John")} </em>|] </JsComp>,
+        Html.element(c),
+      )
+    });
+    assert_equal(c##.innerHTML, Js.string("<span>Hey <em>John</em></span>"));
+  });
+};
+
+let testExternalOptionalArrayArg = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~children: array(React.element)=?) => React.element =
+      {|require("./external").GreetingChildren|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <JsComp> ...[|<em> {React.string("John")} </em>|] </JsComp>,
+        Html.element(c),
+      )
+    });
+    assert_equal(c##.innerHTML, Js.string("<span>Hey <em>John</em></span>"));
+  });
+};
+
 let testAliasedChildren = () => {
   module AliasedChildrenComponent = {
     [@react.component]
@@ -1130,6 +1164,8 @@ let externals =
     "optional-string-arg" >:: testExternalOptionalStringArg,
     "bool-arg" >:: testExternalBoolArg,
     "optional-bool-arg" >:: testExternalOptionalBoolArg,
+    "array-arg" >:: testExternalArrayArg,
+    "optional-array-arg" >:: testExternalOptionalArrayArg,
   ];
 
 let suite =

@@ -593,6 +593,16 @@ let make_external_js_props_obj ~loc named_arg_list =
           , inject
               (Js_of_ocaml.Js.Optdef.option
                  (Option.map Js_of_ocaml.Js.bool [%e id]) )]
+    | Labelled l, Some [%type: [%t? _] array] ->
+        [%expr
+          [%e Exp.constant ~loc (Const.string l)]
+          , inject (Js_of_ocaml.Js.array [%e id])]
+    | Optional l, Some [%type: [%t? _] array] ->
+        [%expr
+          [%e Exp.constant ~loc (Const.string l)]
+          , inject
+              (Js_of_ocaml.Js.Optdef.option
+                 (Option.map Js_of_ocaml.Js.array [%e id]) )]
     | Labelled l, _ ->
         [%expr [%e Exp.constant ~loc (Const.string l)], inject [%e id]]
     | Optional l, _ ->
