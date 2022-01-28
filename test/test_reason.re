@@ -913,13 +913,11 @@ let testExternalChildren = () => {
 let testExternalNonFunction = () => {
   module JsComp = {
     [@react.component]
-    external make: (~name: Js.t(Js.js_string)) => React.element =
+    external make: (~name: string) => React.element =
       {|require("./external").NonFunctionGreeting|};
   };
   withContainer(c => {
-    act(() => {
-      React.Dom.render(<JsComp name={Js.string("John")} />, Html.element(c))
-    });
+    act(() => {React.Dom.render(<JsComp name="John" />, Html.element(c))});
     assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
   });
 };
@@ -934,6 +932,30 @@ let testExternalOptionalArg = () => {
     act(() => {
       React.Dom.render(<JsComp name={Js.string("John")} />, Html.element(c))
     });
+    assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
+  });
+};
+
+let testExternalStringArg = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~name: string) => React.element =
+      {|require("./external").Greeting|};
+  };
+  withContainer(c => {
+    act(() => {React.Dom.render(<JsComp name="John" />, Html.element(c))});
+    assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
+  });
+};
+
+let testExternalOptionalStringArg = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~name: string=?) => React.element =
+      {|require("./external").Greeting|};
+  };
+  withContainer(c => {
+    act(() => {React.Dom.render(<JsComp name="John" />, Html.element(c))});
     assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
   });
 };
@@ -1073,6 +1095,8 @@ let externals =
     "children" >:: testExternalChildren,
     "non-function" >:: testExternalNonFunction,
     "optional-arg" >:: testExternalOptionalArg,
+    "string-arg" >:: testExternalStringArg,
+    "optional-string-arg" >:: testExternalOptionalStringArg,
   ];
 
 let suite =

@@ -568,31 +568,35 @@ let make_js_props_obj ~loc named_arg_list_with_key_and_ref =
              (fun (label, _, _, _) -> label_to_tuple label)
              named_arg_list_with_key_and_ref )]]
 
-let make_external_js_props_obj ~loc named_arg_list_with_key_and_ref =
-  let label_to_tuple label =
+let make_external_js_props_obj ~loc named_arg_list =
+  let label_to_tuple label typ =
     let label_str = Str_label.str label in
     let id = Exp.ident ~loc {txt= Lident label_str; loc} in
-    match label with
-    | Optional "key" ->
+    match (label, typ) with
+    | Labelled l, Some [%type: string] ->
         [%expr
-          [%e Exp.constant ~loc (Const.string label_str)]
+          [%e Exp.constant ~loc (Const.string l)]
+          , inject (Js_of_ocaml.Js.string [%e id])]
+    | Optional l, Some [%type: string] ->
+        [%expr
+          [%e Exp.constant ~loc (Const.string l)]
           , inject
               (Js_of_ocaml.Js.Optdef.option
                  (Option.map Js_of_ocaml.Js.string [%e id]) )]
-    | Optional l ->
+    | Labelled l, _ ->
+        [%expr [%e Exp.constant ~loc (Const.string l)], inject [%e id]]
+    | Optional l, _ ->
         [%expr
           [%e Exp.constant ~loc (Const.string l)]
           , inject (Js_of_ocaml.Js.Optdef.option [%e id])]
-    | Labelled l ->
-        [%expr [%e Exp.constant ~loc (Const.string l)], inject [%e id]]
   in
   [%expr
     obj
       [%e
         Exp.array ~loc
           (List.map
-             (fun (label, _, _, _) -> label_to_tuple label)
-             named_arg_list_with_key_and_ref )]]
+             (fun (label, _, _, typ) -> label_to_tuple label typ)
+             named_arg_list )]]
 
 (* Builds the function that takes labelled arguments and generates a JS object *)
 let make_make_props js_props_obj fn_name loc named_arg_list props_type rest =
@@ -1226,12 +1230,13 @@ let jsxMapper () =
               , Some type_ )
             in
             let named_arg_list_with_key =
+              let loc = pstr_loc in
               ( Str_label.Optional "key"
               , None
-              , Pat.var {txt= "key"; loc= pstr_loc}
+              , Pat.var {txt= "key"; loc}
               , "key"
-              , pstr_loc
-              , Some (keyType pstr_loc) )
+              , loc
+              , Some [%type: string] )
               :: List.map pluck_label_and_loc prop_types
             in
             let make_props =
