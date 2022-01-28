@@ -1,8 +1,13 @@
 const React = require("react");
 
 function Greeting({
-  name
+  name,
+  strong,
 }) {
+  var name = strong === true
+      ? React.createElement("strong", null, name)
+      : name;
+
   return React.createElement("span", null, "Hey ", name);
 }
 

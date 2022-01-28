@@ -960,6 +960,37 @@ let testExternalOptionalStringArg = () => {
   });
 };
 
+let testExternalBoolArg = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~name: string, ~strong: bool) => React.element =
+      {|require("./external").Greeting|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(<JsComp name="John" strong=false />, Html.element(c))
+    });
+    assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
+  });
+};
+
+let testExternalOptionalBoolArg = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~name: string=?, ~strong: bool=?) => React.element =
+      {|require("./external").Greeting|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(<JsComp name="John" strong=true />, Html.element(c))
+    });
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<span>Hey <strong>John</strong></span>"),
+    );
+  });
+};
+
 let testAliasedChildren = () => {
   module AliasedChildrenComponent = {
     [@react.component]
@@ -1097,6 +1128,8 @@ let externals =
     "optional-arg" >:: testExternalOptionalArg,
     "string-arg" >:: testExternalStringArg,
     "optional-string-arg" >:: testExternalOptionalStringArg,
+    "bool-arg" >:: testExternalBoolArg,
+    "optional-bool-arg" >:: testExternalOptionalBoolArg,
   ];
 
 let suite =
