@@ -1,5 +1,3 @@
-[@@@react.dom]
-
 let%component make ?(name = "") = div [||] [React.string ("Hello " ^ name)]
 
 let element = div [|id "foo"|] []
