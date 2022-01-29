@@ -22,3 +22,6 @@ let%component make () = a ?href:(Some "https://opam.ocaml.org") ()
 
 external%component make : name:Js.js_string Js.t -> React.element
   = "require(\"my-react-library\").MyReactComponent"
+
+external%component make : ?name:Js.js_string Js.t -> React.element
+  = "require(\"my-react-library\").MyReactComponent"
