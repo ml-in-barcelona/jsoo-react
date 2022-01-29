@@ -345,7 +345,7 @@ module ForwardRef =
       let make =
         ((fun theRef ->
             div
-              [|(Prop.ref_ ((theRef |> Js_of_ocaml.Js.Opt.to_option)
+              [|(Prop.ref ((theRef |> Js_of_ocaml.Js.Opt.to_option)
                    [@reason.preserve_braces ]))|]
               [((React.string (("ForwardRef")
                    [@reason.raw_literal "ForwardRef"]))
@@ -602,8 +602,8 @@ let make =
 let t = FancyButton.make ~ref:buttonRef ~children:[div [||] []] ()
 let t =
   button
-    [|(Prop.ref_ ref);(Prop.className (("FancyButton")
-                         [@reason.raw_literal "FancyButton"]))|] children
+    [|(Prop.ref ref);(Prop.className (("FancyButton")
+                        [@reason.raw_literal "FancyButton"]))|] children
 let make =
   let make_props
     : children:'children ->
@@ -630,8 +630,8 @@ let make =
     ((fun ~children ->
         ((fun ref ->
             ((button
-                [|(Prop.ref_ ref);(Prop.className (("FancyButton")
-                                     [@reason.raw_literal "FancyButton"]))|]
+                [|(Prop.ref ref);(Prop.className (("FancyButton")
+                                    [@reason.raw_literal "FancyButton"]))|]
                 children)
             [@reason.preserve_braces ]))
         [@warning "-16"]))
