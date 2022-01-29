@@ -276,3 +276,31 @@ let make =
           (Js_of_ocaml.Js.Unsafe.js_expr
              "require(\"my-react-library\").MyReactComponent")
           (make_props ?key ~name ())
+let make =
+  let make_props
+    : ?name:Js.js_string Js.t ->
+        ?key:string ->
+          unit ->
+            < name: Js.js_string Js.t option Js_of_ocaml.Js.readonly_prop  
+              >  Js_of_ocaml.Js.t
+    =
+    fun ?name ->
+      fun ?key ->
+        fun () ->
+          let open Js_of_ocaml.Js.Unsafe in
+            obj
+              [|("key",
+                  (inject
+                     (Js_of_ocaml.Js.Optdef.option
+                        (Option.map Js_of_ocaml.Js.string key))));("name",
+                                                                    (
+                                                                    inject
+                                                                    (Js_of_ocaml.Js.Optdef.option
+                                                                    name)))|] in
+  fun ?name ->
+    fun ?key ->
+      fun () ->
+        React.createElement
+          (Js_of_ocaml.Js.Unsafe.js_expr
+             "require(\"my-react-library\").MyReactComponent")
+          (make_props ?key ?name ())
