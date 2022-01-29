@@ -343,3 +343,35 @@ let make =
           (Js_of_ocaml.Js.Unsafe.js_expr
              "require(\"my-react-library\").MyReactComponent")
           (make_props ?key ?name ())
+let make =
+  let make_props
+    : names:string array ->
+        ?key:string ->
+          unit ->
+            < names: string array Js_of_ocaml.Js.readonly_prop   > 
+              Js_of_ocaml.Js.t
+    =
+    fun ~names ->
+      fun ?key ->
+        fun () ->
+          let open Js_of_ocaml.Js.Unsafe in
+            obj
+              [|("key",
+                  (inject
+                     (Js_of_ocaml.Js.Optdef.option
+                        (Option.map Js_of_ocaml.Js.string key))));("names",
+                                                                    (
+                                                                    inject
+                                                                    ((fun v
+                                                                    ->
+                                                                    Js_of_ocaml.Js.array
+                                                                    (Array.map
+                                                                    Js_of_ocaml.Js.string
+                                                                    v)) names)))|] in
+  fun ~names ->
+    fun ?key ->
+      fun () ->
+        React.createElement
+          (Js_of_ocaml.Js.Unsafe.js_expr
+             "require(\"my-react-library\").MyReactComponent")
+          (make_props ?key ~names ())

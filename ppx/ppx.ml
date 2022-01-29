@@ -561,31 +561,53 @@ let make_js_props_obj ~loc named_arg_list_with_key_and_ref =
              (fun (label, _, _, _) -> label_to_tuple label)
              named_arg_list_with_key_and_ref )]]
 
-let make_external_js_props_obj ~loc named_arg_list_with_key_and_ref =
-  let label_to_tuple label =
-    let label_str = Str_label.str label in
-    let id = Exp.ident ~loc {txt= Lident label_str; loc} in
-    match label with
-    | Optional "key" ->
-        [%expr
-          [%e Exp.constant ~loc (Const.string label_str)]
-          , inject
-              (Js_of_ocaml.Js.Optdef.option
-                 (Option.map Js_of_ocaml.Js.string [%e id]) )]
-    | Optional l ->
+let rec get_wrap_fn_for_type ~loc typ =
+  match typ with
+  | Some [%type: React.element list] ->
+      Some [%expr fun v -> Js_of_ocaml.Js.array (Array.of_list v)]
+  | Some [%type: string] ->
+      Some [%expr Js_of_ocaml.Js.string]
+  | Some [%type: bool] ->
+      Some [%expr Js_of_ocaml.Js.bool]
+  | Some [%type: [%t? inner_typ] array] ->
+      Some
+        ( match get_wrap_fn_for_type ~loc (Some inner_typ) with
+        | Some inner_wrapf ->
+            [%expr fun v -> Js_of_ocaml.Js.array (Array.map [%e inner_wrapf] v)]
+        | None ->
+            [%expr Js_of_ocaml.Js.array] )
+  | _ ->
+      None
+
+let make_external_js_props_obj ~loc named_arg_list =
+  let label_to_tuple label typ =
+    let label_ident = Exp.ident ~loc {txt= Lident (Str_label.str label); loc} in
+    let maybe_wrap_fn = get_wrap_fn_for_type ~loc typ in
+    match (label, maybe_wrap_fn) with
+    | Labelled l, Some wrapf ->
         [%expr
           [%e Exp.constant ~loc (Const.string l)]
-          , inject (Js_of_ocaml.Js.Optdef.option [%e id])]
-    | Labelled l ->
-        [%expr [%e Exp.constant ~loc (Const.string l)], inject [%e id]]
+          , inject ([%e wrapf] [%e label_ident])]
+    | Labelled l, None ->
+        [%expr [%e Exp.constant ~loc (Const.string l)], inject [%e label_ident]]
+    | Optional l, Some wrapf ->
+        [%expr
+          [%e Exp.constant ~loc (Const.string l)]
+          , inject
+              (Js_of_ocaml.Js.Optdef.option
+                 (Option.map [%e wrapf] [%e label_ident]) )]
+    | Optional l, None ->
+        [%expr
+          [%e Exp.constant ~loc (Const.string l)]
+          , inject (Js_of_ocaml.Js.Optdef.option [%e label_ident])]
   in
   [%expr
     obj
       [%e
         Exp.array ~loc
           (List.map
-             (fun (label, _, _, _) -> label_to_tuple label)
-             named_arg_list_with_key_and_ref )]]
+             (fun (label, _, _, typ) -> label_to_tuple label typ)
+             named_arg_list )]]
 
 (* Builds the function that takes labelled arguments and generates a JS object *)
 let make_make_props js_props_obj fn_name loc named_arg_list props_type rest =
@@ -1219,12 +1241,13 @@ let jsxMapper () =
               , Some type_ )
             in
             let named_arg_list_with_key =
+              let loc = pstr_loc in
               ( Str_label.Optional "key"
               , None
-              , Pat.var {txt= "key"; loc= pstr_loc}
+              , Pat.var {txt= "key"; loc}
               , "key"
-              , pstr_loc
-              , Some (keyType pstr_loc) )
+              , loc
+              , Some [%type: string] )
               :: List.map pluck_label_and_loc prop_types
             in
             let make_props =

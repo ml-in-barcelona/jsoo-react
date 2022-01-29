@@ -131,7 +131,8 @@ module External =
                         (inject
                            (Js_of_ocaml.Js.Optdef.option
                               (Option.map Js_of_ocaml.Js.string key))));
-                      ("b", (inject b));("a", (inject a))|] in
+                      ("b", (inject (Js_of_ocaml.Js.string b)));("a",
+                                                                  (inject a))|] in
       fun ~a ->
         fun ~b ->
           fun ?key ->
