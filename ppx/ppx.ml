@@ -991,17 +991,15 @@ let jsxMapper () =
       let labeledProps = List.filter_map labeled_arg nonChildrenProps in
       let makePropField (str_label, value) =
         let loc = callLoc in
-        let replace_ref prop = match prop with "ref" -> "ref_" | p -> p in
         match str_label with
         | Str_label.Optional str ->
             [%expr
               maybe
-                [%e Exp.ident {loc; txt= Ldot (Lident "Prop", replace_ref str)}]
+                [%e Exp.ident {loc; txt= Ldot (Lident "Prop", str)}]
                 [%e value]]
         | Labelled str ->
             [%expr
-              [%e Exp.ident {loc; txt= Ldot (Lident "Prop", replace_ref str)}]
-                [%e value]]
+              [%e Exp.ident {loc; txt= Ldot (Lident "Prop", str)}] [%e value]]
       in
       let propsArray = Exp.array ~loc (List.map makePropField labeledProps) in
       [ (* [| href "..."; target "_blank" |] *)

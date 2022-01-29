@@ -7,7 +7,7 @@ module FancyLink = {
   [@react.component]
   let make =
     React.Dom.forwardRef((~href, ~repo, ref) =>
-      <a ref href className="FancyLink"> {repo |> React.string} </a>
+      <a ref_=ref href className="FancyLink"> {repo |> React.string} </a>
     );
 };
 

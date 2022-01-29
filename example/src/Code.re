@@ -13,6 +13,6 @@ let make = (~text) => {
     None;
   });
   <pre className="language-reason">
-    <code ref={React.Dom.Ref.domRef(codeRef)}> {text |> React.string} </code>
+    <code ref_={React.Dom.Ref.domRef(codeRef)}> {text |> React.string} </code>
   </pre>;
 };
