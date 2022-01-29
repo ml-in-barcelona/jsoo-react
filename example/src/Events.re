@@ -1,4 +1,6 @@
 open Bindings;
+open React.Dom.Dsl;
+open Html;
 
 type coords = {
   x: int,

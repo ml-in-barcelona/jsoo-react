@@ -1,5 +1,7 @@
 open Bindings;
 open Js_of_ocaml;
+open React.Dom.Dsl;
+open Html;
 
 module FancyLink = {
   [@react.component]
