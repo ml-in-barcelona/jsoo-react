@@ -23,12 +23,6 @@ module Ocaml_location = Location
 open Ppxlib
 open Ast_helper
 
-module Context = struct
-  type t = {react_dom: bool}
-
-  let init = {react_dom= false}
-end
-
 module Str_label = struct
   type t = Labelled of string | Optional of string
 
@@ -66,140 +60,6 @@ let isOptional str =
   match str with Optional _ -> true | Labelled _ -> false | Nolabel -> false
 
 let optionIdent = Lident "option"
-
-let dom_tags =
-  (* html *)
-  [ "a"
-  ; "abbr"
-  ; "address"
-  ; "area"
-  ; "article"
-  ; "aside"
-  ; "audio"
-  ; "b"
-  ; "base"
-  ; "bdi"
-  ; "bdo"
-  ; "big"
-  ; "blockquote"
-  ; "body"
-  ; "br"
-  ; "button"
-  ; "canvas"
-  ; "caption"
-  ; "cite"
-  ; "code"
-  ; "col"
-  ; "colgroup"
-  ; "data"
-  ; "datalist"
-  ; "dd"
-  ; "del"
-  ; "details"
-  ; "dfn"
-  ; "dialog"
-  ; "div"
-  ; "dl"
-  ; "dt"
-  ; "em"
-  ; "embed"
-  ; "fieldset"
-  ; "figcaption"
-  ; "figure"
-  ; "footer"
-  ; "form"
-  ; "h1"
-  ; "h2"
-  ; "h3"
-  ; "h4"
-  ; "h5"
-  ; "h6"
-  ; "head"
-  ; "header"
-  ; "hr"
-  ; "html"
-  ; "i"
-  ; "iframe"
-  ; "img"
-  ; "input"
-  ; "ins"
-  ; "kbd"
-  ; "keygen"
-  ; "label"
-  ; "legend"
-  ; "li"
-  ; "link"
-  ; "main"
-  ; "map"
-  ; "mark"
-  ; "menu"
-  ; "menuitem"
-  ; "meta"
-  ; "meter"
-  ; "nav"
-  ; "noscript"
-  ; "object"
-  ; "ol"
-  ; "optgroup"
-  ; "option"
-  ; "output"
-  ; "p"
-  ; "param"
-  ; "picture"
-  ; "pre"
-  ; "progress"
-  ; "q"
-  ; "rp"
-  ; "rt"
-  ; "ruby"
-  ; "s"
-  ; "samp"
-  ; "script"
-  ; "section"
-  ; "select"
-  ; "small"
-  ; "source"
-  ; "span"
-  ; "strong"
-  ; "style"
-  ; "sub"
-  ; "summary"
-  ; "sup"
-  ; "table"
-  ; "tbody"
-  ; "td"
-  ; "textarea"
-  ; "tfoot"
-  ; "th"
-  ; "thead"
-  ; "time"
-  ; "title"
-  ; "tr"
-  ; "track"
-  ; "u"
-  ; "ul"
-  ; "var"
-  ; "video"
-  ; "wbr" ]
-  @ (* svg *)
-  [ "circle"
-  ; "clipPath"
-  ; "defs"
-  ; "ellipse"
-  ; "g"
-  ; "line"
-  ; "linearGradient"
-  ; "mask"
-  ; "path"
-  ; "pattern"
-  ; "polygon"
-  ; "polyline"
-  ; "radialGradient"
-  ; "rect"
-  ; "stop"
-  ; "svg"
-  ; "text"
-  ; "tspan" ]
 
 let isUnit expr =
   match expr.pexp_desc with
@@ -621,8 +481,8 @@ let make_make_props js_props_obj fn_name loc named_arg_list props_type rest =
                    , core_type ) ) ) ]
        , rest ) )
 
-let rec recursivelyTransformNamedArgsForMake mapper ctxt expr list =
-  let expr = mapper#expression ctxt expr in
+let rec recursivelyTransformNamedArgsForMake mapper expr list =
+  let expr = mapper#expression expr in
   let loc = expr.pexp_loc in
   match expr.pexp_desc with
   | Pexp_fun (Labelled "key", _, _, _) | Pexp_fun (Optional "key", _, _, _) ->
@@ -675,7 +535,7 @@ let rec recursivelyTransformNamedArgsForMake mapper ctxt expr list =
         | _ ->
             None
       in
-      recursivelyTransformNamedArgsForMake mapper ctxt expression
+      recursivelyTransformNamedArgsForMake mapper expression
         ( ( Str_label.of_arg_label arg
           , default
           , pattern
@@ -831,7 +691,7 @@ let make_ml_comp ~loc ~fn_name ~body rest =
 
 (* This function takes any value binding and checks if it should be processed
    in case [react.component] attr is found, or if [inside_component] is passed. *)
-let process_value_binding ~pstr_loc ~inside_component ~mapper ~ctxt binding =
+let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
   let filename = filename_from_loc pstr_loc in
   let empty_loc = Location.in_file filename in
   if has_attr_on_binding binding || inside_component then
@@ -875,7 +735,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper ~ctxt binding =
       spelunk_for_fun_expr expression
     in
     let named_arg_list, forward_ref =
-      recursivelyTransformNamedArgsForMake mapper ctxt
+      recursivelyTransformNamedArgsForMake mapper
         (modified_binding_old binding)
         []
     in
@@ -1097,70 +957,48 @@ let uppercase_element_args ~loc callArguments =
 let jsxMapper () =
   let transformLowercaseCall loc attrs callArguments id callLoc =
     let children, nonChildrenProps = extractChildren ~loc callArguments in
-    let componentNameExpr = constantString ~loc id in
+    let componentNameExpr = Exp.ident {loc; txt= Lident id} in
     let args =
       (* Filtering out last unit *)
-      let isLabeledArg (name, value) =
-        getLabel name != "" && not (isUnit value)
-      in
-      let labeledProps = List.filter isLabeledArg nonChildrenProps in
-      let makePropField (arg_label, value) =
-        let loc = callLoc in
-        let isOptional = isOptional arg_label in
-        let name = getLabel arg_label in
-        let prop =
-          match Html.findByName id name with
-          | Ok p ->
-              p
-          | Error err -> (
-            match err with
-            | `ElementNotFound ->
-                raise @@ Location.raise_errorf ~loc "tag '%s' doesn't exist" id
-            | `AttributeNotFound ->
-                raise
-                @@ Location.raise_errorf ~loc
-                     "prop '%s' isn't a valid prop for a '%s'" name id )
-        in
-        let jsxName = Html.getJSXName prop in
-        let objectKey =
-          Exp.constant ~loc (Pconst_string (jsxName, loc, None))
-        in
-        let objectValue = makeValue ~isOptional ~loc prop value in
-        match isOptional with
+      let labeled_arg (name, value) =
+        match isUnit value with
         | true ->
-            [%expr
-              [%e objectKey]
-              , Js_of_ocaml.Js.Unsafe.inject
-                  (Js_of_ocaml.Js.Optdef.option [%e objectValue])]
-        | false ->
-            [%expr
-              [%e objectKey], Js_of_ocaml.Js.Unsafe.inject [%e objectValue]]
+            None
+        | false -> (
+          match name with
+          | Optional str ->
+              Some (Str_label.Optional str, value)
+          | Labelled str ->
+              Some (Str_label.Labelled str, value)
+          | Nolabel ->
+              None )
       in
-      let propsObj =
-        [%expr
-          ( Js_of_ocaml.Js.Unsafe.obj
-              [%e Exp.array ~loc (List.map makePropField labeledProps)]
-            : React.Dom.domProps )]
+      let labeledProps = List.filter_map labeled_arg nonChildrenProps in
+      let makePropField (str_label, value) =
+        let loc = callLoc in
+        let replace_ref prop = match prop with "ref" -> "ref_" | p -> p in
+        match str_label with
+        | Str_label.Optional str ->
+            [%expr
+              maybe
+                [%e Exp.ident {loc; txt= Ldot (Lident "Prop", replace_ref str)}]
+                [%e value]]
+        | Labelled str ->
+            [%expr
+              [%e Exp.ident {loc; txt= Ldot (Lident "Prop", replace_ref str)}]
+                [%e value]]
       in
-      [ (* "div" *)
-        (nolabel, componentNameExpr)
-      ; (* ~props: Js_of_ocaml.Js.Unsafe.obj ... *)
-        (labelled "props", propsObj)
-      ; (* [|moreCreateElementCallsHere|] *)
-        (nolabel, children) ]
+      let propsArray = Exp.array ~loc (List.map makePropField labeledProps) in
+      [ (* [| href "..."; target "_blank" |] *)
+        (nolabel, propsArray)
+      ; (nolabel, children) ]
     in
     Exp.apply
       ~loc (* throw away the [@JSX] attribute and keep the others, if any *)
-      ~attrs
-      (* React.Dom.createDOMElementVariadic *)
-      (Exp.ident ~loc
-         { loc
-         ; txt= Ldot (Ldot (Lident "React", "Dom"), "createDOMElementVariadic")
-         } )
-      args
+      ~attrs (* "div", "p" or the component name *) componentNameExpr args
   in
   let nestedModules = ref [] in
-  let rec transformComponentDefinition ?(inside_component = false) mapper ctxt
+  let rec transformComponentDefinition ?(inside_component = false) mapper
       structure returnStructures =
     match structure with
     (* external *)
@@ -1293,13 +1131,13 @@ let jsxMapper () =
     (* let%component foo = ... or external%component foo = ... *)
     | {pstr_desc= Pstr_extension (({txt= "component"}, PStr structure), _)} ->
         List.fold_right
-          (transformComponentDefinition ~inside_component:true mapper ctxt)
+          (transformComponentDefinition ~inside_component:true mapper)
           structure returnStructures
     (* let component = ... *)
     | {pstr_loc; pstr_desc= Pstr_value (_rec_flag, value_bindings)} ->
         let bindings =
           List.map
-            (process_value_binding ~pstr_loc ~inside_component ~mapper ~ctxt)
+            (process_value_binding ~pstr_loc ~inside_component ~mapper)
             value_bindings
         in
         [{pstr_loc; pstr_desc= Pstr_value (Nonrecursive, bindings)}]
@@ -1307,10 +1145,8 @@ let jsxMapper () =
     | structure ->
         structure :: returnStructures
   in
-  let reactComponentTransform mapper ctxt structure_items =
-    List.fold_right
-      (transformComponentDefinition mapper ctxt)
-      structure_items []
+  let reactComponentTransform mapper structure_items =
+    List.fold_right (transformComponentDefinition mapper) structure_items []
   in
   let transformJsxCall callExpression callArguments attrs apply_loc
       apply_loc_stack =
@@ -1360,47 +1196,33 @@ let jsxMapper () =
               module name." )
   in
   object (self)
-    inherit [Context.t] Ast_traverse.map_with_context as super
+    inherit Ast_traverse.map as super
 
-    method! structure c structure =
+    method! structure structure =
       match structure with
-      | {pstr_desc= Pstr_attribute attribute; _} :: rest
-        when filter_attr_name "react.dom" attribute ->
-          super#structure {react_dom= true}
-            (reactComponentTransform self c rest)
       | structure_items ->
-          super#structure c (reactComponentTransform self c structure_items)
+          super#structure (reactComponentTransform self structure_items)
 
-    method! expression c expression =
-      let expression = super#expression c expression in
+    method! expression expression =
+      let expression = super#expression expression in
       match expression with
       | { pexp_desc= Pexp_apply (callExpression, callArguments)
         ; pexp_attributes
         ; pexp_loc= apply_loc
         ; pexp_loc_stack } -> (
-        match c with
-        | {react_dom= true} -> (
-          match callExpression with
-          | {pexp_desc= Pexp_ident {txt= Lident id; _}}
-            when List.mem id dom_tags ->
-              transformJsxCall callExpression callArguments pexp_attributes
-                apply_loc pexp_loc_stack
-          | _ ->
-              expression )
-        | {react_dom= false} -> (
-            (* Does the function application have the @JSX attribute? *)
-            let jsxAttribute, nonJSXAttributes =
-              List.partition
-                (fun attribute -> attribute.attr_name.txt = "JSX")
-                pexp_attributes
-            in
-            match (jsxAttribute, nonJSXAttributes) with
-            (* no JSX attribute *)
-            | [], _ ->
-                expression
-            | _, nonJSXAttributes ->
-                transformJsxCall callExpression callArguments nonJSXAttributes
-                  apply_loc pexp_loc_stack ) )
+          (* Does the function application have the @JSX attribute? *)
+          let jsxAttribute, nonJSXAttributes =
+            List.partition
+              (fun attribute -> attribute.attr_name.txt = "JSX")
+              pexp_attributes
+          in
+          match (jsxAttribute, nonJSXAttributes) with
+          (* no JSX attribute *)
+          | [], _ ->
+              expression
+          | _, nonJSXAttributes ->
+              transformJsxCall callExpression callArguments nonJSXAttributes
+                apply_loc pexp_loc_stack )
       (* is it a list with jsx attribute? Reason <>foo</> desugars to [@JSX][foo]*)
       | { pexp_desc=
             ( Pexp_construct
@@ -1427,7 +1249,7 @@ let jsxMapper () =
       | _e ->
           expression
 
-    method! module_binding c module_binding =
+    method! module_binding module_binding =
       let _ =
         match module_binding.pmb_name.txt with
         | None ->
@@ -1435,20 +1257,18 @@ let jsxMapper () =
         | Some txt ->
             nestedModules := txt :: !nestedModules
       in
-      let mapped = super#module_binding c module_binding in
+      let mapped = super#module_binding module_binding in
       let _ = nestedModules := List.tl !nestedModules in
       mapped
   end
 
 let rewrite_implementation (code : Parsetree.structure) : Parsetree.structure =
-  let c = Context.init in
   let mapper = jsxMapper () in
-  mapper#structure c code
+  mapper#structure code
 
 let rewrite_signature (code : Parsetree.signature) : Parsetree.signature =
-  let c = Context.init in
   let mapper = jsxMapper () in
-  mapper#signature c code
+  mapper#signature code
 
 let () =
   Driver.register_transformation "jsoo-react-ppx" ~impl:rewrite_implementation

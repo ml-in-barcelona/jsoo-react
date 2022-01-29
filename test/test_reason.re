@@ -1,7 +1,9 @@
 open Webtest.Suite;
 module Js = Js_of_ocaml.Js;
-module Html = Js_of_ocaml.Dom_html;
+module Dom_html = Js_of_ocaml.Dom_html;
 module Dom = Js_of_ocaml.Dom;
+open React.Dom.Dsl;
+open Html;
 let act = ReactDOMTestUtils.act;
 
 let jsdom = Jsdom.make(~html="<!doctype html><html><body></body></html>");
@@ -19,11 +21,11 @@ let printTextContent = container =>
       Js.Opt.get(container##.textContent, () => Js.string("missing")),
     ),
   );
-let printInnerHTML = (container: Js.t(Html.divElement)) =>
+let printInnerHTML = (container: Js.t(Dom_html.divElement)) =>
   print_endline(Js.to_string(container##.innerHTML));
 
 let withContainer = f => {
-  let container = Html.createDiv(doc);
+  let container = Dom_html.createDiv(doc);
   Dom.appendChild(doc##.body, container);
   let result = f(container);
   ignore(React.Dom.unmountComponentAtNode(container));
@@ -33,7 +35,7 @@ let withContainer = f => {
 
 let testDom = () => {
   doc##.title := Js.string("Testing");
-  let p = Html.createP(doc);
+  let p = Dom_html.createP(doc);
   p##.innerHTML := Js.string("Loading graph...");
   Dom.appendChild(doc##.body, p);
   assert_equal(doc##.title, Js.string("Testing"));
@@ -45,7 +47,7 @@ let testReact = () =>
     act(() => {
       React.Dom.render(
         <div> {"Hello world!" |> React.string} </div>,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(c##.textContent, Js.Opt.return(Js.string("Hello world!")));
@@ -61,7 +63,7 @@ let testKeys = () =>
             ["a", "b"],
           )}
         </div>,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(
@@ -78,12 +80,14 @@ let testOptionalPropsUppercase = () => {
     };
   };
   withContainer(c => {
-    act(() => {React.Dom.render(<OptProps />, Html.element(c))});
+    act(() => {React.Dom.render(<OptProps />, Dom_html.element(c))});
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`name` is joe")),
     );
-    act(() => {React.Dom.render(<OptProps name="jane" />, Html.element(c))});
+    act(() => {
+      React.Dom.render(<OptProps name="jane" />, Dom_html.element(c))
+    });
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`name` is jane")),
@@ -99,13 +103,13 @@ let testOptionalPropsLowercase = () => {
 
   withContainer(c => {
     act(() =>
-      React.Dom.render(<LinkWithMaybeHref href=None />, Html.element(c))
+      React.Dom.render(<LinkWithMaybeHref href=None />, Dom_html.element(c))
     );
     assert_equal(c##.innerHTML, Js.string("<a></a>"));
     act(() =>
       React.Dom.render(
         <LinkWithMaybeHref href={Some("https://google.es")} />,
-        Html.element(c),
+        Dom_html.element(c),
       )
     );
     assert_equal(
@@ -135,7 +139,7 @@ let testContext = () => {
         <DummyContext.Provider value="bar">
           <DummyContext.Consumer />
         </DummyContext.Provider>,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(c##.textContent, Js.Opt.return(Js.string("bar")));
@@ -155,7 +159,7 @@ let testUseEffect = () => {
     };
   };
   withContainer(c => {
-    act(() => {React.Dom.render(<UseEffect />, Html.element(c))});
+    act(() => {React.Dom.render(<UseEffect />, Dom_html.element(c))});
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 1")));
   });
 };
@@ -176,11 +180,11 @@ let testUseEffect2 = () => {
     };
   };
   withContainer(c => {
-    act(() => {React.Dom.render(<Add2 a=1 b=2 />, Html.element(c))});
+    act(() => {React.Dom.render(<Add2 a=1 b=2 />, Dom_html.element(c))});
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`a + b` is 3")));
-    act(() => {React.Dom.render(<Add2 a=1 b=2 />, Html.element(c))});
+    act(() => {React.Dom.render(<Add2 a=1 b=2 />, Dom_html.element(c))});
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`a + b` is 3")));
-    act(() => {React.Dom.render(<Add2 a=2 b=3 />, Html.element(c))});
+    act(() => {React.Dom.render(<Add2 a=2 b=3 />, Dom_html.element(c))});
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`a + b` is 5")));
   });
 };
@@ -205,23 +209,35 @@ let testUseEffect3 = () => {
     let fooString = "foo"; /* strings in OCaml are boxed, and we want to keep same reference across renders */
     let barString = "bar";
     act(() => {
-      React.Dom.render(<Use3 a=1 b=fooString c=emptyList />, Html.element(c))
+      React.Dom.render(
+        <Use3 a=1 b=fooString c=emptyList />,
+        Dom_html.element(c),
+      )
     });
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 1")));
     act(() => {
-      React.Dom.render(<Use3 a=1 b=fooString c=emptyList />, Html.element(c))
+      React.Dom.render(
+        <Use3 a=1 b=fooString c=emptyList />,
+        Dom_html.element(c),
+      )
     });
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 1")));
     act(() => {
-      React.Dom.render(<Use3 a=2 b=fooString c=emptyList />, Html.element(c))
+      React.Dom.render(
+        <Use3 a=2 b=fooString c=emptyList />,
+        Dom_html.element(c),
+      )
     });
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 2")));
     act(() => {
-      React.Dom.render(<Use3 a=2 b=barString c=emptyList />, Html.element(c))
+      React.Dom.render(
+        <Use3 a=2 b=barString c=emptyList />,
+        Dom_html.element(c),
+      )
     });
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 3")));
     act(() => {
-      React.Dom.render(<Use3 a=2 b=barString c=[2] />, Html.element(c))
+      React.Dom.render(<Use3 a=2 b=barString c=[2] />, Dom_html.element(c))
     });
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 4")));
   });
@@ -251,20 +267,22 @@ let testUseCallback1 = () => {
   withContainer(c => {
     let fooString = "foo"; /* strings in OCaml are boxed, and we want to keep same reference across renders */
     act(() => {
-      React.Dom.render(<UseCallback a=fooString />, Html.element(c))
+      React.Dom.render(<UseCallback a=fooString />, Dom_html.element(c))
     });
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`count` is 1, `str` is init and foo and")),
     );
     act(() => {
-      React.Dom.render(<UseCallback a=fooString />, Html.element(c))
+      React.Dom.render(<UseCallback a=fooString />, Dom_html.element(c))
     });
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`count` is 1, `str` is init and foo and")),
     );
-    act(() => {React.Dom.render(<UseCallback a="bar" />, Html.element(c))});
+    act(() => {
+      React.Dom.render(<UseCallback a="bar" />, Dom_html.element(c))
+    });
     assert_equal(
       c##.textContent,
       Js.Opt.return(
@@ -311,14 +329,9 @@ let testUseCallback4 = () => {
     let b = 2;
     let d = [3];
     let e = [|4|];
-    act(() => {React.Dom.render(<UseCallback a b d e />, Html.element(c))});
-    assert_equal(
-      c##.textContent,
-      Js.Opt.return(
-        Js.string("`count` is 1, `str` is a: foo, b: 2, d: [3], e: [|4|]"),
-      ),
-    );
-    act(() => {React.Dom.render(<UseCallback a b d e />, Html.element(c))});
+    act(() => {
+      React.Dom.render(<UseCallback a b d e />, Dom_html.element(c))
+    });
     assert_equal(
       c##.textContent,
       Js.Opt.return(
@@ -326,7 +339,16 @@ let testUseCallback4 = () => {
       ),
     );
     act(() => {
-      React.Dom.render(<UseCallback a=a2 b d e />, Html.element(c))
+      React.Dom.render(<UseCallback a b d e />, Dom_html.element(c))
+    });
+    assert_equal(
+      c##.textContent,
+      Js.Opt.return(
+        Js.string("`count` is 1, `str` is a: foo, b: 2, d: [3], e: [|4|]"),
+      ),
+    );
+    act(() => {
+      React.Dom.render(<UseCallback a=a2 b d e />, Dom_html.element(c))
     });
     assert_equal(
       c##.textContent,
@@ -335,7 +357,7 @@ let testUseCallback4 = () => {
       ),
     );
     act(() => {
-      React.Dom.render(<UseCallback a=a2 b d e />, Html.element(c))
+      React.Dom.render(<UseCallback a=a2 b d e />, Dom_html.element(c))
     });
     assert_equal(
       c##.textContent,
@@ -344,7 +366,7 @@ let testUseCallback4 = () => {
       ),
     );
     act(() => {
-      React.Dom.render(<UseCallback a=a2 b=3 d e />, Html.element(c))
+      React.Dom.render(<UseCallback a=a2 b=3 d e />, Dom_html.element(c))
     });
     assert_equal(
       c##.textContent,
@@ -353,7 +375,10 @@ let testUseCallback4 = () => {
       ),
     );
     act(() => {
-      React.Dom.render(<UseCallback a=a2 b=3 d=[4] e />, Html.element(c))
+      React.Dom.render(
+        <UseCallback a=a2 b=3 d=[4] e />,
+        Dom_html.element(c),
+      )
     });
     assert_equal(
       c##.textContent,
@@ -382,7 +407,9 @@ let testUseState = () => {
   };
   withContainer(c => {
     open ReactDOMTestUtils;
-    act(() => {React.Dom.render(<DummyStateComponent />, Html.element(c))});
+    act(() => {
+      React.Dom.render(<DummyStateComponent />, Dom_html.element(c))
+    });
     assert_equal(
       c##.innerHTML,
       Js.string(
@@ -434,9 +461,9 @@ let testUseStateUpdaterReference = () => {
     };
   };
   withContainer(c => {
-    act(() => {React.Dom.render(<UseState />, Html.element(c))});
+    act(() => {React.Dom.render(<UseState />, Dom_html.element(c))});
     assert_equal(c##.textContent, Js.Opt.return(Js.string("false")));
-    act(() => {React.Dom.render(<UseState />, Html.element(c))});
+    act(() => {React.Dom.render(<UseState />, Dom_html.element(c))});
     assert_equal(c##.textContent, Js.Opt.return(Js.string("true")));
   });
 };
@@ -472,7 +499,7 @@ let testUseReducer = () => {
   withContainer(c => {
     open ReactDOMTestUtils;
     act(() => {
-      React.Dom.render(<DummyReducerComponent />, Html.element(c))
+      React.Dom.render(<DummyReducerComponent />, Dom_html.element(c))
     });
     assert_equal(
       c##.innerHTML,
@@ -543,7 +570,7 @@ let testUseReducerWithMapState = () => {
     act(() => {
       React.Dom.render(
         <DummyReducerWithMapStateComponent />,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(
@@ -597,9 +624,9 @@ let testUseReducerDispatchReference = () => {
     };
   };
   withContainer(c => {
-    act(() => {React.Dom.render(<UseReducer />, Html.element(c))});
+    act(() => {React.Dom.render(<UseReducer />, Dom_html.element(c))});
     assert_equal(c##.textContent, Js.Opt.return(Js.string("false")));
-    act(() => {React.Dom.render(<UseReducer />, Html.element(c))});
+    act(() => {React.Dom.render(<UseReducer />, Dom_html.element(c))});
     assert_equal(c##.textContent, Js.Opt.return(Js.string("true")));
   });
 };
@@ -622,11 +649,15 @@ let testUseMemo1 = () => {
   };
   withContainer(c => {
     let fooString = "foo"; /* strings in OCaml are boxed, and we want to keep same reference across renders */
-    act(() => {React.Dom.render(<UseMemo a=fooString />, Html.element(c))});
+    act(() => {
+      React.Dom.render(<UseMemo a=fooString />, Dom_html.element(c))
+    });
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 1")));
-    act(() => {React.Dom.render(<UseMemo a=fooString />, Html.element(c))});
+    act(() => {
+      React.Dom.render(<UseMemo a=fooString />, Dom_html.element(c))
+    });
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 1")));
-    act(() => {React.Dom.render(<UseMemo a="foo" />, Html.element(c))});
+    act(() => {React.Dom.render(<UseMemo a="foo" />, Dom_html.element(c))});
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 2")));
   });
 };
@@ -646,17 +677,21 @@ let testMemo = () => {
   };
   withContainer(c => {
     let fooString = "foo"; /* strings in OCaml are boxed, and we want to keep same reference across renders */
-    act(() => {React.Dom.render(<Memoized a=fooString />, Html.element(c))});
+    act(() => {
+      React.Dom.render(<Memoized a=fooString />, Dom_html.element(c))
+    });
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`a` is foo, `numRenders` is 1")),
     );
-    act(() => {React.Dom.render(<Memoized a=fooString />, Html.element(c))});
+    act(() => {
+      React.Dom.render(<Memoized a=fooString />, Dom_html.element(c))
+    });
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`a` is foo, `numRenders` is 1")),
     );
-    act(() => {React.Dom.render(<Memoized a="bar" />, Html.element(c))});
+    act(() => {React.Dom.render(<Memoized a="bar" />, Dom_html.element(c))});
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`a` is bar, `numRenders` is 2")),
@@ -682,17 +717,21 @@ let testMemoCustomCompareProps = () => {
   };
   withContainer(c => {
     let fooString = "foo"; /* strings in OCaml are boxed, and we want to keep same reference across renders */
-    act(() => {React.Dom.render(<Memoized a=fooString />, Html.element(c))});
+    act(() => {
+      React.Dom.render(<Memoized a=fooString />, Dom_html.element(c))
+    });
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`a` is foo, `numRenders` is 1")),
     );
-    act(() => {React.Dom.render(<Memoized a=fooString />, Html.element(c))});
+    act(() => {
+      React.Dom.render(<Memoized a=fooString />, Dom_html.element(c))
+    });
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`a` is foo, `numRenders` is 1")),
     );
-    act(() => {React.Dom.render(<Memoized a="bar" />, Html.element(c))});
+    act(() => {React.Dom.render(<Memoized a="bar" />, Dom_html.element(c))});
     assert_equal(
       c##.textContent,
       Js.Opt.return(Js.string("`a` is foo, `numRenders` is 1")),
@@ -723,7 +762,7 @@ let testForwardRef = () => {
     act(() => {
       React.Dom.render(
         <FancyButton ref=buttonRef> <div /> </FancyButton>,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(count^, 1);
@@ -752,7 +791,7 @@ let testUseRef = () => {
     act(() => {
       React.Dom.render(
         <DummyComponentWithRefAndEffect cb />,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(
@@ -789,7 +828,7 @@ let testChildrenMapWithIndex = () => {
           <div> {React.int(2)} </div>
           <div> {React.int(3)} </div>
         </DummyComponentThatMapsChildren>,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(
@@ -809,7 +848,7 @@ let testFragmentModule = () => {
           <div> {React.string("Hello")} </div>
           <div> {React.string("World")} </div>
         </React.Fragment>,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(
@@ -827,7 +866,7 @@ let testFragmentSyntax = () => {
           <div> {React.string("Hello")} </div>
           <div> {React.string("World")} </div>
         </>,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(
@@ -850,7 +889,7 @@ let testNonListChildren = () => {
         <NonListChildrenComponent>
           ...(<div> {React.int(1)} </div>, <div> {React.int(3)} </div>)
         </NonListChildrenComponent>,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(
@@ -869,7 +908,7 @@ let testDangerouslySetInnerHTML = () => {
             ~__html="<lol></lol>",
           )}
         />,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(c##.innerHTML, Js.string("<div><lol></lol></div>"));
@@ -884,7 +923,10 @@ let testExternals = () => {
   };
   withContainer(c => {
     act(() => {
-      React.Dom.render(<JsComp name={Js.string("John")} />, Html.element(c))
+      React.Dom.render(
+        <JsComp name={Js.string("John")} />,
+        Dom_html.element(c),
+      )
     });
     assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
   });
@@ -903,7 +945,7 @@ let testExternalChildren = () => {
         <JsComp>
           ...{Js.array([|<em> {React.string("John")} </em>|])}
         </JsComp>,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(c##.innerHTML, Js.string("<span>Hey <em>John</em></span>"));
@@ -918,7 +960,10 @@ let testExternalNonFunction = () => {
   };
   withContainer(c => {
     act(() => {
-      React.Dom.render(<JsComp name={Js.string("John")} />, Html.element(c))
+      React.Dom.render(
+        <JsComp name={Js.string("John")} />,
+        Dom_html.element(c),
+      )
     });
     assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
   });
@@ -932,7 +977,10 @@ let testExternalOptionalArg = () => {
   };
   withContainer(c => {
     act(() => {
-      React.Dom.render(<JsComp name={Js.string("John")} />, Html.element(c))
+      React.Dom.render(
+        <JsComp name={Js.string("John")} />,
+        Dom_html.element(c),
+      )
     });
     assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
   });
@@ -952,7 +1000,7 @@ let testAliasedChildren = () => {
           <div> {React.int(1)} </div>
           <div> {React.int(3)} </div>
         </AliasedChildrenComponent>,
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(
@@ -979,7 +1027,7 @@ let testWithId = () => {
     act(() => {
       React.Dom.render(
         WithTestId.make(~id="feed-toggle", ~children=[<div />], ()),
-        Html.element(c),
+        Dom_html.element(c),
       )
     });
     assert_equal(

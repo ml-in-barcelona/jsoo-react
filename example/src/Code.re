@@ -1,4 +1,6 @@
 open Js_of_ocaml;
+open React.Dom.Dsl;
+open Html;
 
 [@react.component]
 let make = (~text) => {
