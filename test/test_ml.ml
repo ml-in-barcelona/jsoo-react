@@ -622,7 +622,10 @@ let testDangerouslySetInnerHTML () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            (div [|dangerouslySetInnerHTML ~__html:"<lol></lol>"|] [])
+            (div
+               [| dangerouslySetInnerHTML
+                    (React.Dom.makeHtml ~__html:"<lol></lol>") |]
+               [] )
             (Html.element c) ) ;
       assert_equal c##.innerHTML (Js.string "<div><lol></lol></div>") )
 

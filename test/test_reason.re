@@ -904,9 +904,7 @@ let testDangerouslySetInnerHTML = () => {
     act(() => {
       React.Dom.render(
         <div
-          dangerouslySetInnerHTML={React.Dom.makeInnerHtml(
-            ~__html="<lol></lol>",
-          )}
+          dangerouslySetInnerHTML={React.Dom.makeHtml(~__html="<lol></lol>")}
         />,
         Dom_html.element(c),
       )

@@ -461,8 +461,8 @@ module Prop = struct
 
   (* react-specific *)
 
-  let dangerouslySetInnerHTML ~(__html : string) =
-    any "dangerouslySetInnerHTML" (Dom.makeInnerHtml ~__html)
+  let dangerouslySetInnerHTML (safe_html : Dom.DangerouslySetInnerHTML.t) =
+    any "dangerouslySetInnerHTML" safe_html
 
   let suppressContentEditableWarning = bool "suppressContentEditableWarning"
 end
