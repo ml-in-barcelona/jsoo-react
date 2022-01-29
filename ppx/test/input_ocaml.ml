@@ -14,8 +14,14 @@ let%component make ?(name = "") = div [||] [name]
 
 let%component make () = a [|href "https://opam.ocaml.org"|] []
 
+let%component make ~(bar : int option) =
+  div ~children:[React.string (string_of_int (Option.value ~default:0 bar))] ()
+
 external%component make : name:Js.js_string Js.t -> React.element
   = "require(\"my-react-library\").MyReactComponent"
 
 external%component make : ?name:Js.js_string Js.t -> React.element
+  = "require(\"my-react-library\").MyReactComponent"
+
+external%component make : names:string array -> React.element
   = "require(\"my-react-library\").MyReactComponent"

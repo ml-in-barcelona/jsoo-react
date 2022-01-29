@@ -933,16 +933,13 @@ let testExternals = () => {
 let testExternalChildren = () => {
   module JsComp = {
     [@react.component]
-    external make:
-      (~children: Js.t(Js.js_array(React.element))) => React.element =
+    external make: (~children: list(React.element)) => React.element =
       {|require("./external").GreetingChildren|};
   };
   withContainer(c => {
     act(() => {
       React.Dom.render(
-        <JsComp>
-          ...{Js.array([|<em> {React.string("John")} </em>|])}
-        </JsComp>,
+        <JsComp> <em> {React.string("John")} </em> </JsComp>,
         Dom_html.element(c),
       )
     });
@@ -953,15 +950,12 @@ let testExternalChildren = () => {
 let testExternalNonFunction = () => {
   module JsComp = {
     [@react.component]
-    external make: (~name: Js.t(Js.js_string)) => React.element =
+    external make: (~name: string) => React.element =
       {|require("./external").NonFunctionGreeting|};
   };
   withContainer(c => {
     act(() => {
-      React.Dom.render(
-        <JsComp name={Js.string("John")} />,
-        Dom_html.element(c),
-      )
+      React.Dom.render(<JsComp name="John" />, Dom_html.element(c))
     });
     assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
   });
@@ -981,6 +975,115 @@ let testExternalOptionalArg = () => {
       )
     });
     assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
+  });
+};
+
+let testExternalStringArg = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~name: string) => React.element =
+      {|require("./external").Greeting|};
+  };
+  withContainer(c => {
+    act(() => {React.Dom.render(<JsComp name="John" />, Dom_html.element(c))});
+    assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
+  });
+};
+
+let testExternalOptionalStringArg = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~name: string=?) => React.element =
+      {|require("./external").Greeting|};
+  };
+  withContainer(c => {
+    act(() => {React.Dom.render(<JsComp name="John" />, Dom_html.element(c))});
+    assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
+  });
+};
+
+let testExternalBoolArg = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~name: string, ~strong: bool) => React.element =
+      {|require("./external").Greeting|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(<JsComp name="John" strong=false />, Dom_html.element(c))
+    });
+    assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
+  });
+};
+
+let testExternalOptionalBoolArg = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~name: string=?, ~strong: bool=?) => React.element =
+      {|require("./external").Greeting|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(<JsComp name="John" strong=true />, Dom_html.element(c))
+    });
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<span>Hey <strong>John</strong></span>"),
+    );
+  });
+};
+
+let testExternalArrayArg = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~children: array(React.element)) => React.element =
+      {|require("./external").GreetingChildren|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <JsComp> ...[|<em> {React.string("John")} </em>|] </JsComp>,
+        Dom_html.element(c),
+      )
+    });
+    assert_equal(c##.innerHTML, Js.string("<span>Hey <em>John</em></span>"));
+  });
+};
+
+let testExternalOptionalArrayArg = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~children: array(React.element)=?) => React.element =
+      {|require("./external").GreetingChildren|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <JsComp> ...[|<em> {React.string("John")} </em>|] </JsComp>,
+        Dom_html.element(c),
+      )
+    });
+    assert_equal(c##.innerHTML, Js.string("<span>Hey <em>John</em></span>"));
+  });
+};
+
+let testExternalSecondOrderArgConversion = () => {
+  module JsComp = {
+    [@react.component]
+    external make: (~names: array(string)=?) => React.element =
+      {|require("./external").Greetings|};
+  };
+  withContainer(c => {
+    act(() => {
+      React.Dom.render(
+        <JsComp names=[|"John", "Jerry", "Fred"|] />,
+        Dom_html.element(c),
+      )
+    });
+    assert_equal(
+      c##.innerHTML,
+      Js.string("<span>Hey John, Jerry, Fred</span>"),
+    );
   });
 };
 
@@ -1119,6 +1222,13 @@ let externals =
     "children" >:: testExternalChildren,
     "non-function" >:: testExternalNonFunction,
     "optional-arg" >:: testExternalOptionalArg,
+    "string-arg" >:: testExternalStringArg,
+    "optional-string-arg" >:: testExternalOptionalStringArg,
+    "bool-arg" >:: testExternalBoolArg,
+    "optional-bool-arg" >:: testExternalOptionalBoolArg,
+    "array-arg" >:: testExternalArrayArg,
+    "optional-array-arg" >:: testExternalOptionalArrayArg,
+    "second-order-arg-conversion" >:: testExternalSecondOrderArgConversion,
   ];
 
 let suite =
