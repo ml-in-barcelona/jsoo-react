@@ -985,7 +985,9 @@ let testExternalStringArg = () => {
       {|require("./external").Greeting|};
   };
   withContainer(c => {
-    act(() => {React.Dom.render(<JsComp name="John" />, Dom_html.element(c))});
+    act(() => {
+      React.Dom.render(<JsComp name="John" />, Dom_html.element(c))
+    });
     assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
   });
 };
@@ -997,7 +999,9 @@ let testExternalOptionalStringArg = () => {
       {|require("./external").Greeting|};
   };
   withContainer(c => {
-    act(() => {React.Dom.render(<JsComp name="John" />, Dom_html.element(c))});
+    act(() => {
+      React.Dom.render(<JsComp name="John" />, Dom_html.element(c))
+    });
     assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
   });
 };
@@ -1010,7 +1014,10 @@ let testExternalBoolArg = () => {
   };
   withContainer(c => {
     act(() => {
-      React.Dom.render(<JsComp name="John" strong=false />, Dom_html.element(c))
+      React.Dom.render(
+        <JsComp name="John" strong=false />,
+        Dom_html.element(c),
+      )
     });
     assert_equal(c##.innerHTML, Js.string("<span>Hey John</span>"));
   });
@@ -1024,7 +1031,10 @@ let testExternalOptionalBoolArg = () => {
   };
   withContainer(c => {
     act(() => {
-      React.Dom.render(<JsComp name="John" strong=true />, Dom_html.element(c))
+      React.Dom.render(
+        <JsComp name="John" strong=true />,
+        Dom_html.element(c),
+      )
     });
     assert_equal(
       c##.innerHTML,
