@@ -1072,7 +1072,7 @@ let externals =
     "basic" >:: testExternals,
     "children" >:: testExternalChildren,
     "non-function" >:: testExternalNonFunction,
-    "optioal-arg" >:: testExternalOptionalArg,
+    "optional-arg" >:: testExternalOptionalArg,
   ];
 
 let suite =
