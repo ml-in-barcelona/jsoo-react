@@ -52,6 +52,16 @@ let examples = [
     showTitle: true,
   },
   {
+    path: "web-components",
+    title: "Web Components",
+    element:
+      <div style=React.Dom.Style.(make([|height("50vw")|]))>
+        <WebComponent />
+      </div>,
+    code: <Code text=[%blob "WebComponent.ml"] />,
+    showTitle: true,
+  },
+  {
     path: "interfaces",
     title: "Interface files",
     element:
