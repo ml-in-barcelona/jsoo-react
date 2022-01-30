@@ -904,7 +904,7 @@ let testDangerouslySetInnerHTML = () => {
     act(() => {
       React.Dom.render(
         <div
-          dangerouslySetInnerHTML={React.Dom.SafeString.makeUnchecked(
+          dangerouslySetInnerHTML={React.Dom.SafeString.make_unchecked(
             "<lol></lol>",
           )}
         />,

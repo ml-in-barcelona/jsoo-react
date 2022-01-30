@@ -1504,15 +1504,9 @@ module Style : sig
 end
 
 module SafeString : sig
-  type t
+  type t = private string
 
-  val make_unchecked : string -> t
-    [@@js.custom
-      val make_react_html_object : __html:string -> t
-        [@@js.builder] [@@js.verbatim_names]
+  val make_unchecked : string -> t [@@js.custom let make_unchecked str = str]
 
-      let make_unchecked str = make_react_html_object ~__html:str]
-
-  val makeUnchecked : string -> t
-    [@@js.custom let makeUnchecked str = make_unchecked str]
+  val to_string : t -> string [@@js.custom let to_string str = str]
 end

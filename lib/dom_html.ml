@@ -461,8 +461,16 @@ module Prop = struct
 
   (* react-specific *)
 
+  include
+    [%js:
+    type html_object
+
+    val make_react_html_object : __html:string -> html_object
+      [@@js.builder] [@@js.verbatim_names]]
+
   let dangerouslySetInnerHTML (str : Dom.SafeString.t) =
-    any "dangerouslySetInnerHTML" str
+    any "dangerouslySetInnerHTML"
+      (make_react_html_object ~__html:(Dom.SafeString.to_string str))
 
   let suppressContentEditableWarning = bool "suppressContentEditableWarning"
 end
