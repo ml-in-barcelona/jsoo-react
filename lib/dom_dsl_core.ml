@@ -9,7 +9,7 @@ module Prop = struct
 
   let int key (value : int) = any key value
 
-  let float key (value : float) = any key value
+  let float_ key (value : float) = any key value
 
   let event key (f : _ Event.synthetic -> unit) =
     any key (Js_of_ocaml.Js.wrap_callback f)

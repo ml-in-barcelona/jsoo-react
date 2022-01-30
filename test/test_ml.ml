@@ -735,7 +735,7 @@ let testPropCustomInt () =
 let testPropCustomFloat () =
   withContainer (fun c ->
       act (fun () ->
-          React.Dom.render (div [|Prop.float "foo" 42.5|] []) (Html.element c) ) ;
+          React.Dom.render (div [|Prop.float_ "foo" 42.5|] []) (Html.element c) ) ;
       assert_equal c##.innerHTML (Js.string "<div foo=\"42.5\"></div>") )
 
 let testPropCustomAny () =

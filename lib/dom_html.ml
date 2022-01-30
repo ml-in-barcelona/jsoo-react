@@ -242,7 +242,7 @@ module Prop = struct
 
   let start = int "start"
 
-  let step = float "step"
+  let step = float_ "step"
 
   let summary = string "summary" (* deprecated *)
 
