@@ -651,7 +651,7 @@ let testExternalChildren () =
       act (fun () ->
           React.Dom.render
             (JsComp.make
-               ~children:(Js.array [|em [||] [React.string "John"]|])
+               ~children:(Js.array [|em [|key "one"|] [React.string "John"]|])
                () )
             (Html.element c) ) ;
       assert_equal c##.innerHTML (Js.string "<span>Hey <em>John</em></span>") )

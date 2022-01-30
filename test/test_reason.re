@@ -941,7 +941,7 @@ let testExternalChildren = () => {
   withContainer(c => {
     act(() => {
       React.Dom.render(
-        <JsComp> <em> {React.string("John")} </em> </JsComp>,
+        <JsComp> <em key="one"> {React.string("John")} </em> </JsComp>,
         Dom_html.element(c),
       )
     });
@@ -1054,7 +1054,9 @@ let testExternalArrayArg = () => {
   withContainer(c => {
     act(() => {
       React.Dom.render(
-        <JsComp> ...[|<em> {React.string("John")} </em>|] </JsComp>,
+        <JsComp>
+          ...[|<em key="one"> {React.string("John")} </em>|]
+        </JsComp>,
         Dom_html.element(c),
       )
     });
@@ -1071,7 +1073,9 @@ let testExternalOptionalArrayArg = () => {
   withContainer(c => {
     act(() => {
       React.Dom.render(
-        <JsComp> ...[|<em> {React.string("John")} </em>|] </JsComp>,
+        <JsComp>
+          ...[|<em key="one"> {React.string("John")} </em>|]
+        </JsComp>,
         Dom_html.element(c),
       )
     });
