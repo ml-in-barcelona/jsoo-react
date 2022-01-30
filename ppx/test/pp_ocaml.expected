@@ -34,9 +34,6 @@ let make =
                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
   fun ?name ->
     fun ?key -> fun () -> React.createElement make (make_props ?key ?name ())
-let element = div [|(id "foo")|] []
-let element =
-  a [|(id "foo");(href "https://www.hello.com")|] [React.string "hello"]
 let make =
   let make_props
     : children:'children ->
@@ -59,7 +56,7 @@ let make =
                                                                     children))|] in
   let make =
     ((fun ~children:(first, second) ->
-        (div [|(id "foo")|] [first; second] : React.element))
+        (div [||] [first; second] : React.element))
     [@warning "-16"]) in
   let make
     (Props :
@@ -98,8 +95,7 @@ let make =
                                                                     (
                                                                     inject
                                                                     children))|] in
-  let make =
-    ((fun ~children:kids -> (div [|(id "foo")|] kids : React.element))
+  let make = ((fun ~children:kids -> (div [||] kids : React.element))
     [@warning "-16"]) in
   let make
     (Props :
@@ -203,7 +199,7 @@ let make =
                 (inject
                    (Js_of_ocaml.Js.Optdef.option
                       (Option.map Js_of_ocaml.Js.string key))))|] in
-  let make () = (a [|(href "https://opam.ocaml.org")|] [] : React.element) in
+  let make () = (div [||] [] : React.element) in
   let make (Props : <  >  Js_of_ocaml.Js.t) = make () in
   fun ?key -> fun () -> React.createElement make (make_props ?key ())
 let make =
@@ -228,9 +224,8 @@ let make =
                                                                     bar))|] in
   let make =
     ((fun ~bar:(bar : int option) ->
-        (div
-           ~children:[React.string
-                        (string_of_int (Option.value ~default:0 bar))] () : 
+        (div [||]
+           [React.string (string_of_int (Option.value ~default:0 bar))] () : 
         React.element))
     [@warning "-16"]) in
   let make
