@@ -1148,6 +1148,126 @@ let testWithId = () => {
   });
 };
 
+let testPropMaybeNone = () =>
+  withContainer(c => {
+    act(() =>
+      React.Dom.render(<div className=?None />, Dom_html.element(c))
+    );
+    assert_equal(c##.innerHTML, Js.string("<div></div>"));
+  });
+
+let testPropMaybeSome = () =>
+  withContainer(c => {
+    act(() =>
+      React.Dom.render(
+        <div className=?{Some("foo")} />,
+        Dom_html.element(c),
+      )
+    );
+    assert_equal(c##.innerHTML, Js.string("<div class=\"foo\"></div>"));
+  });
+
+let testPropCustomString = () =>
+  withContainer(c => {
+    module Prop = {
+      let foo = Prop.string("foo");
+    };
+    act(() => React.Dom.render(<div foo="bar" />, Dom_html.element(c)));
+    assert_equal(c##.innerHTML, Js.string("<div foo=\"bar\"></div>"));
+  });
+
+let testPropCustomBool = () =>
+  withContainer(c => {
+    module Prop = {
+      let disabled = Prop.bool("disabled");
+    };
+    act(() => React.Dom.render(<div disabled=true />, Dom_html.element(c)));
+    assert_equal(c##.innerHTML, Js.string("<div disabled=\"\"></div>"));
+  });
+
+let testPropCustomInt = () =>
+  withContainer(c => {
+    module Prop = {
+      let foo = Prop.int("foo");
+    };
+    act(() => React.Dom.render(<div foo=42 />, Dom_html.element(c)));
+    assert_equal(c##.innerHTML, Js.string("<div foo=\"42\"></div>"));
+  });
+
+let testPropCustomFloat = () =>
+  withContainer(c => {
+    module Prop = {
+      let foo = Prop.float_("foo");
+    };
+    act(() => React.Dom.render(<div foo=42.5 />, Dom_html.element(c)));
+    assert_equal(c##.innerHTML, Js.string("<div foo=\"42.5\"></div>"));
+  });
+
+let testPropCustomAny = () =>
+  withContainer(c => {
+    module Prop = {
+      let foo: Js.t(Js.js_array(string)) => Prop.t = Prop.any("foo");
+    };
+    act(() =>
+      React.Dom.render(
+        <div foo={Js.array([|"bar", "baz"|])} />,
+        Dom_html.element(c),
+      )
+    );
+    assert_equal(c##.innerHTML, Js.string("<div foo=\"bar,baz\"></div>"));
+  });
+
+let testCustomElement = () =>
+  withContainer(c => {
+    let cool_element = h("cool-element");
+    let chill = h("chill");
+    module Prop = {
+      let coolness = Prop.string("coolness");
+      let data_out = Prop.bool("data-out");
+    };
+    act(() =>
+      React.Dom.render(
+        <cool_element coolness="max"> <chill data_out=true /> </cool_element>,
+        Dom_html.element(c),
+      )
+    );
+    assert_equal(
+      c##.innerHTML,
+      Js.string(
+        "<cool-element coolness=\"max\"><chill data-out=\"true\"></chill></cool-element>",
+      ),
+    );
+  });
+
+let testSvg = () =>
+  withContainer(c => {
+    open Svg;
+    module Prop = {
+      include Html.Prop;
+      include Svg.Prop;
+    };
+    act(() =>
+      React.Dom.render(
+        <svg width="100" height="100">
+          <circle
+            cx="50"
+            cy="50"
+            strokeWidth="2"
+            stroke="magenta"
+            fill="pink"
+          />
+        </svg>,
+        Dom_html.element(c),
+      )
+    );
+    assert_equal(
+      c##.innerHTML,
+      Js.string(
+        "<svg width=\"100\" height=\"100\"><circle cx=\"50\" cy=\"50\" stroke-width=\"2\" stroke=\"magenta\" fill=\"pink\"></circle></svg>",
+      ),
+    );
+  });
+
 let basic =
   "basic"
   >::: [
@@ -1241,6 +1361,22 @@ let externals =
     "second-order-arg-conversion" >:: testExternalSecondOrderArgConversion,
   ];
 
+let props =
+  "props"
+  >::: [
+    "maybe-none" >:: testPropMaybeNone,
+    "maybe-some" >:: testPropMaybeSome,
+    "custom-string" >:: testPropCustomString,
+    "custom-bool" >:: testPropCustomBool,
+    "custom-int" >:: testPropCustomInt,
+    "custom-float" >:: testPropCustomFloat,
+    "custom-any" >:: testPropCustomAny,
+  ];
+
+let elements = "elements" >::: ["custom" >:: testCustomElement];
+
+let svg = "svg" >::: ["basic" >:: testSvg];
+
 let suite =
   "reason"
   >::: [
@@ -1256,4 +1392,7 @@ let suite =
     fragments,
     dangerouslySetInnerHTML,
     externals,
+    props,
+    elements,
+    svg,
   ];
