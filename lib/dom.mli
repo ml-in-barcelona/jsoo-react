@@ -1503,9 +1503,16 @@ module Style : sig
   let rubyPosition = string_style_prop "rubyPosition"]
 end
 
-module DangerouslySetInnerHTML : sig
+module SafeString : sig
   type t
-end
 
-val makeHtml : __html:string -> DangerouslySetInnerHTML.t
-  [@@js.builder] [@@js.verbatim_names]
+  val make_unchecked : string -> t
+    [@@js.custom
+      val make_react_html_object : __html:string -> t
+        [@@js.builder] [@@js.verbatim_names]
+
+      let make_unchecked str = make_react_html_object ~__html:str]
+
+  val makeUnchecked : string -> t
+    [@@js.custom let makeUnchecked str = make_unchecked str]
+end

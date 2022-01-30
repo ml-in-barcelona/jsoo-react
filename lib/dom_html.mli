@@ -415,7 +415,7 @@ module Prop : sig
 
   val onTransitionEnd : (Event.Transition.t -> unit) -> t
 
-  val dangerouslySetInnerHTML : Dom.DangerouslySetInnerHTML.t -> t
+  val dangerouslySetInnerHTML : Dom.SafeString.t -> t
 
   val suppressContentEditableWarning : bool -> t
 end

@@ -624,7 +624,7 @@ let testDangerouslySetInnerHTML () =
           React.Dom.render
             (div
                [| dangerouslySetInnerHTML
-                    (React.Dom.makeHtml ~__html:"<lol></lol>") |]
+                    (React.Dom.SafeString.make_unchecked "<lol></lol>") |]
                [] )
             (Html.element c) ) ;
       assert_equal c##.innerHTML (Js.string "<div><lol></lol></div>") )
