@@ -5,8 +5,8 @@ function Greeting({
   strong,
 }) {
   var name = strong === true
-      ? React.createElement("strong", null, name)
-      : name;
+    ? React.createElement("strong", null, name)
+    : name;
 
   return React.createElement("span", null, "Hey ", name);
 }
@@ -30,4 +30,13 @@ function Greetings({
 exports.Greetings = Greetings;
 
 // React.forwardRef is a non-function wrapper component, at least at time of writing
-exports.NonFunctionGreeting = React.forwardRef(Greeting);
+exports.NonFunctionGreeting = React.forwardRef(function Greeting({
+  name,
+  strong,
+}, ref) {
+  var name = strong === true
+    ? React.createElement("strong", null, name)
+    : name;
+
+  return React.createElement("span", { ref: ref }, "Hey ", name);
+});

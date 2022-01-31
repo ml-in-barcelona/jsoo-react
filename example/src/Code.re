@@ -1,4 +1,6 @@
 open Js_of_ocaml;
+open React.Dom.Dsl;
+open Html;
 
 [@react.component]
 let make = (~text) => {
@@ -11,6 +13,6 @@ let make = (~text) => {
     None;
   });
   <pre className="language-reason">
-    <code ref={React.Dom.Ref.domRef(codeRef)}> {text |> React.string} </code>
+    <code ref_={React.Dom.Ref.domRef(codeRef)}> {text |> React.string} </code>
   </pre>;
 };

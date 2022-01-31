@@ -9,7 +9,7 @@ module Prop : sig
 
   val int : string -> int -> t
 
-  val float : string -> float -> t
+  val float_ : string -> float -> t
 
   val event : string -> ('a Event.synthetic -> unit) -> t
 

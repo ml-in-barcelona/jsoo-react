@@ -1,3 +1,6 @@
+open React.Dom.Dsl;
+open Html;
+
 let s = React.string;
 
 [@react.component]

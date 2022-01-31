@@ -1503,9 +1503,10 @@ module Style : sig
   let rubyPosition = string_style_prop "rubyPosition"]
 end
 
-module DangerouslySetInnerHTML : sig
-  type t
-end
+module SafeString : sig
+  type t = private string
 
-val makeInnerHtml : __html:string -> DangerouslySetInnerHTML.t
-  [@@js.builder] [@@js.verbatim_names]
+  val make_unchecked : string -> t [@@js.custom let make_unchecked str = str]
+
+  val to_string : t -> string [@@js.custom let to_string str = str]
+end

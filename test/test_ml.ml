@@ -622,7 +622,10 @@ let testDangerouslySetInnerHTML () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            (div [|dangerouslySetInnerHTML ~__html:"<lol></lol>"|] [])
+            (div
+               [| dangerouslySetInnerHTML
+                    (React.Dom.SafeString.make_unchecked "<lol></lol>") |]
+               [] )
             (Html.element c) ) ;
       assert_equal c##.innerHTML (Js.string "<div><lol></lol></div>") )
 
@@ -648,7 +651,7 @@ let testExternalChildren () =
       act (fun () ->
           React.Dom.render
             (JsComp.make
-               ~children:(Js.array [|em [||] [React.string "John"]|])
+               ~children:(Js.array [|em [|key "one"|] [React.string "John"]|])
                () )
             (Html.element c) ) ;
       assert_equal c##.innerHTML (Js.string "<span>Hey <em>John</em></span>") )
@@ -732,7 +735,7 @@ let testPropCustomInt () =
 let testPropCustomFloat () =
   withContainer (fun c ->
       act (fun () ->
-          React.Dom.render (div [|Prop.float "foo" 42.5|] []) (Html.element c) ) ;
+          React.Dom.render (div [|Prop.float_ "foo" 42.5|] []) (Html.element c) ) ;
       assert_equal c##.innerHTML (Js.string "<div foo=\"42.5\"></div>") )
 
 let testPropCustomAny () =

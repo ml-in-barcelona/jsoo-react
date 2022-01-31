@@ -242,7 +242,7 @@ module Prop = struct
 
   let start = int "start"
 
-  let step = float "step"
+  let step = float_ "step"
 
   let summary = string "summary" (* deprecated *)
 
@@ -461,8 +461,16 @@ module Prop = struct
 
   (* react-specific *)
 
-  let dangerouslySetInnerHTML ~(__html : string) =
-    any "dangerouslySetInnerHTML" (Dom.makeInnerHtml ~__html)
+  include
+    [%js:
+    type html_object
+
+    val make_react_html_object : __html:string -> html_object
+      [@@js.builder] [@@js.verbatim_names]]
+
+  let dangerouslySetInnerHTML (str : Dom.SafeString.t) =
+    any "dangerouslySetInnerHTML"
+      (make_react_html_object ~__html:(Dom.SafeString.to_string str))
 
   let suppressContentEditableWarning = bool "suppressContentEditableWarning"
 end

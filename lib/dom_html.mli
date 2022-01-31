@@ -11,7 +11,7 @@ module Prop : sig
 
   val int : string -> int -> t
 
-  val float : string -> float -> t
+  val float_ : string -> float -> t
 
   val event : string -> ('a Event.synthetic -> unit) -> t
 
@@ -415,7 +415,7 @@ module Prop : sig
 
   val onTransitionEnd : (Event.Transition.t -> unit) -> t
 
-  val dangerouslySetInnerHTML : __html:string -> t
+  val dangerouslySetInnerHTML : Dom.SafeString.t -> t
 
   val suppressContentEditableWarning : bool -> t
 end
