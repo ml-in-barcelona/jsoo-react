@@ -49,7 +49,7 @@ let make =
                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
     fun ?name ->
       fun ?key ->
-        fun () -> React.createElement make (make_props ?key ?name ()))
+        fun () -> React.create_element make (make_props ?key ?name ()))
     [@merlin.hide ])
 let make =
   let make_props
@@ -108,7 +108,7 @@ let make =
     fun ~a ->
       fun ~b ->
         fun ?key ->
-          fun () -> React.createElement make (make_props ?key ~b ~a ()))
+          fun () -> React.create_element make (make_props ?key ~b ~a ()))
     [@merlin.hide ])
 module External =
   struct
@@ -141,7 +141,7 @@ module External =
         fun ~b ->
           fun ?key ->
             fun () ->
-              React.createElement
+              React.create_element
                 (Js_of_ocaml.Js.Unsafe.js_expr
                    "require(\"my-react-library\").MyReactComponent")
                 (component_props ?key ~b ~a ())[@@otherAttribute
@@ -210,7 +210,7 @@ module Bar =
         fun ~a ->
           fun ~b ->
             fun ?key ->
-              fun () -> React.createElement make (make_props ?key ~b ~a ()))
+              fun () -> React.create_element make (make_props ?key ~b ~a ()))
         [@merlin.hide ])
     let component =
       let component_props
@@ -272,7 +272,8 @@ module Bar =
           fun ~b ->
             fun ?key ->
               fun () ->
-                React.createElement component (component_props ?key ~b ~a ()))
+                React.create_element component
+                  (component_props ?key ~b ~a ()))
         [@merlin.hide ])
   end
 module type X_int  = sig val x : int end
@@ -338,7 +339,7 @@ module Func(M:X_int) =
         fun ~a ->
           fun ~b ->
             fun ?key ->
-              fun () -> React.createElement make (make_props ?key ~b ~a ()))
+              fun () -> React.create_element make (make_props ?key ~b ~a ()))
         [@merlin.hide ])
   end
 module ForwardRef =
@@ -374,7 +375,7 @@ module ForwardRef =
                fun theRef -> make theRef) in
         fun ?key ->
           fun ?ref ->
-            fun () -> React.createElement make (make_props ?ref ?key ()))
+            fun () -> React.create_element make (make_props ?ref ?key ()))
         [@merlin.hide ])
   end
 module Memo =
@@ -422,7 +423,7 @@ module Memo =
                        (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a))) in
         fun ~a ->
           fun ?key ->
-            fun () -> React.createElement make (make_props ?key ~a ()))
+            fun () -> React.create_element make (make_props ?key ~a ()))
         [@merlin.hide ])
   end
 module MemoCustomCompareProps =
@@ -471,7 +472,7 @@ module MemoCustomCompareProps =
             (fun prevPros -> fun nextProps -> false) in
         fun ~a ->
           fun ?key ->
-            fun () -> React.createElement make (make_props ?key ~a ()))
+            fun () -> React.create_element make (make_props ?key ~a ()))
         [@merlin.hide ])
   end
 let fragment foo = ((React.Fragment.make ~children:[foo] ())[@bla ])
@@ -622,7 +623,7 @@ let make =
       fun ~children ->
         fun ?key ->
           fun () ->
-            React.createElement make (make_props ?key ~children ~title ()))
+            React.create_element make (make_props ?key ~children ~title ()))
     [@merlin.hide ])
 let t = FancyButton.make ~ref:buttonRef ~children:[div [||] []] ()
 let t =
@@ -686,7 +687,7 @@ let make =
       fun ?key ->
         fun ?ref ->
           fun () ->
-            React.createElement make (make_props ?ref ?key ~children ()))
+            React.create_element make (make_props ?ref ?key ~children ()))
     [@merlin.hide ])
 let testAttributes =
   div [|(Prop.translate (("yes")[@reason.raw_literal "yes"]))|]
@@ -797,7 +798,7 @@ let make =
         fun ?onClick ->
           fun ?key ->
             fun () ->
-              React.createElement make
+              React.create_element make
                 (make_props ?key ?onClick ?isDisabled ~name ()))
     [@merlin.hide ])
 let make =
@@ -844,5 +845,5 @@ let make =
                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
     fun ?name ->
       fun ?key ->
-        fun () -> React.createElement make (make_props ?key ?name ()))
+        fun () -> React.create_element make (make_props ?key ?name ()))
     [@merlin.hide ])

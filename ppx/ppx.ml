@@ -11,10 +11,10 @@
    `React.Dom.createDOMElementVariadic("div", React.Dom.domProps(~props1=1, ~props2=b), [foo, bar])`.
    transform the upper-cased case
    `[@JSX] Foo.createElement(~key=a, ~ref=b, ~foo=bar, ~children=[], ())` into
-   `React.createElement(Foo.make, Foo.makeProps(~key=a, ~ref=b, ~foo=bar, ()))`
+   `React.create_element(Foo.make, Foo.makeProps(~key=a, ~ref=b, ~foo=bar, ()))`
    transform the upper-cased case
    `[@JSX] Foo.createElement(~foo=bar, ~children=[foo, bar], ())` into
-   `React.createElementVariadic(Foo.make, Foo.makeProps(~foo=bar, ~children=React.null, ()), [foo, bar])`
+   `React.create_element_variadic(Foo.make, Foo.makeProps(~foo=bar, ~children=React.null, ()), [foo, bar])`
    transform `[@JSX] [foo]` into
    `React.createFragment([foo])`
  *)
@@ -605,7 +605,7 @@ let argToType types (name, default, _noLabelName, _alias, loc, type_) =
         ; ptyp_loc_stack= [] } )
       :: types
 
-(* Builds the function that will be passed as first param to React.createElement *)
+(* Builds the function that will be passed as first param to React.create_element *)
 let make_js_comp ~loc ~fn_name ~forward_ref ~has_unit ~named_arg_list
     ~named_type_list ~payload ~wrap rest =
   let props = get_props_attr payload in
@@ -887,7 +887,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
              (let loc = gloc in
               [%expr
                 fun () ->
-                  React.createElement [%e expression]
+                  React.create_element [%e expression]
                     [%e
                       Exp.apply ~loc
                         (Exp.ident ~loc
@@ -1075,7 +1075,7 @@ let jsxMapper () =
                      (let loc = gloc in
                       [%expr
                         fun () ->
-                          React.createElement [%e expression]
+                          React.create_element [%e expression]
                             [%e
                               Exp.apply ~loc
                                 (Exp.ident ~loc

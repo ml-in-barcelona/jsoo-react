@@ -69,18 +69,18 @@ let callback_to_js _ cb = cb
 
 let callback_of_js _ js = js]
 
-val createElement : 'props component -> 'props -> element
+val create_element : 'props component -> 'props -> element
   [@@js.custom
-    val createElement_internal : Imports.react -> 'a component -> 'a -> element
+    val create_element_internal : Imports.react -> 'a component -> 'a -> element
       [@@js.call "createElement"]
 
-    let createElement component props =
-      createElement_internal Imports.react component props]
+    let create_element component props =
+      create_element_internal Imports.react component props]
 
-val createElementVariadic :
+val create_element_variadic :
   'props component -> 'props -> element list -> element
   [@@js.custom
-    val createElementVariadic_internal :
+    val create_element_variadic_internal :
          Imports.react
       -> 'props component
       -> 'props
@@ -88,8 +88,8 @@ val createElementVariadic :
       -> element
       [@@js.call "createElement"]
 
-    let createElementVariadic component props elements =
-      createElementVariadic_internal Imports.react component props elements]
+    let create_element_variadic component props elements =
+      create_element_variadic_internal Imports.react component props elements]
 
 val cloneElement : element -> 'props -> element
   [@@js.custom
@@ -630,7 +630,7 @@ module Context : sig
           Js_of_ocaml.Js.Unsafe.(obj [|("value", inject value)|])
 
         let make context ~value ~children () =
-          createElementVariadic (provider context) (makeProps value) children]
+          create_element_variadic (provider context) (makeProps value) children]
   end
 end
 
@@ -728,7 +728,7 @@ module Fragment : sig
             Js_of_ocaml.Js.Unsafe.(obj [||])
 
       let make ~children ?key () =
-        createElementVariadic
+        create_element_variadic
           (to_component fragment_internal)
           (makeProps ?key ()) children]
 end
