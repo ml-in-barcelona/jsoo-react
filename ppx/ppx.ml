@@ -1148,13 +1148,13 @@ let jsxMapper () =
           (transformComponentDefinition ~inside_component:true mapper)
           structure returnStructures
     (* let component = ... *)
-    | {pstr_loc; pstr_desc= Pstr_value (_rec_flag, value_bindings)} ->
+    | {pstr_loc; pstr_desc= Pstr_value (rec_flag, value_bindings)} ->
         let bindings =
           List.map
             (process_value_binding ~pstr_loc ~inside_component ~mapper)
             value_bindings
         in
-        [{pstr_loc; pstr_desc= Pstr_value (Nonrecursive, bindings)}]
+        [{pstr_loc; pstr_desc= Pstr_value (rec_flag, bindings)}]
         @ returnStructures
     | structure ->
         structure :: returnStructures

@@ -1,3 +1,8 @@
+(* ppx shoudn't transform this *)
+let rec pp_user = 2
+
+(* let%component *)
+
 let%component make ?(name = "") = div [||] [React.string ("Hello " ^ name)]
 
 let%component make ~children:(first, second) = div [||] [first; second]
