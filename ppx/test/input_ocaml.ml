@@ -1,5 +1,8 @@
-(* ppx shoudn't transform this *)
+(* ppx should not transform this *)
 let rec pp_user = 2
+
+(* ppx should not error on unrelated primitives with [] as pval_prim *)
+type t = string [@@foo val f : int]
 
 (* let%component *)
 
