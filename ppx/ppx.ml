@@ -19,7 +19,6 @@
    `React.createFragment([foo])`
  *)
 
-module Ocaml_location = Location
 open Ppxlib
 open Ast_helper
 
@@ -117,8 +116,10 @@ let unerasableIgnore loc =
   ; attr_payload= PStr [Str.eval (Exp.constant (Const.string "-16"))]
   ; attr_loc= loc }
 
-let merlinFocus =
-  { attr_name= {txt= "merlin.focus"; loc= Location.none}
+(* [merlin_hide] tells merlin to not look at a node, or at any of its
+   descendants. *)
+let merlin_hide =
+  { attr_name= {txt= "merlin.hide"; loc= Location.none}
   ; attr_payload= PStr []
   ; attr_loc= Location.none }
 
@@ -146,16 +147,6 @@ let getFnName binding =
   match binding with
   | {pvb_pat= {ppat_desc= Ppat_var {txt}}} ->
       txt
-  | _ ->
-      raise (Invalid_argument "react.component calls cannot be destructured.")
-
-let make_new_binding binding expression newName =
-  match binding with
-  | {pvb_pat= {ppat_desc= Ppat_var ppat_var} as pvb_pat} ->
-      { binding with
-        pvb_pat= {pvb_pat with ppat_desc= Ppat_var {ppat_var with txt= newName}}
-      ; pvb_expr= expression
-      ; pvb_attributes= [merlinFocus] }
   | _ ->
       raise (Invalid_argument "react.component calls cannot be destructured.")
 
@@ -197,22 +188,6 @@ let get_props_attr payload =
 (* Plucks the label, loc, and type_ from an AST node *)
 let pluckLabelDefaultLocType (label, default, _, _, loc, type_) =
   (label, default, loc, type_)
-
-(* Lookup the filename from the location information on the AST node and turn it into a valid module identifier *)
-let filename_from_loc (pstr_loc : Location.t) =
-  let filename =
-    match pstr_loc.loc_start.pos_fname with
-    | "" ->
-        !Ocaml_location.input_name
-    | fileName ->
-        fileName
-  in
-  let filename =
-    try Filename.chop_extension (Filename.basename filename)
-    with Invalid_argument _ -> filename
-  in
-  let filename = String.capitalize_ascii filename in
-  filename
 
 (*
   AST node builders
@@ -478,7 +453,7 @@ let make_make_props js_props_obj fn_name loc named_arg_list props_type rest =
   Exp.mk ~loc
     (Pexp_let
        ( Nonrecursive
-       , [ Vb.mk ~loc
+       , [ Vb.mk ~loc ~attrs:[merlin_hide]
              (Pat.mk ~loc
                 (Ppat_constraint
                    ( makePropsName ~loc (make_props_name fn_name)
@@ -680,7 +655,7 @@ let make_js_comp ~loc ~fn_name ~forward_ref ~has_unit ~named_arg_list
     | None ->
         inner_expr
   in
-  Exp.mk ~loc
+  Exp.mk ~loc ~attrs:[merlin_hide]
     (Pexp_let
        ( Nonrecursive
        , [ Vb.mk
@@ -707,16 +682,10 @@ let make_ml_comp ~loc ~fn_name ~body rest =
 (* This function takes any value binding and checks if it should be processed
    in case [react.component] attr is found, or if [inside_component] is passed. *)
 let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
-  let filename = filename_from_loc pstr_loc in
-  let empty_loc = Location.in_file filename in
+  let gloc = {pstr_loc with loc_ghost= true} in
   if has_attr_on_binding binding || inside_component then
     let binding_loc = binding.pvb_loc in
     let binding_pat_loc = binding.pvb_pat.ppat_loc in
-    let binding =
-      { binding with
-        pvb_pat= {binding.pvb_pat with ppat_loc= empty_loc}
-      ; pvb_loc= empty_loc }
-    in
     let fn_name = getFnName binding in
     let modified_binding_old binding =
       let expression = binding.pvb_expr in
@@ -757,10 +726,10 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
     let named_arg_list_with_key_and_ref =
       ( Str_label.Optional "key"
       , None
-      , Pat.var {txt= "key"; loc= empty_loc}
+      , Pat.var {txt= "key"; loc= gloc}
       , "key"
-      , empty_loc
-      , Some (keyType empty_loc) )
+      , gloc
+      , Some (keyType gloc) )
       :: named_arg_list
     in
     let named_arg_list_with_key_and_ref =
@@ -768,10 +737,10 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
       | Some _ ->
           ( Str_label.Optional "ref"
           , None
-          , Pat.var {txt= "ref"; loc= empty_loc}
+          , Pat.var {txt= "ref"; loc= gloc}
           , "ref"
-          , empty_loc
-          , Some (refType empty_loc) )
+          , gloc
+          , Some (refType gloc) )
           :: named_arg_list_with_key_and_ref
       | None ->
           named_arg_list_with_key_and_ref
@@ -780,8 +749,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
       let has_application = ref false in
       let expression = binding.pvb_expr in
       let unerasable_ignore_exp exp =
-        { exp with
-          pexp_attributes= unerasableIgnore empty_loc :: exp.pexp_attributes }
+        {exp with pexp_attributes= unerasableIgnore gloc :: exp.pexp_attributes}
       in
       (* TODO: there is a long-tail of unsupported features inside of blocks - Pexp_letmodule , Pexp_letexception , Pexp_ifthenelse *)
       let rec spelunk_for_fun_expr expression =
@@ -889,26 +857,25 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
       try Some (List.find hasAttr binding.pvb_attributes)
       with Not_found -> None
     in
-    let _attr_loc, payload =
+    let payload =
       match react_component_attr with
-      | Some {attr_loc; attr_payload} ->
-          (attr_loc, Some attr_payload)
+      | Some {attr_payload} ->
+          Some attr_payload
       | None ->
-          (empty_loc, None)
+          None
     in
     let named_type_list = List.fold_left argToType [] named_arg_list in
-    let ml_comp = make_ml_comp ~loc:empty_loc ~fn_name ~body:ml_comp_body in
+    let ml_comp = make_ml_comp ~loc:pstr_loc ~fn_name ~body:ml_comp_body in
     let js_comp =
-      make_js_comp ~loc:empty_loc ~fn_name ~forward_ref ~has_unit
-        ~named_arg_list ~named_type_list ~payload ~wrap
+      make_js_comp ~loc:gloc ~fn_name ~forward_ref ~has_unit ~named_arg_list
+        ~named_type_list ~payload ~wrap
     in
     let make_props =
       let named_arg_list =
         List.map pluckLabelDefaultLocType named_arg_list_with_key_and_ref
       in
-      let js_props_obj = make_js_props_obj ~loc:empty_loc named_arg_list in
-      make_make_props js_props_obj fn_name empty_loc named_arg_list
-        named_type_list
+      let js_props_obj = make_js_props_obj ~loc:gloc named_arg_list in
+      make_make_props js_props_obj fn_name gloc named_arg_list named_type_list
     in
     let outer_make expression =
       Vb.mk ~loc:binding_loc
@@ -917,7 +884,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
         (let outer =
            make_funs_for_make_props_body
              (List.map pluckLabelDefaultLocType named_arg_list_with_key_and_ref)
-             (let loc = empty_loc in
+             (let loc = gloc in
               [%expr
                 fun () ->
                   React.createElement [%e expression]
@@ -933,9 +900,9 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
                                  , _pattern_loc
                                  , _type ) ->
                               ( Str_label.to_arg_label arg
-                              , Exp.ident ~loc:empty_loc
-                                  { loc= empty_loc
-                                  ; txt= Lident (Str_label.str arg) } ) )
+                              , Exp.ident ~loc:gloc
+                                  {loc= gloc; txt= Lident (Str_label.str arg)}
+                              ) )
                             named_arg_list_with_key_and_ref
                         @ [(Nolabel, Exp.construct {loc; txt= Lident "()"} None)]
                         )]] )
@@ -943,7 +910,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
          make_props @@ ml_comp @@ js_comp @@ outer )
     in
     let inner_make_ident =
-      Exp.ident ~loc:empty_loc {loc= empty_loc; txt= Lident fn_name}
+      Exp.ident ~loc:gloc {loc= gloc; txt= Lident fn_name}
     in
     outer_make inner_make_ident
   else binding
@@ -1096,9 +1063,8 @@ let jsxMapper () =
               make_make_props js_props_obj fn_name pstr_loc named_arg_list
                 named_type_list
             in
-            let filename = filename_from_loc pstr_loc in
-            let empty_loc = Location.in_file filename in
-            let binding_pat_loc = empty_loc in
+            let gloc = {pstr_loc with loc_ghost= true} in
+            let binding_pat_loc = gloc in
             let outer_make expression =
               Vb.mk ~loc:pstr_loc ~attrs:rest_attrs
                 (Pat.var ~loc:binding_pat_loc
@@ -1106,7 +1072,7 @@ let jsxMapper () =
                 (let outer =
                    make_funs_for_make_props_body
                      (List.map pluckLabelDefaultLocType named_arg_list_with_key)
-                     (let loc = empty_loc in
+                     (let loc = gloc in
                       [%expr
                         fun () ->
                           React.createElement [%e expression]
@@ -1122,8 +1088,8 @@ let jsxMapper () =
                                          , _pattern_loc
                                          , _type ) ->
                                       ( Str_label.to_arg_label arg
-                                      , Exp.ident ~loc:empty_loc
-                                          { loc= empty_loc
+                                      , Exp.ident ~loc:gloc
+                                          { loc= gloc
                                           ; txt= Lident (Str_label.str arg) } )
                                       )
                                     named_arg_list_with_key
