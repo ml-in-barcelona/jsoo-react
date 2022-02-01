@@ -1,4 +1,5 @@
 let rec pp_user = 2
+type t = string[@@foo external f : int]
 let make =
   let make_props
     : ?name:'name ->

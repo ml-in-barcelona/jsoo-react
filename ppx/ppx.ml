@@ -990,15 +990,15 @@ let jsxMapper () =
             ; pval_attributes
             ; pval_type
             ; pval_prim } } -> (
-      match pval_prim with
-      | [] | _ :: _ :: _ ->
-          Location.raise_errorf ~loc:pval_loc
-            "jsoo-react: externals only allow single primitive declarations"
-      | [pval_prim] -> (
-        match (List.partition hasAttr pval_attributes, inside_component) with
-        | ([], _), false ->
-            structure :: returnStructures
-        | (_ :: _, rest_attrs), _ | (_, rest_attrs), true ->
+      match (inside_component, List.partition hasAttr pval_attributes) with
+      | false, ([], _) ->
+          structure :: returnStructures
+      | true, (_, rest_attrs) | _, (_ :: _, rest_attrs) -> (
+        match pval_prim with
+        | [] | _ :: _ :: _ ->
+            Location.raise_errorf ~loc:pval_loc
+              "jsoo-react: externals only allow single primitive declarations"
+        | [pval_prim] ->
             let rec get_prop_types types {ptyp_loc; ptyp_desc} =
               match ptyp_desc with
               | Ptyp_arrow
