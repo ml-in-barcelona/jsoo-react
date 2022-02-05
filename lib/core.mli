@@ -441,82 +441,82 @@ val use_callback7 :
     let use_callback7 callback watchlist =
       use_callback7_internal Imports.react callback watchlist]
 
-val useMemo : (unit -> 'value) -> 'value
+val use_memo : (unit -> 'value) -> 'value
   [@@js.custom
-    val useMemo_internal :
+    val use_memo_internal :
       Imports.react -> (unit -> 'value) -> 'any array option_undefined -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo f = useMemo_internal Imports.react f None]
+    let use_memo f = use_memo_internal Imports.react f None]
 
-val useMemo0 : (unit -> 'value) -> 'value
-  [@@js.custom let useMemo0 f = useMemo_internal Imports.react f (Some [||])]
+val use_memo0 : (unit -> 'value) -> 'value
+  [@@js.custom let use_memo0 f = use_memo_internal Imports.react f (Some [||])]
 
-val useMemo1 : (unit -> 'value) -> 'a array -> 'value
+val use_memo1 : (unit -> 'value) -> 'a array -> 'value
   [@@js.custom
-    val useMemo1_internal :
+    val use_memo1_internal :
       Imports.react -> (unit -> 'value) -> 'a array -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo1 callback watchlist =
-      useMemo1_internal Imports.react callback watchlist]
+    let use_memo1 callback watchlist =
+      use_memo1_internal Imports.react callback watchlist]
 
-val useMemo2 : (unit -> 'value) -> 'a * 'b -> 'value
+val use_memo2 : (unit -> 'value) -> 'a * 'b -> 'value
   [@@js.custom
-    val useMemo2_internal :
+    val use_memo2_internal :
       Imports.react -> (unit -> 'value) -> 'a * 'b -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo2 callback watchlist =
-      useMemo2_internal Imports.react callback watchlist]
+    let use_memo2 callback watchlist =
+      use_memo2_internal Imports.react callback watchlist]
 
-val useMemo3 : (unit -> 'value) -> 'a * 'b * 'c -> 'value
+val use_memo3 : (unit -> 'value) -> 'a * 'b * 'c -> 'value
   [@@js.custom
-    val useMemo3_internal :
+    val use_memo3_internal :
       Imports.react -> (unit -> 'value) -> 'a * 'b * 'c -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo3 callback watchlist =
-      useMemo3_internal Imports.react callback watchlist]
+    let use_memo3 callback watchlist =
+      use_memo3_internal Imports.react callback watchlist]
 
-val useMemo4 : (unit -> 'value) -> 'a * 'b * 'c * 'd -> 'value
+val use_memo4 : (unit -> 'value) -> 'a * 'b * 'c * 'd -> 'value
   [@@js.custom
-    val useMemo4_internal :
+    val use_memo4_internal :
       Imports.react -> (unit -> 'value) -> 'a * 'b * 'c * 'd -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo4 callback watchlist =
-      useMemo4_internal Imports.react callback watchlist]
+    let use_memo4 callback watchlist =
+      use_memo4_internal Imports.react callback watchlist]
 
-val useMemo5 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e -> 'value
+val use_memo5 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e -> 'value
   [@@js.custom
-    val useMemo5_internal :
+    val use_memo5_internal :
       Imports.react -> (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo5 callback watchlist =
-      useMemo5_internal Imports.react callback watchlist]
+    let use_memo5 callback watchlist =
+      use_memo5_internal Imports.react callback watchlist]
 
-val useMemo6 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f -> 'value
+val use_memo6 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f -> 'value
   [@@js.custom
-    val useMemo6_internal :
+    val use_memo6_internal :
       Imports.react -> (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo6 callback watchlist =
-      useMemo6_internal Imports.react callback watchlist]
+    let use_memo6 callback watchlist =
+      use_memo6_internal Imports.react callback watchlist]
 
-val useMemo7 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> 'value
+val use_memo7 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> 'value
   [@@js.custom
-    val useMemo7_internal :
+    val use_memo7_internal :
          Imports.react
       -> (unit -> 'value)
       -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
       -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo7 callback watchlist =
-      useMemo7_internal Imports.react callback watchlist]
+    let use_memo7 callback watchlist =
+      use_memo7_internal Imports.react callback watchlist]
 
 val useState : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
   [@@js.custom

@@ -636,7 +636,7 @@ let testUseMemo1 = () => {
     [@react.component]
     let make = (~a) => {
       let (count, setCount) = React.useState(() => 0);
-      let result = React.useMemo1(() => {a ++ "2"}, [|a|]);
+      let result = React.use_memo1(() => {a ++ "2"}, [|a|]);
       React.use_effect1(
         () => {
           setCount(count => count + 1);
@@ -1319,7 +1319,7 @@ let useReducer =
 let memoization =
   "memo"
   >::: [
-    "useMemo1" >:: testUseMemo1,
+    "use_memo1" >:: testUseMemo1,
     "memo" >:: testMemo,
     "memoCustomCompareProps" >:: testMemoCustomCompareProps,
   ];
