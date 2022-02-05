@@ -529,9 +529,9 @@ let testMemoCustomCompareProps () =
         (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1")) )
 
 let testCreateRef () =
-  let reactRef = React.createRef () in
+  let reactRef = React.create_ref () in
   assert_equal (React.Ref.current reactRef) Js_of_ocaml.Js.null ;
-  React.Ref.setCurrent reactRef (Js_of_ocaml.Js.Opt.return 1) ;
+  React.Ref.set_current reactRef (Js_of_ocaml.Js.Opt.return 1) ;
   assert_equal (React.Ref.current reactRef) (Js_of_ocaml.Js.Opt.return 1)
 
 let testForwardRef () =
@@ -544,7 +544,7 @@ let testForwardRef () =
   withContainer (fun c ->
       let count = ref 0 in
       let buttonRef =
-        React.Dom.Ref.callbackDomRef (fun _ref -> count := !count + 1)
+        React.Dom.Ref.callback_dom_ref (fun _ref -> count := !count + 1)
       in
       act (fun () ->
           React.Dom.render
@@ -555,10 +555,10 @@ let testForwardRef () =
 let testUseRef () =
   let module DummyComponentWithRefAndEffect = struct
     let%component make ~cb () =
-      let myRef = React.useRef 1 in
+      let myRef = React.use_ref 1 in
       React.use_effect0 (fun () ->
           let open React.Ref in
-          setCurrent myRef (current myRef + 1) ;
+          set_current myRef (current myRef + 1) ;
           cb myRef ;
           None ) ;
       div [||] []
@@ -819,9 +819,9 @@ let memoization =
 
 let refs =
   "refs"
-  >::: [ "createRef" >:: testCreateRef
-       ; "forwardRef" >:: testForwardRef
-       ; "useRef" >:: testUseRef ]
+  >::: [ "create_ref" >:: testCreateRef
+       ; "forward_ref" >:: testForwardRef
+       ; "use_ref" >:: testUseRef ]
 
 let children =
   "children"

@@ -740,9 +740,9 @@ let testMemoCustomCompareProps = () => {
 };
 
 let testCreateRef = () => {
-  let reactRef = React.createRef();
+  let reactRef = React.create_ref();
   assert_equal(React.Ref.current(reactRef), Js_of_ocaml.Js.null);
-  React.Ref.setCurrent(reactRef, Js_of_ocaml.Js.Opt.return(1));
+  React.Ref.set_current(reactRef, Js_of_ocaml.Js.Opt.return(1));
   assert_equal(React.Ref.current(reactRef), Js_of_ocaml.Js.Opt.return(1));
 };
 
@@ -750,7 +750,7 @@ let testForwardRef = () => {
   module FancyButton = {
     [@react.component]
     let make =
-      React.Dom.forwardRef((~children, ref_) => {
+      React.Dom.forward_ref((~children, ref_) => {
         <button ref_ className="FancyButton"> ...children </button>
       });
   };
@@ -758,7 +758,7 @@ let testForwardRef = () => {
   withContainer(c => {
     let count = ref(0);
     let buttonRef =
-      React.Dom.Ref.callbackDomRef(_ref => {count := count^ + 1});
+      React.Dom.Ref.callback_dom_ref(_ref => {count := count^ + 1});
     act(() => {
       React.Dom.render(
         <FancyButton ref=buttonRef> <div /> </FancyButton>,
@@ -773,9 +773,9 @@ let testUseRef = () => {
   module DummyComponentWithRefAndEffect = {
     [@react.component]
     let make = (~cb, ()) => {
-      let myRef = React.useRef(1);
+      let myRef = React.use_ref(1);
       React.use_effect0(() => {
-        React.Ref.(setCurrent(myRef, current(myRef) + 1));
+        React.Ref.(set_current(myRef, current(myRef) + 1));
         cb(myRef);
         None;
       });
@@ -1327,9 +1327,9 @@ let memoization =
 let refs =
   "refs"
   >::: [
-    "createRef" >:: testCreateRef,
-    "forwardRef" >:: testForwardRef,
-    "useRef" >:: testUseRef,
+    "create_ref" >:: testCreateRef,
+    "forward_ref" >:: testForwardRef,
+    "use_ref" >:: testUseRef,
   ];
 
 let children =

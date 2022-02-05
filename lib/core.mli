@@ -600,22 +600,22 @@ module Ref : sig
 
   val current : 'value t -> 'value [@@js.get "current"]
 
-  val setCurrent : 'value t -> 'value -> unit [@@js.set "current"]
+  val set_current : 'value t -> 'value -> unit [@@js.set "current"]
 end
 
-val useRef : 'value -> 'value Ref.t
+val use_ref : 'value -> 'value Ref.t
   [@@js.custom
-    val useRef_internal : Imports.react -> 'value -> 'value Ref.t
+    val use_ref_internal : Imports.react -> 'value -> 'value Ref.t
       [@@js.call "useRef"]
 
-    let useRef value = useRef_internal Imports.react value]
+    let use_ref value = use_ref_internal Imports.react value]
 
-val createRef : unit -> 'a js_nullable Ref.t
+val create_ref : unit -> 'a js_nullable Ref.t
   [@@js.custom
-    val createRef_internal : Imports.react -> unit -> 'a js_nullable Ref.t
+    val create_ref_internal : Imports.react -> unit -> 'a js_nullable Ref.t
       [@@js.call "createRef"]
 
-    let createRef () = createRef_internal Imports.react ()]
+    let create_ref () = create_ref_internal Imports.react ()]
 
 module Context : sig
   type 'props t

@@ -18,7 +18,7 @@ module Prop = struct
 
   let key = string "key"
 
-  let ref_ = (any "ref" : Dom.domRef -> t)
+  let ref_ = (any "ref" : Dom.dom_ref -> t)
 end
 
 module Element = struct

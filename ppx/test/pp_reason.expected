@@ -347,7 +347,7 @@ module ForwardRef =
     let make =
       let make_props
         : ?key:string ->
-            ?ref:React.Dom.domRef -> unit -> <  >  Js_of_ocaml.Js.t
+            ?ref:React.Dom.dom_ref -> unit -> <  >  Js_of_ocaml.Js.t
         =
         fun ?key ->
           fun ?ref ->
@@ -370,7 +370,7 @@ module ForwardRef =
               [@reason.preserve_braces ])])
         [@warning "-16"]) in
       ((let make =
-          React.forwardRef
+          React.forward_ref
             (fun (Props : <  >  Js_of_ocaml.Js.t) ->
                fun theRef -> make theRef) in
         fun ?key ->
@@ -634,7 +634,7 @@ let make =
   let make_props
     : children:'children ->
         ?key:string ->
-          ?ref:React.Dom.domRef ->
+          ?ref:React.Dom.dom_ref ->
             unit ->
               < children: 'children Js_of_ocaml.Js.readonly_prop   > 
                 Js_of_ocaml.Js.t
@@ -664,7 +664,7 @@ let make =
         [@warning "-16"]))
     [@warning "-16"]) in
   ((let make =
-      React.Dom.forwardRef
+      React.Dom.forward_ref
         (fun
            (Props :
              < children: 'children Js_of_ocaml.Js.readonly_prop   > 

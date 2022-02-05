@@ -46,27 +46,27 @@ val renderToElementWithId : Core.element -> string -> unit
       | Some element ->
           render reactElement element]
 
-type domRef = private Ojs.t
+type dom_ref = private Ojs.t
 
 module Ref : sig
-  type t = domRef
+  type t = dom_ref
 
-  type currentDomRef = domElement Core.js_nullable Core.Ref.t
+  type current_dom_ref = domElement Core.js_nullable Core.Ref.t
 
-  type callbackDomRef = domElement Core.js_nullable -> unit
+  type callback_dom_ref = domElement Core.js_nullable -> unit
 
   [@@@js.stop]
 
-  val domRef : currentDomRef -> domRef
+  val dom_ref : current_dom_ref -> dom_ref
 
-  val callbackDomRef : callbackDomRef -> domRef
+  val callback_dom_ref : callback_dom_ref -> dom_ref
 
   [@@@js.start]
 
   [@@@js.implem
-  external domRef : currentDomRef -> domRef = "%identity"
+  external dom_ref : current_dom_ref -> dom_ref = "%identity"
 
-  external callbackDomRef : callbackDomRef -> domRef = "%identity"]
+  external callback_dom_ref : callback_dom_ref -> dom_ref = "%identity"]
 end
 
 type domProps = private Ojs.t
@@ -90,15 +90,15 @@ val createDOMElementVariadic :
     let createDOMElementVariadic typ ~props elts =
       createDOMElementVariadic_internal Imports.react typ ~props elts]
 
-val forwardRef : ('props -> domRef -> Core.element) -> 'props Core.component
+val forward_ref : ('props -> dom_ref -> Core.element) -> 'props Core.component
   [@@js.custom
-    val forwardRef_internal :
+    val forward_ref_internal :
          Imports.react
-      -> ('props -> domRef -> Core.element)
+      -> ('props -> dom_ref -> Core.element)
       -> 'props Core.component
       [@@js.call "forwardRef"]
 
-    let forwardRef renderFunc = forwardRef_internal Imports.react renderFunc]
+    let forward_ref renderFunc = forward_ref_internal Imports.react renderFunc]
 
 type block
 

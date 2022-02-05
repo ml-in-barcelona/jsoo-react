@@ -77,7 +77,7 @@ let keyType loc =
   Typ.constr ~loc {loc; txt= optionIdent}
     [Typ.constr ~loc {loc; txt= Lident "string"} []]
 
-let refType loc = [%type: React.Dom.domRef]
+let refType loc = [%type: React.Dom.dom_ref]
 
 type componentConfig = {propsName: string}
 
@@ -288,9 +288,9 @@ let makeAttributeValue ~loc ~isOptional (type_ : Html.attributeType) value =
   | Style, true ->
       [%expr ([%e value] : React.Dom.Style.t option)]
   | Ref, false ->
-      [%expr ([%e value] : React.Dom.domRef)]
+      [%expr ([%e value] : React.Dom.dom_ref)]
   | Ref, true ->
-      [%expr ([%e value] : React.Dom.domRef option)]
+      [%expr ([%e value] : React.Dom.dom_ref option)]
   | InnerHtml, false ->
       [%expr ([%e value] : React.Dom.DangerouslySetInnerHTML.t)]
   | InnerHtml, true ->
@@ -482,7 +482,7 @@ let rec recursivelyTransformNamedArgsForMake mapper expr list =
   | Pexp_fun (Labelled "ref", _, _, _) | Pexp_fun (Optional "ref", _, _, _) ->
       Location.raise_errorf ~loc
         "jsoo-react: ref cannot be passed as a normal prop. Please use \
-         `forwardRef` API instead."
+         `forward_ref` API instead."
   | Pexp_fun
       (((Labelled label | Optional label) as arg), default, pattern, expression)
     ->
@@ -674,7 +674,7 @@ let make_js_comp ~loc ~fn_name ~forward_ref ~has_unit ~named_arg_list
 
 (* Builds the intermediate function with labelled arguments that will call make_props.
    [body] is the the component implementation as originally written in source,
-   but without any wrappers like React.memo or forwardRef *)
+   but without any wrappers like React.memo or forwar_ref *)
 let make_ml_comp ~loc ~fn_name ~body rest =
   Exp.mk ~loc
     (Pexp_let (Nonrecursive, [Vb.mk (Pat.var {loc; txt= fn_name}) body], rest))
@@ -699,7 +699,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
         | {pexp_desc= Pexp_let (_recursive, _vbs, return_expr)} ->
             (* here's where we spelunk! *)
             spelunk_for_fun_expr return_expr
-        (* let make = React.forwardRef((~prop) => ...) or
+        (* let make = React.forward_ref((~prop) => ...) or
            let make = React.memoCustomCompareProps((~prop) => ..., compareProps()) *)
         | { pexp_desc=
               Pexp_apply
@@ -714,7 +714,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
             raise
               (Invalid_argument
                  "react.component calls can only be on function definitions or \
-                  component wrappers (forwardRef, memo)." )
+                  component wrappers (forward_ref, memo)." )
       in
       spelunk_for_fun_expr expression
     in
@@ -813,7 +813,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
               Location.raise_errorf ~loc:pattern.ppat_loc
                 "jsoo-react: props need to be labelled arguments.\n\
                 \  If you are working with refs be sure to wrap with \
-                 React.forwardRef.\n\
+                 React.forward_ref.\n\
                 \  If your component doesn't have any props use () or _ \
                  instead of a name."
         (* let make = {let foo = bar in (~prop) => ...} *)
@@ -823,7 +823,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
             ( wrap
             , has_unit
             , {expression with pexp_desc= Pexp_let (recursive, vbs, exp)} )
-        (* let make = React.forwardRef((~prop) => ...) *)
+        (* let make = React.forward_ref((~prop) => ...) *)
         | {pexp_desc= Pexp_apply (wrapper_expr, [(Nolabel, internalExpression)])}
           ->
             let () = has_application := true in
