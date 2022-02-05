@@ -250,7 +250,7 @@ let testUseCallback1 = () => {
       let ((count, str), setCountStr) =
         React.useState(() => (0, "init and"));
       let f =
-        React.useCallback1(input => {input ++ " " ++ a ++ " and"}, [|a|]);
+        React.use_callback1(input => {input ++ " " ++ a ++ " and"}, [|a|]);
       React.use_effect1(
         () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
@@ -298,7 +298,7 @@ let testUseCallback4 = () => {
     let make = (~a, ~b, ~d, ~e) => {
       let ((count, str), setCountStr) = React.useState(() => (0, "init"));
       let f =
-        React.useCallback4(
+        React.use_callback4(
           _input => {
             Printf.sprintf(
               "a: %s, b: %d, d: [%d], e: [|%d|]",
@@ -1294,11 +1294,11 @@ let use_effect =
     "use_effect3" >:: testUseEffect3,
   ];
 
-let useCallback =
-  "useCallback"
+let use_callback =
+  "use_callback"
   >::: [
-    "useCallback1" >:: testUseCallback1,
-    "useCallback4" >:: testUseCallback4,
+    "use_callback1" >:: testUseCallback1,
+    "use_callback4" >:: testUseCallback4,
   ];
 
 let useState =
@@ -1389,7 +1389,7 @@ let suite =
     basic,
     context,
     use_effect,
-    useCallback,
+    use_callback,
     useState,
     useReducer,
     memoization,

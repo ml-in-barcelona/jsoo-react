@@ -195,7 +195,7 @@ let testUseCallback1 () =
         React.useState (fun () -> (0, "init and"))
       in
       let f =
-        React.useCallback1 (fun input -> input ^ " " ^ a ^ " and") [|a|]
+        React.use_callback1 (fun input -> input ^ " " ^ a ^ " and") [|a|]
       in
       React.use_effect1
         (fun () ->
@@ -225,7 +225,7 @@ let testUseCallback4 () =
     let%component make ~a ~b ~d ~e =
       let (count, str), setCountStr = React.useState (fun () -> (0, "init")) in
       let f =
-        React.useCallback4
+        React.use_callback4
           (fun _input ->
             Printf.sprintf "a: %s, b: %d, d: [%d], e: [|%d|]" a b (List.nth d 0)
               e.(0) )
@@ -796,9 +796,9 @@ let use_effect =
        ; "use_effect2" >:: testUseEffect2
        ; "use_effect3" >:: testUseEffect3 ]
 
-let useCallback =
-  "useCallback"
-  >::: ["useCallback1" >:: testUseCallback1; "useCallback4" >:: testUseCallback4]
+let use_callback =
+  "use_callback"
+  >::: ["use_callback1" >:: testUseCallback1; "use_callback4" >:: testUseCallback4]
 
 let useState =
   "useState"
@@ -859,10 +859,10 @@ let suite =
   "ocaml"
   >::: [ basic
        ; context
-       ; useCallback
        ; useState
        ; useReducer
        ; use_effect
+       ; use_callback
        ; memoization
        ; refs
        ; children

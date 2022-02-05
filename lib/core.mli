@@ -327,9 +327,9 @@ val use_layout_effect7 :
     let use_layout_effect7 callback watchlist =
       use_layout_effect7_internal Imports.react callback watchlist]
 
-val useCallback : ('input, 'output) callback -> ('input, 'output) callback
+val use_callback : ('input, 'output) callback -> ('input, 'output) callback
   [@@js.custom
-    val useCallback_internal :
+    val use_callback_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a array option_undefined
@@ -338,108 +338,108 @@ val useCallback : ('input, 'output) callback -> ('input, 'output) callback
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback cb = useCallback_internal Imports.react cb None]
+    let use_callback cb = use_callback_internal Imports.react cb None]
 
-val useCallback0 : ('input, 'output) callback -> ('input, 'output) callback
+val use_callback0 : ('input, 'output) callback -> ('input, 'output) callback
   [@@js.custom
-    let useCallback0 f = useCallback_internal Imports.react f (Some [||])]
+    let use_callback0 f = use_callback_internal Imports.react f (Some [||])]
 
-val useCallback1 :
+val use_callback1 :
   ('input, 'output) callback -> 'a array -> ('input, 'output) callback
   [@@js.custom
-    val useCallback1_internal :
+    val use_callback1_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a array
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback1 callback watchlist =
-      useCallback1_internal Imports.react callback watchlist]
+    let use_callback1 callback watchlist =
+      use_callback1_internal Imports.react callback watchlist]
 
-val useCallback2 :
+val use_callback2 :
   ('input, 'output) callback -> 'a * 'b -> ('input, 'output) callback
   [@@js.custom
-    val useCallback2_internal :
+    val use_callback2_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a * 'b
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback2 callback watchlist =
-      useCallback2_internal Imports.react callback watchlist]
+    let use_callback2 callback watchlist =
+      use_callback2_internal Imports.react callback watchlist]
 
-val useCallback3 :
+val use_callback3 :
   ('input, 'output) callback -> 'a * 'b * 'c -> ('input, 'output) callback
   [@@js.custom
-    val useCallback3_internal :
+    val use_callback3_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a * 'b * 'c
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback3 callback watchlist =
-      useCallback3_internal Imports.react callback watchlist]
+    let use_callback3 callback watchlist =
+      use_callback3_internal Imports.react callback watchlist]
 
-val useCallback4 :
+val use_callback4 :
   ('input, 'output) callback -> 'a * 'b * 'c * 'd -> ('input, 'output) callback
   [@@js.custom
-    val useCallback4_internal :
+    val use_callback4_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a * 'b * 'c * 'd
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback4 callback watchlist =
-      useCallback4_internal Imports.react callback watchlist]
+    let use_callback4 callback watchlist =
+      use_callback4_internal Imports.react callback watchlist]
 
-val useCallback5 :
+val use_callback5 :
      ('input, 'output) callback
   -> 'a * 'b * 'c * 'd * 'e
   -> ('input, 'output) callback
   [@@js.custom
-    val useCallback5_internal :
+    val use_callback5_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a * 'b * 'c * 'd * 'e
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback5 callback watchlist =
-      useCallback5_internal Imports.react callback watchlist]
+    let use_callback5 callback watchlist =
+      use_callback5_internal Imports.react callback watchlist]
 
-val useCallback6 :
+val use_callback6 :
      ('input, 'output) callback
   -> 'a * 'b * 'c * 'd * 'e * 'f
   -> ('input, 'output) callback
   [@@js.custom
-    val useCallback6_internal :
+    val use_callback6_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a * 'b * 'c * 'd * 'e * 'f
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback6 callback watchlist =
-      useCallback6_internal Imports.react callback watchlist]
+    let use_callback6 callback watchlist =
+      use_callback6_internal Imports.react callback watchlist]
 
-val useCallback7 :
+val use_callback7 :
      ('input, 'output) callback
   -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
   -> ('input, 'output) callback
   [@@js.custom
-    val useCallback7_internal :
+    val use_callback7_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback7 callback watchlist =
-      useCallback7_internal Imports.react callback watchlist]
+    let use_callback7 callback watchlist =
+      use_callback7_internal Imports.react callback watchlist]
 
 val useMemo : (unit -> 'value) -> 'value
   [@@js.custom
