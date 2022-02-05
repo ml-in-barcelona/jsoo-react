@@ -476,7 +476,7 @@ let testUseReducer = () => {
     [@react.component]
     let make = (~initialValue=0, ()) => {
       let (state, send) =
-        React.useReducer(
+        React.use_reducer(
           (state, action) =>
             switch (action) {
             | Increment => state + 1
@@ -544,7 +544,7 @@ let testUseReducerWithMapState = () => {
     [@react.component]
     let make = (~initialValue=0, ()) => {
       let (state, send) =
-        React.useReducerWithMapState(
+        React.use_reducer_with_map_state(
           (state, action) =>
             switch (action) {
             | Increment => state + 1
@@ -613,7 +613,7 @@ let testUseReducerDispatchReference = () => {
     let prevDispatch = ref(None);
     [@react.component]
     let make = () => {
-      let (_, dispatch) = React.useReducer((_, _) => 2, 2);
+      let (_, dispatch) = React.use_reducer((_, _) => 2, 2);
       let equal =
         switch (dispatch, prevDispatch^) {
         | (r1, Some(r2)) when r1 === r2 => "true"
@@ -1308,12 +1308,12 @@ let use_state =
     "useStateUpdaterReference" >:: testUseStateUpdaterReference,
   ];
 
-let useReducer =
-  "useReducer"
+let use_reducer =
+  "use_reducer"
   >::: [
-    "useReducer" >:: testUseReducer,
-    "useReducerWithMapState" >:: testUseReducerWithMapState,
-    "useReducerDispatchReference" >:: testUseReducerDispatchReference,
+    "use_reducer" >:: testUseReducer,
+    "use_reducer_with_map_state" >:: testUseReducerWithMapState,
+    "use_reducer_dispatch_reference" >:: testUseReducerDispatchReference,
   ];
 
 let memoization =
@@ -1391,7 +1391,7 @@ let suite =
     use_effect,
     use_callback,
     use_state,
-    useReducer,
+    use_reducer,
     memoization,
     refs,
     children,

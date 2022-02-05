@@ -347,7 +347,7 @@ let testUseReducer () =
 
     let%component make ?(initialValue = 0) () =
       let state, send =
-        React.useReducer
+        React.use_reducer
           (fun state action ->
             match action with Increment -> state + 1 | Decrement -> state - 1 )
           initialValue
@@ -390,7 +390,7 @@ let testUseReducerWithMapState () =
 
     let%component make ?(initialValue = 0) () =
       let state, send =
-        React.useReducerWithMapState
+        React.use_reducer_with_map_state
           (fun state action ->
             match action with Increment -> state + 1 | Decrement -> state - 1 )
           initialValue
@@ -435,7 +435,7 @@ let testUseReducerDispatchReference () =
     let prevDispatch = ref None
 
     let%component make () =
-      let _, dispatch = React.useReducer (fun _ _ -> 2) 2 in
+      let _, dispatch = React.use_reducer (fun _ _ -> 2) 2 in
       let equal =
         match (dispatch, !prevDispatch) with
         | r1, Some r2 when r1 == r2 ->
@@ -805,11 +805,11 @@ let use_state =
   >::: [ "use_state" >:: testUseState
        ; "useStateUpdaterReference" >:: testUseStateUpdaterReference ]
 
-let useReducer =
-  "useReducer"
-  >::: [ "useReducer" >:: testUseReducer
-       ; "useReducerWithMapState" >:: testUseReducerWithMapState
-       ; "useReducerDispatchReference" >:: testUseReducerDispatchReference ]
+let use_reducer =
+  "use_reducer"
+  >::: [ "use_reducer" >:: testUseReducer
+       ; "use_reducer_with_map_state" >:: testUseReducerWithMapState
+       ; "use_reducerDispatchReference" >:: testUseReducerDispatchReference ]
 
 let memoization =
   "memo"
@@ -859,10 +859,10 @@ let suite =
   "ocaml"
   >::: [ basic
        ; context
-       ; useReducer
        ; use_effect
        ; use_callback
        ; use_state
+       ; use_reducer
        ; memoization
        ; refs
        ; children

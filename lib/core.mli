@@ -535,10 +535,10 @@ val use_state : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
 
     let use_state initial = use_state_internal Imports.react initial]
 
-val useReducer :
+val use_reducer :
   ('state -> 'action -> 'state) -> 'state -> 'state * ('action -> unit)
   [@@js.custom
-    let (useReducer_internal :
+    let (use_reducer_internal :
              Imports.react
           -> ('state -> 'action -> 'state)
           -> 'state
@@ -555,16 +555,16 @@ val useReducer :
       in
       (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
 
-    let useReducer reducer initial =
-      useReducer_internal Imports.react reducer initial]
+    let use_reducer reducer initial =
+      use_reducer_internal Imports.react reducer initial]
 
-val useReducerWithMapState :
+val use_reducer_with_map_state :
      ('state -> 'action -> 'state)
   -> 'initialState
   -> ('initialState -> 'state)
   -> 'state * ('action -> unit)
   [@@js.custom
-    let (useReducerWithMapState_internal :
+    let (use_reducer_with_map_state_internal :
              Imports.react
           -> ('state -> 'action -> 'state)
           -> 'initialState
@@ -584,8 +584,8 @@ val useReducerWithMapState :
       in
       (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
 
-    let useReducerWithMapState reducer initial mapper =
-      useReducerWithMapState_internal Imports.react reducer initial mapper]
+    let use_reducer_with_map_state reducer initial mapper =
+      use_reducer_with_map_state_internal Imports.react reducer initial mapper]
 
 module Ref : sig
   type 'value t
