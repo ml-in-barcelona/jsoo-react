@@ -91,13 +91,13 @@ val create_element_variadic :
     let create_element_variadic component props elements =
       create_element_variadic_internal Imports.react component props elements]
 
-val cloneElement : element -> 'props -> element
+val clone_element : element -> 'props -> element
   [@@js.custom
-    val cloneElement_internal : Imports.react -> element -> 'a -> element
+    val clone_element_internal : Imports.react -> element -> 'a -> element
       [@@js.call "cloneElement"]
 
-    let cloneElement element props =
-      cloneElement_internal Imports.react element props]
+    let clone_element element props =
+      clone_element_internal Imports.react element props]
 
 val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom

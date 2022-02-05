@@ -579,7 +579,7 @@ let testChildrenMapWithIndex () =
     let%component make ~children () =
       div [||]
         [ React.Children.mapWithIndex children (fun element index ->
-              React.cloneElement element
+              React.clone_element element
                 (let open Js_of_ocaml.Js.Unsafe in
                 obj [|("key", inject index); ("data-index", inject index)|]) )
         ]
@@ -686,7 +686,7 @@ let testWithId () =
   let module WithTestId = struct
     let%component make ~id ~children () =
       React.Children.map children (fun child ->
-          React.cloneElement child
+          React.clone_element child
             (Js.Unsafe.obj
                [|("data-testid", Js.Unsafe.inject (Js.string id))|] ) )
   end in

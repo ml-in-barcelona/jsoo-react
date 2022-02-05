@@ -807,7 +807,7 @@ let testChildrenMapWithIndex = () => {
     let make = (~children, ()) => {
       <div>
         {React.Children.mapWithIndex(children, (element, index) => {
-           React.cloneElement(
+           React.clone_element(
              element,
              Js_of_ocaml.Js.Unsafe.(
                obj([|
@@ -1132,7 +1132,7 @@ let testWithId = () => {
     [@react.component]
     let make = (~id, ~children, ()) =>
       React.Children.map(children, child =>
-        React.cloneElement(
+        React.clone_element(
           child,
           Js.Unsafe.obj([|
             ("data-testid", Js.Unsafe.inject(Js.string(id))),
