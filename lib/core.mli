@@ -211,121 +211,121 @@ val use_effect7 :
     let use_effect7 callback watchlist =
       use_effect7_internal Imports.react callback watchlist]
 
-val useLayoutEffect : (unit -> (unit -> unit) option_undefined) -> unit
+val use_layout_effect : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
-    val useLayoutEffect_internal :
+    val use_layout_effect_internal :
       Imports.react -> (unit -> (unit -> unit) option_undefined) -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect callback =
-      useLayoutEffect_internal Imports.react callback]
+    let use_layout_effect callback =
+      use_layout_effect_internal Imports.react callback]
 
-val useLayoutEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
+val use_layout_effect0 : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
-    val useLayoutEffect0_internal :
+    val use_layout_effect0_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> Ojs.t array
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect0 callback =
-      useLayoutEffect0_internal Imports.react callback [||]]
+    let use_layout_effect0 callback =
+      use_layout_effect0_internal Imports.react callback [||]]
 
-val useLayoutEffect1 :
+val use_layout_effect1 :
   (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
   [@@js.custom
-    val useLayoutEffect1_internal :
+    val use_layout_effect1_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a array
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect1 callback watchlist =
-      useLayoutEffect1_internal Imports.react callback watchlist]
+    let use_layout_effect1 callback watchlist =
+      use_layout_effect1_internal Imports.react callback watchlist]
 
-val useLayoutEffect2 :
+val use_layout_effect2 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
   [@@js.custom
-    val useLayoutEffect2_internal :
+    val use_layout_effect2_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect2 callback watchlist =
-      useLayoutEffect2_internal Imports.react callback watchlist]
+    let use_layout_effect2 callback watchlist =
+      use_layout_effect2_internal Imports.react callback watchlist]
 
-val useLayoutEffect3 :
+val use_layout_effect3 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
   [@@js.custom
-    val useLayoutEffect3_internal :
+    val use_layout_effect3_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect3 callback watchlist =
-      useLayoutEffect3_internal Imports.react callback watchlist]
+    let use_layout_effect3 callback watchlist =
+      use_layout_effect3_internal Imports.react callback watchlist]
 
-val useLayoutEffect4 :
+val use_layout_effect4 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
   [@@js.custom
-    val useLayoutEffect4_internal :
+    val use_layout_effect4_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c * 'd
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect4 callback watchlist =
-      useLayoutEffect4_internal Imports.react callback watchlist]
+    let use_layout_effect4 callback watchlist =
+      use_layout_effect4_internal Imports.react callback watchlist]
 
-val useLayoutEffect5 :
+val use_layout_effect5 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
   [@@js.custom
-    val useLayoutEffect5_internal :
+    val use_layout_effect5_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c * 'd * 'e
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect5 callback watchlist =
-      useLayoutEffect5_internal Imports.react callback watchlist]
+    let use_layout_effect5 callback watchlist =
+      use_layout_effect5_internal Imports.react callback watchlist]
 
-val useLayoutEffect6 :
+val use_layout_effect6 :
      (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e * 'f
   -> unit
   [@@js.custom
-    val useLayoutEffect6_internal :
+    val use_layout_effect6_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c * 'd * 'e * 'f
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect6 callback watchlist =
-      useLayoutEffect6_internal Imports.react callback watchlist]
+    let use_layout_effect6 callback watchlist =
+      use_layout_effect6_internal Imports.react callback watchlist]
 
-val useLayoutEffect7 :
+val use_layout_effect7 :
      (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
   -> unit
   [@@js.custom
-    val useLayoutEffect7_internal :
+    val use_layout_effect7_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect7 callback watchlist =
-      useLayoutEffect7_internal Imports.react callback watchlist]
+    let use_layout_effect7 callback watchlist =
+      use_layout_effect7_internal Imports.react callback watchlist]
 
 val useCallback : ('input, 'output) callback -> ('input, 'output) callback
   [@@js.custom
