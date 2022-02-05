@@ -5,7 +5,7 @@ open Html;
 [@react.component]
 let make = (~text) => {
   let codeRef = React.useRef(Js.null);
-  React.useEffect(() => {
+  React.use_effect(() => {
     switch (codeRef |> React.Ref.current |> Js.Opt.to_option) {
     | Some(el) => Js.Unsafe.global##.Prism##highlightElement(el)
     | None => ()

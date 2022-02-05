@@ -187,7 +187,7 @@ let useUrl ?serverUrl () =
         | None ->
             dangerouslyGetInitialUrl () )
   in
-  Core.useEffect0 (fun () ->
+  Core.use_effect0 (fun () ->
       let watcherId = watchUrl (fun url -> setUrl (fun _ -> url)) in
       (* check for updates that may have occured between the initial state and the subscribe above *)
       let newUrl = dangerouslyGetInitialUrl () in

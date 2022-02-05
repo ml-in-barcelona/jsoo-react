@@ -116,7 +116,7 @@ let testUseEffect () =
   let module UseEffect = struct
     let%component make () =
       let count, setCount = React.useState (fun () -> 0) in
-      React.useEffect0 (fun () ->
+      React.use_effect0 (fun () ->
           setCount (fun count -> count + 1) ;
           None ) ;
       div [||] [Printf.sprintf "`count` is %d" count |> string]
@@ -129,7 +129,7 @@ let testUseEffect2 () =
   let module Add2 = struct
     let%component make ~a ~b =
       let count, setCount = React.useState (fun () -> 0) in
-      React.useEffect2
+      React.use_effect2
         (fun () ->
           setCount (fun _ -> a + b) ;
           None )
@@ -151,7 +151,7 @@ let testUseEffect3 () =
   let module Use3 = struct
     let%component make ~a ~b ~c =
       let count, setCount = React.useState (fun () -> 0) in
-      React.useEffect3
+      React.use_effect3
         (fun () ->
           setCount (fun count -> count + 1) ;
           None )
@@ -197,7 +197,7 @@ let testUseCallback1 () =
       let f =
         React.useCallback1 (fun input -> input ^ " " ^ a ^ " and") [|a|]
       in
-      React.useEffect1
+      React.use_effect1
         (fun () ->
           setCountStr (fun (count, str) -> (count + 1, f str)) ;
           None )
@@ -231,7 +231,7 @@ let testUseCallback4 () =
               e.(0) )
           (a, b, d, e)
       in
-      React.useEffect1
+      React.use_effect1
         (fun () ->
           setCountStr (fun (count, str) -> (count + 1, f str)) ;
           None )
@@ -457,7 +457,7 @@ let testUseMemo1 () =
     let%component make ~a =
       let count, setCount = React.useState (fun () -> 0) in
       let result = React.useMemo1 (fun () -> a ^ "2") [|a|] in
-      React.useEffect1
+      React.use_effect1
         (fun () ->
           setCount (fun count -> count + 1) ;
           None )
@@ -556,7 +556,7 @@ let testUseRef () =
   let module DummyComponentWithRefAndEffect = struct
     let%component make ~cb () =
       let myRef = React.useRef 1 in
-      React.useEffect0 (fun () ->
+      React.use_effect0 (fun () ->
           let open React.Ref in
           setCurrent myRef (current myRef + 1) ;
           cb myRef ;
@@ -790,11 +790,11 @@ let basic =
 
 let context = "context" >::: ["testContext" >:: testContext]
 
-let useEffect =
-  "useEffect"
-  >::: [ "useEffect" >:: testUseEffect
-       ; "useEffect2" >:: testUseEffect2
-       ; "useEffect3" >:: testUseEffect3 ]
+let use_effect =
+  "use_effect"
+  >::: [ "use_effect" >:: testUseEffect
+       ; "use_effect2" >:: testUseEffect2
+       ; "use_effect3" >:: testUseEffect3 ]
 
 let useCallback =
   "useCallback"
@@ -859,10 +859,10 @@ let suite =
   "ocaml"
   >::: [ basic
        ; context
-       ; useEffect
        ; useCallback
        ; useState
        ; useReducer
+       ; use_effect
        ; memoization
        ; refs
        ; children

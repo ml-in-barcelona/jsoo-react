@@ -151,7 +151,7 @@ let testUseEffect = () => {
     [@react.component]
     let make = () => {
       let (count, setCount) = React.useState(() => 0);
-      React.useEffect0(() => {
+      React.use_effect0(() => {
         setCount(count => count + 1);
         None;
       });
@@ -169,7 +169,7 @@ let testUseEffect2 = () => {
     [@react.component]
     let make = (~a, ~b) => {
       let (count, setCount) = React.useState(() => 0);
-      React.useEffect2(
+      React.use_effect2(
         () => {
           setCount(_ => a + b);
           None;
@@ -194,7 +194,7 @@ let testUseEffect3 = () => {
     [@react.component]
     let make = (~a, ~b, ~c) => {
       let (count, setCount) = React.useState(() => 0);
-      React.useEffect3(
+      React.use_effect3(
         () => {
           setCount(count => count + 1);
           None;
@@ -251,7 +251,7 @@ let testUseCallback1 = () => {
         React.useState(() => (0, "init and"));
       let f =
         React.useCallback1(input => {input ++ " " ++ a ++ " and"}, [|a|]);
-      React.useEffect1(
+      React.use_effect1(
         () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
           None;
@@ -310,7 +310,7 @@ let testUseCallback4 = () => {
           },
           (a, b, d, e),
         );
-      React.useEffect1(
+      React.use_effect1(
         () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
           None;
@@ -637,7 +637,7 @@ let testUseMemo1 = () => {
     let make = (~a) => {
       let (count, setCount) = React.useState(() => 0);
       let result = React.useMemo1(() => {a ++ "2"}, [|a|]);
-      React.useEffect1(
+      React.use_effect1(
         () => {
           setCount(count => count + 1);
           None;
@@ -774,7 +774,7 @@ let testUseRef = () => {
     [@react.component]
     let make = (~cb, ()) => {
       let myRef = React.useRef(1);
-      React.useEffect0(() => {
+      React.use_effect0(() => {
         React.Ref.(setCurrent(myRef, current(myRef) + 1));
         cb(myRef);
         None;
@@ -1286,12 +1286,12 @@ let basic =
 
 let context = "context" >::: ["testContext" >:: testContext];
 
-let useEffect =
-  "useEffect"
+let use_effect =
+  "use_effect"
   >::: [
-    "useEffect" >:: testUseEffect,
-    "useEffect2" >:: testUseEffect2,
-    "useEffect3" >:: testUseEffect3,
+    "use_effect" >:: testUseEffect,
+    "use_effect2" >:: testUseEffect2,
+    "use_effect3" >:: testUseEffect3,
   ];
 
 let useCallback =
@@ -1388,7 +1388,7 @@ let suite =
   >::: [
     basic,
     context,
-    useEffect,
+    use_effect,
     useCallback,
     useState,
     useReducer,
