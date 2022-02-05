@@ -121,14 +121,14 @@ let testOptionalPropsLowercase = () => {
 
 let testContext = () => {
   module DummyContext = {
-    let context = React.createContext("foo");
+    let context = React.create_context("foo");
     module Provider = {
       let make = React.Context.Provider.make(context);
     };
     module Consumer = {
       [@react.component]
       let make = () => {
-        let value = React.useContext(context);
+        let value = React.use_context(context);
         <div> {value |> React.string} </div>;
       };
     };

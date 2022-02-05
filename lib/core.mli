@@ -634,19 +634,19 @@ module Context : sig
   end
 end
 
-val createContext : 'a -> 'a Context.t
+val create_context : 'a -> 'a Context.t
   [@@js.custom
-    val createContext_internal : Imports.react -> 'a -> 'a Context.t
+    val create_context_internal : Imports.react -> 'a -> 'a Context.t
       [@@js.call "createContext"]
 
-    let createContext value = createContext_internal Imports.react value]
+    let create_context value = create_context_internal Imports.react value]
 
-val useContext : 'value Context.t -> 'value
+val use_context : 'value Context.t -> 'value
   [@@js.custom
-    val useContext_internal : Imports.react -> 'a Context.t -> 'a
+    val use_context_internal : Imports.react -> 'a Context.t -> 'a
       [@@js.call "useContext"]
 
-    let useContext ctx = useContext_internal Imports.react ctx]
+    let use_context ctx = use_context_internal Imports.react ctx]
 
 module Children : sig
   [@@@js.implem
