@@ -13,7 +13,7 @@ module FancyLink = {
 
 [@react.component]
 let make = () => {
-  let (show, setShow) = React.useState(() => true);
+  let (show, setShow) = React.use_state(() => true);
   /* You can now get a ref directly to the DOM button: */
   let ref =
     React.Dom.Ref.callbackDomRef(ref => {

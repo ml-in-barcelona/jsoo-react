@@ -16,8 +16,8 @@ module Title = {
 
 [@react.component]
 let make = () => {
-  let (coords, setCoords) = React.useState(() => {x: 0, y: 0});
-  let (inputText, setInputText) = React.useState(() => "");
+  let (coords, setCoords) = React.use_state(() => {x: 0, y: 0});
+  let (inputText, setInputText) = React.use_state(() => "");
   <div>
     <h5> {"text input via \"onChange\"" |> React.string} </h5>
     <input

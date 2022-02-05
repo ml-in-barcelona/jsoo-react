@@ -150,7 +150,7 @@ let testUseEffect = () => {
   module UseEffect = {
     [@react.component]
     let make = () => {
-      let (count, setCount) = React.useState(() => 0);
+      let (count, setCount) = React.use_state(() => 0);
       React.use_effect0(() => {
         setCount(count => count + 1);
         None;
@@ -168,7 +168,7 @@ let testUseEffect2 = () => {
   module Add2 = {
     [@react.component]
     let make = (~a, ~b) => {
-      let (count, setCount) = React.useState(() => 0);
+      let (count, setCount) = React.use_state(() => 0);
       React.use_effect2(
         () => {
           setCount(_ => a + b);
@@ -193,7 +193,7 @@ let testUseEffect3 = () => {
   module Use3 = {
     [@react.component]
     let make = (~a, ~b, ~c) => {
-      let (count, setCount) = React.useState(() => 0);
+      let (count, setCount) = React.use_state(() => 0);
       React.use_effect3(
         () => {
           setCount(count => count + 1);
@@ -248,7 +248,7 @@ let testUseCallback1 = () => {
     [@react.component]
     let make = (~a) => {
       let ((count, str), setCountStr) =
-        React.useState(() => (0, "init and"));
+        React.use_state(() => (0, "init and"));
       let f =
         React.use_callback1(input => {input ++ " " ++ a ++ " and"}, [|a|]);
       React.use_effect1(
@@ -296,7 +296,7 @@ let testUseCallback4 = () => {
   module UseCallback = {
     [@react.component]
     let make = (~a, ~b, ~d, ~e) => {
-      let ((count, str), setCountStr) = React.useState(() => (0, "init"));
+      let ((count, str), setCountStr) = React.use_state(() => (0, "init"));
       let f =
         React.use_callback4(
           _input => {
@@ -393,7 +393,7 @@ let testUseState = () => {
   module DummyStateComponent = {
     [@react.component]
     let make = (~initialValue=0, ()) => {
-      let (counter, setCounter) = React.useState(() => initialValue);
+      let (counter, setCounter) = React.use_state(() => initialValue);
       <>
         <div className="value"> {React.int(counter)} </div>
         <button onClick={_ => setCounter(counter => counter + 1)}>
@@ -450,7 +450,7 @@ let testUseStateUpdaterReference = () => {
     let prevSetCount = ref(None);
     [@react.component]
     let make = () => {
-      let (_count, setCount) = React.useState(() => 0);
+      let (_count, setCount) = React.use_state(() => 0);
       let equal =
         switch (setCount, prevSetCount^) {
         | (r1, Some(r2)) when r1 === r2 => "true"
@@ -635,7 +635,7 @@ let testUseMemo1 = () => {
   module UseMemo = {
     [@react.component]
     let make = (~a) => {
-      let (count, setCount) = React.useState(() => 0);
+      let (count, setCount) = React.use_state(() => 0);
       let result = React.use_memo1(() => {a ++ "2"}, [|a|]);
       React.use_effect1(
         () => {
@@ -1301,10 +1301,10 @@ let use_callback =
     "use_callback4" >:: testUseCallback4,
   ];
 
-let useState =
+let use_state =
   "useState"
   >::: [
-    "useState" >:: testUseState,
+    "use_state" >:: testUseState,
     "useStateUpdaterReference" >:: testUseStateUpdaterReference,
   ];
 
@@ -1390,7 +1390,7 @@ let suite =
     context,
     use_effect,
     use_callback,
-    useState,
+    use_state,
     useReducer,
     memoization,
     refs,

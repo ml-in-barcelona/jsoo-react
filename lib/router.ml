@@ -180,7 +180,7 @@ let unwatchUrl watcherID =
 
 let useUrl ?serverUrl () =
   let url, setUrl =
-    Core.useState (fun () ->
+    Core.use_state (fun () ->
         match serverUrl with
         | Some url ->
             url

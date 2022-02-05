@@ -115,7 +115,7 @@ let testContext () =
 let testUseEffect () =
   let module UseEffect = struct
     let%component make () =
-      let count, setCount = React.useState (fun () -> 0) in
+      let count, setCount = React.use_state (fun () -> 0) in
       React.use_effect0 (fun () ->
           setCount (fun count -> count + 1) ;
           None ) ;
@@ -128,7 +128,7 @@ let testUseEffect () =
 let testUseEffect2 () =
   let module Add2 = struct
     let%component make ~a ~b =
-      let count, setCount = React.useState (fun () -> 0) in
+      let count, setCount = React.use_state (fun () -> 0) in
       React.use_effect2
         (fun () ->
           setCount (fun _ -> a + b) ;
@@ -150,7 +150,7 @@ let testUseEffect2 () =
 let testUseEffect3 () =
   let module Use3 = struct
     let%component make ~a ~b ~c =
-      let count, setCount = React.useState (fun () -> 0) in
+      let count, setCount = React.use_state (fun () -> 0) in
       React.use_effect3
         (fun () ->
           setCount (fun count -> count + 1) ;
@@ -192,7 +192,7 @@ let testUseCallback1 () =
   let module UseCallback = struct
     let%component make ~a =
       let (count, str), setCountStr =
-        React.useState (fun () -> (0, "init and"))
+        React.use_state (fun () -> (0, "init and"))
       in
       let f =
         React.use_callback1 (fun input -> input ^ " " ^ a ^ " and") [|a|]
@@ -223,7 +223,7 @@ let testUseCallback1 () =
 let testUseCallback4 () =
   let module UseCallback = struct
     let%component make ~a ~b ~d ~e =
-      let (count, str), setCountStr = React.useState (fun () -> (0, "init")) in
+      let (count, str), setCountStr = React.use_state (fun () -> (0, "init")) in
       let f =
         React.use_callback4
           (fun _input ->
@@ -282,7 +282,7 @@ let testUseCallback4 () =
 let testUseState () =
   let module DummyStateComponent = struct
     let%component make ?(initialValue = 0) () =
-      let counter, setCounter = React.useState (fun () -> initialValue) in
+      let counter, setCounter = React.use_state (fun () -> initialValue) in
       fragment
         [ div [|className "value"|] [React.int counter]
         ; button
@@ -324,7 +324,7 @@ let testUseStateUpdaterReference () =
     let prevSetCount = ref None
 
     let%component make () =
-      let _count, setCount = React.useState (fun () -> 0) in
+      let _count, setCount = React.use_state (fun () -> 0) in
       let equal =
         match (setCount, !prevSetCount) with
         | r1, Some r2 when r1 == r2 ->
@@ -455,7 +455,7 @@ let testUseReducerDispatchReference () =
 let testUseMemo1 () =
   let module UseMemo = struct
     let%component make ~a =
-      let count, setCount = React.useState (fun () -> 0) in
+      let count, setCount = React.use_state (fun () -> 0) in
       let result = React.use_memo1 (fun () -> a ^ "2") [|a|] in
       React.use_effect1
         (fun () ->
@@ -800,9 +800,9 @@ let use_callback =
   "use_callback"
   >::: ["use_callback1" >:: testUseCallback1; "use_callback4" >:: testUseCallback4]
 
-let useState =
-  "useState"
-  >::: [ "useState" >:: testUseState
+let use_state =
+  "use_state"
+  >::: [ "use_state" >:: testUseState
        ; "useStateUpdaterReference" >:: testUseStateUpdaterReference ]
 
 let useReducer =
@@ -859,10 +859,10 @@ let suite =
   "ocaml"
   >::: [ basic
        ; context
-       ; useState
        ; useReducer
        ; use_effect
        ; use_callback
+       ; use_state
        ; memoization
        ; refs
        ; children

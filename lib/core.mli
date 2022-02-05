@@ -518,9 +518,9 @@ val use_memo7 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> 'value
     let use_memo7 callback watchlist =
       use_memo7_internal Imports.react callback watchlist]
 
-val useState : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
+val use_state : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
   [@@js.custom
-    let (useState_internal :
+    let (use_state_internal :
              Imports.react
           -> (unit -> 'state)
           -> 'state * (('state -> 'state) -> unit) ) =
@@ -533,7 +533,7 @@ val useState : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
       in
       (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
 
-    let useState initial = useState_internal Imports.react initial]
+    let use_state initial = use_state_internal Imports.react initial]
 
 val useReducer :
   ('state -> 'action -> 'state) -> 'state -> 'state * ('action -> unit)
