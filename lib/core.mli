@@ -662,31 +662,31 @@ module Children : sig
 
       let map element mapper = map_internal children_internal element mapper]
 
-  val mapWithIndex : element list -> (element -> int -> element) -> element
+  val map_with_index : element list -> (element -> int -> element) -> element
     [@@js.custom
-      val mapWithIndex_internal :
+      val map_with_index_internal :
         Ojs.t -> element list -> (element -> int -> element) -> element
         [@@js.call "map"]
 
-      let mapWithIndex element mapper =
-        mapWithIndex_internal children_internal element mapper]
+      let map_with_index element mapper =
+        map_with_index_internal children_internal element mapper]
 
-  val forEach : element list -> (element -> unit) -> unit
+  val for_each : element list -> (element -> unit) -> unit
     [@@js.custom
-      val forEach_internal : Ojs.t -> element list -> (element -> unit) -> unit
+      val for_each_internal : Ojs.t -> element list -> (element -> unit) -> unit
         [@@js.call "forEach"]
 
-      let forEach element iterator =
-        forEach_internal children_internal element iterator]
+      let for_each element iterator =
+        for_each_internal children_internal element iterator]
 
-  val forEachWithIndex : element list -> (element -> int -> unit) -> unit
+  val for_each_with_index : element list -> (element -> int -> unit) -> unit
     [@@js.custom
-      val forEachWithIndex_internal :
+      val for_each_with_index_internal :
         Ojs.t -> element list -> (element -> int -> unit) -> unit
         [@@js.call "forEach"]
 
-      let forEachWithIndex element iterator =
-        forEachWithIndex_internal children_internal element iterator]
+      let for_each_with_index element iterator =
+        for_each_with_index_internal children_internal element iterator]
 
   val count : element list -> int
     [@@js.custom
@@ -700,12 +700,12 @@ module Children : sig
 
       let only element = only_internal children_internal element]
 
-  val toArray : element list -> element array
+  val to_array : element list -> element array
     [@@js.custom
-      val toArray_internal : Ojs.t -> element list -> element array
+      val to_array_internal : Ojs.t -> element list -> element array
         [@@js.call "toArray"]
 
-      let toArray element = toArray_internal children_internal element]
+      let to_array element = to_array_internal children_internal element]
 end
 
 module Fragment : sig
