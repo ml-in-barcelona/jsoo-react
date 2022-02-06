@@ -517,9 +517,9 @@ module Pointer : sig
 
   val related_target : t -> Ojs.t option
 
-  val screen_x: t -> int
+  val screen_x : t -> int
 
-  val screen_y: t -> int
+  val screen_y : t -> int
 
   val shift_key : t -> bool
 end

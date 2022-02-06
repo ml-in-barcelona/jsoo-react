@@ -798,7 +798,8 @@ let use_effect =
 
 let use_callback =
   "use_callback"
-  >::: ["use_callback1" >:: testUseCallback1; "use_callback4" >:: testUseCallback4]
+  >::: [ "use_callback1" >:: testUseCallback1
+       ; "use_callback4" >:: testUseCallback4 ]
 
 let use_state =
   "use_state"

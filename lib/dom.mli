@@ -17,7 +17,8 @@ external dom_element_of_js : Ojs.t -> dom_element = "%identity"]
 
 val unmount_component_at_node : dom_element -> bool
   [@@js.custom
-    val unmount_component_at_node_internal : Imports.react_dom -> dom_element -> bool
+    val unmount_component_at_node_internal :
+      Imports.react_dom -> dom_element -> bool
       [@@js.call "unmountComponentAtNode"]
 
     let unmount_component_at_node dom_element =
@@ -25,7 +26,8 @@ val unmount_component_at_node : dom_element -> bool
 
 val render : Core.element -> dom_element -> unit
   [@@js.custom
-    val render_internal : Imports.react_dom -> Core.element -> dom_element -> unit
+    val render_internal :
+      Imports.react_dom -> Core.element -> dom_element -> unit
       [@@js.call "render"]
 
     let render element dom_element =
@@ -1429,7 +1431,8 @@ module Style : sig
 
   let color_interpolation = string_style_prop "colorInterpolation"
 
-  let color_interpolation_filters = string_style_prop "colorInterpolationFilters"
+  let color_interpolation_filters =
+    string_style_prop "colorInterpolationFilters"
 
   let color_profile = string_style_prop "colorProfile"
 

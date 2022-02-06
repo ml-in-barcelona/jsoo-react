@@ -8,4 +8,5 @@ let react_dom_to_js v = v
 
 let react : react = Js_of_ocaml.Js.Unsafe.js_expr {|require("react")|}
 
-let react_dom : react_dom = Js_of_ocaml.Js.Unsafe.js_expr {|require("react-dom")|}
+let react_dom : react_dom =
+  Js_of_ocaml.Js.Unsafe.js_expr {|require("react-dom")|}
