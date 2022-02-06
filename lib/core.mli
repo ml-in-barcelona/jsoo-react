@@ -752,17 +752,17 @@ val memo : 'props component -> 'props component
 
     let memo component = memo_internal Imports.react component]
 
-val memoCustomCompareProps :
+val memo_custom_compare_props :
   'props component -> ('props -> 'props -> bool) -> 'props component
   [@@js.custom
-    val memoCustomCompareProps_internal :
+    val memo_custom_compare_props_internal :
          Imports.react
       -> 'props component
       -> ('props -> 'props -> bool)
       -> 'props component
       [@@js.call "memo"]
 
-    let memoCustomCompareProps component compare =
-      memoCustomCompareProps_internal Imports.react component compare]
+    let memo_custom_compare_props component compare =
+      memo_custom_compare_props_internal Imports.react component compare]
 
 val setDisplayName : 'props component -> string -> unit [@@js.set "displayName"]

@@ -704,7 +704,7 @@ let testMemoCustomCompareProps = () => {
   module Memoized = {
     [@react.component]
     let make =
-      React.memoCustomCompareProps(
+      React.memo_custom_compare_props(
         (~a) => {
           numRenders := numRenders^ + 1;
           <div>

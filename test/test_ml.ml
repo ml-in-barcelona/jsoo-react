@@ -505,7 +505,7 @@ let testMemoCustomCompareProps () =
   let numRenders = ref 0 in
   let module Memoized = struct
     let%component make =
-      React.memoCustomCompareProps
+      React.memo_custom_compare_props
         (fun ~a ->
           numRenders := !numRenders + 1 ;
           div [||]
