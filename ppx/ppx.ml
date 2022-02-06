@@ -16,7 +16,7 @@
    `[@JSX] Foo.createElement(~foo=bar, ~children=[foo, bar], ())` into
    `React.create_element_variadic(Foo.make, Foo.makeProps(~foo=bar, ~children=React.null, ()), [foo, bar])`
    transform `[@JSX] [foo]` into
-   `React.createFragment([foo])`
+   `React.create_fragment([foo])`
  *)
 
 open Ppxlib

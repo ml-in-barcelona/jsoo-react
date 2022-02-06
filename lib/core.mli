@@ -735,14 +735,14 @@ end
 
 (* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
    Although Reason parser doesn't support it so that's a requirement before adding it here *)
-val createFragment : element list -> element
+val create_fragment : element list -> element
   [@@js.custom
-    val createFragment_internal :
+    val create_fragment_internal :
       Imports.react -> Ojs.t -> Ojs.t -> (element list[@js.variadic]) -> element
       [@@js.call "createElement"]
 
-    let createFragment l =
-      createFragment_internal Imports.react Fragment.fragment_internal Ojs.null
+    let create_fragment l =
+      create_fragment_internal Imports.react Fragment.fragment_internal Ojs.null
         l]
 
 val memo : 'props component -> 'props component
