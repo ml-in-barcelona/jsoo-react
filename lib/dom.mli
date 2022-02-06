@@ -17,19 +17,19 @@ external dom_element_of_js : Ojs.t -> dom_element = "%identity"]
 
 val unmount_component_at_node : dom_element -> bool
   [@@js.custom
-    val unmount_component_at_node_internal : Imports.reactDom -> dom_element -> bool
+    val unmount_component_at_node_internal : Imports.react_dom -> dom_element -> bool
       [@@js.call "unmountComponentAtNode"]
 
     let unmount_component_at_node dom_element =
-      unmount_component_at_node_internal Imports.reactDom dom_element]
+      unmount_component_at_node_internal Imports.react_dom dom_element]
 
 val render : Core.element -> dom_element -> unit
   [@@js.custom
-    val render_internal : Imports.reactDom -> Core.element -> dom_element -> unit
+    val render_internal : Imports.react_dom -> Core.element -> dom_element -> unit
       [@@js.call "render"]
 
     let render element dom_element =
-      render_internal Imports.reactDom element dom_element]
+      render_internal Imports.react_dom element dom_element]
 
 val render_to_element_with_id : Core.element -> string -> unit
   [@@js.custom
