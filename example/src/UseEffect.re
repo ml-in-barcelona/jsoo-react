@@ -29,8 +29,8 @@ let make = (~count) => {
     [|count|],
   );
 
-  React.useLayoutEffect(() => {
-    Console.log("useLayoutEffect: component updated");
+  React.use_layout_effect(() => {
+    Console.log("use_layout_effect: component updated");
     None;
   });
 
