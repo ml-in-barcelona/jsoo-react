@@ -765,4 +765,5 @@ val memo_custom_compare_props :
     let memo_custom_compare_props component compare =
       memo_custom_compare_props_internal Imports.react component compare]
 
-val setDisplayName : 'props component -> string -> unit [@@js.set "displayName"]
+val set_display_name : 'props component -> string -> unit
+  [@@js.set "displayName"]
