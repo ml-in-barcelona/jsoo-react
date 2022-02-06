@@ -626,11 +626,11 @@ module Context : sig
     val make :
       'props t -> value:'props -> children:element list -> unit -> element
       [@@js.custom
-        let makeProps value =
+        let make_props value =
           Js_of_ocaml.Js.Unsafe.(obj [|("value", inject value)|])
 
         let make context ~value ~children () =
-          create_element_variadic (provider context) (makeProps value) children]
+          create_element_variadic (provider context) (make_props value) children]
   end
 end
 
@@ -720,7 +720,7 @@ module Fragment : sig
 
       let fragment_internal = fragment_internal' Imports.react
 
-      let makeProps ?key () =
+      let make_props ?key () =
         match key with
         | Some k ->
             Js_of_ocaml.Js.Unsafe.(obj [|("key", inject k)|])
@@ -730,7 +730,7 @@ module Fragment : sig
       let make ~children ?key () =
         create_element_variadic
           (to_component fragment_internal)
-          (makeProps ?key ()) children]
+          (make_props ?key ()) children]
 end
 
 (* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
