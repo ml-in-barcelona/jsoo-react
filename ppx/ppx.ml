@@ -8,7 +8,7 @@
 (*
    The transform:
    transform `[@JSX] div(~props1=a, ~props2=b, ~children=[foo, bar], ())` into
-   `React.Dom.createDOMElementVariadic("div", React.Dom.domProps(~props1=1, ~props2=b), [foo, bar])`.
+   `React.Dom.create_dom_element_variadic("div", React.Dom.domProps(~props1=1, ~props2=b), [foo, bar])`.
    transform the upper-cased case
    `[@JSX] Foo.createElement(~key=a, ~ref=b, ~foo=bar, ~children=[], ())` into
    `React.create_element(Foo.make, Foo.makeProps(~key=a, ~ref=b, ~foo=bar, ()))`

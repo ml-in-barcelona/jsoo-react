@@ -27,7 +27,7 @@ let withContainer f =
   let container = Html.createDiv doc in
   Dom.appendChild doc##.body container ;
   let result = f container in
-  ignore (React.Dom.unmountComponentAtNode container) ;
+  ignore (React.Dom.unmount_component_at_node container) ;
   Dom.removeChild doc##.body container ;
   result
 

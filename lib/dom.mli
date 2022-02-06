@@ -1,59 +1,59 @@
 [@@@js.stop]
 
-type domElement = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t
+type dom_element = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t
 
-val domElement_to_js : domElement -> Ojs.t
+val dom_element_to_js : dom_element -> Ojs.t
 
-val domElement_of_js : Ojs.t -> domElement
+val dom_element_of_js : Ojs.t -> dom_element
 
 [@@@js.start]
 
 [@@@js.implem
-type domElement = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t
+type dom_element = Js_of_ocaml.Dom_html.element Js_of_ocaml.Js.t
 
-external domElement_to_js : domElement -> Ojs.t = "%identity"
+external dom_element_to_js : dom_element -> Ojs.t = "%identity"
 
-external domElement_of_js : Ojs.t -> domElement = "%identity"]
+external dom_element_of_js : Ojs.t -> dom_element = "%identity"]
 
-val unmountComponentAtNode : domElement -> bool
+val unmount_component_at_node : dom_element -> bool
   [@@js.custom
-    val unmountComponentAtNode_internal : Imports.reactDom -> domElement -> bool
+    val unmount_component_at_node_internal : Imports.reactDom -> dom_element -> bool
       [@@js.call "unmountComponentAtNode"]
 
-    let unmountComponentAtNode domElement =
-      unmountComponentAtNode_internal Imports.reactDom domElement]
+    let unmount_component_at_node dom_element =
+      unmount_component_at_node_internal Imports.reactDom dom_element]
 
-val render : Core.element -> domElement -> unit
+val render : Core.element -> dom_element -> unit
   [@@js.custom
-    val render_internal : Imports.reactDom -> Core.element -> domElement -> unit
+    val render_internal : Imports.reactDom -> Core.element -> dom_element -> unit
       [@@js.call "render"]
 
-    let render element domElement =
-      render_internal Imports.reactDom element domElement]
+    let render element dom_element =
+      render_internal Imports.reactDom element dom_element]
 
-val renderToElementWithId : Core.element -> string -> unit
+val render_to_element_with_id : Core.element -> string -> unit
   [@@js.custom
-    val getElementById : string -> domElement option
+    val get_element_by_id : string -> dom_element option
       [@@js.global "document.getElementById"]
 
-    let renderToElementWithId reactElement id =
-      match getElementById id with
+    let render_to_element_with_id react_element id =
+      match get_element_by_id id with
       | None ->
           raise
             (Invalid_argument
-               ( "ReactDOM.renderToElementWithId : no element of id " ^ id
+               ( "ReactDOM.render_to_element_with_id : no element of id " ^ id
                ^ " found in the HTML." ) )
       | Some element ->
-          render reactElement element]
+          render react_element element]
 
 type dom_ref = private Ojs.t
 
 module Ref : sig
   type t = dom_ref
 
-  type current_dom_ref = domElement Core.js_nullable Core.Ref.t
+  type current_dom_ref = dom_element Core.js_nullable Core.Ref.t
 
-  type callback_dom_ref = domElement Core.js_nullable -> unit
+  type callback_dom_ref = dom_element Core.js_nullable -> unit
 
   [@@@js.stop]
 
@@ -71,7 +71,7 @@ end
 
 type domProps = private Ojs.t
 
-val createDOMElementVariadic :
+val create_dom_element_variadic :
      string
   -> props:
        domProps
@@ -79,7 +79,7 @@ val createDOMElementVariadic :
   -> Core.element list
   -> Core.element
   [@@js.custom
-    val createDOMElementVariadic_internal :
+    val create_dom_element_variadic_internal :
          Imports.react
       -> string
       -> props:domProps
@@ -87,8 +87,8 @@ val createDOMElementVariadic :
       -> Core.element
       [@@js.call "createElement"]
 
-    let createDOMElementVariadic typ ~props elts =
-      createDOMElementVariadic_internal Imports.react typ ~props elts]
+    let create_dom_element_variadic typ ~props elts =
+      create_dom_element_variadic_internal Imports.react typ ~props elts]
 
 val forward_ref : ('props -> dom_ref -> Core.element) -> 'props Core.component
   [@@js.custom
