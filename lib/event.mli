@@ -10,27 +10,27 @@ module Synthetic : sig
 
   val cancelable : 'a synthetic -> bool
 
-  val currentTarget : 'a synthetic -> Ojs.t
+  val current_target : 'a synthetic -> Ojs.t
 
-  val defaultPrevented : 'a synthetic -> bool
+  val default_prevented : 'a synthetic -> bool
 
-  val eventPhase : 'a synthetic -> int
+  val event_phase : 'a synthetic -> int
 
-  val isTrusted : 'a synthetic -> bool
+  val is_trusted : 'a synthetic -> bool
 
-  val nativeEvent : 'a synthetic -> Ojs.t
+  val native_event : 'a synthetic -> Ojs.t
 
-  val preventDefault : 'a synthetic -> unit
+  val prevent_default : 'a synthetic -> unit
 
-  val isDefaultPrevented : 'a synthetic -> bool
+  val is_default_prevented : 'a synthetic -> bool
 
-  val stopPropagation : 'a synthetic -> unit
+  val stop_propagation : 'a synthetic -> unit
 
-  val isPropagationStopped : 'a synthetic -> bool
+  val is_propagation_stopped : 'a synthetic -> bool
 
   val target : 'a synthetic -> Ojs.t
 
-  val timeStamp : 'a synthetic -> float
+  val time_stamp : 'a synthetic -> float
 
   val type_ : 'a synthetic -> string
 
@@ -38,7 +38,7 @@ module Synthetic : sig
 end
 
 (* Cast any event type to the general synthetic type. This is safe, since synthetic is more general *)
-val toSyntheticEvent : 'a synthetic -> Synthetic.t
+val to_synthetic_event : 'a synthetic -> Synthetic.t
 
 module Clipboard : sig
   type tag
@@ -53,33 +53,33 @@ module Clipboard : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
   val persist : t -> unit
 
-  val clipboardData : t -> Ojs.t
+  val clipboard_data : t -> Ojs.t
 end
 
 module Composition : sig
@@ -95,27 +95,27 @@ module Composition : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
@@ -137,53 +137,53 @@ module Keyboard : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
   val persist : t -> unit
 
-  val altKey : t -> bool
+  val alt_key : t -> bool
 
-  val charCode : t -> int
+  val char_code : t -> int
 
-  val ctrlKey : t -> bool
+  val ctrl_key : t -> bool
 
-  val getModifierState : t -> string -> bool
+  val get_modifier_state : t -> string -> bool
 
   val key : t -> string
 
-  val keyCode : t -> int
+  val key_code : t -> int
 
   val locale : t -> string
 
   val location : t -> int
 
-  val metaKey : t -> bool
+  val meta_key : t -> bool
 
   val repeat : t -> bool
 
-  val shiftKey : t -> bool
+  val shift_key : t -> bool
 
   val which : t -> int
 end
@@ -201,33 +201,33 @@ module Focus : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
   val persist : t -> unit
 
-  val relatedTarget : t -> Ojs.t option
+  val related_target : t -> Ojs.t option
 end
 
 module Form : sig
@@ -243,27 +243,27 @@ module Form : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
@@ -283,59 +283,59 @@ module Mouse : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
   val persist : t -> unit
 
-  val altKey : t -> bool
+  val alt_key : t -> bool
 
   val button : t -> int
 
   val buttons : t -> int
 
-  val clientX : t -> int
+  val client_x : t -> int
 
-  val clientY : t -> int
+  val client_y : t -> int
 
-  val ctrlKey : t -> bool
+  val ctrl_key : t -> bool
 
-  val getModifierState : t -> string -> bool
+  val get_modifier_state : t -> string -> bool
 
-  val metaKey : t -> bool
+  val meta_key : t -> bool
 
-  val pageX : t -> int
+  val page_x : t -> int
 
-  val pageY : t -> int
+  val page_y : t -> int
 
-  val relatedTarget : t -> Ojs.t option
+  val related_target : t -> Ojs.t option
 
-  val screenX : t -> int
+  val screen_x : t -> int
 
-  val screenY : t -> int
+  val screen_y : t -> int
 
-  val shiftKey : t -> bool
+  val shift_key : t -> bool
 end
 
 module Selection : sig
@@ -351,27 +351,27 @@ module Selection : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
@@ -391,45 +391,45 @@ module Touch : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
   val persist : t -> unit
 
-  val altKey : t -> bool
+  val alt_key : t -> bool
 
-  val changedTouches : t -> Ojs.t
+  val changed_touches : t -> Ojs.t
 
-  val ctrlKey : t -> bool
+  val ctrl_key : t -> bool
 
-  val getModifierState : t -> string -> bool
+  val get_modifier_state : t -> string -> bool
 
-  val metaKey : t -> bool
+  val meta_key : t -> bool
 
-  val shiftKey : t -> bool
+  val shift_key : t -> bool
 
-  val targetTouches : t -> Ojs.t
+  val target_touches : t -> Ojs.t
 
   val touches : t -> Ojs.t
 end
@@ -469,59 +469,59 @@ module Pointer : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
   val persist : t -> unit
 
-  val altKey : t -> bool
+  val alt_key : t -> bool
 
   val button : t -> int
 
   val buttons : t -> int
 
-  val clientX : t -> int
+  val client_x : t -> int
 
-  val clientY : t -> int
+  val client_y : t -> int
 
-  val ctrlKey : t -> bool
+  val ctrl_key : t -> bool
 
-  val getModifierState : t -> string -> bool
+  val get_modifier_state : t -> string -> bool
 
-  val metaKey : t -> bool
+  val meta_key : t -> bool
 
-  val pageX : t -> int
+  val page_x : t -> int
 
-  val pageY : t -> int
+  val page_y : t -> int
 
-  val relatedTarget : t -> Ojs.t option
+  val related_target : t -> Ojs.t option
 
-  val screenX : t -> int
+  val screen_x: t -> int
 
-  val screenY : t -> int
+  val screen_y: t -> int
 
-  val shiftKey : t -> bool
+  val shift_key : t -> bool
 end
 
 module UI : sig
@@ -537,27 +537,27 @@ module UI : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
@@ -581,39 +581,39 @@ module Wheel : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
   val persist : t -> unit
 
-  val deltaMode : t -> int
+  val delta_mode : t -> int
 
-  val deltaX : t -> float
+  val delta_x : t -> float
 
-  val deltaY : t -> float
+  val delta_y : t -> float
 
-  val deltaZ : t -> float
+  val delta_z : t -> float
 end
 
 module Media : sig
@@ -629,27 +629,27 @@ module Media : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
@@ -669,27 +669,27 @@ module Image : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
@@ -709,37 +709,37 @@ module Animation : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
   val persist : t -> unit
 
-  val animationName : t -> string
+  val animation_name : t -> string
 
-  val pseudoElement : t -> string
+  val pseudo_element : t -> string
 
-  val elapsedTime : t -> float
+  val elapsed_time : t -> float
 end
 
 module Transition : sig
@@ -755,35 +755,35 @@ module Transition : sig
 
   val cancelable : t -> bool
 
-  val currentTarget : t -> Ojs.t
+  val current_target : t -> Ojs.t
 
-  val defaultPrevented : t -> bool
+  val default_prevented : t -> bool
 
-  val eventPhase : t -> int
+  val event_phase : t -> int
 
-  val isTrusted : t -> bool
+  val is_trusted : t -> bool
 
-  val nativeEvent : t -> Ojs.t
+  val native_event : t -> Ojs.t
 
-  val preventDefault : t -> unit
+  val prevent_default : t -> unit
 
-  val isDefaultPrevented : t -> bool
+  val is_default_prevented : t -> bool
 
-  val stopPropagation : t -> unit
+  val stop_propagation : t -> unit
 
-  val isPropagationStopped : t -> bool
+  val is_propagation_stopped : t -> bool
 
   val target : t -> Ojs.t
 
-  val timeStamp : t -> float
+  val time_stamp : t -> float
 
   val type_ : t -> string
 
   val persist : t -> unit
 
-  val propertyName : t -> string
+  val property_name : t -> string
 
-  val pseudoElement : t -> string
+  val pseudo_element : t -> string
 
-  val elapsedTime : t -> float
+  val elapsed_time : t -> float
 end

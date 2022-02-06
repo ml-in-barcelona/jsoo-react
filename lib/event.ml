@@ -12,47 +12,49 @@ module CommonApi = struct
 
     val t_to_js : t -> Ojs.t
 
-    val bubbles : Ojs.t -> bool [@@js.get]
+    val bubbles : Ojs.t -> bool [@@js.get "bubbles"]
 
-    val cancelable : t -> bool [@@js.get]
+    val cancelable : t -> bool [@@js.get "cancelable"]
 
-    val currentTarget : t -> Ojs.t [@@js.get]
+    val current_target : t -> Ojs.t [@@js.get "currentTarget"]
     (* Should return Dom.eventTarget *)
 
-    val defaultPrevented : t -> bool [@@js.get]
+    val default_prevented : t -> bool [@@js.get "defaultPrevented"]
 
-    val eventPhase : t -> int [@@js.get]
+    val event_phase : t -> int [@@js.get "eventPhase"]
 
-    val isTrusted : t -> bool [@@js.get]
+    val is_trusted : t -> bool [@@js.get "isTrusted"]
 
-    val nativeEvent : t -> Ojs.t [@@js.get] (* Should return Dom.event *)
+    val native_event : t -> Ojs.t [@@js.get "nativeEvent"]
+    (* Should return Dom.event *)
 
-    val preventDefault : t -> unit [@@js.call]
+    val prevent_default : t -> unit [@@js.call "preventDefault"]
 
-    val isDefaultPrevented : t -> bool [@@js.call]
+    val is_default_prevented : t -> bool [@@js.call "isDefaultPrevented"]
 
-    val stopPropagation : t -> unit [@@js.call]
+    val stop_propagation : t -> unit [@@js.call "stopPropagation"]
 
-    val isPropagationStopped : t -> bool [@@js.call]
+    val is_propagation_stopped : t -> bool [@@js.call "isPropagationStopped"]
 
-    val target : t -> Ojs.t [@@js.get] (* Should return Dom.eventTarget *)
+    val target : t -> Ojs.t [@@js.get "target"]
+    (* Should return Dom.eventTarget *)
 
-    val timeStamp : t -> float [@@js.get]
+    val time_stamp : t -> float [@@js.get "timeStamp"]
 
     val type_ : t -> string [@@js.get "type"]
 
-    val persist : t -> unit [@@js.call]]
+    val persist : t -> unit [@@js.call "persist"]]
 end
 
 module Synthetic = CommonApi
 
 (* Cast any event type to the general synthetic type. This is safe, since synthetic is more general *)
-external toSyntheticEvent : 'a synthetic -> Synthetic.t = "%identity"
+external to_synthetic_event : 'a synthetic -> Synthetic.t = "%identity"
 
 module Clipboard = struct
   include CommonApi
 
-  include [%js: val clipboardData : t -> Ojs.t [@@js.get]]
+  include [%js: val clipboard_data : t -> Ojs.t [@@js.get "clipboardData"]]
 
   (* Should return Dom.dataTransfer *)
 end
@@ -60,7 +62,7 @@ end
 module Composition = struct
   include CommonApi
 
-  include [%js: val data : t -> string [@@js.get]]
+  include [%js: val data : t -> string [@@js.get "data"]]
 end
 
 module Keyboard = struct
@@ -68,35 +70,37 @@ module Keyboard = struct
 
   include
     [%js:
-    val altKey : t -> bool [@@js.get]
+    val alt_key : t -> bool [@@js.get "altKey"]
 
-    val charCode : t -> int [@@js.get]
+    val char_code : t -> int [@@js.get "charCode"]
 
-    val ctrlKey : t -> bool [@@js.get]
+    val ctrl_key : t -> bool [@@js.get "ctrlKey"]
 
-    val getModifierState : t -> string -> bool [@@js.call]
+    val get_modifier_state : t -> string -> bool [@@js.call "getModifierState"]
 
-    val key : t -> string [@@js.get]
+    val key : t -> string [@@js.get "key"]
 
-    val keyCode : t -> int [@@js.get]
+    val key_code : t -> int [@@js.get "keyCode"]
 
-    val locale : t -> string [@@js.get]
+    val locale : t -> string [@@js.get "locale"]
 
-    val location : t -> int [@@js.get]
+    val location : t -> int [@@js.get "location"]
 
-    val metaKey : t -> bool [@@js.get]
+    val meta_key : t -> bool [@@js.get "metaKey"]
 
-    val repeat : t -> bool [@@js.get]
+    val repeat : t -> bool [@@js.get "repeat"]
 
-    val shiftKey : t -> bool [@@js.get]
+    val shift_key : t -> bool [@@js.get "shiftKey"]
 
-    val which : t -> int [@@js.get]]
+    val which : t -> int [@@js.get "which"]]
 end
 
 module Focus = struct
   include CommonApi
 
-  include [%js: val relatedTarget : t -> Ojs.t option [@@js.get]]
+  include
+    [%js:
+    val related_target : t -> Ojs.t option [@@js.get "relatedTarget"]]
 
   (* Should return Dom.eventTarget *)
 end
@@ -110,35 +114,35 @@ module Mouse = struct
 
   include
     [%js:
-    val altKey : t -> bool [@@js.get]
+    val alt_key : t -> bool [@@js.get "altKey"]
 
-    val button : t -> int [@@js.get]
+    val button : t -> int [@@js.get "button"]
 
-    val buttons : t -> int [@@js.get]
+    val buttons : t -> int [@@js.get "buttons"]
 
-    val clientX : t -> int [@@js.get]
+    val client_x : t -> int [@@js.get "clientX"]
 
-    val clientY : t -> int [@@js.get]
+    val client_y : t -> int [@@js.get "clientY"]
 
-    val ctrlKey : t -> bool [@@js.get]
+    val ctrl_key : t -> bool [@@js.get "ctrlKey"]
 
-    val getModifierState : t -> string -> bool [@@js.call]
+    val get_modifier_state : t -> string -> bool [@@js.call "getModifierState"]
 
-    val metaKey : t -> bool [@@js.get]
+    val meta_key : t -> bool [@@js.get "metaKey"]
 
-    val pageX : t -> int [@@js.get]
+    val page_x : t -> int [@@js.get "pageX"]
 
-    val pageY : t -> int [@@js.get]
+    val page_y : t -> int [@@js.get "pageY"]
 
-    val relatedTarget : t -> Ojs.t option [@@js.get]
+    val related_target : t -> Ojs.t option [@@js.get "relatedTarget"]
 
     (* Should return Dom.eventTarget *)
 
-    val screenX : t -> int [@@js.get]
+    val screen_x : t -> int [@@js.get "screenX"]
 
-    val screenY : t -> int [@@js.get]
+    val screen_y : t -> int [@@js.get "screenY"]
 
-    val shiftKey : t -> bool [@@js.get]]
+    val shift_key : t -> bool [@@js.get "shiftKey"]]
 end
 
 module Selection = struct
@@ -150,21 +154,23 @@ module Touch = struct
 
   include
     [%js:
-    val altKey : t -> bool [@@js.get]
+    val alt_key : t -> bool [@@js.get "altKey"]
 
-    val changedTouches : t -> Ojs.t [@@js.get] (* Should return Dom.touchList *)
+    val changed_touches : t -> Ojs.t [@@js.get "changedTouches"]
+    (* Should return Dom.touchList *)
 
-    val ctrlKey : t -> bool [@@js.get]
+    val ctrl_key : t -> bool [@@js.get "ctrlKey"]
 
-    val getModifierState : t -> string -> bool [@@js.call]
+    val get_modifier_state : t -> string -> bool [@@js.call "getModifierState"]
 
-    val metaKey : t -> bool [@@js.get]
+    val meta_key : t -> bool [@@js.get "metaKey"]
 
-    val shiftKey : t -> bool [@@js.get]
+    val shift_key : t -> bool [@@js.get "shiftKey"]
 
-    val targetTouches : t -> Ojs.t [@@js.get] (* Should return Dom.touchList *)
+    val target_touches : t -> Ojs.t [@@js.get "targetTouches"]
+    (* Should return Dom.touchList *)
 
-    val touches : t -> Ojs.t [@@js.get]]
+    val touches : t -> Ojs.t [@@js.get "touches"]]
 
   (* Should return Dom.touchList *)
 end
@@ -204,9 +210,9 @@ module UI = struct
 
   include
     [%js:
-    val detail : t -> int [@@js.get]
+    val detail : t -> int [@@js.get "detail"]
 
-    val view : t -> window [@@js.get]]
+    val view : t -> window [@@js.get "view"]]
 
   (* Should return DOMAbstractView/WindowProxy *)
 end
@@ -216,13 +222,13 @@ module Wheel = struct
 
   include
     [%js:
-    val deltaMode : t -> int [@@js.get]
+    val delta_mode : t -> int [@@js.get "deltaMode"]
 
-    val deltaX : t -> float [@@js.get]
+    val delta_x : t -> float [@@js.get "deltaX"]
 
-    val deltaY : t -> float [@@js.get]
+    val delta_y : t -> float [@@js.get "deltaY"]
 
-    val deltaZ : t -> float [@@js.get]]
+    val delta_z : t -> float [@@js.get "deltaZ"]]
 end
 
 module Media = struct
@@ -238,11 +244,11 @@ module Animation = struct
 
   include
     [%js:
-    val animationName : t -> string [@@js.get]
+    val animation_name : t -> string [@@js.get "animationName"]
 
-    val pseudoElement : t -> string [@@js.get]
+    val pseudo_element : t -> string [@@js.get "pseudoElement"]
 
-    val elapsedTime : t -> float [@@js.get]]
+    val elapsed_time : t -> float [@@js.get "elapsedTime"]]
 end
 
 module Transition = struct
@@ -250,9 +256,9 @@ module Transition = struct
 
   include
     [%js:
-    val propertyName : t -> string [@@js.get]
+    val property_name : t -> string [@@js.get "propertyName"]
 
-    val pseudoElement : t -> string [@@js.get]
+    val pseudo_element : t -> string [@@js.get "pseudoElement"]
 
-    val elapsedTime : t -> float [@@js.get]]
+    val elapsed_time : t -> float [@@js.get "elapsedTime"]]
 end
