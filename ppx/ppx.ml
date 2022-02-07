@@ -674,7 +674,7 @@ let make_js_comp ~loc ~fn_name ~forward_ref ~has_unit ~named_arg_list
 
 (* Builds the intermediate function with labelled arguments that will call make_props.
    [body] is the the component implementation as originally written in source,
-   but without any wrappers like React.memo or forwar_ref *)
+   but without any wrappers like React.memo or forward_ref *)
 let make_ml_comp ~loc ~fn_name ~body rest =
   Exp.mk ~loc
     (Pexp_let (Nonrecursive, [Vb.mk (Pat.var {loc; txt= fn_name}) body], rest))
