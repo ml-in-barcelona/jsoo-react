@@ -21,3 +21,5 @@
   (source_tree node_modules))
  (action
   (run node test_jsoo_react.bc.js)))
+
+(data_only_dirs node_modules)
