@@ -33,17 +33,17 @@ val render : Core.element -> dom_element -> unit
     let render element dom_element =
       render_internal Imports.react_dom element dom_element]
 
-val render_to_element_with_id : Core.element -> string -> unit
+val render_to_element : id:string -> Core.element -> unit
   [@@js.custom
     val get_element_by_id : string -> dom_element option
       [@@js.global "document.getElementById"]
 
-    let render_to_element_with_id react_element id =
+    let render_to_element ~id react_element =
       match get_element_by_id id with
       | None ->
           raise
             (Invalid_argument
-               ( "ReactDOM.render_to_element_with_id : no element of id " ^ id
+               ( "ReactDOM.render_to_element : no element of id " ^ id
                ^ " found in the HTML." ) )
       | Some element ->
           render react_element element]
