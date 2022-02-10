@@ -667,14 +667,13 @@ module Children : sig
 
       let map element mapper = map_internal children_internal element mapper]
 
-  val map_with_index : element list -> (element -> int -> element) -> element
+  val mapi : element list -> (element -> int -> element) -> element
     [@@js.custom
-      val map_with_index_internal :
+      val mapi_internal :
         Ojs.t -> element list -> (element -> int -> element) -> element
         [@@js.call "map"]
 
-      let map_with_index element mapper =
-        map_with_index_internal children_internal element mapper]
+      let mapi element mapper = mapi_internal children_internal element mapper]
 
   val for_each : element list -> (element -> unit) -> unit
     [@@js.custom
