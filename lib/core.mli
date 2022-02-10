@@ -670,22 +670,22 @@ module Children : sig
 
       let mapi element mapper = mapi_internal children_internal element mapper]
 
-  val for_each : element list -> (element -> unit) -> unit
+  val iter : element list -> (element -> unit) -> unit
     [@@js.custom
-      val for_each_internal : Ojs.t -> element list -> (element -> unit) -> unit
+      val iter_internal : Ojs.t -> element list -> (element -> unit) -> unit
         [@@js.call "forEach"]
 
-      let for_each element iterator =
-        for_each_internal children_internal element iterator]
+      let iter element iterator =
+        iter_internal children_internal element iterator]
 
-  val for_each_with_index : element list -> (element -> int -> unit) -> unit
+  val iteri : element list -> (element -> int -> unit) -> unit
     [@@js.custom
-      val for_each_with_index_internal :
+      val iteri_internal :
         Ojs.t -> element list -> (element -> int -> unit) -> unit
         [@@js.call "forEach"]
 
-      let for_each_with_index element iterator =
-        for_each_with_index_internal children_internal element iterator]
+      let iteri element iterator =
+        iteri_internal children_internal element iterator]
 
   val count : element list -> int
     [@@js.custom
