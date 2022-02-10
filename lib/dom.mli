@@ -73,7 +73,7 @@ end
 
 type domProps = private Ojs.t
 
-val create_dom_element_variadic :
+val create_element :
      string
   -> props:
        domProps
@@ -81,7 +81,7 @@ val create_dom_element_variadic :
   -> Core.element list
   -> Core.element
   [@@js.custom
-    val create_dom_element_variadic_internal :
+    val create_element_internal :
          Imports.react
       -> string
       -> props:domProps
@@ -89,8 +89,8 @@ val create_dom_element_variadic :
       -> Core.element
       [@@js.call "createElement"]
 
-    let create_dom_element_variadic typ ~props elts =
-      create_dom_element_variadic_internal Imports.react typ ~props elts]
+    let create_element typ ~props elts =
+      create_element_internal Imports.react typ ~props elts]
 
 val forward_ref : ('props -> dom_ref -> Core.element) -> 'props Core.component
   [@@js.custom
