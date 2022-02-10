@@ -536,56 +536,29 @@ val use_state : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
     let use_state initial = use_state_internal Imports.react initial]
 
 val use_reducer :
-  ('state -> 'action -> 'state) -> 'state -> 'state * ('action -> unit)
+     reducer:('state -> 'action -> 'state)
+  -> init:(unit -> 'state)
+  -> 'state * ('action -> unit)
   [@@js.custom
     let (use_reducer_internal :
              Imports.react
-          -> ('state -> 'action -> 'state)
-          -> 'state
+          -> reducer:('state -> 'action -> 'state)
+          -> init:('initialState -> 'state)
           -> 'state * ('action -> unit) ) =
-     fun (react : Imports.react) (reducer : 'state -> 'action -> 'state)
-         (init : 'state) ->
+     fun react ~reducer ~init ->
       let result =
         Ojs.call
           (Imports.react_to_js react)
           "useReducer"
           [| Ojs.fun_to_js 2 (fun (state : Ojs.t) (action : Ojs.t) ->
                  Obj.magic (reducer (Obj.magic state) (Obj.magic action)) )
-           ; Obj.magic init |]
+           ; Obj.magic ()
+           ; Ojs.fun_to_js 1 (fun _ -> Obj.magic (init ())) |]
       in
       (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
 
-    let use_reducer reducer initial =
-      use_reducer_internal Imports.react reducer initial]
-
-val use_reducer_with_map_state :
-     ('state -> 'action -> 'state)
-  -> 'initialState
-  -> ('initialState -> 'state)
-  -> 'state * ('action -> unit)
-  [@@js.custom
-    let (use_reducer_with_map_state_internal :
-             Imports.react
-          -> ('state -> 'action -> 'state)
-          -> 'initialState
-          -> ('initialState -> 'state)
-          -> 'state * ('action -> unit) ) =
-     fun (react : Imports.react) (reducer : 'state -> 'action -> 'state)
-         (init : 'initialState) (map_state : 'initialState -> 'state) ->
-      let result =
-        Ojs.call
-          (Imports.react_to_js react)
-          "useReducer"
-          [| Ojs.fun_to_js 2 (fun (state : Ojs.t) (action : Ojs.t) ->
-                 Obj.magic (reducer (Obj.magic state) (Obj.magic action)) )
-           ; Obj.magic init
-           ; Ojs.fun_to_js 1 (fun (state : Ojs.t) ->
-                 Obj.magic (map_state (Obj.magic state)) ) |]
-      in
-      (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
-
-    let use_reducer_with_map_state reducer initial mapper =
-      use_reducer_with_map_state_internal Imports.react reducer initial mapper]
+    let use_reducer ~reducer ~init =
+      use_reducer_internal Imports.react ~reducer ~init]
 
 module Ref : sig
   type 'value t
