@@ -540,22 +540,28 @@ val use_reducer :
   -> init:(unit -> 'state)
   -> 'state * ('action -> unit)
   [@@js.custom
-    let (use_reducer_internal :
-             Imports.react
-          -> reducer:('state -> 'action -> 'state)
-          -> init:('initialState -> 'state)
-          -> 'state * ('action -> unit) ) =
+    let use_reducer_internal :
+        type state action.
+           Imports.react
+        -> reducer:(state -> action -> state)
+        -> init:(unit -> state)
+        -> state * (action -> unit) =
      fun react ~reducer ~init ->
+      let any_to_js : _ -> Ojs.t = Obj.magic in
+      let js_to_any : Ojs.t -> _ = Obj.magic in
       let result =
         Ojs.call
           (Imports.react_to_js react)
           "useReducer"
-          [| Ojs.fun_to_js 2 (fun (state : Ojs.t) (action : Ojs.t) ->
-                 Obj.magic (reducer (Obj.magic state) (Obj.magic action)) )
-           ; Obj.magic ()
-           ; Ojs.fun_to_js 1 (fun _ -> Obj.magic (init ())) |]
+          [| Ojs.fun_to_js 2 (fun state action ->
+                 any_to_js
+                   (reducer
+                      (js_to_any state : state)
+                      (js_to_any action : action) ) )
+           ; Ojs.null
+           ; Ojs.fun_to_js 1 (fun _ -> any_to_js (init ())) |]
       in
-      (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
+      Js_of_ocaml.(Js.Unsafe.get result 0, Js.Unsafe.get result 1)
 
     let use_reducer ~reducer ~init =
       use_reducer_internal Imports.react ~reducer ~init]
