@@ -332,6 +332,94 @@ val use_layout_effect7 :
     let use_layout_effect7 callback watchlist =
       use_layout_effect7_internal Imports.react callback watchlist]
 
+val use_effect_always :
+  ?before_render:bool -> (unit -> (unit -> unit) option_undefined) -> unit
+  [@@js.custom
+    let use_effect_always ?(before_render = false) f =
+      if before_render then use_effect f else use_layout_effect f]
+
+val use_effect_once :
+  ?before_render:bool -> (unit -> (unit -> unit) option_undefined) -> unit
+  [@@js.custom
+    let use_effect_once ?(before_render = false) f =
+      if before_render then use_effect0 f else use_layout_effect0 f]
+
+val use_effect_on_change :
+     ?before_render:bool
+  -> (unit -> (unit -> unit) option_undefined)
+  -> 'a array
+  -> unit
+  [@@js.custom
+    let use_effect_on_change ?(before_render = false) f values =
+      if before_render then use_effect1 f values
+      else use_layout_effect1 f values]
+
+val use_effect_on_change1 :
+  ?before_render:bool -> (unit -> (unit -> unit) option_undefined) -> 'a -> unit
+  [@@js.custom
+    let use_effect_on_change1 ?(before_render = false) f a =
+      if before_render then use_effect1 f [|a|] else use_layout_effect1 f [|a|]]
+
+val use_effect_on_change2 :
+     ?before_render:bool
+  -> (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b
+  -> unit
+  [@@js.custom
+    let use_effect_on_change2 ?(before_render = false) f values =
+      if before_render then use_effect2 f values
+      else use_layout_effect2 f values]
+
+val use_effect_on_change3 :
+     ?before_render:bool
+  -> (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c
+  -> unit
+  [@@js.custom
+    let use_effect_on_change3 ?(before_render = false) f values =
+      if before_render then use_effect3 f values
+      else use_layout_effect3 f values]
+
+val use_effect_on_change4 :
+     ?before_render:bool
+  -> (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c * 'd
+  -> unit
+  [@@js.custom
+    let use_effect_on_change4 ?(before_render = false) f values =
+      if before_render then use_effect4 f values
+      else use_layout_effect4 f values]
+
+val use_effect_on_change5 :
+     ?before_render:bool
+  -> (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c * 'd * 'e
+  -> unit
+  [@@js.custom
+    let use_effect_on_change5 ?(before_render = false) f values =
+      if before_render then use_effect5 f values
+      else use_layout_effect5 f values]
+
+val use_effect_on_change6 :
+     ?before_render:bool
+  -> (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c * 'd * 'e * 'f
+  -> unit
+  [@@js.custom
+    let use_effect_on_change6 ?(before_render = false) f values =
+      if before_render then use_effect6 f values
+      else use_layout_effect6 f values]
+
+val use_effect_on_change7 :
+     ?before_render:bool
+  -> (unit -> (unit -> unit) option_undefined)
+  -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
+  -> unit
+  [@@js.custom
+    let use_effect_on_change7 ?(before_render = false) f values =
+      if before_render then use_effect7 f values
+      else use_layout_effect7 f values]
+
 val use_callback : ('input, 'output) callback -> ('input, 'output) callback
   [@@js.custom
     val use_callback_internal :

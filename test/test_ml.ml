@@ -188,6 +188,43 @@ let testUseEffect3 () =
             (Html.element c) ) ;
       assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 4")) )
 
+let test_use_effect_always () =
+  let count = ref 0 in
+  let module C = struct
+    let%component make () =
+      React.use_effect_always (fun () -> incr count ; None) ;
+      div [||] []
+  end in
+  withContainer (fun c ->
+      act (fun () -> React.Dom.render (C.make ()) (Html.element c)) ;
+      act (fun () -> React.Dom.render (C.make ()) (Html.element c)) ;
+      assert_equal !count 2 )
+
+let test_use_effect_once () =
+  let count = ref 0 in
+  let module C = struct
+    let%component make () =
+      React.use_effect_once (fun () -> incr count ; None) ;
+      div [||] []
+  end in
+  withContainer (fun c ->
+      act (fun () -> React.Dom.render (C.make ()) (Html.element c)) ;
+      act (fun () -> React.Dom.render (C.make ()) (Html.element c)) ;
+      assert_equal !count 1 )
+
+let test_use_effect_on_change2 () =
+  let count = ref 0 in
+  let module C = struct
+    let%component make ~a ~b =
+      React.use_effect2 (fun () -> incr count ; None) (a, b) ;
+      div [||] []
+  end in
+  withContainer (fun c ->
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c)) ;
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c)) ;
+      act (fun () -> React.Dom.render (C.make ~a:2 ~b:3 ()) (Html.element c)) ;
+      assert_equal !count 2 )
+
 let testUseCallback1 () =
   let module UseCallback = struct
     let%component make ~a =
@@ -795,7 +832,10 @@ let use_effect =
   "use_effect"
   >::: [ "use_effect" >:: testUseEffect
        ; "use_effect2" >:: testUseEffect2
-       ; "use_effect3" >:: testUseEffect3 ]
+       ; "use_effect3" >:: testUseEffect3
+       ; "use_effect_always" >:: test_use_effect_always
+       ; "use_effect_once" >:: test_use_effect_once
+       ; "use_effect_on_change2" >:: test_use_effect_on_change2 ]
 
 let use_callback =
   "use_callback"
