@@ -5,7 +5,7 @@ open Html;
 [@react.component]
 let make = (~count) => {
   open Js_of_ocaml_lwt;
-  React.useEffect1(
+  React.use_effect1(
     () => {
       open Lwt;
       open Lwt_js;
@@ -29,8 +29,8 @@ let make = (~count) => {
     [|count|],
   );
 
-  React.useLayoutEffect(() => {
-    Console.log("useLayoutEffect: component updated");
+  React.use_layout_effect(() => {
+    Console.log("use_layout_effect: component updated");
     None;
   });
 

@@ -15,7 +15,7 @@ module Prop : sig
 
   val key : string -> t
 
-  val ref_ : Dom.domRef -> t
+  val ref_ : Dom.dom_ref -> t
 
   (** Modifiers *)
 

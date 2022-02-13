@@ -18,12 +18,12 @@ module Prop = struct
 
   let key = string "key"
 
-  let ref_ = (any "ref" : Dom.domRef -> t)
+  let ref_ = (any "ref" : Dom.dom_ref -> t)
 end
 
 module Element = struct
   let h name props children =
-    Dom.createDOMElementVariadic name
+    Dom.create_dom_element_variadic name
       ~props:(Js_of_ocaml.Js.Unsafe.obj props)
       children
 end

@@ -18,8 +18,8 @@ let space = {
 
 [@react.component]
 let make = (~name="Billy", ~children=?) => {
-  let (count, setCount) = React.useState(() => 0);
-  let (state, dispatch) = React.useReducer(reducer, 0);
+  let (count, setCount) = React.use_state(() => 0);
+  let (state, dispatch) = React.use_reducer(reducer, 0);
 
   <div>
     <UseEffect count />

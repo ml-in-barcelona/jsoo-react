@@ -28,7 +28,7 @@ let withContainer = f => {
   let container = Dom_html.createDiv(doc);
   Dom.appendChild(doc##.body, container);
   let result = f(container);
-  ignore(React.Dom.unmountComponentAtNode(container));
+  ignore(React.Dom.unmount_component_at_node(container));
   Dom.removeChild(doc##.body, container);
   result;
 };
@@ -121,14 +121,14 @@ let testOptionalPropsLowercase = () => {
 
 let testContext = () => {
   module DummyContext = {
-    let context = React.createContext("foo");
+    let context = React.create_context("foo");
     module Provider = {
       let make = React.Context.Provider.make(context);
     };
     module Consumer = {
       [@react.component]
       let make = () => {
-        let value = React.useContext(context);
+        let value = React.use_context(context);
         <div> {value |> React.string} </div>;
       };
     };
@@ -150,8 +150,8 @@ let testUseEffect = () => {
   module UseEffect = {
     [@react.component]
     let make = () => {
-      let (count, setCount) = React.useState(() => 0);
-      React.useEffect0(() => {
+      let (count, setCount) = React.use_state(() => 0);
+      React.use_effect0(() => {
         setCount(count => count + 1);
         None;
       });
@@ -168,8 +168,8 @@ let testUseEffect2 = () => {
   module Add2 = {
     [@react.component]
     let make = (~a, ~b) => {
-      let (count, setCount) = React.useState(() => 0);
-      React.useEffect2(
+      let (count, setCount) = React.use_state(() => 0);
+      React.use_effect2(
         () => {
           setCount(_ => a + b);
           None;
@@ -193,8 +193,8 @@ let testUseEffect3 = () => {
   module Use3 = {
     [@react.component]
     let make = (~a, ~b, ~c) => {
-      let (count, setCount) = React.useState(() => 0);
-      React.useEffect3(
+      let (count, setCount) = React.use_state(() => 0);
+      React.use_effect3(
         () => {
           setCount(count => count + 1);
           None;
@@ -248,10 +248,10 @@ let testUseCallback1 = () => {
     [@react.component]
     let make = (~a) => {
       let ((count, str), setCountStr) =
-        React.useState(() => (0, "init and"));
+        React.use_state(() => (0, "init and"));
       let f =
-        React.useCallback1(input => {input ++ " " ++ a ++ " and"}, [|a|]);
-      React.useEffect1(
+        React.use_callback1(input => {input ++ " " ++ a ++ " and"}, [|a|]);
+      React.use_effect1(
         () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
           None;
@@ -296,9 +296,9 @@ let testUseCallback4 = () => {
   module UseCallback = {
     [@react.component]
     let make = (~a, ~b, ~d, ~e) => {
-      let ((count, str), setCountStr) = React.useState(() => (0, "init"));
+      let ((count, str), setCountStr) = React.use_state(() => (0, "init"));
       let f =
-        React.useCallback4(
+        React.use_callback4(
           _input => {
             Printf.sprintf(
               "a: %s, b: %d, d: [%d], e: [|%d|]",
@@ -310,7 +310,7 @@ let testUseCallback4 = () => {
           },
           (a, b, d, e),
         );
-      React.useEffect1(
+      React.use_effect1(
         () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
           None;
@@ -393,7 +393,7 @@ let testUseState = () => {
   module DummyStateComponent = {
     [@react.component]
     let make = (~initialValue=0, ()) => {
-      let (counter, setCounter) = React.useState(() => initialValue);
+      let (counter, setCounter) = React.use_state(() => initialValue);
       <>
         <div className="value"> {React.int(counter)} </div>
         <button onClick={_ => setCounter(counter => counter + 1)}>
@@ -450,7 +450,7 @@ let testUseStateUpdaterReference = () => {
     let prevSetCount = ref(None);
     [@react.component]
     let make = () => {
-      let (_count, setCount) = React.useState(() => 0);
+      let (_count, setCount) = React.use_state(() => 0);
       let equal =
         switch (setCount, prevSetCount^) {
         | (r1, Some(r2)) when r1 === r2 => "true"
@@ -476,7 +476,7 @@ let testUseReducer = () => {
     [@react.component]
     let make = (~initialValue=0, ()) => {
       let (state, send) =
-        React.useReducer(
+        React.use_reducer(
           (state, action) =>
             switch (action) {
             | Increment => state + 1
@@ -544,7 +544,7 @@ let testUseReducerWithMapState = () => {
     [@react.component]
     let make = (~initialValue=0, ()) => {
       let (state, send) =
-        React.useReducerWithMapState(
+        React.use_reducer_with_map_state(
           (state, action) =>
             switch (action) {
             | Increment => state + 1
@@ -613,7 +613,7 @@ let testUseReducerDispatchReference = () => {
     let prevDispatch = ref(None);
     [@react.component]
     let make = () => {
-      let (_, dispatch) = React.useReducer((_, _) => 2, 2);
+      let (_, dispatch) = React.use_reducer((_, _) => 2, 2);
       let equal =
         switch (dispatch, prevDispatch^) {
         | (r1, Some(r2)) when r1 === r2 => "true"
@@ -635,9 +635,9 @@ let testUseMemo1 = () => {
   module UseMemo = {
     [@react.component]
     let make = (~a) => {
-      let (count, setCount) = React.useState(() => 0);
-      let result = React.useMemo1(() => {a ++ "2"}, [|a|]);
-      React.useEffect1(
+      let (count, setCount) = React.use_state(() => 0);
+      let result = React.use_memo1(() => {a ++ "2"}, [|a|]);
+      React.use_effect1(
         () => {
           setCount(count => count + 1);
           None;
@@ -704,7 +704,7 @@ let testMemoCustomCompareProps = () => {
   module Memoized = {
     [@react.component]
     let make =
-      React.memoCustomCompareProps(
+      React.memo_custom_compare_props(
         (~a) => {
           numRenders := numRenders^ + 1;
           <div>
@@ -740,9 +740,9 @@ let testMemoCustomCompareProps = () => {
 };
 
 let testCreateRef = () => {
-  let reactRef = React.createRef();
+  let reactRef = React.create_ref();
   assert_equal(React.Ref.current(reactRef), Js_of_ocaml.Js.null);
-  React.Ref.setCurrent(reactRef, Js_of_ocaml.Js.Opt.return(1));
+  React.Ref.set_current(reactRef, Js_of_ocaml.Js.Opt.return(1));
   assert_equal(React.Ref.current(reactRef), Js_of_ocaml.Js.Opt.return(1));
 };
 
@@ -750,7 +750,7 @@ let testForwardRef = () => {
   module FancyButton = {
     [@react.component]
     let make =
-      React.Dom.forwardRef((~children, ref_) => {
+      React.Dom.forward_ref((~children, ref_) => {
         <button ref_ className="FancyButton"> ...children </button>
       });
   };
@@ -758,7 +758,7 @@ let testForwardRef = () => {
   withContainer(c => {
     let count = ref(0);
     let buttonRef =
-      React.Dom.Ref.callbackDomRef(_ref => {count := count^ + 1});
+      React.Dom.Ref.callback_dom_ref(_ref => {count := count^ + 1});
     act(() => {
       React.Dom.render(
         <FancyButton ref=buttonRef> <div /> </FancyButton>,
@@ -773,9 +773,9 @@ let testUseRef = () => {
   module DummyComponentWithRefAndEffect = {
     [@react.component]
     let make = (~cb, ()) => {
-      let myRef = React.useRef(1);
-      React.useEffect0(() => {
-        React.Ref.(setCurrent(myRef, current(myRef) + 1));
+      let myRef = React.use_ref(1);
+      React.use_effect0(() => {
+        React.Ref.(set_current(myRef, current(myRef) + 1));
         cb(myRef);
         None;
       });
@@ -806,8 +806,8 @@ let testChildrenMapWithIndex = () => {
     [@react.component]
     let make = (~children, ()) => {
       <div>
-        {React.Children.mapWithIndex(children, (element, index) => {
-           React.cloneElement(
+        {React.Children.map_with_index(children, (element, index) => {
+           React.clone_element(
              element,
              Js_of_ocaml.Js.Unsafe.(
                obj([|
@@ -1132,7 +1132,7 @@ let testWithId = () => {
     [@react.component]
     let make = (~id, ~children, ()) =>
       React.Children.map(children, child =>
-        React.cloneElement(
+        React.clone_element(
           child,
           Js.Unsafe.obj([|
             ("data-testid", Js.Unsafe.inject(Js.string(id))),
@@ -1286,40 +1286,40 @@ let basic =
 
 let context = "context" >::: ["testContext" >:: testContext];
 
-let useEffect =
-  "useEffect"
+let use_effect =
+  "use_effect"
   >::: [
-    "useEffect" >:: testUseEffect,
-    "useEffect2" >:: testUseEffect2,
-    "useEffect3" >:: testUseEffect3,
+    "use_effect" >:: testUseEffect,
+    "use_effect2" >:: testUseEffect2,
+    "use_effect3" >:: testUseEffect3,
   ];
 
-let useCallback =
-  "useCallback"
+let use_callback =
+  "use_callback"
   >::: [
-    "useCallback1" >:: testUseCallback1,
-    "useCallback4" >:: testUseCallback4,
+    "use_callback1" >:: testUseCallback1,
+    "use_callback4" >:: testUseCallback4,
   ];
 
-let useState =
+let use_state =
   "useState"
   >::: [
-    "useState" >:: testUseState,
+    "use_state" >:: testUseState,
     "useStateUpdaterReference" >:: testUseStateUpdaterReference,
   ];
 
-let useReducer =
-  "useReducer"
+let use_reducer =
+  "use_reducer"
   >::: [
-    "useReducer" >:: testUseReducer,
-    "useReducerWithMapState" >:: testUseReducerWithMapState,
-    "useReducerDispatchReference" >:: testUseReducerDispatchReference,
+    "use_reducer" >:: testUseReducer,
+    "use_reducer_with_map_state" >:: testUseReducerWithMapState,
+    "use_reducer_dispatch_reference" >:: testUseReducerDispatchReference,
   ];
 
 let memoization =
   "memo"
   >::: [
-    "useMemo1" >:: testUseMemo1,
+    "use_memo1" >:: testUseMemo1,
     "memo" >:: testMemo,
     "memoCustomCompareProps" >:: testMemoCustomCompareProps,
   ];
@@ -1327,9 +1327,9 @@ let memoization =
 let refs =
   "refs"
   >::: [
-    "createRef" >:: testCreateRef,
-    "forwardRef" >:: testForwardRef,
-    "useRef" >:: testUseRef,
+    "create_ref" >:: testCreateRef,
+    "forward_ref" >:: testForwardRef,
+    "use_ref" >:: testUseRef,
   ];
 
 let children =
@@ -1388,10 +1388,10 @@ let suite =
   >::: [
     basic,
     context,
-    useEffect,
-    useCallback,
-    useState,
-    useReducer,
+    use_effect,
+    use_callback,
+    use_state,
+    use_reducer,
     memoization,
     refs,
     children,

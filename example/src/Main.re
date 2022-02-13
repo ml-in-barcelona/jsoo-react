@@ -138,7 +138,7 @@ let examples = [
 
 [@react.component]
 let make = () => {
-  let url = React.Router.useUrl();
+  let url = React.Router.use_url();
 
   <div className="flex-container">
     <div className="sidebar">
@@ -152,7 +152,7 @@ let make = () => {
                       <a
                         href={e.path}
                         onClick={event => {
-                          React.Event.Mouse.preventDefault(event);
+                          React.Event.Mouse.prevent_default(event);
                           React.Router.push(e.path);
                         }}>
                         {e.title |> s}
