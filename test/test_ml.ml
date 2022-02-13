@@ -112,82 +112,6 @@ let testContext () =
             (Html.element c) ) ;
       assert_equal c##.textContent (Js.Opt.return (Js.string "bar")) )
 
-let testUseEffect () =
-  let module UseEffect = struct
-    let%component make () =
-      let count, setCount = React.use_state (fun () -> 0) in
-      React.use_effect0 (fun () ->
-          setCount (fun count -> count + 1) ;
-          None ) ;
-      div [||] [Printf.sprintf "`count` is %d" count |> string]
-  end in
-  withContainer (fun c ->
-      act (fun () -> React.Dom.render (UseEffect.make ()) (Html.element c)) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 1")) )
-
-let testUseEffect2 () =
-  let module Add2 = struct
-    let%component make ~a ~b =
-      let count, setCount = React.use_state (fun () -> 0) in
-      React.use_effect2
-        (fun () ->
-          setCount (fun _ -> a + b) ;
-          None )
-        (a, b) ;
-      div [||] [Printf.sprintf "`a + b` is %d" count |> string]
-  end in
-  withContainer (fun c ->
-      act (fun () ->
-          React.Dom.render (Add2.make ~a:1 ~b:2 ()) (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`a + b` is 3")) ;
-      act (fun () ->
-          React.Dom.render (Add2.make ~a:1 ~b:2 ()) (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`a + b` is 3")) ;
-      act (fun () ->
-          React.Dom.render (Add2.make ~a:2 ~b:3 ()) (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`a + b` is 5")) )
-
-let testUseEffect3 () =
-  let module Use3 = struct
-    let%component make ~a ~b ~c =
-      let count, setCount = React.use_state (fun () -> 0) in
-      React.use_effect3
-        (fun () ->
-          setCount (fun count -> count + 1) ;
-          None )
-        (a, b, c) ;
-      div [||] [Printf.sprintf "`count` is %d" count |> string]
-  end in
-  withContainer (fun c ->
-      let emptyList = [] in
-      let fooString = "foo" in
-      let barString = "bar" in
-      act (fun () ->
-          React.Dom.render
-            (Use3.make ~a:1 ~b:fooString ~c:emptyList ())
-            (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 1")) ;
-      act (fun () ->
-          React.Dom.render
-            (Use3.make ~a:1 ~b:fooString ~c:emptyList ())
-            (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 1")) ;
-      act (fun () ->
-          React.Dom.render
-            (Use3.make ~a:2 ~b:fooString ~c:emptyList ())
-            (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 2")) ;
-      act (fun () ->
-          React.Dom.render
-            (Use3.make ~a:2 ~b:barString ~c:emptyList ())
-            (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 3")) ;
-      act (fun () ->
-          React.Dom.render
-            (Use3.make ~a:2 ~b:barString ~c:[2] ())
-            (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 4")) )
-
 let test_use_effect_always () =
   let count = ref 0 in
   let module C = struct
@@ -216,7 +140,7 @@ let test_use_effect_on_change2 () =
   let count = ref 0 in
   let module C = struct
     let%component make ~a ~b =
-      React.use_effect2 (fun () -> incr count ; None) (a, b) ;
+      React.use_effect_on_change2 (fun () -> incr count ; None) (a, b) ;
       div [||] []
   end in
   withContainer (fun c ->
@@ -234,11 +158,11 @@ let testUseCallback1 () =
       let f =
         React.use_callback1 (fun input -> input ^ " " ^ a ^ " and") [|a|]
       in
-      React.use_effect1
+      React.use_effect_on_change1
         (fun () ->
           setCountStr (fun (count, str) -> (count + 1, f str)) ;
           None )
-        [|f|] ;
+        f ;
       div [||] [Printf.sprintf "`count` is %d, `str` is %s" count str |> string]
   end in
   withContainer (fun c ->
@@ -268,11 +192,11 @@ let testUseCallback4 () =
               e.(0) )
           (a, b, d, e)
       in
-      React.use_effect1
+      React.use_effect_on_change1
         (fun () ->
           setCountStr (fun (count, str) -> (count + 1, f str)) ;
           None )
-        [|f|] ;
+        f ;
       div [||] [Printf.sprintf "`count` is %d, `str` is %s" count str |> string]
   end in
   withContainer (fun c ->
@@ -495,11 +419,11 @@ let testUseMemo1 () =
     let%component make ~a =
       let count, setCount = React.use_state (fun () -> 0) in
       let result = React.use_memo1 (fun () -> a ^ "2") [|a|] in
-      React.use_effect1
+      React.use_effect_on_change1
         (fun () ->
           setCount (fun count -> count + 1) ;
           None )
-        [|result|] ;
+        result ;
       div [||] [Printf.sprintf "`count` is %d" count |> string]
   end in
   withContainer (fun c ->
@@ -594,7 +518,7 @@ let testUseRef () =
   let module DummyComponentWithRefAndEffect = struct
     let%component make ~cb () =
       let myRef = React.use_ref 1 in
-      React.use_effect0 (fun () ->
+      React.use_effect_once (fun () ->
           let open React.Ref in
           set_current myRef (current myRef + 1) ;
           cb myRef ;
@@ -830,10 +754,7 @@ let context = "context" >::: ["testContext" >:: testContext]
 
 let use_effect =
   "use_effect"
-  >::: [ "use_effect" >:: testUseEffect
-       ; "use_effect2" >:: testUseEffect2
-       ; "use_effect3" >:: testUseEffect3
-       ; "use_effect_always" >:: test_use_effect_always
+  >::: [ "use_effect_always" >:: test_use_effect_always
        ; "use_effect_once" >:: test_use_effect_once
        ; "use_effect_on_change2" >:: test_use_effect_on_change2 ]
 

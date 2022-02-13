@@ -104,245 +104,41 @@ val clone_element : element -> 'props -> element
     let clone_element element props =
       clone_element_internal Imports.react element props]
 
-val use_effect : (unit -> (unit -> unit) option_undefined) -> unit
-  [@@js.custom
-    val use_effect_internal :
-      Imports.react -> (unit -> (unit -> unit) option_undefined) -> unit
-      [@@js.call "useEffect"]
-
-    let use_effect callback = use_effect_internal Imports.react callback]
-
-val use_effect0 : (unit -> (unit -> unit) option_undefined) -> unit
-  [@@js.custom
-    val use_effect0_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> Ojs.t array
-      -> unit
-      [@@js.call "useEffect"]
-
-    let use_effect0 callback = use_effect0_internal Imports.react callback [||]]
-
-val use_effect1 : (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
-  [@@js.custom
-    val use_effect1_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a array
-      -> unit
-      [@@js.call "useEffect"]
-
-    let use_effect1 callback watchlist =
-      use_effect1_internal Imports.react callback watchlist]
-
-val use_effect2 : (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
-  [@@js.custom
-    val use_effect2_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a * 'b
-      -> unit
-      [@@js.call "useEffect"]
-
-    let use_effect2 callback watchlist =
-      use_effect2_internal Imports.react callback watchlist]
-
-val use_effect3 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
-  [@@js.custom
-    val use_effect3_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a * 'b * 'c
-      -> unit
-      [@@js.call "useEffect"]
-
-    let use_effect3 callback watchlist =
-      use_effect3_internal Imports.react callback watchlist]
-
-val use_effect4 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
-  [@@js.custom
-    val use_effect4_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a * 'b * 'c * 'd
-      -> unit
-      [@@js.call "useEffect"]
-
-    let use_effect4 callback watchlist =
-      use_effect4_internal Imports.react callback watchlist]
-
-val use_effect5 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
-  [@@js.custom
-    val use_effect5_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a * 'b * 'c * 'd * 'e
-      -> unit
-      [@@js.call "useEffect"]
-
-    let use_effect5 callback watchlist =
-      use_effect5_internal Imports.react callback watchlist]
-
-val use_effect6 :
-     (unit -> (unit -> unit) option_undefined)
-  -> 'a * 'b * 'c * 'd * 'e * 'f
-  -> unit
-  [@@js.custom
-    val use_effect6_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a * 'b * 'c * 'd * 'e * 'f
-      -> unit
-      [@@js.call "useEffect"]
-
-    let use_effect6 callback watchlist =
-      use_effect6_internal Imports.react callback watchlist]
-
-val use_effect7 :
-     (unit -> (unit -> unit) option_undefined)
-  -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
-  -> unit
-  [@@js.custom
-    val use_effect7_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
-      -> unit
-      [@@js.call "useEffect"]
-
-    let use_effect7 callback watchlist =
-      use_effect7_internal Imports.react callback watchlist]
-
-val use_layout_effect : (unit -> (unit -> unit) option_undefined) -> unit
-  [@@js.custom
-    val use_layout_effect_internal :
-      Imports.react -> (unit -> (unit -> unit) option_undefined) -> unit
-      [@@js.call "useLayoutEffect"]
-
-    let use_layout_effect callback =
-      use_layout_effect_internal Imports.react callback]
-
-val use_layout_effect0 : (unit -> (unit -> unit) option_undefined) -> unit
-  [@@js.custom
-    val use_layout_effect0_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> Ojs.t array
-      -> unit
-      [@@js.call "useLayoutEffect"]
-
-    let use_layout_effect0 callback =
-      use_layout_effect0_internal Imports.react callback [||]]
-
-val use_layout_effect1 :
-  (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
-  [@@js.custom
-    val use_layout_effect1_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a array
-      -> unit
-      [@@js.call "useLayoutEffect"]
-
-    let use_layout_effect1 callback watchlist =
-      use_layout_effect1_internal Imports.react callback watchlist]
-
-val use_layout_effect2 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
-  [@@js.custom
-    val use_layout_effect2_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a * 'b
-      -> unit
-      [@@js.call "useLayoutEffect"]
-
-    let use_layout_effect2 callback watchlist =
-      use_layout_effect2_internal Imports.react callback watchlist]
-
-val use_layout_effect3 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
-  [@@js.custom
-    val use_layout_effect3_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a * 'b * 'c
-      -> unit
-      [@@js.call "useLayoutEffect"]
-
-    let use_layout_effect3 callback watchlist =
-      use_layout_effect3_internal Imports.react callback watchlist]
-
-val use_layout_effect4 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
-  [@@js.custom
-    val use_layout_effect4_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a * 'b * 'c * 'd
-      -> unit
-      [@@js.call "useLayoutEffect"]
-
-    let use_layout_effect4 callback watchlist =
-      use_layout_effect4_internal Imports.react callback watchlist]
-
-val use_layout_effect5 :
-  (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
-  [@@js.custom
-    val use_layout_effect5_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a * 'b * 'c * 'd * 'e
-      -> unit
-      [@@js.call "useLayoutEffect"]
-
-    let use_layout_effect5 callback watchlist =
-      use_layout_effect5_internal Imports.react callback watchlist]
-
-val use_layout_effect6 :
-     (unit -> (unit -> unit) option_undefined)
-  -> 'a * 'b * 'c * 'd * 'e * 'f
-  -> unit
-  [@@js.custom
-    val use_layout_effect6_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a * 'b * 'c * 'd * 'e * 'f
-      -> unit
-      [@@js.call "useLayoutEffect"]
-
-    let use_layout_effect6 callback watchlist =
-      use_layout_effect6_internal Imports.react callback watchlist]
-
-val use_layout_effect7 :
-     (unit -> (unit -> unit) option_undefined)
-  -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
-  -> unit
-  [@@js.custom
-    val use_layout_effect7_internal :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
-      -> unit
-      [@@js.call "useLayoutEffect"]
-
-    let use_layout_effect7 callback watchlist =
-      use_layout_effect7_internal Imports.react callback watchlist]
-
 val use_effect_always :
   ?before_render:bool -> (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
+    val _use_effect :
+      Imports.react -> (unit -> (unit -> unit) option_undefined) -> unit
+      [@@js.call "useEffect"]
+
+    val _use_layout_effect :
+      Imports.react -> (unit -> (unit -> unit) option_undefined) -> unit
+      [@@js.call "useLayoutEffect"]
+
     let use_effect_always ?(before_render = false) f =
-      if before_render then use_effect f else use_layout_effect f]
+      (if before_render then _use_layout_effect else _use_effect)
+        Imports.react f]
 
 val use_effect_once :
   ?before_render:bool -> (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
+    val _use_effect :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a array
+      -> unit
+      [@@js.call "useEffect"]
+
+    val _use_layout_effect :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a array
+      -> unit
+      [@@js.call "useLayoutEffect"]
+
     let use_effect_once ?(before_render = false) f =
-      if before_render then use_effect0 f else use_layout_effect0 f]
+      (if before_render then _use_layout_effect else _use_effect)
+        Imports.react f [||]]
 
 val use_effect_on_change :
      ?before_render:bool
@@ -350,15 +146,44 @@ val use_effect_on_change :
   -> 'a array
   -> unit
   [@@js.custom
+    val _use_effect :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a array
+      -> unit
+      [@@js.call "useEffect"]
+
+    val _use_layout_effect :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a array
+      -> unit
+      [@@js.call "useLayoutEffect"]
+
     let use_effect_on_change ?(before_render = false) f values =
-      if before_render then use_effect1 f values
-      else use_layout_effect1 f values]
+      (if before_render then _use_layout_effect else _use_effect)
+        Imports.react f values]
 
 val use_effect_on_change1 :
   ?before_render:bool -> (unit -> (unit -> unit) option_undefined) -> 'a -> unit
   [@@js.custom
-    let use_effect_on_change1 ?(before_render = false) f a =
-      if before_render then use_effect1 f [|a|] else use_layout_effect1 f [|a|]]
+    val _use_effect :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a array
+      -> unit
+      [@@js.call "useEffect"]
+
+    val _use_layout_effect :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a array
+      -> unit
+      [@@js.call "useLayoutEffect"]
+
+    let use_effect_on_change1 ?(before_render = false) f value =
+      (if before_render then _use_layout_effect else _use_effect)
+        Imports.react f [|value|]]
 
 val use_effect_on_change2 :
      ?before_render:bool
@@ -366,9 +191,23 @@ val use_effect_on_change2 :
   -> 'a * 'b
   -> unit
   [@@js.custom
+    val _use_effect2 :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a * 'b
+      -> unit
+      [@@js.call "useEffect"]
+
+    val _use_layout_effect2 :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a * 'b
+      -> unit
+      [@@js.call "useLayoutEffect"]
+
     let use_effect_on_change2 ?(before_render = false) f values =
-      if before_render then use_effect2 f values
-      else use_layout_effect2 f values]
+      (if before_render then _use_layout_effect2 else _use_effect2)
+        Imports.react f values]
 
 val use_effect_on_change3 :
      ?before_render:bool
@@ -376,9 +215,23 @@ val use_effect_on_change3 :
   -> 'a * 'b * 'c
   -> unit
   [@@js.custom
+    val _use_effect3 :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a * 'b * 'c
+      -> unit
+      [@@js.call "useEffect"]
+
+    val _use_layout_effect3 :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a * 'b * 'c
+      -> unit
+      [@@js.call "useLayoutEffect"]
+
     let use_effect_on_change3 ?(before_render = false) f values =
-      if before_render then use_effect3 f values
-      else use_layout_effect3 f values]
+      (if before_render then _use_layout_effect3 else _use_effect3)
+        Imports.react f values]
 
 val use_effect_on_change4 :
      ?before_render:bool
@@ -386,9 +239,23 @@ val use_effect_on_change4 :
   -> 'a * 'b * 'c * 'd
   -> unit
   [@@js.custom
+    val _use_effect4 :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a * 'b * 'c * 'd
+      -> unit
+      [@@js.call "useEffect"]
+
+    val _use_layout_effect4 :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a * 'b * 'c * 'd
+      -> unit
+      [@@js.call "useLayoutEffect"]
+
     let use_effect_on_change4 ?(before_render = false) f values =
-      if before_render then use_effect4 f values
-      else use_layout_effect4 f values]
+      (if before_render then _use_layout_effect4 else _use_effect4)
+        Imports.react f values]
 
 val use_effect_on_change5 :
      ?before_render:bool
@@ -396,9 +263,23 @@ val use_effect_on_change5 :
   -> 'a * 'b * 'c * 'd * 'e
   -> unit
   [@@js.custom
+    val _use_effect5 :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a * 'b * 'c * 'd * 'e
+      -> unit
+      [@@js.call "useEffect"]
+
+    val _use_layout_effect5 :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a * 'b * 'c * 'd * 'e
+      -> unit
+      [@@js.call "useLayoutEffect"]
+
     let use_effect_on_change5 ?(before_render = false) f values =
-      if before_render then use_effect5 f values
-      else use_layout_effect5 f values]
+      (if before_render then _use_layout_effect5 else _use_effect5)
+        Imports.react f values]
 
 val use_effect_on_change6 :
      ?before_render:bool
@@ -406,9 +287,23 @@ val use_effect_on_change6 :
   -> 'a * 'b * 'c * 'd * 'e * 'f
   -> unit
   [@@js.custom
+    val _use_effect6 :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a * 'b * 'c * 'd * 'e * 'f
+      -> unit
+      [@@js.call "useEffect"]
+
+    val _use_layout_effect6 :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a * 'b * 'c * 'd * 'e * 'f
+      -> unit
+      [@@js.call "useLayoutEffect"]
+
     let use_effect_on_change6 ?(before_render = false) f values =
-      if before_render then use_effect6 f values
-      else use_layout_effect6 f values]
+      (if before_render then _use_layout_effect6 else _use_effect6)
+        Imports.react f values]
 
 val use_effect_on_change7 :
      ?before_render:bool
@@ -416,9 +311,23 @@ val use_effect_on_change7 :
   -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
   -> unit
   [@@js.custom
+    val _use_effect7 :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
+      -> unit
+      [@@js.call "useEffect"]
+
+    val _use_layout_effect7 :
+         Imports.react
+      -> (unit -> (unit -> unit) option_undefined)
+      -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
+      -> unit
+      [@@js.call "useLayoutEffect"]
+
     let use_effect_on_change7 ?(before_render = false) f values =
-      if before_render then use_effect7 f values
-      else use_layout_effect7 f values]
+      (if before_render then _use_layout_effect7 else _use_effect7)
+        Imports.react f values]
 
 val use_callback : ('input, 'output) callback -> ('input, 'output) callback
   [@@js.custom
