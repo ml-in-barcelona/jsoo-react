@@ -5,7 +5,7 @@ open Html;
 [@react.component]
 let make = (~count) => {
   open Js_of_ocaml_lwt;
-  React.use_effect1(
+  React.use_effect_on_change1(
     () => {
       open Lwt;
       open Lwt_js;
@@ -29,10 +29,13 @@ let make = (~count) => {
     [|count|],
   );
 
-  React.use_layout_effect(() => {
-    Console.log("use_layout_effect: component updated");
-    None;
-  });
+  React.use_effect_always(
+    ~before_render=true,
+    () => {
+      Console.log("use_layout_effect: component updated");
+      None;
+    },
+  );
 
   <div>
     {"UseEffect: printing delayed counts on the console since 2019 :)"

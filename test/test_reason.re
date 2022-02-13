@@ -146,103 +146,6 @@ let testContext = () => {
   });
 };
 
-let testUseEffect = () => {
-  module UseEffect = {
-    [@react.component]
-    let make = () => {
-      let (count, setCount) = React.use_state(() => 0);
-      React.use_effect0(() => {
-        setCount(count => count + 1);
-        None;
-      });
-      <div> {Printf.sprintf("`count` is %d", count) |> React.string} </div>;
-    };
-  };
-  withContainer(c => {
-    act(() => {React.Dom.render(<UseEffect />, Dom_html.element(c))});
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 1")));
-  });
-};
-
-let testUseEffect2 = () => {
-  module Add2 = {
-    [@react.component]
-    let make = (~a, ~b) => {
-      let (count, setCount) = React.use_state(() => 0);
-      React.use_effect2(
-        () => {
-          setCount(_ => a + b);
-          None;
-        },
-        (a, b),
-      );
-      <div> {Printf.sprintf("`a + b` is %d", count) |> React.string} </div>;
-    };
-  };
-  withContainer(c => {
-    act(() => {React.Dom.render(<Add2 a=1 b=2 />, Dom_html.element(c))});
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`a + b` is 3")));
-    act(() => {React.Dom.render(<Add2 a=1 b=2 />, Dom_html.element(c))});
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`a + b` is 3")));
-    act(() => {React.Dom.render(<Add2 a=2 b=3 />, Dom_html.element(c))});
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`a + b` is 5")));
-  });
-};
-
-let testUseEffect3 = () => {
-  module Use3 = {
-    [@react.component]
-    let make = (~a, ~b, ~c) => {
-      let (count, setCount) = React.use_state(() => 0);
-      React.use_effect3(
-        () => {
-          setCount(count => count + 1);
-          None;
-        },
-        (a, b, c),
-      );
-      <div> {Printf.sprintf("`count` is %d", count) |> React.string} </div>;
-    };
-  };
-  withContainer(c => {
-    let emptyList = [];
-    let fooString = "foo"; /* strings in OCaml are boxed, and we want to keep same reference across renders */
-    let barString = "bar";
-    act(() => {
-      React.Dom.render(
-        <Use3 a=1 b=fooString c=emptyList />,
-        Dom_html.element(c),
-      )
-    });
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 1")));
-    act(() => {
-      React.Dom.render(
-        <Use3 a=1 b=fooString c=emptyList />,
-        Dom_html.element(c),
-      )
-    });
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 1")));
-    act(() => {
-      React.Dom.render(
-        <Use3 a=2 b=fooString c=emptyList />,
-        Dom_html.element(c),
-      )
-    });
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 2")));
-    act(() => {
-      React.Dom.render(
-        <Use3 a=2 b=barString c=emptyList />,
-        Dom_html.element(c),
-      )
-    });
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 3")));
-    act(() => {
-      React.Dom.render(<Use3 a=2 b=barString c=[2] />, Dom_html.element(c))
-    });
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 4")));
-  });
-};
-
 let testUseCallback1 = () => {
   module UseCallback = {
     [@react.component]
@@ -251,12 +154,12 @@ let testUseCallback1 = () => {
         React.use_state(() => (0, "init and"));
       let f =
         React.use_callback1(input => {input ++ " " ++ a ++ " and"}, [|a|]);
-      React.use_effect1(
+      React.use_effect_on_change1(
         () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
           None;
         },
-        [|f|],
+        f,
       );
       <div>
         {Printf.sprintf("`count` is %d, `str` is %s", count, str)
@@ -310,12 +213,12 @@ let testUseCallback4 = () => {
           },
           (a, b, d, e),
         );
-      React.use_effect1(
+      React.use_effect_on_change1(
         () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
           None;
         },
-        [|f|],
+        f,
       );
       <div>
         {Printf.sprintf("`count` is %d, `str` is %s", count, str)
@@ -639,12 +542,12 @@ let testUseMemo1 = () => {
     let make = (~a) => {
       let (count, setCount) = React.use_state(() => 0);
       let result = React.use_memo1(() => {a ++ "2"}, [|a|]);
-      React.use_effect1(
+      React.use_effect_on_change1(
         () => {
           setCount(count => count + 1);
           None;
         },
-        [|result|],
+        result,
       );
       <div> {Printf.sprintf("`count` is %d", count) |> React.string} </div>;
     };
@@ -776,7 +679,7 @@ let testUseRef = () => {
     [@react.component]
     let make = (~cb, ()) => {
       let myRef = React.use_ref(1);
-      React.use_effect0(() => {
+      React.use_effect_once(() => {
         React.Ref.(set_current(myRef, current(myRef) + 1));
         cb(myRef);
         None;
@@ -1288,14 +1191,6 @@ let basic =
 
 let context = "context" >::: ["testContext" >:: testContext];
 
-let use_effect =
-  "use_effect"
-  >::: [
-    "use_effect" >:: testUseEffect,
-    "use_effect2" >:: testUseEffect2,
-    "use_effect3" >:: testUseEffect3,
-  ];
-
 let use_callback =
   "use_callback"
   >::: [
@@ -1390,7 +1285,6 @@ let suite =
   >::: [
     basic,
     context,
-    use_effect,
     use_callback,
     use_state,
     use_reducer,
