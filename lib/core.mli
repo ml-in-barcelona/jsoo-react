@@ -74,18 +74,18 @@ let callback_to_js _ cb = cb
 
 let callback_of_js _ js = js]
 
-val createElement : 'props component -> 'props -> element
+val create_element : 'props component -> 'props -> element
   [@@js.custom
-    val createElement_internal : Imports.react -> 'a component -> 'a -> element
+    val create_element_internal : Imports.react -> 'a component -> 'a -> element
       [@@js.call "createElement"]
 
-    let createElement component props =
-      createElement_internal Imports.react component props]
+    let create_element component props =
+      create_element_internal Imports.react component props]
 
-val createElementVariadic :
+val create_element_variadic :
   'props component -> 'props -> element list -> element
   [@@js.custom
-    val createElementVariadic_internal :
+    val create_element_variadic_internal :
          Imports.react
       -> 'props component
       -> 'props
@@ -93,248 +93,248 @@ val createElementVariadic :
       -> element
       [@@js.call "createElement"]
 
-    let createElementVariadic component props elements =
-      createElementVariadic_internal Imports.react component props elements]
+    let create_element_variadic component props elements =
+      create_element_variadic_internal Imports.react component props elements]
 
-val cloneElement : element -> 'props -> element
+val clone_element : element -> 'props -> element
   [@@js.custom
-    val cloneElement_internal : Imports.react -> element -> 'a -> element
+    val clone_element_internal : Imports.react -> element -> 'a -> element
       [@@js.call "cloneElement"]
 
-    let cloneElement element props =
-      cloneElement_internal Imports.react element props]
+    let clone_element element props =
+      clone_element_internal Imports.react element props]
 
-val useEffect : (unit -> (unit -> unit) option_undefined) -> unit
+val use_effect : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
-    val useEffect_internal :
+    val use_effect_internal :
       Imports.react -> (unit -> (unit -> unit) option_undefined) -> unit
       [@@js.call "useEffect"]
 
-    let useEffect callback = useEffect_internal Imports.react callback]
+    let use_effect callback = use_effect_internal Imports.react callback]
 
-val useEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
+val use_effect0 : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
-    val useEffect0_internal :
+    val use_effect0_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> Ojs.t array
       -> unit
       [@@js.call "useEffect"]
 
-    let useEffect0 callback = useEffect0_internal Imports.react callback [||]]
+    let use_effect0 callback = use_effect0_internal Imports.react callback [||]]
 
-val useEffect1 : (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
+val use_effect1 : (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
   [@@js.custom
-    val useEffect1_internal :
+    val use_effect1_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a array
       -> unit
       [@@js.call "useEffect"]
 
-    let useEffect1 callback watchlist =
-      useEffect1_internal Imports.react callback watchlist]
+    let use_effect1 callback watchlist =
+      use_effect1_internal Imports.react callback watchlist]
 
-val useEffect2 : (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
+val use_effect2 : (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
   [@@js.custom
-    val useEffect2_internal :
+    val use_effect2_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b
       -> unit
       [@@js.call "useEffect"]
 
-    let useEffect2 callback watchlist =
-      useEffect2_internal Imports.react callback watchlist]
+    let use_effect2 callback watchlist =
+      use_effect2_internal Imports.react callback watchlist]
 
-val useEffect3 :
+val use_effect3 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
   [@@js.custom
-    val useEffect3_internal :
+    val use_effect3_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c
       -> unit
       [@@js.call "useEffect"]
 
-    let useEffect3 callback watchlist =
-      useEffect3_internal Imports.react callback watchlist]
+    let use_effect3 callback watchlist =
+      use_effect3_internal Imports.react callback watchlist]
 
-val useEffect4 :
+val use_effect4 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
   [@@js.custom
-    val useEffect4_internal :
+    val use_effect4_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c * 'd
       -> unit
       [@@js.call "useEffect"]
 
-    let useEffect4 callback watchlist =
-      useEffect4_internal Imports.react callback watchlist]
+    let use_effect4 callback watchlist =
+      use_effect4_internal Imports.react callback watchlist]
 
-val useEffect5 :
+val use_effect5 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
   [@@js.custom
-    val useEffect5_internal :
+    val use_effect5_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c * 'd * 'e
       -> unit
       [@@js.call "useEffect"]
 
-    let useEffect5 callback watchlist =
-      useEffect5_internal Imports.react callback watchlist]
+    let use_effect5 callback watchlist =
+      use_effect5_internal Imports.react callback watchlist]
 
-val useEffect6 :
+val use_effect6 :
      (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e * 'f
   -> unit
   [@@js.custom
-    val useEffect6_internal :
+    val use_effect6_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c * 'd * 'e * 'f
       -> unit
       [@@js.call "useEffect"]
 
-    let useEffect6 callback watchlist =
-      useEffect6_internal Imports.react callback watchlist]
+    let use_effect6 callback watchlist =
+      use_effect6_internal Imports.react callback watchlist]
 
-val useEffect7 :
+val use_effect7 :
      (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
   -> unit
   [@@js.custom
-    val useEffect7_internal :
+    val use_effect7_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
       -> unit
       [@@js.call "useEffect"]
 
-    let useEffect7 callback watchlist =
-      useEffect7_internal Imports.react callback watchlist]
+    let use_effect7 callback watchlist =
+      use_effect7_internal Imports.react callback watchlist]
 
-val useLayoutEffect : (unit -> (unit -> unit) option_undefined) -> unit
+val use_layout_effect : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
-    val useLayoutEffect_internal :
+    val use_layout_effect_internal :
       Imports.react -> (unit -> (unit -> unit) option_undefined) -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect callback =
-      useLayoutEffect_internal Imports.react callback]
+    let use_layout_effect callback =
+      use_layout_effect_internal Imports.react callback]
 
-val useLayoutEffect0 : (unit -> (unit -> unit) option_undefined) -> unit
+val use_layout_effect0 : (unit -> (unit -> unit) option_undefined) -> unit
   [@@js.custom
-    val useLayoutEffect0_internal :
+    val use_layout_effect0_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> Ojs.t array
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect0 callback =
-      useLayoutEffect0_internal Imports.react callback [||]]
+    let use_layout_effect0 callback =
+      use_layout_effect0_internal Imports.react callback [||]]
 
-val useLayoutEffect1 :
+val use_layout_effect1 :
   (unit -> (unit -> unit) option_undefined) -> 'a array -> unit
   [@@js.custom
-    val useLayoutEffect1_internal :
+    val use_layout_effect1_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a array
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect1 callback watchlist =
-      useLayoutEffect1_internal Imports.react callback watchlist]
+    let use_layout_effect1 callback watchlist =
+      use_layout_effect1_internal Imports.react callback watchlist]
 
-val useLayoutEffect2 :
+val use_layout_effect2 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b -> unit
   [@@js.custom
-    val useLayoutEffect2_internal :
+    val use_layout_effect2_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect2 callback watchlist =
-      useLayoutEffect2_internal Imports.react callback watchlist]
+    let use_layout_effect2 callback watchlist =
+      use_layout_effect2_internal Imports.react callback watchlist]
 
-val useLayoutEffect3 :
+val use_layout_effect3 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c -> unit
   [@@js.custom
-    val useLayoutEffect3_internal :
+    val use_layout_effect3_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect3 callback watchlist =
-      useLayoutEffect3_internal Imports.react callback watchlist]
+    let use_layout_effect3 callback watchlist =
+      use_layout_effect3_internal Imports.react callback watchlist]
 
-val useLayoutEffect4 :
+val use_layout_effect4 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd -> unit
   [@@js.custom
-    val useLayoutEffect4_internal :
+    val use_layout_effect4_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c * 'd
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect4 callback watchlist =
-      useLayoutEffect4_internal Imports.react callback watchlist]
+    let use_layout_effect4 callback watchlist =
+      use_layout_effect4_internal Imports.react callback watchlist]
 
-val useLayoutEffect5 :
+val use_layout_effect5 :
   (unit -> (unit -> unit) option_undefined) -> 'a * 'b * 'c * 'd * 'e -> unit
   [@@js.custom
-    val useLayoutEffect5_internal :
+    val use_layout_effect5_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c * 'd * 'e
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect5 callback watchlist =
-      useLayoutEffect5_internal Imports.react callback watchlist]
+    let use_layout_effect5 callback watchlist =
+      use_layout_effect5_internal Imports.react callback watchlist]
 
-val useLayoutEffect6 :
+val use_layout_effect6 :
      (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e * 'f
   -> unit
   [@@js.custom
-    val useLayoutEffect6_internal :
+    val use_layout_effect6_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c * 'd * 'e * 'f
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect6 callback watchlist =
-      useLayoutEffect6_internal Imports.react callback watchlist]
+    let use_layout_effect6 callback watchlist =
+      use_layout_effect6_internal Imports.react callback watchlist]
 
-val useLayoutEffect7 :
+val use_layout_effect7 :
      (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
   -> unit
   [@@js.custom
-    val useLayoutEffect7_internal :
+    val use_layout_effect7_internal :
          Imports.react
       -> (unit -> (unit -> unit) option_undefined)
       -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let useLayoutEffect7 callback watchlist =
-      useLayoutEffect7_internal Imports.react callback watchlist]
+    let use_layout_effect7 callback watchlist =
+      use_layout_effect7_internal Imports.react callback watchlist]
 
-val useCallback : ('input, 'output) callback -> ('input, 'output) callback
+val use_callback : ('input, 'output) callback -> ('input, 'output) callback
   [@@js.custom
-    val useCallback_internal :
+    val use_callback_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a array option_undefined
@@ -343,189 +343,189 @@ val useCallback : ('input, 'output) callback -> ('input, 'output) callback
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback cb = useCallback_internal Imports.react cb None]
+    let use_callback cb = use_callback_internal Imports.react cb None]
 
-val useCallback0 : ('input, 'output) callback -> ('input, 'output) callback
+val use_callback0 : ('input, 'output) callback -> ('input, 'output) callback
   [@@js.custom
-    let useCallback0 f = useCallback_internal Imports.react f (Some [||])]
+    let use_callback0 f = use_callback_internal Imports.react f (Some [||])]
 
-val useCallback1 :
+val use_callback1 :
   ('input, 'output) callback -> 'a array -> ('input, 'output) callback
   [@@js.custom
-    val useCallback1_internal :
+    val use_callback1_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a array
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback1 callback watchlist =
-      useCallback1_internal Imports.react callback watchlist]
+    let use_callback1 callback watchlist =
+      use_callback1_internal Imports.react callback watchlist]
 
-val useCallback2 :
+val use_callback2 :
   ('input, 'output) callback -> 'a * 'b -> ('input, 'output) callback
   [@@js.custom
-    val useCallback2_internal :
+    val use_callback2_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a * 'b
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback2 callback watchlist =
-      useCallback2_internal Imports.react callback watchlist]
+    let use_callback2 callback watchlist =
+      use_callback2_internal Imports.react callback watchlist]
 
-val useCallback3 :
+val use_callback3 :
   ('input, 'output) callback -> 'a * 'b * 'c -> ('input, 'output) callback
   [@@js.custom
-    val useCallback3_internal :
+    val use_callback3_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a * 'b * 'c
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback3 callback watchlist =
-      useCallback3_internal Imports.react callback watchlist]
+    let use_callback3 callback watchlist =
+      use_callback3_internal Imports.react callback watchlist]
 
-val useCallback4 :
+val use_callback4 :
   ('input, 'output) callback -> 'a * 'b * 'c * 'd -> ('input, 'output) callback
   [@@js.custom
-    val useCallback4_internal :
+    val use_callback4_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a * 'b * 'c * 'd
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback4 callback watchlist =
-      useCallback4_internal Imports.react callback watchlist]
+    let use_callback4 callback watchlist =
+      use_callback4_internal Imports.react callback watchlist]
 
-val useCallback5 :
+val use_callback5 :
      ('input, 'output) callback
   -> 'a * 'b * 'c * 'd * 'e
   -> ('input, 'output) callback
   [@@js.custom
-    val useCallback5_internal :
+    val use_callback5_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a * 'b * 'c * 'd * 'e
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback5 callback watchlist =
-      useCallback5_internal Imports.react callback watchlist]
+    let use_callback5 callback watchlist =
+      use_callback5_internal Imports.react callback watchlist]
 
-val useCallback6 :
+val use_callback6 :
      ('input, 'output) callback
   -> 'a * 'b * 'c * 'd * 'e * 'f
   -> ('input, 'output) callback
   [@@js.custom
-    val useCallback6_internal :
+    val use_callback6_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a * 'b * 'c * 'd * 'e * 'f
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback6 callback watchlist =
-      useCallback6_internal Imports.react callback watchlist]
+    let use_callback6 callback watchlist =
+      use_callback6_internal Imports.react callback watchlist]
 
-val useCallback7 :
+val use_callback7 :
      ('input, 'output) callback
   -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
   -> ('input, 'output) callback
   [@@js.custom
-    val useCallback7_internal :
+    val use_callback7_internal :
          Imports.react
       -> ('input, 'output) callback
       -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
       -> ('input, 'output) callback
       [@@js.call "useCallback"]
 
-    let useCallback7 callback watchlist =
-      useCallback7_internal Imports.react callback watchlist]
+    let use_callback7 callback watchlist =
+      use_callback7_internal Imports.react callback watchlist]
 
-val useMemo : (unit -> 'value) -> 'value
+val use_memo : (unit -> 'value) -> 'value
   [@@js.custom
-    val useMemo_internal :
+    val use_memo_internal :
       Imports.react -> (unit -> 'value) -> 'any array option_undefined -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo f = useMemo_internal Imports.react f None]
+    let use_memo f = use_memo_internal Imports.react f None]
 
-val useMemo0 : (unit -> 'value) -> 'value
-  [@@js.custom let useMemo0 f = useMemo_internal Imports.react f (Some [||])]
+val use_memo0 : (unit -> 'value) -> 'value
+  [@@js.custom let use_memo0 f = use_memo_internal Imports.react f (Some [||])]
 
-val useMemo1 : (unit -> 'value) -> 'a array -> 'value
+val use_memo1 : (unit -> 'value) -> 'a array -> 'value
   [@@js.custom
-    val useMemo1_internal :
+    val use_memo1_internal :
       Imports.react -> (unit -> 'value) -> 'a array -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo1 callback watchlist =
-      useMemo1_internal Imports.react callback watchlist]
+    let use_memo1 callback watchlist =
+      use_memo1_internal Imports.react callback watchlist]
 
-val useMemo2 : (unit -> 'value) -> 'a * 'b -> 'value
+val use_memo2 : (unit -> 'value) -> 'a * 'b -> 'value
   [@@js.custom
-    val useMemo2_internal :
+    val use_memo2_internal :
       Imports.react -> (unit -> 'value) -> 'a * 'b -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo2 callback watchlist =
-      useMemo2_internal Imports.react callback watchlist]
+    let use_memo2 callback watchlist =
+      use_memo2_internal Imports.react callback watchlist]
 
-val useMemo3 : (unit -> 'value) -> 'a * 'b * 'c -> 'value
+val use_memo3 : (unit -> 'value) -> 'a * 'b * 'c -> 'value
   [@@js.custom
-    val useMemo3_internal :
+    val use_memo3_internal :
       Imports.react -> (unit -> 'value) -> 'a * 'b * 'c -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo3 callback watchlist =
-      useMemo3_internal Imports.react callback watchlist]
+    let use_memo3 callback watchlist =
+      use_memo3_internal Imports.react callback watchlist]
 
-val useMemo4 : (unit -> 'value) -> 'a * 'b * 'c * 'd -> 'value
+val use_memo4 : (unit -> 'value) -> 'a * 'b * 'c * 'd -> 'value
   [@@js.custom
-    val useMemo4_internal :
+    val use_memo4_internal :
       Imports.react -> (unit -> 'value) -> 'a * 'b * 'c * 'd -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo4 callback watchlist =
-      useMemo4_internal Imports.react callback watchlist]
+    let use_memo4 callback watchlist =
+      use_memo4_internal Imports.react callback watchlist]
 
-val useMemo5 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e -> 'value
+val use_memo5 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e -> 'value
   [@@js.custom
-    val useMemo5_internal :
+    val use_memo5_internal :
       Imports.react -> (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo5 callback watchlist =
-      useMemo5_internal Imports.react callback watchlist]
+    let use_memo5 callback watchlist =
+      use_memo5_internal Imports.react callback watchlist]
 
-val useMemo6 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f -> 'value
+val use_memo6 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f -> 'value
   [@@js.custom
-    val useMemo6_internal :
+    val use_memo6_internal :
       Imports.react -> (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo6 callback watchlist =
-      useMemo6_internal Imports.react callback watchlist]
+    let use_memo6 callback watchlist =
+      use_memo6_internal Imports.react callback watchlist]
 
-val useMemo7 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> 'value
+val use_memo7 : (unit -> 'value) -> 'a * 'b * 'c * 'd * 'e * 'f * 'g -> 'value
   [@@js.custom
-    val useMemo7_internal :
+    val use_memo7_internal :
          Imports.react
       -> (unit -> 'value)
       -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
       -> 'value
       [@@js.call "useMemo"]
 
-    let useMemo7 callback watchlist =
-      useMemo7_internal Imports.react callback watchlist]
+    let use_memo7 callback watchlist =
+      use_memo7_internal Imports.react callback watchlist]
 
-val useState : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
+val use_state : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
   [@@js.custom
-    let (useState_internal :
+    let (use_state_internal :
              Imports.react
           -> (unit -> 'state)
           -> 'state * (('state -> 'state) -> unit) ) =
@@ -538,12 +538,12 @@ val useState : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
       in
       (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
 
-    let useState initial = useState_internal Imports.react initial]
+    let use_state initial = use_state_internal Imports.react initial]
 
-val useReducer :
+val use_reducer :
   ('state -> 'action -> 'state) -> 'state -> 'state * ('action -> unit)
   [@@js.custom
-    let (useReducer_internal :
+    let (use_reducer_internal :
              Imports.react
           -> ('state -> 'action -> 'state)
           -> 'state
@@ -560,16 +560,16 @@ val useReducer :
       in
       (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
 
-    let useReducer reducer initial =
-      useReducer_internal Imports.react reducer initial]
+    let use_reducer reducer initial =
+      use_reducer_internal Imports.react reducer initial]
 
-val useReducerWithMapState :
+val use_reducer_with_map_state :
      ('state -> 'action -> 'state)
   -> 'initialState
   -> ('initialState -> 'state)
   -> 'state * ('action -> unit)
   [@@js.custom
-    let (useReducerWithMapState_internal :
+    let (use_reducer_with_map_state_internal :
              Imports.react
           -> ('state -> 'action -> 'state)
           -> 'initialState
@@ -589,8 +589,8 @@ val useReducerWithMapState :
       in
       (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
 
-    let useReducerWithMapState reducer initial mapper =
-      useReducerWithMapState_internal Imports.react reducer initial mapper]
+    let use_reducer_with_map_state reducer initial mapper =
+      use_reducer_with_map_state_internal Imports.react reducer initial mapper]
 
 module Ref : sig
   type 'value t
@@ -605,22 +605,22 @@ module Ref : sig
 
   val current : 'value t -> 'value [@@js.get "current"]
 
-  val setCurrent : 'value t -> 'value -> unit [@@js.set "current"]
+  val set_current : 'value t -> 'value -> unit [@@js.set "current"]
 end
 
-val useRef : 'value -> 'value Ref.t
+val use_ref : 'value -> 'value Ref.t
   [@@js.custom
-    val useRef_internal : Imports.react -> 'value -> 'value Ref.t
+    val use_ref_internal : Imports.react -> 'value -> 'value Ref.t
       [@@js.call "useRef"]
 
-    let useRef value = useRef_internal Imports.react value]
+    let use_ref value = use_ref_internal Imports.react value]
 
-val createRef : unit -> 'a js_nullable Ref.t
+val create_ref : unit -> 'a js_nullable Ref.t
   [@@js.custom
-    val createRef_internal : Imports.react -> unit -> 'a js_nullable Ref.t
+    val create_ref_internal : Imports.react -> unit -> 'a js_nullable Ref.t
       [@@js.call "createRef"]
 
-    let createRef () = createRef_internal Imports.react ()]
+    let create_ref () = create_ref_internal Imports.react ()]
 
 module Context : sig
   type 'props t
@@ -631,27 +631,27 @@ module Context : sig
     val make :
       'props t -> value:'props -> children:element list -> unit -> element
       [@@js.custom
-        let makeProps value =
+        let make_props value =
           Js_of_ocaml.Js.Unsafe.(obj [|("value", inject value)|])
 
         let make context ~value ~children () =
-          createElementVariadic (provider context) (makeProps value) children]
+          create_element_variadic (provider context) (make_props value) children]
   end
 end
 
-val createContext : 'a -> 'a Context.t
+val create_context : 'a -> 'a Context.t
   [@@js.custom
-    val createContext_internal : Imports.react -> 'a -> 'a Context.t
+    val create_context_internal : Imports.react -> 'a -> 'a Context.t
       [@@js.call "createContext"]
 
-    let createContext value = createContext_internal Imports.react value]
+    let create_context value = create_context_internal Imports.react value]
 
-val useContext : 'value Context.t -> 'value
+val use_context : 'value Context.t -> 'value
   [@@js.custom
-    val useContext_internal : Imports.react -> 'a Context.t -> 'a
+    val use_context_internal : Imports.react -> 'a Context.t -> 'a
       [@@js.call "useContext"]
 
-    let useContext ctx = useContext_internal Imports.react ctx]
+    let use_context ctx = use_context_internal Imports.react ctx]
 
 module Children : sig
   [@@@js.implem
@@ -667,31 +667,31 @@ module Children : sig
 
       let map element mapper = map_internal children_internal element mapper]
 
-  val mapWithIndex : element list -> (element -> int -> element) -> element
+  val map_with_index : element list -> (element -> int -> element) -> element
     [@@js.custom
-      val mapWithIndex_internal :
+      val map_with_index_internal :
         Ojs.t -> element list -> (element -> int -> element) -> element
         [@@js.call "map"]
 
-      let mapWithIndex element mapper =
-        mapWithIndex_internal children_internal element mapper]
+      let map_with_index element mapper =
+        map_with_index_internal children_internal element mapper]
 
-  val forEach : element list -> (element -> unit) -> unit
+  val for_each : element list -> (element -> unit) -> unit
     [@@js.custom
-      val forEach_internal : Ojs.t -> element list -> (element -> unit) -> unit
+      val for_each_internal : Ojs.t -> element list -> (element -> unit) -> unit
         [@@js.call "forEach"]
 
-      let forEach element iterator =
-        forEach_internal children_internal element iterator]
+      let for_each element iterator =
+        for_each_internal children_internal element iterator]
 
-  val forEachWithIndex : element list -> (element -> int -> unit) -> unit
+  val for_each_with_index : element list -> (element -> int -> unit) -> unit
     [@@js.custom
-      val forEachWithIndex_internal :
+      val for_each_with_index_internal :
         Ojs.t -> element list -> (element -> int -> unit) -> unit
         [@@js.call "forEach"]
 
-      let forEachWithIndex element iterator =
-        forEachWithIndex_internal children_internal element iterator]
+      let for_each_with_index element iterator =
+        for_each_with_index_internal children_internal element iterator]
 
   val count : element list -> int
     [@@js.custom
@@ -705,12 +705,12 @@ module Children : sig
 
       let only element = only_internal children_internal element]
 
-  val toArray : element list -> element array
+  val to_array : element list -> element array
     [@@js.custom
-      val toArray_internal : Ojs.t -> element list -> element array
+      val to_array_internal : Ojs.t -> element list -> element array
         [@@js.call "toArray"]
 
-      let toArray element = toArray_internal children_internal element]
+      let to_array element = to_array_internal children_internal element]
 end
 
 module Fragment : sig
@@ -725,7 +725,7 @@ module Fragment : sig
 
       let fragment_internal = fragment_internal' Imports.react
 
-      let makeProps ?key () =
+      let make_props ?key () =
         match key with
         | Some k ->
             Js_of_ocaml.Js.Unsafe.(obj [|("key", inject k)|])
@@ -733,21 +733,21 @@ module Fragment : sig
             Js_of_ocaml.Js.Unsafe.(obj [||])
 
       let make ~children ?key () =
-        createElementVariadic
+        create_element_variadic
           (to_component fragment_internal)
-          (makeProps ?key ()) children]
+          (make_props ?key ()) children]
 end
 
 (* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
    Although Reason parser doesn't support it so that's a requirement before adding it here *)
-val createFragment : element list -> element
+val create_fragment : element list -> element
   [@@js.custom
-    val createFragment_internal :
+    val create_fragment_internal :
       Imports.react -> Ojs.t -> Ojs.t -> (element list[@js.variadic]) -> element
       [@@js.call "createElement"]
 
-    let createFragment l =
-      createFragment_internal Imports.react Fragment.fragment_internal Ojs.null
+    let create_fragment l =
+      create_fragment_internal Imports.react Fragment.fragment_internal Ojs.null
         l]
 
 val memo : 'props component -> 'props component
@@ -757,17 +757,18 @@ val memo : 'props component -> 'props component
 
     let memo component = memo_internal Imports.react component]
 
-val memoCustomCompareProps :
+val memo_custom_compare_props :
   'props component -> ('props -> 'props -> bool) -> 'props component
   [@@js.custom
-    val memoCustomCompareProps_internal :
+    val memo_custom_compare_props_internal :
          Imports.react
       -> 'props component
       -> ('props -> 'props -> bool)
       -> 'props component
       [@@js.call "memo"]
 
-    let memoCustomCompareProps component compare =
-      memoCustomCompareProps_internal Imports.react component compare]
+    let memo_custom_compare_props component compare =
+      memo_custom_compare_props_internal Imports.react component compare]
 
-val setDisplayName : 'props component -> string -> unit [@@js.set "displayName"]
+val set_display_name : 'props component -> string -> unit
+  [@@js.set "displayName"]

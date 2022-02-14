@@ -27,7 +27,7 @@ let withContainer f =
   let container = Html.createDiv doc in
   Dom.appendChild doc##.body container ;
   let result = f container in
-  ignore (React.Dom.unmountComponentAtNode container) ;
+  ignore (React.Dom.unmount_component_at_node container) ;
   Dom.removeChild doc##.body container ;
   result
 
@@ -92,7 +92,7 @@ let testOptionalPropsLowercase () =
 
 let testContext () =
   let module DummyContext = struct
-    let context = React.createContext "foo"
+    let context = React.create_context "foo"
 
     module Provider = struct
       let make = Context.Provider.make context
@@ -100,7 +100,7 @@ let testContext () =
 
     module Consumer = struct
       let%component make () =
-        let value = React.useContext context in
+        let value = React.use_context context in
         div [||] [value |> string]
     end
   end in
@@ -115,8 +115,8 @@ let testContext () =
 let testUseEffect () =
   let module UseEffect = struct
     let%component make () =
-      let count, setCount = React.useState (fun () -> 0) in
-      React.useEffect0 (fun () ->
+      let count, setCount = React.use_state (fun () -> 0) in
+      React.use_effect0 (fun () ->
           setCount (fun count -> count + 1) ;
           None ) ;
       div [||] [Printf.sprintf "`count` is %d" count |> string]
@@ -128,8 +128,8 @@ let testUseEffect () =
 let testUseEffect2 () =
   let module Add2 = struct
     let%component make ~a ~b =
-      let count, setCount = React.useState (fun () -> 0) in
-      React.useEffect2
+      let count, setCount = React.use_state (fun () -> 0) in
+      React.use_effect2
         (fun () ->
           setCount (fun _ -> a + b) ;
           None )
@@ -150,8 +150,8 @@ let testUseEffect2 () =
 let testUseEffect3 () =
   let module Use3 = struct
     let%component make ~a ~b ~c =
-      let count, setCount = React.useState (fun () -> 0) in
-      React.useEffect3
+      let count, setCount = React.use_state (fun () -> 0) in
+      React.use_effect3
         (fun () ->
           setCount (fun count -> count + 1) ;
           None )
@@ -192,12 +192,12 @@ let testUseCallback1 () =
   let module UseCallback = struct
     let%component make ~a =
       let (count, str), setCountStr =
-        React.useState (fun () -> (0, "init and"))
+        React.use_state (fun () -> (0, "init and"))
       in
       let f =
-        React.useCallback1 (fun input -> input ^ " " ^ a ^ " and") [|a|]
+        React.use_callback1 (fun input -> input ^ " " ^ a ^ " and") [|a|]
       in
-      React.useEffect1
+      React.use_effect1
         (fun () ->
           setCountStr (fun (count, str) -> (count + 1, f str)) ;
           None )
@@ -223,15 +223,15 @@ let testUseCallback1 () =
 let testUseCallback4 () =
   let module UseCallback = struct
     let%component make ~a ~b ~d ~e =
-      let (count, str), setCountStr = React.useState (fun () -> (0, "init")) in
+      let (count, str), setCountStr = React.use_state (fun () -> (0, "init")) in
       let f =
-        React.useCallback4
+        React.use_callback4
           (fun _input ->
             Printf.sprintf "a: %s, b: %d, d: [%d], e: [|%d|]" a b (List.nth d 0)
               e.(0) )
           (a, b, d, e)
       in
-      React.useEffect1
+      React.use_effect1
         (fun () ->
           setCountStr (fun (count, str) -> (count + 1, f str)) ;
           None )
@@ -282,7 +282,7 @@ let testUseCallback4 () =
 let testUseState () =
   let module DummyStateComponent = struct
     let%component make ?(initialValue = 0) () =
-      let counter, setCounter = React.useState (fun () -> initialValue) in
+      let counter, setCounter = React.use_state (fun () -> initialValue) in
       fragment
         [ div [|className "value"|] [React.int counter]
         ; button
@@ -324,7 +324,7 @@ let testUseStateUpdaterReference () =
     let prevSetCount = ref None
 
     let%component make () =
-      let _count, setCount = React.useState (fun () -> 0) in
+      let _count, setCount = React.use_state (fun () -> 0) in
       let equal =
         match (setCount, !prevSetCount) with
         | r1, Some r2 when r1 == r2 ->
@@ -347,7 +347,7 @@ let testUseReducer () =
 
     let%component make ?(initialValue = 0) () =
       let state, send =
-        React.useReducer
+        React.use_reducer
           (fun state action ->
             match action with Increment -> state + 1 | Decrement -> state - 1 )
           initialValue
@@ -390,7 +390,7 @@ let testUseReducerWithMapState () =
 
     let%component make ?(initialValue = 0) () =
       let state, send =
-        React.useReducerWithMapState
+        React.use_reducer_with_map_state
           (fun state action ->
             match action with Increment -> state + 1 | Decrement -> state - 1 )
           initialValue
@@ -435,7 +435,7 @@ let testUseReducerDispatchReference () =
     let prevDispatch = ref None
 
     let%component make () =
-      let _, dispatch = React.useReducer (fun _ _ -> 2) 2 in
+      let _, dispatch = React.use_reducer (fun _ _ -> 2) 2 in
       let equal =
         match (dispatch, !prevDispatch) with
         | r1, Some r2 when r1 == r2 ->
@@ -455,9 +455,9 @@ let testUseReducerDispatchReference () =
 let testUseMemo1 () =
   let module UseMemo = struct
     let%component make ~a =
-      let count, setCount = React.useState (fun () -> 0) in
-      let result = React.useMemo1 (fun () -> a ^ "2") [|a|] in
-      React.useEffect1
+      let count, setCount = React.use_state (fun () -> 0) in
+      let result = React.use_memo1 (fun () -> a ^ "2") [|a|] in
+      React.use_effect1
         (fun () ->
           setCount (fun count -> count + 1) ;
           None )
@@ -505,7 +505,7 @@ let testMemoCustomCompareProps () =
   let numRenders = ref 0 in
   let module Memoized = struct
     let%component make =
-      React.memoCustomCompareProps
+      React.memo_custom_compare_props
         (fun ~a ->
           numRenders := !numRenders + 1 ;
           div [||]
@@ -529,9 +529,9 @@ let testMemoCustomCompareProps () =
         (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1")) )
 
 let testCreateRef () =
-  let reactRef = React.createRef () in
+  let reactRef = React.create_ref () in
   assert_equal (React.Ref.current reactRef) Js_of_ocaml.Js.null ;
-  React.Ref.setCurrent reactRef (Js_of_ocaml.Js.Opt.return 1) ;
+  React.Ref.set_current reactRef (Js_of_ocaml.Js.Opt.return 1) ;
   assert_equal (React.Ref.current reactRef) (Js_of_ocaml.Js.Opt.return 1)
 
 let testForwardRef () =
@@ -544,7 +544,7 @@ let testForwardRef () =
   withContainer (fun c ->
       let count = ref 0 in
       let buttonRef =
-        React.Dom.Ref.callbackDomRef (fun _ref -> count := !count + 1)
+        React.Dom.Ref.callback_dom_ref (fun _ref -> count := !count + 1)
       in
       act (fun () ->
           React.Dom.render
@@ -555,10 +555,10 @@ let testForwardRef () =
 let testUseRef () =
   let module DummyComponentWithRefAndEffect = struct
     let%component make ~cb () =
-      let myRef = React.useRef 1 in
-      React.useEffect0 (fun () ->
+      let myRef = React.use_ref 1 in
+      React.use_effect0 (fun () ->
           let open React.Ref in
-          setCurrent myRef (current myRef + 1) ;
+          set_current myRef (current myRef + 1) ;
           cb myRef ;
           None ) ;
       div [||] []
@@ -578,8 +578,8 @@ let testChildrenMapWithIndex () =
   let module DummyComponentThatMapsChildren = struct
     let%component make ~children () =
       div [||]
-        [ React.Children.mapWithIndex children (fun element index ->
-              React.cloneElement element
+        [ React.Children.map_with_index children (fun element index ->
+              React.clone_element element
                 (let open Js_of_ocaml.Js.Unsafe in
                 obj [|("key", inject index); ("data-index", inject index)|]) )
         ]
@@ -686,7 +686,7 @@ let testWithId () =
   let module WithTestId = struct
     let%component make ~id ~children () =
       React.Children.map children (fun child ->
-          React.cloneElement child
+          React.clone_element child
             (Js.Unsafe.obj
                [|("data-testid", Js.Unsafe.inject (Js.string id))|] ) )
   end in
@@ -790,38 +790,39 @@ let basic =
 
 let context = "context" >::: ["testContext" >:: testContext]
 
-let useEffect =
-  "useEffect"
-  >::: [ "useEffect" >:: testUseEffect
-       ; "useEffect2" >:: testUseEffect2
-       ; "useEffect3" >:: testUseEffect3 ]
+let use_effect =
+  "use_effect"
+  >::: [ "use_effect" >:: testUseEffect
+       ; "use_effect2" >:: testUseEffect2
+       ; "use_effect3" >:: testUseEffect3 ]
 
-let useCallback =
-  "useCallback"
-  >::: ["useCallback1" >:: testUseCallback1; "useCallback4" >:: testUseCallback4]
+let use_callback =
+  "use_callback"
+  >::: [ "use_callback1" >:: testUseCallback1
+       ; "use_callback4" >:: testUseCallback4 ]
 
-let useState =
-  "useState"
-  >::: [ "useState" >:: testUseState
+let use_state =
+  "use_state"
+  >::: [ "use_state" >:: testUseState
        ; "useStateUpdaterReference" >:: testUseStateUpdaterReference ]
 
-let useReducer =
-  "useReducer"
-  >::: [ "useReducer" >:: testUseReducer
-       ; "useReducerWithMapState" >:: testUseReducerWithMapState
-       ; "useReducerDispatchReference" >:: testUseReducerDispatchReference ]
+let use_reducer =
+  "use_reducer"
+  >::: [ "use_reducer" >:: testUseReducer
+       ; "use_reducer_with_map_state" >:: testUseReducerWithMapState
+       ; "use_reducerDispatchReference" >:: testUseReducerDispatchReference ]
 
 let memoization =
   "memo"
-  >::: [ "useMemo1" >:: testUseMemo1
+  >::: [ "use_memo1" >:: testUseMemo1
        ; "memo" >:: testMemo
        ; "memoCustomCompareProps" >:: testMemoCustomCompareProps ]
 
 let refs =
   "refs"
-  >::: [ "createRef" >:: testCreateRef
-       ; "forwardRef" >:: testForwardRef
-       ; "useRef" >:: testUseRef ]
+  >::: [ "create_ref" >:: testCreateRef
+       ; "forward_ref" >:: testForwardRef
+       ; "use_ref" >:: testUseRef ]
 
 let children =
   "children"
@@ -859,10 +860,10 @@ let suite =
   "ocaml"
   >::: [ basic
        ; context
-       ; useEffect
-       ; useCallback
-       ; useState
-       ; useReducer
+       ; use_effect
+       ; use_callback
+       ; use_state
+       ; use_reducer
        ; memoization
        ; refs
        ; children
