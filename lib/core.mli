@@ -1,10 +1,15 @@
+(** A React element *)
 type element = private Ojs.t
 
 val element_of_js : Ojs.t -> element
+(** Conversion function for gen_js_api *)
 
 val element_to_js : element -> Ojs.t
+(** Conversion function for gen_js_api *)
 
-val null : element [@@js.custom let null = Ojs.null]
+val null : element
+  [@@js.custom let null = Ojs.null]
+(** A React element that will render the [null] value *)
 
 val string : string -> element [@@js.cast]
 

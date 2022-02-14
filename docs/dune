@@ -1,0 +1,14 @@
+(include_subdirs unqualified)
+
+(executables
+ (names All_snippets)
+ (modes js)
+ (libraries js_of_ocaml react)
+ (preprocess
+  (pps jsoo_react_ppx)))
+
+(rule
+ (alias runtest)
+ (deps All_snippets.bc.js)
+ (action
+  (run echo "docs")))
