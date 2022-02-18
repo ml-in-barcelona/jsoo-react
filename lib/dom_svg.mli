@@ -395,7 +395,7 @@ module Prop : sig
 
   val strokeWidth : string -> t
 
-  val style : Dom.block -> t
+  val style : Dom.Style.t -> t
 
   val surfaceScale : string -> t
 
