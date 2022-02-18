@@ -1,6 +1,33 @@
 module Prop = struct
   include Dom_dsl_core.Prop
-  include Dom_global_attributes
+
+  (* global html attributes *)
+
+  let accessKey = string "accessKey"
+
+  let className = string "className" (* substitute for "class" *)
+
+  let contentEditable = bool "contentEditable"
+
+  let dir = string "dir" (* "ltr", "rtl" or "auto" *)
+
+  let draggable = bool "draggable"
+
+  let hidden = bool "hidden"
+
+  let id = string "id"
+
+  let lang = string "lang"
+
+  let role = string "role" (* ARIA role *)
+
+  let style = (any "style" : Dom.Style.t -> t)
+
+  let spellCheck = bool "spellCheck"
+
+  let tabIndex = int "tabIndex"
+
+  let title = string "title"
 
   (* List of props adapted from rescript-react:
    * https://github.com/rescript-lang/rescript-react/blob/16dcbd8d079c7c20f3bd48fd677dfe7d70d0d020/src/ReactDOM.res#L51

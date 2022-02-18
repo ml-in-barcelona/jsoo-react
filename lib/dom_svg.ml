@@ -1,6 +1,5 @@
 module Prop = struct
   include Dom_dsl_core.Prop
-  include Dom_global_attributes
 
   open struct
     let string_prop = string
@@ -49,6 +48,8 @@ module Prop = struct
   let calcMode = string_prop "calcMode"
 
   let capHeight = string_prop "capHeight"
+
+  let className = string_prop "className" (* substitute for "class" *)
 
   let clip = string_prop "clip"
 
@@ -172,6 +173,8 @@ module Prop = struct
 
   let horizOriginX = string_prop "horizOriginX"
 
+  let id = string_prop "id"
+
   let ideographic = string_prop "ideographic"
 
   let imageRendering = string_prop "imageRendering"
@@ -203,6 +206,8 @@ module Prop = struct
   let keySplines = string_prop "keySplines"
 
   let keyTimes = string_prop "keyTimes"
+
+  let lang = string_prop "lang"
 
   let lengthAdjust = string_prop "lengthAdjust"
 
@@ -372,9 +377,13 @@ module Prop = struct
 
   let strokeWidth = string_prop "strokeWidth"
 
+  let style = (any "style" : Dom.Style.t -> t)
+
   let surfaceScale = string_prop "surfaceScale"
 
   let systemLanguage = string_prop "systemLanguage"
+
+  let tabIndex = int "tabIndex"
 
   let tableValues = string_prop "tableValues"
 
