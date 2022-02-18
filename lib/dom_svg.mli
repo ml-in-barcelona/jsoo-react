@@ -67,6 +67,8 @@ module Prop : sig
 
   val capHeight : string -> t
 
+  val className : string -> t
+
   val clip : string -> t
 
   val clipPath : string -> t
@@ -189,6 +191,8 @@ module Prop : sig
 
   val horizOriginX : string -> t
 
+  val id : string -> t
+
   val ideographic : string -> t
 
   val imageRendering : string -> t
@@ -220,6 +224,8 @@ module Prop : sig
   val keySplines : string -> t
 
   val keyTimes : string -> t
+
+  val lang : string -> t
 
   val lengthAdjust : string -> t
 
@@ -389,9 +395,13 @@ module Prop : sig
 
   val strokeWidth : string -> t
 
+  val style : Dom.block -> t
+
   val surfaceScale : string -> t
 
   val systemLanguage : string -> t
+
+  val tabIndex : int -> t
 
   val tableValues : string -> t
 
