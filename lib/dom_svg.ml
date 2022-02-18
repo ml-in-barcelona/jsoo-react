@@ -1,5 +1,6 @@
 module Prop = struct
   include Dom_dsl_core.Prop
+  include Dom_aria_attributes
 
   open struct
     let string_prop = string
