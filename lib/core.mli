@@ -330,7 +330,7 @@ val use_effect_on_change7 :
         Imports.react f values]
 
 val use_callback1 :
-  ('input, 'output) callback -> 'a array -> ('input, 'output) callback
+  ('input, 'output) callback -> 'a -> ('input, 'output) callback
   [@@js.custom
     (* Important: we don't want to use an arrow type to represent returning callback (i.e. (Ojs.t -> Ojs.t)) as the callback
        would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
@@ -342,7 +342,7 @@ val use_callback1 :
       [@@js.call "useCallback"]
 
     let use_callback1 callback watchlist =
-      use_callback1_internal Imports.react callback watchlist]
+      use_callback1_internal Imports.react callback [|watchlist|]]
 
 val use_callback2 :
   ('input, 'output) callback -> 'a * 'b -> ('input, 'output) callback

@@ -152,8 +152,7 @@ let testUseCallback1 = () => {
     let make = (~a) => {
       let ((count, str), setCountStr) =
         React.use_state(() => (0, "init and"));
-      let f =
-        React.use_callback1(input => {input ++ " " ++ a ++ " and"}, [|a|]);
+      let f = React.use_callback1(input => {input ++ " " ++ a ++ " and"}, a);
       React.use_effect_on_change1(
         () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
