@@ -540,6 +540,13 @@ val use_reducer :
 module Ref : sig
   type 'value t
 
+  val make : unit -> 'a js_nullable t
+    [@@js.custom
+      val make_internal : Imports.react -> unit -> 'a js_nullable t
+        [@@js.call "createRef"]
+
+      let make () = make_internal Imports.react ()]
+
   [@@@js.stop]
 
   val t_of_js : (Ojs.t -> 'value) -> Ojs.t -> 'value t
@@ -559,13 +566,6 @@ val use_ref : 'value -> 'value Ref.t
       [@@js.call "useRef"]
 
     let use_ref value = use_ref_internal Imports.react value]
-
-val create_ref : unit -> 'a js_nullable Ref.t
-  [@@js.custom
-    val create_ref_internal : Imports.react -> unit -> 'a js_nullable Ref.t
-      [@@js.call "createRef"]
-
-    let create_ref () = create_ref_internal Imports.react ()]
 
 module Context : sig
   type 'props t
