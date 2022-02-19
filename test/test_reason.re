@@ -121,7 +121,7 @@ let testOptionalPropsLowercase = () => {
 
 let testContext = () => {
   module DummyContext = {
-    let context = React.create_context("foo");
+    let context = React.Context.make("foo");
     module Provider = {
       let make = React.Context.Provider.make(context);
     };
