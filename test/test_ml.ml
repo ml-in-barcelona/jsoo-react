@@ -155,9 +155,7 @@ let testUseCallback1 () =
       let (count, str), setCountStr =
         React.use_state (fun () -> (0, "init and"))
       in
-      let f =
-        React.use_callback1 (fun input -> input ^ " " ^ a ^ " and") [|a|]
-      in
+      let f = React.use_callback1 (fun input -> input ^ " " ^ a ^ " and") a in
       React.use_effect_on_change1
         (fun () ->
           setCountStr (fun (count, str) -> (count + 1, f str)) ;
