@@ -540,7 +540,7 @@ let testUseMemo1 = () => {
     [@react.component]
     let make = (~a) => {
       let (count, setCount) = React.use_state(() => 0);
-      let result = React.use_memo1(() => {a ++ "2"}, [|a|]);
+      let result = React.use_memo1(() => {a ++ "2"}, a);
       React.use_effect_on_change1(
         () => {
           setCount(count => count + 1);

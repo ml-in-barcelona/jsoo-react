@@ -428,14 +428,14 @@ val use_callback7 :
     let use_callback7 callback watchlist =
       use_callback7_internal Imports.react callback watchlist]
 
-val use_memo1 : (unit -> 'value) -> 'a array -> 'value
+val use_memo1 : (unit -> 'value) -> 'a -> 'value
   [@@js.custom
     val use_memo1_internal :
       Imports.react -> (unit -> 'value) -> 'a array -> 'value
       [@@js.call "useMemo"]
 
     let use_memo1 callback watchlist =
-      use_memo1_internal Imports.react callback watchlist]
+      use_memo1_internal Imports.react callback [|watchlist|]]
 
 val use_memo2 : (unit -> 'value) -> 'a * 'b -> 'value
   [@@js.custom
