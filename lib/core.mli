@@ -682,18 +682,6 @@ module Fragment : sig
           (make_props ?key ()) children]
 end
 
-(* TODO: add key: https://reactjs.org/docs/fragments.html#keyed-fragments
-   Although Reason parser doesn't support it so that's a requirement before adding it here *)
-val create_fragment : element list -> element
-  [@@js.custom
-    val create_fragment_internal :
-      Imports.react -> Ojs.t -> Ojs.t -> (element list[@js.variadic]) -> element
-      [@@js.call "createElement"]
-
-    let create_fragment l =
-      create_fragment_internal Imports.react Fragment.fragment_internal Ojs.null
-        l]
-
 val memo : 'props component -> 'props component
   [@@js.custom
     val memo_internal : Imports.react -> 'props component -> 'props component
