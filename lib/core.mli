@@ -329,26 +329,11 @@ val use_effect_on_change7 :
       (if before_render then _use_layout_effect7 else _use_effect7)
         Imports.react f values]
 
-val use_callback : ('input, 'output) callback -> ('input, 'output) callback
-  [@@js.custom
-    val use_callback_internal :
-         Imports.react
-      -> ('input, 'output) callback
-      -> 'a array option_undefined
-         (* Important: we don't want to use an arrow type to represent returning callback (i.e. (Ojs.t -> Ojs.t)) as the callback
-            would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
-      -> ('input, 'output) callback
-      [@@js.call "useCallback"]
-
-    let use_callback cb = use_callback_internal Imports.react cb None]
-
-val use_callback0 : ('input, 'output) callback -> ('input, 'output) callback
-  [@@js.custom
-    let use_callback0 f = use_callback_internal Imports.react f (Some [||])]
-
 val use_callback1 :
   ('input, 'output) callback -> 'a array -> ('input, 'output) callback
   [@@js.custom
+    (* Important: we don't want to use an arrow type to represent returning callback (i.e. (Ojs.t -> Ojs.t)) as the callback
+       would get wrapped inside caml_js_wrap_callback_strict in the resulting code *)
     val use_callback1_internal :
          Imports.react
       -> ('input, 'output) callback
