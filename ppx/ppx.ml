@@ -700,7 +700,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
             (* here's where we spelunk! *)
             spelunk_for_fun_expr return_expr
         (* let make = React.forward_ref((~prop) => ...) or
-           let make = React.memoCustomCompareProps((~prop) => ..., compareProps()) *)
+           let make = React.memo((~prop) => ..., compareProps()) *)
         | { pexp_desc=
               Pexp_apply
                 ( _wrapper_expr
