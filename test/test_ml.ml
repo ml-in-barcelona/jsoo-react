@@ -416,7 +416,7 @@ let testUseMemo1 () =
   let module UseMemo = struct
     let%component make ~a =
       let count, setCount = React.use_state (fun () -> 0) in
-      let result = React.use_memo1 (fun () -> a ^ "2") [|a|] in
+      let result = React.use_memo1 (fun () -> a ^ "2") a in
       React.use_effect_on_change1
         (fun () ->
           setCount (fun count -> count + 1) ;
