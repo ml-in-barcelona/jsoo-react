@@ -92,7 +92,7 @@ let testOptionalPropsLowercase () =
 
 let testContext () =
   let module DummyContext = struct
-    let context = React.create_context "foo"
+    let context = React.Context.make "foo"
 
     module Provider = struct
       let make = Context.Provider.make context

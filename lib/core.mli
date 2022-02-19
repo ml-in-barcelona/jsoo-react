@@ -570,6 +570,13 @@ val use_ref : 'value -> 'value Ref.t
 module Context : sig
   type 'props t
 
+  val make : 'a -> 'a t
+    [@@js.custom
+      val make_internal : Imports.react -> 'a -> 'a t
+        [@@js.call "createContext"]
+
+      let make value = make_internal Imports.react value]
+
   val provider : 'props t -> 'props component [@@js.get "Provider"]
 
   module Provider : sig
@@ -583,13 +590,6 @@ module Context : sig
           create_element_variadic (provider context) (make_props value) children]
   end
 end
-
-val create_context : 'a -> 'a Context.t
-  [@@js.custom
-    val create_context_internal : Imports.react -> 'a -> 'a Context.t
-      [@@js.call "createContext"]
-
-    let create_context value = create_context_internal Imports.react value]
 
 val use_context : 'value Context.t -> 'value
   [@@js.custom
