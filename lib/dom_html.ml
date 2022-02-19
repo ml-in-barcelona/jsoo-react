@@ -1,5 +1,6 @@
 module Prop = struct
   include Dom_dsl_core.Prop
+  include Dom_aria_attributes
 
   (* List of props adapted from rescript-react:
    * https://github.com/rescript-lang/rescript-react/blob/16dcbd8d079c7c20f3bd48fd677dfe7d70d0d020/src/ReactDOM.res#L51
