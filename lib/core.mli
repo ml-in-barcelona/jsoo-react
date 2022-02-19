@@ -428,17 +428,6 @@ val use_callback7 :
     let use_callback7 callback watchlist =
       use_callback7_internal Imports.react callback watchlist]
 
-val use_memo : (unit -> 'value) -> 'value
-  [@@js.custom
-    val use_memo_internal :
-      Imports.react -> (unit -> 'value) -> 'any array option_undefined -> 'value
-      [@@js.call "useMemo"]
-
-    let use_memo f = use_memo_internal Imports.react f None]
-
-val use_memo0 : (unit -> 'value) -> 'value
-  [@@js.custom let use_memo0 f = use_memo_internal Imports.react f (Some [||])]
-
 val use_memo1 : (unit -> 'value) -> 'a array -> 'value
   [@@js.custom
     val use_memo1_internal :
