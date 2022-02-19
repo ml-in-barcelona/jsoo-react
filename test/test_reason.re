@@ -644,7 +644,7 @@ let testMemoCustomCompareProps = () => {
 };
 
 let testCreateRef = () => {
-  let reactRef = React.create_ref();
+  let reactRef = React.Ref.make();
   assert_equal(React.Ref.current(reactRef), Js_of_ocaml.Js.null);
   React.Ref.set_current(reactRef, Js_of_ocaml.Js.Opt.return(1));
   assert_equal(React.Ref.current(reactRef), Js_of_ocaml.Js.Opt.return(1));

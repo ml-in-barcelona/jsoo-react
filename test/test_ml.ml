@@ -489,7 +489,7 @@ let testMemoCustomCompareProps () =
         (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1")) )
 
 let testCreateRef () =
-  let reactRef = React.create_ref () in
+  let reactRef = React.Ref.make () in
   assert_equal (React.Ref.current reactRef) Js_of_ocaml.Js.null ;
   React.Ref.set_current reactRef (Js_of_ocaml.Js.Opt.return 1) ;
   assert_equal (React.Ref.current reactRef) (Js_of_ocaml.Js.Opt.return 1)
