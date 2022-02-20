@@ -700,13 +700,14 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
             (* here's where we spelunk! *)
             spelunk_for_fun_expr return_expr
         (* let make = React.forward_ref((~prop) => ...) or
-           let make = React.memoCustomCompareProps((~prop) => ..., compareProps()) *)
+           let make = React.memo(~compare, (~prop) => ...) *)
         | { pexp_desc=
               Pexp_apply
                 ( _wrapper_expr
                 , ( [(Nolabel, inner_fun_expr)]
-                  | [ (Nolabel, inner_fun_expr)
-                    ; (Nolabel, {pexp_desc= Pexp_fun _}) ] ) ) } ->
+                  | [(Labelled "compare", _); (Nolabel, inner_fun_expr)]
+                  | [(Nolabel, inner_fun_expr); (Labelled "compare", _)] ) ) }
+          ->
             spelunk_for_fun_expr inner_fun_expr
         | {pexp_desc= Pexp_sequence (_wrapper_expr, inner_fun_expr)} ->
             spelunk_for_fun_expr inner_fun_expr
@@ -829,13 +830,14 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
             let () = has_application := true in
             let _, has_unit, exp = spelunk_for_fun_expr internalExpression in
             ((fun exp -> Exp.apply wrapper_expr [(nolabel, exp)]), has_unit, exp)
-        (* let make = React.memoCustomCompareProps((~prop) => ..., (prevPros, nextProps) => true) *)
+        (* let make = React.memo(~compare, (~prop) => ...) *)
         | { pexp_desc=
               Pexp_apply
                 ( wrapper_expr
-                , [ (Nolabel, internalExpression)
-                  ; ((Nolabel, {pexp_desc= Pexp_fun _}) as compareProps) ] ) }
-          ->
+                , ( [ (Nolabel, internalExpression)
+                    ; ((Labelled "compare", _) as compareProps) ]
+                  | [ ((Labelled "compare", _) as compareProps)
+                    ; (Nolabel, internalExpression) ] ) ) } ->
             let () = has_application := true in
             let _, has_unit, exp = spelunk_for_fun_expr internalExpression in
             ( (fun exp -> Exp.apply wrapper_expr [(nolabel, exp); compareProps])
