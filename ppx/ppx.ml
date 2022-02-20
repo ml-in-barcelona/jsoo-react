@@ -674,7 +674,7 @@ let make_js_comp ~loc ~fn_name ~forward_ref ~has_unit ~named_arg_list
 
 (* Builds the intermediate function with labelled arguments that will call make_props.
    [body] is the the component implementation as originally written in source,
-   but without any wrappers like React.memo or forwar_ref *)
+   but without any wrappers like React.memo or forward_ref *)
 let make_ml_comp ~loc ~fn_name ~body rest =
   Exp.mk ~loc
     (Pexp_let (Nonrecursive, [Vb.mk (Pat.var {loc; txt= fn_name}) body], rest))
@@ -700,21 +700,20 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
             (* here's where we spelunk! *)
             spelunk_for_fun_expr return_expr
         (* let make = React.forward_ref((~prop) => ...) or
-           let make = React.memo((~prop) => ..., compareProps()) *)
+           let make = React.memo((~prop) => ..., ~compare=compareProps()) *)
         | { pexp_desc=
               Pexp_apply
                 ( _wrapper_expr
                 , ( [(Nolabel, inner_fun_expr)]
-                  | [ (Nolabel, inner_fun_expr)
-                    ; (Nolabel, {pexp_desc= Pexp_fun _}) ] ) ) } ->
+                  | [ (Labelled _, {pexp_desc= Pexp_fun _})
+                    ; (Nolabel, inner_fun_expr) ] ) ) } ->
             spelunk_for_fun_expr inner_fun_expr
         | {pexp_desc= Pexp_sequence (_wrapper_expr, inner_fun_expr)} ->
             spelunk_for_fun_expr inner_fun_expr
-        | _ ->
-            raise
-              (Invalid_argument
-                 "react.component calls can only be on function definitions or \
-                  component wrappers (forward_ref, memo)." )
+        | _ as exp ->
+            Location.raise_errorf ~loc:exp.pexp_loc
+              "react.component calls can only be on function definitions or \
+               component wrappers (forward_ref, memo)."
       in
       spelunk_for_fun_expr expression
     in
@@ -833,9 +832,8 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
         | { pexp_desc=
               Pexp_apply
                 ( wrapper_expr
-                , [ (Nolabel, internalExpression)
-                  ; ((Nolabel, {pexp_desc= Pexp_fun _}) as compareProps) ] ) }
-          ->
+                , [ ((Labelled _, {pexp_desc= Pexp_fun _}) as compareProps)
+                  ; (Nolabel, internalExpression) ] ) } ->
             let () = has_application := true in
             let _, has_unit, exp = spelunk_for_fun_expr internalExpression in
             ( (fun exp -> Exp.apply wrapper_expr [(nolabel, exp); compareProps])
