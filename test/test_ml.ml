@@ -307,9 +307,9 @@ let testUseReducer () =
     let%component make ?(initialValue = 0) () =
       let state, send =
         React.use_reducer
-          ~reducer:(fun state action ->
-            match action with Increment -> state + 1 | Decrement -> state - 1 )
           ~init:(fun () -> initialValue)
+          (fun state action ->
+            match action with Increment -> state + 1 | Decrement -> state - 1 )
       in
       fragment
         [ div [|className "value"|] [int state]
@@ -350,9 +350,9 @@ let testUseReducerWithMapState () =
     let%component make ?(initialValue = 0) () =
       let state, send =
         React.use_reducer
-          ~reducer:(fun state action ->
-            match action with Increment -> state + 1 | Decrement -> state - 1 )
           ~init:(fun () -> initialValue + 1)
+          (fun state action ->
+            match action with Increment -> state + 1 | Decrement -> state - 1 )
       in
       fragment
         [ div [|className "value"|] [int state]
@@ -393,9 +393,7 @@ let testUseReducerDispatchReference () =
     let prevDispatch = ref None
 
     let%component make () =
-      let _, dispatch =
-        React.use_reducer ~reducer:(fun _ _ -> 2) ~init:(fun () -> 2)
-      in
+      let _, dispatch = React.use_reducer ~init:(fun () -> 2) (fun _ _ -> 2) in
       let equal =
         match (dispatch, !prevDispatch) with
         | r1, Some r2 when r1 == r2 ->

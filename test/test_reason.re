@@ -379,13 +379,12 @@ let testUseReducer = () => {
     let make = (~initialValue=0, ()) => {
       let (state, send) =
         React.use_reducer(
-          ~reducer=
-            (state, action) =>
-              switch (action) {
-              | Increment => state + 1
-              | Decrement => state - 1
-              },
           ~init=() => initialValue,
+          (state, action) =>
+            switch (action) {
+            | Increment => state + 1
+            | Decrement => state - 1
+            },
         );
 
       <>
@@ -448,13 +447,12 @@ let testUseReducerWithMapState = () => {
     let make = (~initialValue=0, ()) => {
       let (state, send) =
         React.use_reducer(
-          ~reducer=
-            (state, action) =>
-              switch (action) {
-              | Increment => state + 1
-              | Decrement => state - 1
-              },
           ~init=() => initialValue + 1,
+          (state, action) =>
+            switch (action) {
+            | Increment => state + 1
+            | Decrement => state - 1
+            },
         );
 
       <>
@@ -516,8 +514,7 @@ let testUseReducerDispatchReference = () => {
     let prevDispatch = ref(None);
     [@react.component]
     let make = () => {
-      let (_, dispatch) =
-        React.use_reducer(~reducer=(_, _) => 2, ~init=() => 2);
+      let (_, dispatch) = React.use_reducer(~init=() => 2, (_, _) => 2);
       let equal =
         switch (dispatch, prevDispatch^) {
         | (r1, Some(r2)) when r1 === r2 => "true"

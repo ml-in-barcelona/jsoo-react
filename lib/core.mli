@@ -512,17 +512,17 @@ val use_state : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
     let use_state initial = use_state_internal Imports.react initial]
 
 val use_reducer :
-     reducer:('state -> 'action -> 'state)
-  -> init:(unit -> 'state)
+     init:(unit -> 'state)
+  -> ('state -> 'action -> 'state)
   -> 'state * ('action -> unit)
   [@@js.custom
     let use_reducer_internal :
         type state action.
            Imports.react
-        -> reducer:(state -> action -> state)
         -> init:(unit -> state)
+        -> (state -> action -> state)
         -> state * (action -> unit) =
-     fun react ~reducer ~init ->
+     fun react ~init reducer ->
       let any_to_js : _ -> Ojs.t = Obj.magic in
       let js_to_any : Ojs.t -> _ = Obj.magic in
       let result =
@@ -539,8 +539,8 @@ val use_reducer :
       in
       Js_of_ocaml.(Js.Unsafe.get result 0, Js.Unsafe.get result 1)
 
-    let use_reducer ~reducer ~init =
-      use_reducer_internal Imports.react ~reducer ~init]
+    let use_reducer ~init reducer =
+      use_reducer_internal Imports.react ~init reducer]
 
 module Ref : sig
   type 'value t

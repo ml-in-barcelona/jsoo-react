@@ -8,7 +8,7 @@ let reducer = (state, action) =>
 
 [@react.component]
 let make = () => {
-  let (state, dispatch) = React.use_reducer(reducer, []);
+  let (state, dispatch) = React.use_reducer(~init=[], reducer);
   <div
     style=React.Dom.Style.(make([|color("#ff5544"), fontSize("68px")|]))
     onClick={event => {
