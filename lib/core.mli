@@ -687,25 +687,17 @@ module Fragment : sig
           (make_props ?key ()) children]
 end
 
-val memo : 'props component -> 'props component
+val memo :
+  ?compare:('props -> 'props -> bool) -> 'props component -> 'props component
   [@@js.custom
-    val memo_internal : Imports.react -> 'props component -> 'props component
-      [@@js.call "memo"]
-
-    let memo component = memo_internal Imports.react component]
-
-val memo_custom_compare_props :
-  'props component -> ('props -> 'props -> bool) -> 'props component
-  [@@js.custom
-    val memo_custom_compare_props_internal :
+    val memo_internal :
          Imports.react
       -> 'props component
-      -> ('props -> 'props -> bool)
+      -> ('props -> 'props -> bool) option_undefined
       -> 'props component
       [@@js.call "memo"]
 
-    let memo_custom_compare_props component compare =
-      memo_custom_compare_props_internal Imports.react component compare]
+    let memo ?compare component = memo_internal Imports.react component compare]
 
 val set_display_name : 'props component -> string -> unit
   [@@js.set "displayName"]

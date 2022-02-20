@@ -605,7 +605,8 @@ let testMemoCustomCompareProps = () => {
   module Memoized = {
     [@react.component]
     let make =
-      React.memo_custom_compare_props(
+      React.memo(
+        ~compare=(_prevPros, _nextProps) => true,
         (~a) => {
           numRenders := numRenders^ + 1;
           <div>
@@ -613,7 +614,6 @@ let testMemoCustomCompareProps = () => {
              |> React.string}
           </div>;
         },
-        (_prevPros, _nextProps) => true,
       );
   };
   withContainer(c => {

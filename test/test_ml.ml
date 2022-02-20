@@ -463,13 +463,13 @@ let testMemoCustomCompareProps () =
   let numRenders = ref 0 in
   let module Memoized = struct
     let%component make =
-      React.memo_custom_compare_props
+      React.memo
+        ~compare:(fun _prevPros _nextProps -> true)
         (fun ~a ->
           numRenders := !numRenders + 1 ;
           div [||]
             [ Printf.sprintf "`a` is %s, `numRenders` is %d" a !numRenders
               |> string ] )
-        (fun _prevPros _nextProps -> true)
   end in
   withContainer (fun c ->
       let fooString = "foo" in
