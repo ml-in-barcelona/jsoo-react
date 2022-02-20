@@ -7,7 +7,6 @@ module Hello_message = struct
 end
 
 let () =
-  React.Dom.render_to_element_with_id
+  React.Dom.render_to_element ~id:"hello-example"
     (Hello_message.make ~name:"Taylor" ())
-    "hello-example"
 (* [demo] *)
