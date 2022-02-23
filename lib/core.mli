@@ -140,30 +140,6 @@ val use_effect_once :
       (if before_render then _use_layout_effect else _use_effect)
         Imports.react f [||]]
 
-val use_effect_on_change :
-     ?before_render:bool
-  -> (unit -> (unit -> unit) option_undefined)
-  -> 'a array
-  -> unit
-  [@@js.custom
-    val _use_effect :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a array
-      -> unit
-      [@@js.call "useEffect"]
-
-    val _use_layout_effect :
-         Imports.react
-      -> (unit -> (unit -> unit) option_undefined)
-      -> 'a array
-      -> unit
-      [@@js.call "useLayoutEffect"]
-
-    let use_effect_on_change ?(before_render = false) f values =
-      (if before_render then _use_layout_effect else _use_effect)
-        Imports.react f values]
-
 val use_effect_on_change1 :
   ?before_render:bool -> (unit -> (unit -> unit) option_undefined) -> 'a -> unit
   [@@js.custom
