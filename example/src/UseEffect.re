@@ -5,7 +5,7 @@ open Html;
 [@react.component]
 let make = (~count) => {
   open Js_of_ocaml_lwt;
-  React.use_effect_on_change1(
+  React.use_effect1(
     () => {
       open Lwt;
       open Lwt_js;

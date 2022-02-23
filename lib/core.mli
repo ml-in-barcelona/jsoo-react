@@ -140,7 +140,7 @@ val use_effect_once :
       (if before_render then _use_layout_effect else _use_effect)
         Imports.react f [||]]
 
-val use_effect_on_change1 :
+val use_effect1 :
   ?before_render:bool -> (unit -> (unit -> unit) option_undefined) -> 'a -> unit
   [@@js.custom
     val _use_effect :
@@ -157,11 +157,11 @@ val use_effect_on_change1 :
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let use_effect_on_change1 ?(before_render = false) f value =
+    let use_effect1 ?(before_render = false) f value =
       (if before_render then _use_layout_effect else _use_effect)
         Imports.react f [|value|]]
 
-val use_effect_on_change2 :
+val use_effect2 :
      ?before_render:bool
   -> (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b
@@ -181,11 +181,11 @@ val use_effect_on_change2 :
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let use_effect_on_change2 ?(before_render = false) f values =
+    let use_effect2 ?(before_render = false) f values =
       (if before_render then _use_layout_effect2 else _use_effect2)
         Imports.react f values]
 
-val use_effect_on_change3 :
+val use_effect3 :
      ?before_render:bool
   -> (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c
@@ -205,11 +205,11 @@ val use_effect_on_change3 :
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let use_effect_on_change3 ?(before_render = false) f values =
+    let use_effect3 ?(before_render = false) f values =
       (if before_render then _use_layout_effect3 else _use_effect3)
         Imports.react f values]
 
-val use_effect_on_change4 :
+val use_effect4 :
      ?before_render:bool
   -> (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd
@@ -229,11 +229,11 @@ val use_effect_on_change4 :
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let use_effect_on_change4 ?(before_render = false) f values =
+    let use_effect4 ?(before_render = false) f values =
       (if before_render then _use_layout_effect4 else _use_effect4)
         Imports.react f values]
 
-val use_effect_on_change5 :
+val use_effect5 :
      ?before_render:bool
   -> (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e
@@ -253,11 +253,11 @@ val use_effect_on_change5 :
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let use_effect_on_change5 ?(before_render = false) f values =
+    let use_effect5 ?(before_render = false) f values =
       (if before_render then _use_layout_effect5 else _use_effect5)
         Imports.react f values]
 
-val use_effect_on_change6 :
+val use_effect6 :
      ?before_render:bool
   -> (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e * 'f
@@ -277,11 +277,11 @@ val use_effect_on_change6 :
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let use_effect_on_change6 ?(before_render = false) f values =
+    let use_effect6 ?(before_render = false) f values =
       (if before_render then _use_layout_effect6 else _use_effect6)
         Imports.react f values]
 
-val use_effect_on_change7 :
+val use_effect7 :
      ?before_render:bool
   -> (unit -> (unit -> unit) option_undefined)
   -> 'a * 'b * 'c * 'd * 'e * 'f * 'g
@@ -301,7 +301,7 @@ val use_effect_on_change7 :
       -> unit
       [@@js.call "useLayoutEffect"]
 
-    let use_effect_on_change7 ?(before_render = false) f values =
+    let use_effect7 ?(before_render = false) f values =
       (if before_render then _use_layout_effect7 else _use_effect7)
         Imports.react f values]
 

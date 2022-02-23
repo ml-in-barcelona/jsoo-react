@@ -153,7 +153,7 @@ let testUseCallback1 = () => {
       let ((count, str), setCountStr) =
         React.use_state(() => (0, "init and"));
       let f = React.use_callback1(input => {input ++ " " ++ a ++ " and"}, a);
-      React.use_effect_on_change1(
+      React.use_effect1(
         () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
           None;
@@ -212,7 +212,7 @@ let testUseCallback4 = () => {
           },
           (a, b, d, e),
         );
-      React.use_effect_on_change1(
+      React.use_effect1(
         () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
           None;
@@ -538,7 +538,7 @@ let testUseMemo1 = () => {
     let make = (~a) => {
       let (count, setCount) = React.use_state(() => 0);
       let result = React.use_memo1(() => {a ++ "2"}, a);
-      React.use_effect_on_change1(
+      React.use_effect1(
         () => {
           setCount(count => count + 1);
           None;

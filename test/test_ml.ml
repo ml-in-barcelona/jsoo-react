@@ -136,11 +136,11 @@ let test_use_effect_once () =
       act (fun () -> React.Dom.render (C.make ()) (Html.element c)) ;
       assert_equal !count 1 )
 
-let test_use_effect_on_change2 () =
+let test_use_effect2 () =
   let count = ref 0 in
   let module C = struct
     let%component make ~a ~b =
-      React.use_effect_on_change2 (fun () -> incr count ; None) (a, b) ;
+      React.use_effect2 (fun () -> incr count ; None) (a, b) ;
       div [||] []
   end in
   withContainer (fun c ->
@@ -156,7 +156,7 @@ let testUseCallback1 () =
         React.use_state (fun () -> (0, "init and"))
       in
       let f = React.use_callback1 (fun input -> input ^ " " ^ a ^ " and") a in
-      React.use_effect_on_change1
+      React.use_effect1
         (fun () ->
           setCountStr (fun (count, str) -> (count + 1, f str)) ;
           None )
@@ -190,7 +190,7 @@ let testUseCallback4 () =
               e.(0) )
           (a, b, d, e)
       in
-      React.use_effect_on_change1
+      React.use_effect1
         (fun () ->
           setCountStr (fun (count, str) -> (count + 1, f str)) ;
           None )
@@ -415,7 +415,7 @@ let testUseMemo1 () =
     let%component make ~a =
       let count, setCount = React.use_state (fun () -> 0) in
       let result = React.use_memo1 (fun () -> a ^ "2") a in
-      React.use_effect_on_change1
+      React.use_effect1
         (fun () ->
           setCount (fun count -> count + 1) ;
           None )
@@ -752,7 +752,7 @@ let use_effect =
   "use_effect"
   >::: [ "use_effect_always" >:: test_use_effect_always
        ; "use_effect_once" >:: test_use_effect_once
-       ; "use_effect_on_change2" >:: test_use_effect_on_change2 ]
+       ; "use_effect2" >:: test_use_effect2 ]
 
 let use_callback =
   "use_callback"
