@@ -139,9 +139,11 @@ let filter_attr_name key attr =
   else false
 
 (* Finds the name of the variable the binding is assigned to, otherwise raises Invalid_argument *)
-let getFnName binding =
-  match binding with
-  | { pvb_pat = { ppat_desc = Ppat_var { txt } } } -> txt
+let rec getFnName = function
+  | {ppat_desc= Ppat_var {txt}} ->
+      txt
+  | {ppat_desc= Ppat_constraint (pat, _)} ->
+      getFnName pat
   | _ ->
       raise (Invalid_argument "react.component calls cannot be destructured.")
 
@@ -657,7 +659,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
   if has_attr_on_binding binding || inside_component then
     let binding_loc = binding.pvb_loc in
     let binding_pat_loc = binding.pvb_pat.ppat_loc in
-    let fn_name = getFnName binding in
+    let fn_name = getFnName binding.pvb_pat in
     let modified_binding_old binding =
       let expression = binding.pvb_expr in
       (* TODO: there is a long-tail of unsupported features inside of blocks - Pexp_letmodule , Pexp_letexception , Pexp_ifthenelse *)
@@ -682,6 +684,8 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
         | { pexp_desc = Pexp_sequence (_wrapper_expr, inner_fun_expr) } ->
             spelunk_for_fun_expr inner_fun_expr
         | {pexp_desc= Pexp_newtype (_label, inner_fun_expr)} ->
+            spelunk_for_fun_expr inner_fun_expr
+        | {pexp_desc= Pexp_constraint (inner_fun_expr, _typ)} ->
             spelunk_for_fun_expr inner_fun_expr
         | exp ->
             Location.raise_errorf ~loc:exp.pexp_loc

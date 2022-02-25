@@ -256,6 +256,41 @@ let make =
     [@merlin.hide ])
 let make =
   let make_props
+    : foo:'foo ->
+        ?key:string ->
+          unit ->
+            < foo: 'foo Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t
+    =
+    fun ~foo ->
+      fun ?key ->
+        fun () ->
+          let open Js_of_ocaml.Js.Unsafe in
+            obj
+              [|("key",
+                  (inject
+                     (Js_of_ocaml.Js.Optdef.option
+                        (Option.map Js_of_ocaml.Js.string key))));("foo",
+                                                                    (
+                                                                    inject
+                                                                    foo))|]
+    [@@merlin.hide ] in
+  let make (type a) = (fun ~foo:_ -> div [||] [] : foo:a -> _) in
+  ((let make
+      (Props :
+        < foo: 'foo Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
+      =
+      make
+        ~foo:(fun (type res) -> fun (type a0) ->
+                fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                    -> (Js_of_ocaml.Js.Unsafe.get a0 "foo" : res)
+                (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#foo)) in
+    fun ~foo ->
+      fun ?key ->
+        fun () -> React.create_element make (make_props ?key ~foo ()))
+    [@merlin.hide ])
+let make =
+  let make_props
     : bar:int option ->
         ?key:string ->
           unit ->
