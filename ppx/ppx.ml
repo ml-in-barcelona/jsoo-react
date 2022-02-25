@@ -681,6 +681,8 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
             spelunk_for_fun_expr inner_fun_expr
         | { pexp_desc = Pexp_sequence (_wrapper_expr, inner_fun_expr) } ->
             spelunk_for_fun_expr inner_fun_expr
+        | {pexp_desc= Pexp_newtype (_label, inner_fun_expr)} ->
+            spelunk_for_fun_expr inner_fun_expr
         | exp ->
             Location.raise_errorf ~loc:exp.pexp_loc
               "react.component calls can only be on function definitions or \
