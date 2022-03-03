@@ -137,6 +137,22 @@ let testContext () =
             (Html.element c));
       assert_equal c##.textContent (Js.Opt.return (Js.string "bar")))
 
+let test_hooks_use_ref () =
+  let module C = struct
+    let%component make ~cb () =
+      let myRef = React.Hooks.use_ref 1 in
+      React.use_effect_once (fun () ->
+          myRef := !myRef + 1 ;
+          cb myRef ;
+          None ) ;
+      div [||] []
+  end in
+  withContainer (fun c ->
+      let myRef = ref None in
+      let cb reactRef = myRef := Some reactRef in
+      act (fun () -> React.Dom.render (C.make ~cb ()) (Html.element c)) ;
+      assert_equal (myRef.contents |> Option.map (fun item -> !item)) (Some 2) )
+
 let test_hooks_use_effect () =
   let count = ref 0 in
   let module C = struct
@@ -816,7 +832,10 @@ let basic =
 
 let context = "context" >::: [ "testContext" >:: testContext ]
 
-let hooks = "hooks" >::: ["use_effect" >::: ["basic" >:: test_hooks_use_effect]]
+let hooks =
+  "hooks"
+  >::: [ "use_ref" >::: ["basic" >:: test_hooks_use_ref]
+       ; "use_effect" >::: ["basic" >:: test_hooks_use_effect] ]
 
 let use_effect =
   "use_effect"
