@@ -137,6 +137,19 @@ let testContext () =
             (Html.element c));
       assert_equal c##.textContent (Js.Opt.return (Js.string "bar")))
 
+let test_hooks_use_effect () =
+  let count = ref 0 in
+  let module C = struct
+    let%component make ~a ~b =
+      React.Hooks.use_effect ~on:(a, b) (fun () -> incr count) ;
+      div [||] []
+  end in
+  withContainer (fun c ->
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c)) ;
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c)) ;
+      act (fun () -> React.Dom.render (C.make ~a:2 ~b:3 ()) (Html.element c)) ;
+      assert_equal !count 2 )
+
 let test_use_effect_always () =
   let count = ref 0 in
   let module C = struct
@@ -803,6 +816,8 @@ let basic =
 
 let context = "context" >::: [ "testContext" >:: testContext ]
 
+let hooks = "hooks" >::: ["use_effect" >::: ["basic" >:: test_hooks_use_effect]]
+
 let use_effect =
   "use_effect"
   >::: [ "use_effect_always" >:: test_use_effect_always
@@ -881,6 +896,7 @@ let suite =
   "ocaml"
   >::: [ basic
        ; context
+       ; hooks
        ; use_effect
        ; use_callback
        ; use_state
