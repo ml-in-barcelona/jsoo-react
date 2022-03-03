@@ -166,6 +166,25 @@ let test_hooks_use_effect () =
       act (fun () -> React.Dom.render (C.make ~a:2 ~b:3 ()) (Html.element c)) ;
       assert_equal !count 2 )
 
+let test_hooks_use_effect_release () =
+  let acquired = ref [] in
+  let module C = struct
+    let%component make ~a ~b =
+      React.Hooks.use_effect ~on:(a, b)
+        ~release:(fun resource ->
+          if resource = List.hd !acquired then acquired := List.tl !acquired )
+        (fun () ->
+          acquired := (a, b) :: !acquired ;
+          (a, b) ) ;
+      div [||] []
+  end in
+  withContainer (fun c ->
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c)) ;
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c)) ;
+      act (fun () -> React.Dom.render (C.make ~a:2 ~b:3 ()) (Html.element c)) ;
+      act (fun () -> React.Dom.render (div [||] []) (Html.element c)) ;
+      assert_equal !acquired [] )
+
 let test_use_effect_always () =
   let count = ref 0 in
   let module C = struct
@@ -835,7 +854,8 @@ let context = "context" >::: [ "testContext" >:: testContext ]
 let hooks =
   "hooks"
   >::: [ "use_ref" >::: ["basic" >:: test_hooks_use_ref]
-       ; "use_effect" >::: ["basic" >:: test_hooks_use_effect] ]
+       ; "use_effect" >::: ["basic" >:: test_hooks_use_effect]
+       ; "use_effect" >::: ["release" >:: test_hooks_use_effect_release] ]
 
 let use_effect =
   "use_effect"
