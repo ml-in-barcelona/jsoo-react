@@ -27,6 +27,21 @@ let withContainer f =
   Dom.removeChild doc##.body container;
   result
 
+let withContainers2 f =
+  let container1 = Html.createDiv doc in
+  Dom.appendChild doc##.body container1;
+  let container2 = Html.createDiv doc in
+  Dom.appendChild doc##.body container2;
+
+  let result = f container1 container2 in
+
+  ignore (React.Dom.unmount_component_at_node container1);
+  Dom.removeChild doc##.body container1;
+  ignore (React.Dom.unmount_component_at_node container2);
+  Dom.removeChild doc##.body container2;
+
+  result
+
 let testDom () =
   doc##.title := Js.string "Testing";
   let p = Html.createP doc in
@@ -42,6 +57,20 @@ let testReact () =
             (div [||] [ "Hello world!" |> string ])
             (Html.element c));
       assert_equal c##.textContent (Js.Opt.return (Js.string "Hello world!")))
+
+let testPortal () =
+  withContainers2 (fun c1 c2 ->
+      act (fun () ->
+          React.Dom.render
+            (div [||]
+               [ string "Hello"
+               ; React.Dom.create_portal
+                   (div [||] [ string "world!" ])
+                   (Html.element c2)
+               ])
+            (Html.element c1));
+      assert_equal c1##.innerHTML (Js.string "<div>Hello</div>");
+      assert_equal c2##.innerHTML (Js.string "<div>world!</div>"))
 
 let testKeys () =
   withContainer (fun c ->
@@ -766,6 +795,7 @@ let basic =
   "basic"
   >::: [ "testDom" >:: testDom
        ; "testReact" >:: testReact
+       ; "testPortal" >:: testPortal
        ; "testKey" >:: testKeys
        ; "testOptionalPropsUppercase" >:: testOptionalPropsUppercase
        ; "testOptionalPropsLowercase" >:: testOptionalPropsLowercase
