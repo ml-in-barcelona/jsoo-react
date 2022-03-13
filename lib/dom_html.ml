@@ -16,6 +16,7 @@ module Prop = struct
   let accessKey = string "accessKey"
   let className = string "className" (* substitute for "class" *)
 
+  let classNames names = className (String.concat " " names)
   let contentEditable = bool "contentEditable"
   let contextMenu = string "contextMenu"
   let dir = string "dir" (* "ltr", "rtl" or "auto" *)
