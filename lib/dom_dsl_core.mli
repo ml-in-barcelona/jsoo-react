@@ -2,21 +2,13 @@ module Prop : sig
   type t
 
   val any : string -> _ -> t
-
   val string : string -> string -> t
-
   val bool : string -> bool -> t
-
   val int : string -> int -> t
-
   val float_ : string -> float -> t
-
   val event : string -> (_ Event.synthetic -> unit) -> t
-
   val maybe : ('a -> t) -> 'a option -> t
-
   val key : string -> t
-
   val ref_ : Dom.dom_ref -> t
 end
 
@@ -33,10 +25,7 @@ module Common : sig
   end
 
   val fragment : Core.element list -> Core.element
-
   val string : string -> Core.element
-
   val int : int -> Core.element
-
   val float : float -> Core.element
 end

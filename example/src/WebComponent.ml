@@ -146,26 +146,22 @@ let oslo_polygon =
 
 let%component make () =
   h "leafy-map" [||]
-    [
-      h "leafy-feature-group"
-        Prop.[|bool "zoom-to-fit" true|]
-        [
-          h "leafy-geojson"
+    [ h "leafy-feature-group"
+        Prop.[| bool "zoom-to-fit" true |]
+        [ h "leafy-geojson"
             Prop.
-              [|
-                string "data" oslo_polygon;
-                string "fill" "forestgreen";
-                string "stroke" "#006400";
-                int "stroke-wdith" 1;
+              [| string "data" oslo_polygon
+               ; string "fill" "forestgreen"
+               ; string "stroke" "#006400"
+               ; int "stroke-wdith" 1
               |]
-            [];
-          h "leafy-marker"
+            []
+        ; h "leafy-marker"
             Prop.
-              [|
-                string "lat" "59.9147857";
-                string "lng" "10.7470423";
-                string "tooltip" "Hello Oslo!";
+              [| string "lat" "59.9147857"
+               ; string "lng" "10.7470423"
+               ; string "tooltip" "Hello Oslo!"
               |]
-            [];
-        ];
+            []
+        ]
     ]

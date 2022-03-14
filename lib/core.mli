@@ -1,5 +1,5 @@
-(** A React element *)
 type element = private Ojs.t
+(** A React element *)
 
 val element_of_js : Ojs.t -> element
 (** Conversion function for gen_js_api *)
@@ -12,27 +12,21 @@ val null : element
 (** A React element that will render the [null] value *)
 
 val string : string -> element [@@js.cast]
-
 val int : int -> element [@@js.cast]
-
 val float : float -> element [@@js.cast]
 
 [@@@js.stop]
 
 type 'a option_undefined = 'a option
-
 type 'a js_nullable = 'a Js_of_ocaml.Js.Opt.t
 
 val js_nullable_of_js : (Ojs.t -> 'value) -> Ojs.t -> 'value js_nullable
-
 val js_nullable_to_js : ('value -> Ojs.t) -> 'value js_nullable -> Ojs.t
 
 type ('props, 'return) componentLike = 'props -> 'return
-
 type 'props component = ('props, element) componentLike
 
 val component_of_js : 'a -> 'a
-
 val component_to_js : 'a -> 'a
 
 type ('input, 'output) callback = 'input -> 'output
@@ -41,37 +35,29 @@ type ('input, 'output) callback = 'input -> 'output
 
 [@@@js.implem
 type 'a option_undefined = 'a option
-
 type 'a js_nullable = 'a Js_of_ocaml.Js.Opt.t
 
 external equals : Ojs.t -> Ojs.t -> bool = "caml_js_equals"
 
 let undefined = Ojs.variable "undefined"
-
 let option_undefined_of_js f x = if equals x undefined then None else Some (f x)
-
 let option_undefined_to_js f = function Some x -> f x | None -> undefined
 
 external js_nullable_of_ojs : Ojs.t -> 'value js_nullable = "%identity"
-
 external js_nullable_to_js : 'value js_nullable -> Ojs.t = "%identity"
 
 let js_nullable_of_js _f x = js_nullable_of_ojs x
-
 let js_nullable_to_js _f x = js_nullable_to_js x
 
 type ('props, 'return) componentLike = 'props -> 'return
-
 type 'props component = ('props, element) componentLike
 
 let component_to_js cb = cb
-
 let component_of_js js = js
 
 type ('input, 'output) callback = 'input -> 'output
 
 let callback_to_js _ cb = cb
-
 let callback_of_js _ js = js]
 
 val create_element : 'props component -> 'props -> element
@@ -159,7 +145,7 @@ val use_effect1 :
 
     let use_effect1 ?(before_render = false) f value =
       (if before_render then _use_layout_effect else _use_effect)
-        Imports.react f [|value|]]
+        Imports.react f [| value |]]
 
 val use_effect2 :
      ?before_render:bool
@@ -318,7 +304,7 @@ val use_callback1 :
       [@@js.call "useCallback"]
 
     let use_callback1 callback watchlist =
-      use_callback1_internal Imports.react callback [|watchlist|]]
+      use_callback1_internal Imports.react callback [| watchlist |]]
 
 val use_callback2 :
   ('input, 'output) callback -> 'a * 'b -> ('input, 'output) callback
@@ -411,7 +397,7 @@ val use_memo1 : (unit -> 'value) -> 'a -> 'value
       [@@js.call "useMemo"]
 
     let use_memo1 callback watchlist =
-      use_memo1_internal Imports.react callback [|watchlist|]]
+      use_memo1_internal Imports.react callback [| watchlist |]]
 
 val use_memo2 : (unit -> 'value) -> 'a * 'b -> 'value
   [@@js.custom
@@ -475,13 +461,13 @@ val use_state : (unit -> 'state) -> 'state * (('state -> 'state) -> unit)
     let (use_state_internal :
              Imports.react
           -> (unit -> 'state)
-          -> 'state * (('state -> 'state) -> unit) ) =
+          -> 'state * (('state -> 'state) -> unit)) =
      fun (react : Imports.react) (init : unit -> 'state) ->
       let result =
         Ojs.call
           (Imports.react_to_js react)
           "useState"
-          [|Ojs.fun_to_js 1 (fun _ -> Obj.magic (init ()))|]
+          [| Ojs.fun_to_js 1 (fun _ -> Obj.magic (init ())) |]
       in
       (Obj.magic (Ojs.array_get result 0), Obj.magic (Ojs.array_get result 1))
 
@@ -509,9 +495,10 @@ val use_reducer :
                  any_to_js
                    (reducer
                       (js_to_any state : state)
-                      (js_to_any action : action) ) )
+                      (js_to_any action : action)))
            ; Ojs.null
-           ; Ojs.fun_to_js 1 (fun _ -> any_to_js (init ())) |]
+           ; Ojs.fun_to_js 1 (fun _ -> any_to_js (init ()))
+          |]
       in
       Js_of_ocaml.(Js.Unsafe.get result 0, Js.Unsafe.get result 1)
 
@@ -531,13 +518,11 @@ module Ref : sig
   [@@@js.stop]
 
   val t_of_js : (Ojs.t -> 'value) -> Ojs.t -> 'value t
-
   val t_to_js : ('value -> Ojs.t) -> 'value t -> Ojs.t
 
   [@@@js.start]
 
   val current : 'value t -> 'value [@@js.get "current"]
-
   val set_current : 'value t -> 'value -> unit [@@js.set "current"]
 end
 
@@ -565,7 +550,7 @@ module Context : sig
       'props t -> value:'props -> children:element list -> unit -> element
       [@@js.custom
         let make_props value =
-          Js_of_ocaml.Js.Unsafe.(obj [|("value", inject value)|])
+          Js_of_ocaml.Js.Unsafe.(obj [| ("value", inject value) |])
 
         let make context ~value ~children () =
           create_element_variadic (provider context) (make_props value) children]
@@ -643,8 +628,9 @@ module Fragment : sig
     [@@js.custom
       external to_component :
            Ojs.t
-        -> < children: element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
-           component = "%identity"
+        -> < children : element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
+           component
+        = "%identity"
 
       val fragment_internal' : Imports.react -> Ojs.t [@@js.get "Fragment"]
 
@@ -652,10 +638,8 @@ module Fragment : sig
 
       let make_props ?key () =
         match key with
-        | Some k ->
-            Js_of_ocaml.Js.Unsafe.(obj [|("key", inject k)|])
-        | None ->
-            Js_of_ocaml.Js.Unsafe.(obj [||])
+        | Some k -> Js_of_ocaml.Js.Unsafe.(obj [| ("key", inject k) |])
+        | None -> Js_of_ocaml.Js.Unsafe.(obj [||])
 
       let make ~children ?key () =
         create_element_variadic
