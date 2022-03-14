@@ -121,7 +121,7 @@ let testOptionalPropsLowercase = () => {
 
 let testContext = () => {
   module DummyContext = {
-    let context = React.create_context("foo");
+    let context = React.Context.make("foo");
     module Provider = {
       let make = React.Context.Provider.make(context);
     };
@@ -146,117 +146,19 @@ let testContext = () => {
   });
 };
 
-let testUseEffect = () => {
-  module UseEffect = {
-    [@react.component]
-    let make = () => {
-      let (count, setCount) = React.use_state(() => 0);
-      React.use_effect0(() => {
-        setCount(count => count + 1);
-        None;
-      });
-      <div> {Printf.sprintf("`count` is %d", count) |> React.string} </div>;
-    };
-  };
-  withContainer(c => {
-    act(() => {React.Dom.render(<UseEffect />, Dom_html.element(c))});
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 1")));
-  });
-};
-
-let testUseEffect2 = () => {
-  module Add2 = {
-    [@react.component]
-    let make = (~a, ~b) => {
-      let (count, setCount) = React.use_state(() => 0);
-      React.use_effect2(
-        () => {
-          setCount(_ => a + b);
-          None;
-        },
-        (a, b),
-      );
-      <div> {Printf.sprintf("`a + b` is %d", count) |> React.string} </div>;
-    };
-  };
-  withContainer(c => {
-    act(() => {React.Dom.render(<Add2 a=1 b=2 />, Dom_html.element(c))});
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`a + b` is 3")));
-    act(() => {React.Dom.render(<Add2 a=1 b=2 />, Dom_html.element(c))});
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`a + b` is 3")));
-    act(() => {React.Dom.render(<Add2 a=2 b=3 />, Dom_html.element(c))});
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`a + b` is 5")));
-  });
-};
-
-let testUseEffect3 = () => {
-  module Use3 = {
-    [@react.component]
-    let make = (~a, ~b, ~c) => {
-      let (count, setCount) = React.use_state(() => 0);
-      React.use_effect3(
-        () => {
-          setCount(count => count + 1);
-          None;
-        },
-        (a, b, c),
-      );
-      <div> {Printf.sprintf("`count` is %d", count) |> React.string} </div>;
-    };
-  };
-  withContainer(c => {
-    let emptyList = [];
-    let fooString = "foo"; /* strings in OCaml are boxed, and we want to keep same reference across renders */
-    let barString = "bar";
-    act(() => {
-      React.Dom.render(
-        <Use3 a=1 b=fooString c=emptyList />,
-        Dom_html.element(c),
-      )
-    });
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 1")));
-    act(() => {
-      React.Dom.render(
-        <Use3 a=1 b=fooString c=emptyList />,
-        Dom_html.element(c),
-      )
-    });
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 1")));
-    act(() => {
-      React.Dom.render(
-        <Use3 a=2 b=fooString c=emptyList />,
-        Dom_html.element(c),
-      )
-    });
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 2")));
-    act(() => {
-      React.Dom.render(
-        <Use3 a=2 b=barString c=emptyList />,
-        Dom_html.element(c),
-      )
-    });
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 3")));
-    act(() => {
-      React.Dom.render(<Use3 a=2 b=barString c=[2] />, Dom_html.element(c))
-    });
-    assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 4")));
-  });
-};
-
 let testUseCallback1 = () => {
   module UseCallback = {
     [@react.component]
     let make = (~a) => {
       let ((count, str), setCountStr) =
         React.use_state(() => (0, "init and"));
-      let f =
-        React.use_callback1(input => {input ++ " " ++ a ++ " and"}, [|a|]);
+      let f = React.use_callback1(input => {input ++ " " ++ a ++ " and"}, a);
       React.use_effect1(
         () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
           None;
         },
-        [|f|],
+        f,
       );
       <div>
         {Printf.sprintf("`count` is %d, `str` is %s", count, str)
@@ -315,7 +217,7 @@ let testUseCallback4 = () => {
           setCountStr(((count, str)) => (count + 1, f(str)));
           None;
         },
-        [|f|],
+        f,
       );
       <div>
         {Printf.sprintf("`count` is %d, `str` is %s", count, str)
@@ -477,12 +379,12 @@ let testUseReducer = () => {
     let make = (~initialValue=0, ()) => {
       let (state, send) =
         React.use_reducer(
+          ~init=() => initialValue,
           (state, action) =>
             switch (action) {
             | Increment => state + 1
             | Decrement => state - 1
             },
-          initialValue,
         );
 
       <>
@@ -544,14 +446,13 @@ let testUseReducerWithMapState = () => {
     [@react.component]
     let make = (~initialValue=0, ()) => {
       let (state, send) =
-        React.use_reducer_with_map_state(
+        React.use_reducer(
+          ~init=() => initialValue + 1,
           (state, action) =>
             switch (action) {
             | Increment => state + 1
             | Decrement => state - 1
             },
-          initialValue,
-          initialValue => initialValue + 1,
         );
 
       <>
@@ -613,7 +514,7 @@ let testUseReducerDispatchReference = () => {
     let prevDispatch = ref(None);
     [@react.component]
     let make = () => {
-      let (_, dispatch) = React.use_reducer((_, _) => 2, 2);
+      let (_, dispatch) = React.use_reducer(~init=() => 2, (_, _) => 2);
       let equal =
         switch (dispatch, prevDispatch^) {
         | (r1, Some(r2)) when r1 === r2 => "true"
@@ -636,13 +537,13 @@ let testUseMemo1 = () => {
     [@react.component]
     let make = (~a) => {
       let (count, setCount) = React.use_state(() => 0);
-      let result = React.use_memo1(() => {a ++ "2"}, [|a|]);
+      let result = React.use_memo1(() => {a ++ "2"}, a);
       React.use_effect1(
         () => {
           setCount(count => count + 1);
           None;
         },
-        [|result|],
+        result,
       );
       <div> {Printf.sprintf("`count` is %d", count) |> React.string} </div>;
     };
@@ -704,7 +605,8 @@ let testMemoCustomCompareProps = () => {
   module Memoized = {
     [@react.component]
     let make =
-      React.memo_custom_compare_props(
+      React.memo(
+        ~compare=(_prevPros, _nextProps) => true,
         (~a) => {
           numRenders := numRenders^ + 1;
           <div>
@@ -712,7 +614,6 @@ let testMemoCustomCompareProps = () => {
              |> React.string}
           </div>;
         },
-        (_prevPros, _nextProps) => true,
       );
   };
   withContainer(c => {
@@ -740,7 +641,7 @@ let testMemoCustomCompareProps = () => {
 };
 
 let testCreateRef = () => {
-  let reactRef = React.create_ref();
+  let reactRef = React.Ref.make();
   assert_equal(React.Ref.current(reactRef), Js_of_ocaml.Js.null);
   React.Ref.set_current(reactRef, Js_of_ocaml.Js.Opt.return(1));
   assert_equal(React.Ref.current(reactRef), Js_of_ocaml.Js.Opt.return(1));
@@ -774,7 +675,7 @@ let testUseRef = () => {
     [@react.component]
     let make = (~cb, ()) => {
       let myRef = React.use_ref(1);
-      React.use_effect0(() => {
+      React.use_effect_once(() => {
         React.Ref.(set_current(myRef, current(myRef) + 1));
         cb(myRef);
         None;
@@ -806,7 +707,7 @@ let testChildrenMapWithIndex = () => {
     [@react.component]
     let make = (~children, ()) => {
       <div>
-        {React.Children.map_with_index(children, (element, index) => {
+        {React.Children.mapi(children, (element, index) => {
            React.clone_element(
              element,
              Js_of_ocaml.Js.Unsafe.(
@@ -1286,14 +1187,6 @@ let basic =
 
 let context = "context" >::: ["testContext" >:: testContext];
 
-let use_effect =
-  "use_effect"
-  >::: [
-    "use_effect" >:: testUseEffect,
-    "use_effect2" >:: testUseEffect2,
-    "use_effect3" >:: testUseEffect3,
-  ];
-
 let use_callback =
   "use_callback"
   >::: [
@@ -1388,7 +1281,6 @@ let suite =
   >::: [
     basic,
     context,
-    use_effect,
     use_callback,
     use_state,
     use_reducer,

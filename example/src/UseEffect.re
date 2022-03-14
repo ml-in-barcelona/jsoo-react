@@ -29,10 +29,13 @@ let make = (~count) => {
     [|count|],
   );
 
-  React.use_layout_effect(() => {
-    Console.log("use_layout_effect: component updated");
-    None;
-  });
+  React.use_effect_always(
+    ~before_render=true,
+    () => {
+      Console.log("use_layout_effect: component updated");
+      None;
+    },
+  );
 
   <div>
     {"UseEffect: printing delayed counts on the console since 2019 :)"

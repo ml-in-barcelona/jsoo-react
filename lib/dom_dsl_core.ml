@@ -23,9 +23,7 @@ end
 
 module Element = struct
   let h name props children =
-    Dom.create_dom_element_variadic name
-      ~props:(Js_of_ocaml.Js.Unsafe.obj props)
-      children
+    Dom.create_element name ~props:(Js_of_ocaml.Js.Unsafe.obj props) children
 end
 
 module Common = struct

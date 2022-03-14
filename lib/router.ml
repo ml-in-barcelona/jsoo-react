@@ -189,7 +189,7 @@ let use_url ?server_url () =
         | None ->
             dangerously_get_initial_url () )
   in
-  Core.use_effect0 (fun () ->
+  Core.use_effect_once (fun () ->
       let watcher_id = watch_url (fun url -> set_url (fun _ -> url)) in
       (* check for updates that may have occured between the initial state and the subscribe above *)
       let new_url = dangerously_get_initial_url () in

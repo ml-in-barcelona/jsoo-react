@@ -455,7 +455,7 @@ module MemoCustomCompareProps =
             [@reason.preserve_braces ]) : React.element))
         [@warning "-16"]) in
       ((let make =
-          React.memoCustomCompareProps
+          React.memo
             (fun
                (Props :
                  < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
@@ -469,7 +469,7 @@ module MemoCustomCompareProps =
                                < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                            -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
                        (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)))
-            (fun prevPros -> fun nextProps -> false) in
+            ~compare:(fun prevPros -> fun nextProps -> false) in
         fun ~a ->
           fun ?key ->
             fun () -> React.create_element make (make_props ?key ~a ()))

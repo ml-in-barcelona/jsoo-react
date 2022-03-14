@@ -8,7 +8,7 @@
 (*
    The transform:
    transform `[@JSX] div(~props1=a, ~props2=b, ~children=[foo, bar], ())` into
-   `React.Dom.create_dom_element_variadic("div", React.Dom.domProps(~props1=1, ~props2=b), [foo, bar])`.
+   `React.Dom.create_element React.Dom.domProps(~props1=1, ~props2=b), [foo, bar])`.
    transform the upper-cased case
    `[@JSX] Foo.createElement(~key=a, ~ref=b, ~foo=bar, ~children=[], ())` into
    `React.create_element(Foo.make, Foo.makeProps(~key=a, ~ref=b, ~foo=bar, ()))`
@@ -700,21 +700,21 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
             (* here's where we spelunk! *)
             spelunk_for_fun_expr return_expr
         (* let make = React.forward_ref((~prop) => ...) or
-           let make = React.memoCustomCompareProps((~prop) => ..., compareProps()) *)
+           let make = React.memo(~compare, (~prop) => ...) *)
         | { pexp_desc=
               Pexp_apply
                 ( _wrapper_expr
                 , ( [(Nolabel, inner_fun_expr)]
-                  | [ (Nolabel, inner_fun_expr)
-                    ; (Nolabel, {pexp_desc= Pexp_fun _}) ] ) ) } ->
+                  | [(Labelled "compare", _); (Nolabel, inner_fun_expr)]
+                  | [(Nolabel, inner_fun_expr); (Labelled "compare", _)] ) ) }
+          ->
             spelunk_for_fun_expr inner_fun_expr
         | {pexp_desc= Pexp_sequence (_wrapper_expr, inner_fun_expr)} ->
             spelunk_for_fun_expr inner_fun_expr
-        | _ ->
-            raise
-              (Invalid_argument
-                 "react.component calls can only be on function definitions or \
-                  component wrappers (forward_ref, memo)." )
+        | exp ->
+            Location.raise_errorf ~loc:exp.pexp_loc
+              "react.component calls can only be on function definitions or \
+               component wrappers (forward_ref, memo)."
       in
       spelunk_for_fun_expr expression
     in
@@ -829,13 +829,14 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
             let () = has_application := true in
             let _, has_unit, exp = spelunk_for_fun_expr internalExpression in
             ((fun exp -> Exp.apply wrapper_expr [(nolabel, exp)]), has_unit, exp)
-        (* let make = React.memoCustomCompareProps((~prop) => ..., (prevPros, nextProps) => true) *)
+        (* let make = React.memo(~compare, (~prop) => ...) *)
         | { pexp_desc=
               Pexp_apply
                 ( wrapper_expr
-                , [ (Nolabel, internalExpression)
-                  ; ((Nolabel, {pexp_desc= Pexp_fun _}) as compareProps) ] ) }
-          ->
+                , ( [ (Nolabel, internalExpression)
+                    ; ((Labelled "compare", _) as compareProps) ]
+                  | [ ((Labelled "compare", _) as compareProps)
+                    ; (Nolabel, internalExpression) ] ) ) } ->
             let () = has_application := true in
             let _, has_unit, exp = spelunk_for_fun_expr internalExpression in
             ( (fun exp -> Exp.apply wrapper_expr [(nolabel, exp); compareProps])
