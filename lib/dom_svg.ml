@@ -31,6 +31,7 @@ module Prop = struct
   let capHeight = string_prop "capHeight"
   let className = string_prop "className" (* substitute for "class" *)
 
+  let classNames names = className (String.concat " " names)
   let clip = string_prop "clip"
   let clipPath = string_prop "clipPath"
   let clipPathUnits = string_prop "clipPathUnits"

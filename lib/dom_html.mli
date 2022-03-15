@@ -22,6 +22,7 @@ module Prop : sig
   val defaultValue : string -> t
   val accessKey : string -> t
   val className : string -> t
+  val classNames : string list -> t
   val contentEditable : bool -> t
   val contextMenu : string -> t
   val dir : string -> t

@@ -40,6 +40,7 @@ module Prop : sig
   val calcMode : string -> t
   val capHeight : string -> t
   val className : string -> t
+  val classNames : string list -> t
   val clip : string -> t
   val clipPath : string -> t
   val clipPathUnits : string -> t
