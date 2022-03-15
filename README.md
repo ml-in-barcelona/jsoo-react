@@ -1,6 +1,6 @@
 # jsoo-react
 
-[![Actions Status](https://github.com/ml-in-barcelona/jsoo-react/workflows/CI/badge.svg?branch=master)](https://github.com/ml-in-barcelona/jsoo-react/actions?query=branch%3Amaster)
+[![Actions Status](https://github.com/ml-in-barcelona/jsoo-react/workflows/CI/badge.svg?branch=main)](https://github.com/ml-in-barcelona/jsoo-react/actions?query=branch%3Amain)
 
 Bindings to [React](https://reactjs.org/) for [js_of_ocaml](https://ocsigen.org/js_of_ocaml/), including JSX ppx.
 
