@@ -7,10 +7,12 @@ let use_effect ~on ?(release = Fun.const ()) acquire =
   let state = use_ref None in
   let release () = Option.iter release !state in
   let acquire () = state := Some (acquire ()) in
-  Core.use_effect_once (fun () -> acquire () ; Some release) ;
+  Core.use_effect_once (fun () ->
+      acquire ();
+      Some release);
   Core.use_effect_always (fun () ->
       if on <> !last_value then (
-        last_value := on ;
-        release () ;
-        acquire () ) ;
-      None )
+        last_value := on;
+        release ();
+        acquire ());
+      None)
