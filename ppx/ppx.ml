@@ -80,11 +80,10 @@ let extractChildren ?(removeLastPositionUnit = false) ~loc propsAndChildren =
     | [ (Nolabel, { pexp_desc = Pexp_construct ({ txt = Lident "()" }, None) })
       ] ->
         acc
-    | (Nolabel, {pexp_loc}) :: _rest ->
+    | (Nolabel, { pexp_loc }) :: _rest ->
         Location.raise_errorf ~loc:pexp_loc
           "JSX: found non-labelled argument before the last position"
-    | arg :: rest ->
-        allButLast_ rest (arg :: acc)
+    | arg :: rest -> allButLast_ rest (arg :: acc)
   in
   let allButLast lst = allButLast_ lst [] |> List.rev in
   match
@@ -98,7 +97,7 @@ let extractChildren ?(removeLastPositionUnit = false) ~loc propsAndChildren =
       , if removeLastPositionUnit then allButLast props else props )
   | [ (_, childrenExpr) ], props ->
       (childrenExpr, if removeLastPositionUnit then allButLast props else props)
-  | _first :: (_, {pexp_loc}) :: _rest, _props ->
+  | _first :: (_, { pexp_loc }) :: _rest, _props ->
       Location.raise_errorf ~loc:pexp_loc
         "JSX: somehow there's more than one `children` label"
 
@@ -140,20 +139,18 @@ let filter_attr_name key attr =
 
 (* Finds the name of the variable the binding is assigned to, otherwise raises Invalid_argument *)
 let rec getFnName = function
-  | {ppat_desc= Ppat_var {txt}} ->
-      txt
-  | {ppat_desc= Ppat_constraint (pat, _)} ->
-      getFnName pat
-  | {ppat_loc} ->
+  | { ppat_desc = Ppat_var { txt } } -> txt
+  | { ppat_desc = Ppat_constraint (pat, _) } -> getFnName pat
+  | { ppat_loc } ->
       Location.raise_errorf ~loc:ppat_loc
         "react.component calls cannot be destructured."
 
 (* Lookup the value of `props` otherwise raise Invalid_argument error *)
 let getPropsNameValue _acc (loc, exp) =
   match (loc, exp) with
-  | {txt= Lident "props"}, {pexp_desc= Pexp_ident {txt= Lident str}} ->
-      {propsName= str}
-  | {txt; loc}, _ ->
+  | { txt = Lident "props" }, { pexp_desc = Pexp_ident { txt = Lident str } } ->
+      { propsName = str }
+  | { txt; loc }, _ ->
       Location.raise_errorf ~loc
         "react.component only accepts props as an option, given: %s"
         (Longident.last_exn txt)
@@ -171,15 +168,15 @@ let get_props_attr payload =
       List.fold_left getPropsNameValue default_props recordFields
   | Some
       (PStr
-        ({ pstr_desc=
-             Pstr_eval ({pexp_desc= Pexp_ident {txt= Lident "props"}}, _) }
-        :: _rest ) ) ->
-      {propsName= "props"}
-  | Some (PStr ({pstr_desc= Pstr_eval (_, _); pstr_loc} :: _rest)) ->
+        ({ pstr_desc =
+             Pstr_eval ({ pexp_desc = Pexp_ident { txt = Lident "props" } }, _)
+         }
+        :: _rest)) ->
+      { propsName = "props" }
+  | Some (PStr ({ pstr_desc = Pstr_eval (_, _); pstr_loc } :: _rest)) ->
       Location.raise_errorf ~loc:pstr_loc
         "react.component accepts a record config with props as an options."
-  | _ ->
-      default_props
+  | _ -> default_props
 
 (* Plucks the label, loc, and type_ from an AST node *)
 let pluckLabelDefaultLocType (label, default, _, _, loc, type_) =
@@ -682,9 +679,9 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
             spelunk_for_fun_expr inner_fun_expr
         | { pexp_desc = Pexp_sequence (_wrapper_expr, inner_fun_expr) } ->
             spelunk_for_fun_expr inner_fun_expr
-        | {pexp_desc= Pexp_newtype (_label, inner_fun_expr)} ->
+        | { pexp_desc = Pexp_newtype (_label, inner_fun_expr) } ->
             spelunk_for_fun_expr inner_fun_expr
-        | {pexp_desc= Pexp_constraint (inner_fun_expr, _typ)} ->
+        | { pexp_desc = Pexp_constraint (inner_fun_expr, _typ) } ->
             spelunk_for_fun_expr inner_fun_expr
         | exp ->
             Location.raise_errorf ~loc:exp.pexp_loc

@@ -12,9 +12,7 @@ let%component make ~children:kids = div [||] kids
 let%component make ~children:(first, second) () = div [||] [ first; second ]
 let%component make ?(name = "") = div [||] [ name ]
 let%component make () = div [||] []
-
 let%component make (type a) ~(foo : a) : _ = div [||] []
-
 let%component make : type a. foo:a -> _ = fun ~foo:_ -> div [||] []
 
 let%component make ~(bar : int option) =
