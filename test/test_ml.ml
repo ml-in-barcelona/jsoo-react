@@ -6,46 +6,42 @@ module Html = Js_of_ocaml.Dom_html
 module Dom = Js_of_ocaml.Dom
 
 let act = ReactDOMTestUtils.act
-
 let jsdom = Jsdom.make ~html:"<!doctype html><html><body></body></html>"
-
 let doc = jsdom |> Jsdom.window |> Jsdom.document
-
 let () = Js.Unsafe.global##.document := doc
-
 let () = Js.Unsafe.global##.window := jsdom |> Jsdom.window
 
 let printTextContent container =
   print_endline
     (Js.to_string
-       (Js.Opt.get container##.textContent (fun () -> Js.string "missing")) )
+       (Js.Opt.get container##.textContent (fun () -> Js.string "missing")))
 
 let printInnerHTML (container : Html.divElement Js.t) =
   print_endline (Js.to_string container##.innerHTML)
 
 let withContainer f =
   let container = Html.createDiv doc in
-  Dom.appendChild doc##.body container ;
+  Dom.appendChild doc##.body container;
   let result = f container in
-  ignore (React.Dom.unmount_component_at_node container) ;
-  Dom.removeChild doc##.body container ;
+  ignore (React.Dom.unmount_component_at_node container);
+  Dom.removeChild doc##.body container;
   result
 
 let testDom () =
-  doc##.title := Js.string "Testing" ;
+  doc##.title := Js.string "Testing";
   let p = Html.createP doc in
-  p##.innerHTML := Js.string "Loading graph..." ;
-  Dom.appendChild doc##.body p ;
-  assert_equal doc##.title (Js.string "Testing") ;
+  p##.innerHTML := Js.string "Loading graph...";
+  Dom.appendChild doc##.body p;
+  assert_equal doc##.title (Js.string "Testing");
   assert_equal p##.innerHTML (Js.string "Loading graph...")
 
 let testReact () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            (div [||] ["Hello world!" |> string])
-            (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "Hello world!")) )
+            (div [||] [ "Hello world!" |> string ])
+            (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "Hello world!")))
 
 let testKeys () =
   withContainer (fun c ->
@@ -53,42 +49,42 @@ let testKeys () =
           React.Dom.render
             (div [||]
                (List.map
-                  (fun str -> div [|key str|] [str |> string])
-                  ["a"; "b"] ) )
-            (Html.element c) ) ;
+                  (fun str -> div [| key str |] [ str |> string ])
+                  [ "a"; "b" ]))
+            (Html.element c));
       assert_equal c##.innerHTML
-        (Js.string "<div><div>a</div><div>b</div></div>") )
+        (Js.string "<div><div>a</div><div>b</div></div>"))
 
 let testOptionalPropsUppercase () =
   let module OptProps = struct
     let%component make ?(name = "joe") =
-      div [||] [Printf.sprintf "`name` is %s" name |> string]
+      div [||] [ Printf.sprintf "`name` is %s" name |> string ]
   end in
   withContainer (fun c ->
-      act (fun () -> React.Dom.render (OptProps.make ()) (Html.element c)) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`name` is joe")) ;
+      act (fun () -> React.Dom.render (OptProps.make ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "`name` is joe"));
       act (fun () ->
-          React.Dom.render (OptProps.make ~name:"jane" ()) (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`name` is jane")) )
+          React.Dom.render (OptProps.make ~name:"jane" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "`name` is jane")))
 
 let testOptionalPropsLowercase () =
   let module LinkWithMaybeHref = struct
     (* NOTE: collision caused by namespace pollution *)
-    let%component make ~href = a [|maybe Prop.href href|] []
+    let%component make ~href = a [| maybe Prop.href href |] []
   end in
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
             (LinkWithMaybeHref.make ~href:None ())
-            (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<a></a>") ;
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<a></a>");
       act (fun () ->
           React.Dom.render
             (LinkWithMaybeHref.make ~href:(Some "https://google.es") ())
-            (Html.element c) ) ;
-      printInnerHTML c ;
+            (Html.element c));
+      printInnerHTML c;
       assert_equal c##.innerHTML
-        (Js.string {|<a href="https://google.es"></a>|}) )
+        (Js.string {|<a href="https://google.es"></a>|}))
 
 let testContext () =
   let module DummyContext = struct
@@ -101,53 +97,61 @@ let testContext () =
     module Consumer = struct
       let%component make () =
         let value = React.use_context context in
-        div [||] [value |> string]
+        div [||] [ value |> string ]
     end
   end in
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
             (DummyContext.Provider.make ~value:"bar"
-               [DummyContext.Consumer.make ()] )
-            (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "bar")) )
+               [ DummyContext.Consumer.make () ])
+            (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "bar")))
 
 let test_use_effect_always () =
   let count = ref 0 in
   let module C = struct
     let%component make () =
-      React.use_effect_always (fun () -> incr count ; None) ;
+      React.use_effect_always (fun () ->
+          incr count;
+          None);
       div [||] []
   end in
   withContainer (fun c ->
-      act (fun () -> React.Dom.render (C.make ()) (Html.element c)) ;
-      act (fun () -> React.Dom.render (C.make ()) (Html.element c)) ;
-      assert_equal !count 2 )
+      act (fun () -> React.Dom.render (C.make ()) (Html.element c));
+      act (fun () -> React.Dom.render (C.make ()) (Html.element c));
+      assert_equal !count 2)
 
 let test_use_effect_once () =
   let count = ref 0 in
   let module C = struct
     let%component make () =
-      React.use_effect_once (fun () -> incr count ; None) ;
+      React.use_effect_once (fun () ->
+          incr count;
+          None);
       div [||] []
   end in
   withContainer (fun c ->
-      act (fun () -> React.Dom.render (C.make ()) (Html.element c)) ;
-      act (fun () -> React.Dom.render (C.make ()) (Html.element c)) ;
-      assert_equal !count 1 )
+      act (fun () -> React.Dom.render (C.make ()) (Html.element c));
+      act (fun () -> React.Dom.render (C.make ()) (Html.element c));
+      assert_equal !count 1)
 
 let test_use_effect2 () =
   let count = ref 0 in
   let module C = struct
     let%component make ~a ~b =
-      React.use_effect2 (fun () -> incr count ; None) (a, b) ;
+      React.use_effect2
+        (fun () ->
+          incr count;
+          None)
+        (a, b);
       div [||] []
   end in
   withContainer (fun c ->
-      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c)) ;
-      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c)) ;
-      act (fun () -> React.Dom.render (C.make ~a:2 ~b:3 ()) (Html.element c)) ;
-      assert_equal !count 2 )
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c));
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c));
+      act (fun () -> React.Dom.render (C.make ~a:2 ~b:3 ()) (Html.element c));
+      assert_equal !count 2)
 
 let testUseCallback1 () =
   let module UseCallback = struct
@@ -158,26 +162,27 @@ let testUseCallback1 () =
       let f = React.use_callback1 (fun input -> input ^ " " ^ a ^ " and") a in
       React.use_effect1
         (fun () ->
-          setCountStr (fun (count, str) -> (count + 1, f str)) ;
-          None )
-        f ;
-      div [||] [Printf.sprintf "`count` is %d, `str` is %s" count str |> string]
+          setCountStr (fun (count, str) -> (count + 1, f str));
+          None)
+        f;
+      div [||]
+        [ Printf.sprintf "`count` is %d, `str` is %s" count str |> string ]
   end in
   withContainer (fun c ->
       let fooString = "foo" in
       act (fun () ->
-          React.Dom.render (UseCallback.make ~a:fooString ()) (Html.element c) ) ;
+          React.Dom.render (UseCallback.make ~a:fooString ()) (Html.element c));
       assert_equal c##.textContent
-        (Js.Opt.return (Js.string "`count` is 1, `str` is init and foo and")) ;
+        (Js.Opt.return (Js.string "`count` is 1, `str` is init and foo and"));
       act (fun () ->
-          React.Dom.render (UseCallback.make ~a:fooString ()) (Html.element c) ) ;
+          React.Dom.render (UseCallback.make ~a:fooString ()) (Html.element c));
       assert_equal c##.textContent
-        (Js.Opt.return (Js.string "`count` is 1, `str` is init and foo and")) ;
+        (Js.Opt.return (Js.string "`count` is 1, `str` is init and foo and"));
       act (fun () ->
-          React.Dom.render (UseCallback.make ~a:"bar" ()) (Html.element c) ) ;
+          React.Dom.render (UseCallback.make ~a:"bar" ()) (Html.element c));
       assert_equal c##.textContent
         (Js.Opt.return
-           (Js.string "`count` is 2, `str` is init and foo and bar and") ) )
+           (Js.string "`count` is 2, `str` is init and foo and bar and")))
 
 let testUseCallback4 () =
   let module UseCallback = struct
@@ -187,96 +192,98 @@ let testUseCallback4 () =
         React.use_callback4
           (fun _input ->
             Printf.sprintf "a: %s, b: %d, d: [%d], e: [|%d|]" a b (List.nth d 0)
-              e.(0) )
+              e.(0))
           (a, b, d, e)
       in
       React.use_effect1
         (fun () ->
-          setCountStr (fun (count, str) -> (count + 1, f str)) ;
-          None )
-        f ;
-      div [||] [Printf.sprintf "`count` is %d, `str` is %s" count str |> string]
+          setCountStr (fun (count, str) -> (count + 1, f str));
+          None)
+        f;
+      div [||]
+        [ Printf.sprintf "`count` is %d, `str` is %s" count str |> string ]
   end in
   withContainer (fun c ->
       let a = "foo" in
       let a2 = "bar" in
       let b = 2 in
-      let d = [3] in
-      let e = [|4|] in
+      let d = [ 3 ] in
+      let e = [| 4 |] in
       act (fun () ->
-          React.Dom.render (UseCallback.make ~a ~b ~d ~e ()) (Html.element c) ) ;
+          React.Dom.render (UseCallback.make ~a ~b ~d ~e ()) (Html.element c));
       assert_equal c##.textContent
         (Js.Opt.return
-           (Js.string "`count` is 1, `str` is a: foo, b: 2, d: [3], e: [|4|]") ) ;
+           (Js.string "`count` is 1, `str` is a: foo, b: 2, d: [3], e: [|4|]"));
       act (fun () ->
-          React.Dom.render (UseCallback.make ~a ~b ~d ~e ()) (Html.element c) ) ;
+          React.Dom.render (UseCallback.make ~a ~b ~d ~e ()) (Html.element c));
       assert_equal c##.textContent
         (Js.Opt.return
-           (Js.string "`count` is 1, `str` is a: foo, b: 2, d: [3], e: [|4|]") ) ;
+           (Js.string "`count` is 1, `str` is a: foo, b: 2, d: [3], e: [|4|]"));
       act (fun () ->
-          React.Dom.render (UseCallback.make ~a:a2 ~b ~d ~e ()) (Html.element c) ) ;
+          React.Dom.render (UseCallback.make ~a:a2 ~b ~d ~e ()) (Html.element c));
       assert_equal c##.textContent
         (Js.Opt.return
-           (Js.string "`count` is 2, `str` is a: bar, b: 2, d: [3], e: [|4|]") ) ;
+           (Js.string "`count` is 2, `str` is a: bar, b: 2, d: [3], e: [|4|]"));
       act (fun () ->
-          React.Dom.render (UseCallback.make ~a:a2 ~b ~d ~e ()) (Html.element c) ) ;
+          React.Dom.render (UseCallback.make ~a:a2 ~b ~d ~e ()) (Html.element c));
       assert_equal c##.textContent
         (Js.Opt.return
-           (Js.string "`count` is 2, `str` is a: bar, b: 2, d: [3], e: [|4|]") ) ;
+           (Js.string "`count` is 2, `str` is a: bar, b: 2, d: [3], e: [|4|]"));
       act (fun () ->
           React.Dom.render
             (UseCallback.make ~a:a2 ~b:3 ~d ~e ())
-            (Html.element c) ) ;
+            (Html.element c));
       assert_equal c##.textContent
         (Js.Opt.return
-           (Js.string "`count` is 3, `str` is a: bar, b: 3, d: [3], e: [|4|]") ) ;
+           (Js.string "`count` is 3, `str` is a: bar, b: 3, d: [3], e: [|4|]"));
       act (fun () ->
           React.Dom.render
-            (UseCallback.make ~a:a2 ~b:3 ~d:[4] ~e ())
-            (Html.element c) ) ;
+            (UseCallback.make ~a:a2 ~b:3 ~d:[ 4 ] ~e ())
+            (Html.element c));
       assert_equal c##.textContent
         (Js.Opt.return
-           (Js.string "`count` is 4, `str` is a: bar, b: 3, d: [4], e: [|4|]") ) )
+           (Js.string "`count` is 4, `str` is a: bar, b: 3, d: [4], e: [|4|]")))
 
 let testUseState () =
   let module DummyStateComponent = struct
     let%component make ?(initialValue = 0) () =
       let counter, setCounter = React.use_state (fun () -> initialValue) in
       fragment
-        [ div [|className "value"|] [React.int counter]
+        [ div [| className "value" |] [ React.int counter ]
         ; button
-            [|onClick (fun _ -> setCounter (fun counter -> counter + 1))|]
-            [string "Increment"]
+            [| onClick (fun _ -> setCounter (fun counter -> counter + 1)) |]
+            [ string "Increment" ]
         ; button
-            [|onClick (fun _ -> setCounter (fun counter -> counter - 1))|]
-            [string "Decrement"] ]
+            [| onClick (fun _ -> setCounter (fun counter -> counter - 1)) |]
+            [ string "Decrement" ]
+        ]
   end in
   withContainer (fun c ->
       let open ReactDOMTestUtils in
       act (fun () ->
-          React.Dom.render (DummyStateComponent.make ()) (Html.element c) ) ;
+          React.Dom.render (DummyStateComponent.make ()) (Html.element c));
       assert_equal c##.innerHTML
         (Js.string
            "<div \
-            class=\"value\">0</div><button>Increment</button><button>Decrement</button>" ) ;
+            class=\"value\">0</div><button>Increment</button><button>Decrement</button>");
       let button =
         DOM.findBySelectorAndPartialTextContent (unsafe_to_element c) "button"
           "Increment"
       in
-      act (fun () -> Simulate.click button) ;
+      act (fun () -> Simulate.click button);
       assert_equal c##.innerHTML
         (Js.string
            "<div \
-            class=\"value\">1</div><button>Increment</button><button>Decrement</button>" ) ;
+            class=\"value\">1</div><button>Increment</button><button>Decrement</button>");
       let button =
         DOM.findBySelectorAndPartialTextContent (unsafe_to_element c) "button"
           "Decrement"
       in
-      act (fun () -> Simulate.click button) ;
+      act (fun () -> Simulate.click button);
       assert_equal c##.innerHTML
         (Js.string
            "<div \
-            class=\"value\">0</div><button>Increment</button><button>Decrement</button>" ) )
+            class=\"value\">0</div><button>Increment</button><button>Decrement</button>"))
 
 let testUseStateUpdaterReference () =
   let module UseState = struct
@@ -286,107 +293,111 @@ let testUseStateUpdaterReference () =
       let _count, setCount = React.use_state (fun () -> 0) in
       let equal =
         match (setCount, !prevSetCount) with
-        | r1, Some r2 when r1 == r2 ->
-            "true"
-        | _ ->
-            "false"
+        | r1, Some r2 when r1 == r2 -> "true"
+        | _ -> "false"
       in
-      prevSetCount := Some setCount ;
-      div [||] [equal |> string]
+      prevSetCount := Some setCount;
+      div [||] [ equal |> string ]
   end in
   withContainer (fun c ->
-      act (fun () -> React.Dom.render (UseState.make ()) (Html.element c)) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "false")) ;
-      act (fun () -> React.Dom.render (UseState.make ()) (Html.element c)) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "true")) )
+      act (fun () -> React.Dom.render (UseState.make ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "false"));
+      act (fun () -> React.Dom.render (UseState.make ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "true")))
 
 let testUseReducer () =
   let module DummyReducerComponent = struct
-    type action = Increment | Decrement
+    type action =
+      | Increment
+      | Decrement
 
     let%component make ?(initialValue = 0) () =
       let state, send =
         React.use_reducer
           ~init:(fun () -> initialValue)
           (fun state action ->
-            match action with Increment -> state + 1 | Decrement -> state - 1 )
+            match action with Increment -> state + 1 | Decrement -> state - 1)
       in
       fragment
-        [ div [|className "value"|] [int state]
-        ; button [|onClick (fun _ -> send Increment)|] [string "Increment"]
-        ; button [|onClick (fun _ -> send Decrement)|] [string "Decrement"] ]
+        [ div [| className "value" |] [ int state ]
+        ; button [| onClick (fun _ -> send Increment) |] [ string "Increment" ]
+        ; button [| onClick (fun _ -> send Decrement) |] [ string "Decrement" ]
+        ]
   end in
   withContainer (fun c ->
       let open ReactDOMTestUtils in
       act (fun () ->
-          React.Dom.render (DummyReducerComponent.make ()) (Html.element c) ) ;
+          React.Dom.render (DummyReducerComponent.make ()) (Html.element c));
       assert_equal c##.innerHTML
         (Js.string
            "<div \
-            class=\"value\">0</div><button>Increment</button><button>Decrement</button>" ) ;
+            class=\"value\">0</div><button>Increment</button><button>Decrement</button>");
       let button =
         DOM.findBySelectorAndPartialTextContent (unsafe_to_element c) "button"
           "Increment"
       in
-      act (fun () -> Simulate.click button) ;
+      act (fun () -> Simulate.click button);
       assert_equal c##.innerHTML
         (Js.string
            "<div \
-            class=\"value\">1</div><button>Increment</button><button>Decrement</button>" ) ;
+            class=\"value\">1</div><button>Increment</button><button>Decrement</button>");
       let button =
         DOM.findBySelectorAndPartialTextContent (unsafe_to_element c) "button"
           "Decrement"
       in
-      act (fun () -> Simulate.click button) ;
+      act (fun () -> Simulate.click button);
       assert_equal c##.innerHTML
         (Js.string
            "<div \
-            class=\"value\">0</div><button>Increment</button><button>Decrement</button>" ) )
+            class=\"value\">0</div><button>Increment</button><button>Decrement</button>"))
 
 let testUseReducerWithMapState () =
   let module DummyReducerWithMapStateComponent = struct
-    type action = Increment | Decrement
+    type action =
+      | Increment
+      | Decrement
 
     let%component make ?(initialValue = 0) () =
       let state, send =
         React.use_reducer
           ~init:(fun () -> initialValue + 1)
           (fun state action ->
-            match action with Increment -> state + 1 | Decrement -> state - 1 )
+            match action with Increment -> state + 1 | Decrement -> state - 1)
       in
       fragment
-        [ div [|className "value"|] [int state]
-        ; button [|onClick (fun _ -> send Increment)|] [string "Increment"]
-        ; button [|onClick (fun _ -> send Decrement)|] [string "Decrement"] ]
+        [ div [| className "value" |] [ int state ]
+        ; button [| onClick (fun _ -> send Increment) |] [ string "Increment" ]
+        ; button [| onClick (fun _ -> send Decrement) |] [ string "Decrement" ]
+        ]
   end in
   withContainer (fun c ->
       let open ReactDOMTestUtils in
       act (fun () ->
           React.Dom.render
             (DummyReducerWithMapStateComponent.make ())
-            (Html.element c) ) ;
+            (Html.element c));
       assert_equal c##.innerHTML
         (Js.string
            "<div \
-            class=\"value\">1</div><button>Increment</button><button>Decrement</button>" ) ;
+            class=\"value\">1</div><button>Increment</button><button>Decrement</button>");
       let button =
         DOM.findBySelectorAndPartialTextContent (unsafe_to_element c) "button"
           "Increment"
       in
-      act (fun () -> Simulate.click button) ;
+      act (fun () -> Simulate.click button);
       assert_equal c##.innerHTML
         (Js.string
            "<div \
-            class=\"value\">2</div><button>Increment</button><button>Decrement</button>" ) ;
+            class=\"value\">2</div><button>Increment</button><button>Decrement</button>");
       let button =
         DOM.findBySelectorAndPartialTextContent (unsafe_to_element c) "button"
           "Decrement"
       in
-      act (fun () -> Simulate.click button) ;
+      act (fun () -> Simulate.click button);
       assert_equal c##.innerHTML
         (Js.string
            "<div \
-            class=\"value\">1</div><button>Increment</button><button>Decrement</button>" ) )
+            class=\"value\">1</div><button>Increment</button><button>Decrement</button>"))
 
 let testUseReducerDispatchReference () =
   let module UseReducer = struct
@@ -396,19 +407,17 @@ let testUseReducerDispatchReference () =
       let _, dispatch = React.use_reducer ~init:(fun () -> 2) (fun _ _ -> 2) in
       let equal =
         match (dispatch, !prevDispatch) with
-        | r1, Some r2 when r1 == r2 ->
-            "true"
-        | _ ->
-            "false"
+        | r1, Some r2 when r1 == r2 -> "true"
+        | _ -> "false"
       in
-      prevDispatch := Some dispatch ;
-      div [||] [equal |> string]
+      prevDispatch := Some dispatch;
+      div [||] [ equal |> string ]
   end in
   withContainer (fun c ->
-      act (fun () -> React.Dom.render (UseReducer.make ()) (Html.element c)) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "false")) ;
-      act (fun () -> React.Dom.render (UseReducer.make ()) (Html.element c)) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "true")) )
+      act (fun () -> React.Dom.render (UseReducer.make ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "false"));
+      act (fun () -> React.Dom.render (UseReducer.make ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "true")))
 
 let testUseMemo1 () =
   let module UseMemo = struct
@@ -417,47 +426,48 @@ let testUseMemo1 () =
       let result = React.use_memo1 (fun () -> a ^ "2") a in
       React.use_effect1
         (fun () ->
-          setCount (fun count -> count + 1) ;
-          None )
-        result ;
-      div [||] [Printf.sprintf "`count` is %d" count |> string]
+          setCount (fun count -> count + 1);
+          None)
+        result;
+      div [||] [ Printf.sprintf "`count` is %d" count |> string ]
   end in
   withContainer (fun c ->
       let fooString = "foo" in
       act (fun () ->
-          React.Dom.render (UseMemo.make ~a:fooString ()) (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 1")) ;
+          React.Dom.render (UseMemo.make ~a:fooString ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 1"));
       act (fun () ->
-          React.Dom.render (UseMemo.make ~a:fooString ()) (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 1")) ;
+          React.Dom.render (UseMemo.make ~a:fooString ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 1"));
       act (fun () ->
-          React.Dom.render (UseMemo.make ~a:"foo" ()) (Html.element c) ) ;
-      assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 2")) )
+          React.Dom.render (UseMemo.make ~a:"foo" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 2")))
 
 let testMemo () =
   let numRenders = ref 0 in
   let module Memoized = struct
     let%component make =
       React.memo (fun ~a ->
-          numRenders := !numRenders + 1 ;
+          numRenders := !numRenders + 1;
           div [||]
             [ Printf.sprintf "`a` is %s, `numRenders` is %d" a !numRenders
-              |> string ] )
+              |> string
+            ])
   end in
   withContainer (fun c ->
       let fooString = "foo" in
       act (fun () ->
-          React.Dom.render (Memoized.make ~a:fooString ()) (Html.element c) ) ;
+          React.Dom.render (Memoized.make ~a:fooString ()) (Html.element c));
       assert_equal c##.textContent
-        (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1")) ;
+        (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1"));
       act (fun () ->
-          React.Dom.render (Memoized.make ~a:fooString ()) (Html.element c) ) ;
+          React.Dom.render (Memoized.make ~a:fooString ()) (Html.element c));
       assert_equal c##.textContent
-        (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1")) ;
+        (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1"));
       act (fun () ->
-          React.Dom.render (Memoized.make ~a:"bar" ()) (Html.element c) ) ;
+          React.Dom.render (Memoized.make ~a:"bar" ()) (Html.element c));
       assert_equal c##.textContent
-        (Js.Opt.return (Js.string "`a` is bar, `numRenders` is 2")) )
+        (Js.Opt.return (Js.string "`a` is bar, `numRenders` is 2")))
 
 let testMemoCustomCompareProps () =
   let numRenders = ref 0 in
@@ -466,38 +476,40 @@ let testMemoCustomCompareProps () =
       React.memo
         ~compare:(fun _prevPros _nextProps -> true)
         (fun ~a ->
-          numRenders := !numRenders + 1 ;
+          numRenders := !numRenders + 1;
           div [||]
             [ Printf.sprintf "`a` is %s, `numRenders` is %d" a !numRenders
-              |> string ] )
+              |> string
+            ])
   end in
   withContainer (fun c ->
       let fooString = "foo" in
       act (fun () ->
-          React.Dom.render (Memoized.make ~a:fooString ()) (Html.element c) ) ;
+          React.Dom.render (Memoized.make ~a:fooString ()) (Html.element c));
       assert_equal c##.textContent
-        (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1")) ;
+        (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1"));
       act (fun () ->
-          React.Dom.render (Memoized.make ~a:fooString ()) (Html.element c) ) ;
+          React.Dom.render (Memoized.make ~a:fooString ()) (Html.element c));
       assert_equal c##.textContent
-        (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1")) ;
+        (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1"));
       act (fun () ->
-          React.Dom.render (Memoized.make ~a:"bar" ()) (Html.element c) ) ;
+          React.Dom.render (Memoized.make ~a:"bar" ()) (Html.element c));
       assert_equal c##.textContent
-        (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1")) )
+        (Js.Opt.return (Js.string "`a` is foo, `numRenders` is 1")))
 
 let testCreateRef () =
   let reactRef = React.Ref.make () in
-  assert_equal (React.Ref.current reactRef) Js_of_ocaml.Js.null ;
-  React.Ref.set_current reactRef (Js_of_ocaml.Js.Opt.return 1) ;
+  assert_equal (React.Ref.current reactRef) Js_of_ocaml.Js.null;
+  React.Ref.set_current reactRef (Js_of_ocaml.Js.Opt.return 1);
   assert_equal (React.Ref.current reactRef) (Js_of_ocaml.Js.Opt.return 1)
 
 let testForwardRef () =
   let module FancyButton = struct
     let make ~ref children =
       div [||]
-        [ button [|ref_ ref; className "FancyButton"|] children
-        ; button [|ref_ ref; className "FancyButton"|] children ]
+        [ button [| ref_ ref; className "FancyButton" |] children
+        ; button [| ref_ ref; className "FancyButton" |] children
+        ]
   end in
   withContainer (fun c ->
       let count = ref 0 in
@@ -506,9 +518,9 @@ let testForwardRef () =
       in
       act (fun () ->
           React.Dom.render
-            (FancyButton.make ~ref:buttonRef [div [||] []])
-            (Html.element c) ) ;
-      assert_equal !count 2 )
+            (FancyButton.make ~ref:buttonRef [ div [||] [] ])
+            (Html.element c));
+      assert_equal !count 2)
 
 let testUseRef () =
   let module DummyComponentWithRefAndEffect = struct
@@ -516,9 +528,9 @@ let testUseRef () =
       let myRef = React.use_ref 1 in
       React.use_effect_once (fun () ->
           let open React.Ref in
-          set_current myRef (current myRef + 1) ;
-          cb myRef ;
-          None ) ;
+          set_current myRef (current myRef + 1);
+          cb myRef;
+          None);
       div [||] []
   end in
   withContainer (fun c ->
@@ -527,10 +539,10 @@ let testUseRef () =
       act (fun () ->
           React.Dom.render
             (DummyComponentWithRefAndEffect.make ~cb ())
-            (Html.element c) ) ;
+            (Html.element c));
       assert_equal
         (myRef.contents |> Option.map (fun item -> item |> React.Ref.current))
-        (Some 2) )
+        (Some 2))
 
 let testChildrenMapWithIndex () =
   let module DummyComponentThatMapsChildren = struct
@@ -539,42 +551,44 @@ let testChildrenMapWithIndex () =
         [ React.Children.mapi children (fun element index ->
               React.clone_element element
                 (let open Js_of_ocaml.Js.Unsafe in
-                obj [|("key", inject index); ("data-index", inject index)|]) )
+                obj [| ("key", inject index); ("data-index", inject index) |]))
         ]
   end in
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
             (DummyComponentThatMapsChildren.make
-               ~children:[div [||] [int 1]; div [||] [int 2]; div [||] [int 3]]
-               () )
-            (Html.element c) ) ;
+               ~children:
+                 [ div [||] [ int 1 ]; div [||] [ int 2 ]; div [||] [ int 3 ] ]
+               ())
+            (Html.element c));
       assert_equal c##.innerHTML
         (Js.string
            "<div><div data-index=\"0\">1</div><div \
-            data-index=\"1\">2</div><div data-index=\"2\">3</div></div>" ) )
+            data-index=\"1\">2</div><div data-index=\"2\">3</div></div>"))
 
 let testFragment () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            (fragment [div [||] [string "Hello"]; div [||] [string "World"]])
-            (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<div>Hello</div><div>World</div>") )
+            (fragment
+               [ div [||] [ string "Hello" ]; div [||] [ string "World" ] ])
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<div>Hello</div><div>World</div>"))
 
 let testNonListChildren () =
   let module NonListChildrenComponent = struct
-    let%component make ~children:(first, second) () = div [||] [first; second]
+    let%component make ~children:(first, second) () = div [||] [ first; second ]
   end in
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
             (NonListChildrenComponent.make
-               ~children:(div [||] [int 1], div [||] [int 3])
-               () )
-            (Html.element c) ) ;
+               ~children:(div [||] [ int 1 ], div [||] [ int 3 ])
+               ())
+            (Html.element c));
       assert_equal c##.innerHTML
-        (Js.string "<div><div>1</div><div>3</div></div>") )
+        (Js.string "<div><div>1</div><div>3</div></div>"))
 
 let testDangerouslySetInnerHTML () =
   withContainer (fun c ->
@@ -582,22 +596,24 @@ let testDangerouslySetInnerHTML () =
           React.Dom.render
             (div
                [| dangerouslySetInnerHTML
-                    (React.Dom.SafeString.make_unchecked "<lol></lol>") |]
-               [] )
-            (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<div><lol></lol></div>") )
+                    (React.Dom.SafeString.make_unchecked "<lol></lol>")
+               |]
+               [])
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<div><lol></lol></div>"))
 
 let testExternals () =
   let module JsComp = struct
-    external%component make : name:Js.js_string Js.t -> React.element
+    external%component make :
+      name:Js.js_string Js.t -> React.element
       = "require(\"./external\").Greeting"
   end in
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
             (JsComp.make ~name:(Js.string "John") ())
-            (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<span>Hey John</span>") )
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<span>Hey John</span>"))
 
 let testExternalChildren () =
   let module JsComp = struct
@@ -609,22 +625,24 @@ let testExternalChildren () =
       act (fun () ->
           React.Dom.render
             (JsComp.make
-               ~children:(Js.array [|em [|key "one"|] [React.string "John"]|])
-               () )
-            (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<span>Hey <em>John</em></span>") )
+               ~children:
+                 (Js.array [| em [| key "one" |] [ React.string "John" ] |])
+               ())
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<span>Hey <em>John</em></span>"))
 
 let testExternalNonFunction () =
   let module JsComp = struct
-    external%component make : name:Js.js_string Js.t -> React.element
+    external%component make :
+      name:Js.js_string Js.t -> React.element
       = "require(\"./external\").NonFunctionGreeting"
   end in
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
             (JsComp.make ~name:(Js.string "John") ())
-            (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<span>Hey John</span>") )
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<span>Hey John</span>"))
 
 let testAliasedChildren () =
   let module AliasedChildrenComponent = struct
@@ -634,11 +652,11 @@ let testAliasedChildren () =
       act (fun () ->
           React.Dom.render
             (AliasedChildrenComponent.make
-               ~children:[div [||] [int 1]; div [||] [int 3]]
-               () )
-            (Html.element c) ) ;
+               ~children:[ div [||] [ int 1 ]; div [||] [ int 3 ] ]
+               ())
+            (Html.element c));
       assert_equal c##.innerHTML
-        (Js.string "<div><div>1</div><div>3</div></div>") )
+        (Js.string "<div><div>1</div><div>3</div></div>"))
 
 let testWithId () =
   let module WithTestId = struct
@@ -646,76 +664,80 @@ let testWithId () =
       React.Children.map children (fun child ->
           React.clone_element child
             (Js.Unsafe.obj
-               [|("data-testid", Js.Unsafe.inject (Js.string id))|] ) )
+               [| ("data-testid", Js.Unsafe.inject (Js.string id)) |]))
   end in
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            (WithTestId.make ~id:"feed-toggle" ~children:[div [||] []] ())
-            (Html.element c) ) ;
+            (WithTestId.make ~id:"feed-toggle" ~children:[ div [||] [] ] ())
+            (Html.element c));
       assert_equal c##.innerHTML
-        (Js.string "<div data-testid=\"feed-toggle\"></div>") )
+        (Js.string "<div data-testid=\"feed-toggle\"></div>"))
 
 let testPropMaybeNone () =
   withContainer (fun c ->
       act (fun () ->
-          React.Dom.render (div [|maybe className None|] []) (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<div></div>") )
+          React.Dom.render (div [| maybe className None |] []) (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<div></div>"))
 
 let testPropMaybeSome () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            (div [|maybe className (Some "foo")|] [])
-            (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<div class=\"foo\"></div>") )
+            (div [| maybe className (Some "foo") |] [])
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<div class=\"foo\"></div>"))
 
 let testPropCustomString () =
   withContainer (fun c ->
       act (fun () ->
-          React.Dom.render (div [|Prop.string "foo" "bar"|] []) (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<div foo=\"bar\"></div>") )
+          React.Dom.render
+            (div [| Prop.string "foo" "bar" |] [])
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<div foo=\"bar\"></div>"))
 
 let testPropCustomBool () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            (div [|Prop.bool "disabled" true|] [])
-            (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<div disabled=\"\"></div>") )
+            (div [| Prop.bool "disabled" true |] [])
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<div disabled=\"\"></div>"))
 
 let testPropCustomInt () =
   withContainer (fun c ->
       act (fun () ->
-          React.Dom.render (div [|Prop.int "foo" 42|] []) (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<div foo=\"42\"></div>") )
+          React.Dom.render (div [| Prop.int "foo" 42 |] []) (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<div foo=\"42\"></div>"))
 
 let testPropCustomFloat () =
   withContainer (fun c ->
       act (fun () ->
-          React.Dom.render (div [|Prop.float_ "foo" 42.5|] []) (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<div foo=\"42.5\"></div>") )
+          React.Dom.render
+            (div [| Prop.float_ "foo" 42.5 |] [])
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<div foo=\"42.5\"></div>"))
 
 let testPropCustomAny () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            (div [|Prop.any "foo" (Js.array [|"bar"; "baz"|])|] [])
-            (Html.element c) ) ;
-      assert_equal c##.innerHTML (Js.string "<div foo=\"bar,baz\"></div>") )
+            (div [| Prop.any "foo" (Js.array [| "bar"; "baz" |]) |] [])
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<div foo=\"bar,baz\"></div>"))
 
 let testCustomElement () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
             (h "cool-element"
-               [|Prop.string "coolness" "max"|]
-               [h "chill" [|Prop.bool "data-out" true|] []] )
-            (Html.element c) ) ;
+               [| Prop.string "coolness" "max" |]
+               [ h "chill" [| Prop.bool "data-out" true |] [] ])
+            (Html.element c));
       assert_equal c##.innerHTML
         (Js.string
            "<cool-element coolness=\"max\"><chill \
-            data-out=\"true\"></chill></cool-element>" ) )
+            data-out=\"true\"></chill></cool-element>"))
 
 let testSvg () =
   withContainer (fun c ->
@@ -723,20 +745,22 @@ let testSvg () =
           React.Dom.render
             Svg.(
               svg
-                [|width "100"; height "100"|]
+                [| width "100"; height "100" |]
                 [ circle
                     [| cx "50"
                      ; cy "50"
                      ; strokeWidth "2"
                      ; stroke "magenta"
-                     ; fill "pink" |]
-                    [] ])
-            (Html.element c) ) ;
+                     ; fill "pink"
+                    |]
+                    []
+                ])
+            (Html.element c));
       assert_equal c##.innerHTML
         (Js.string
            "<svg width=\"100\" height=\"100\"><circle cx=\"50\" cy=\"50\" \
             stroke-width=\"2\" stroke=\"magenta\" \
-            fill=\"pink\"></circle></svg>" ) )
+            fill=\"pink\"></circle></svg>"))
 
 let basic =
   "basic"
@@ -744,61 +768,70 @@ let basic =
        ; "testReact" >:: testReact
        ; "testKey" >:: testKeys
        ; "testOptionalPropsUppercase" >:: testOptionalPropsUppercase
-       ; "testOptionalPropsLowercase" >:: testOptionalPropsLowercase ]
+       ; "testOptionalPropsLowercase" >:: testOptionalPropsLowercase
+       ]
 
-let context = "context" >::: ["testContext" >:: testContext]
+let context = "context" >::: [ "testContext" >:: testContext ]
 
 let use_effect =
   "use_effect"
   >::: [ "use_effect_always" >:: test_use_effect_always
        ; "use_effect_once" >:: test_use_effect_once
-       ; "use_effect2" >:: test_use_effect2 ]
+       ; "use_effect2" >:: test_use_effect2
+       ]
 
 let use_callback =
   "use_callback"
   >::: [ "use_callback1" >:: testUseCallback1
-       ; "use_callback4" >:: testUseCallback4 ]
+       ; "use_callback4" >:: testUseCallback4
+       ]
 
 let use_state =
   "use_state"
   >::: [ "use_state" >:: testUseState
-       ; "useStateUpdaterReference" >:: testUseStateUpdaterReference ]
+       ; "useStateUpdaterReference" >:: testUseStateUpdaterReference
+       ]
 
 let use_reducer =
   "use_reducer"
   >::: [ "use_reducer" >:: testUseReducer
        ; "use_reducer_with_map_state" >:: testUseReducerWithMapState
-       ; "use_reducerDispatchReference" >:: testUseReducerDispatchReference ]
+       ; "use_reducerDispatchReference" >:: testUseReducerDispatchReference
+       ]
 
 let memoization =
   "memo"
   >::: [ "use_memo1" >:: testUseMemo1
        ; "memo" >:: testMemo
-       ; "memoCustomCompareProps" >:: testMemoCustomCompareProps ]
+       ; "memoCustomCompareProps" >:: testMemoCustomCompareProps
+       ]
 
 let refs =
   "refs"
   >::: [ "create_ref" >:: testCreateRef
        ; "forward_ref" >:: testForwardRef
-       ; "use_ref" >:: testUseRef ]
+       ; "use_ref" >:: testUseRef
+       ]
 
 let children =
   "children"
   >::: [ "mapWithIndex" >:: testChildrenMapWithIndex
        ; "nonListChildren" >:: testNonListChildren
        ; "aliasedChildren" >:: testAliasedChildren
-       ; "testWithId" >:: testWithId ]
+       ; "testWithId" >:: testWithId
+       ]
 
-let fragments = "fragments" >::: ["basic" >:: testFragment]
+let fragments = "fragments" >::: [ "basic" >:: testFragment ]
 
 let dangerouslySetInnerHTML =
-  "dangerouslySetInnerHTML" >::: ["basic" >:: testDangerouslySetInnerHTML]
+  "dangerouslySetInnerHTML" >::: [ "basic" >:: testDangerouslySetInnerHTML ]
 
 let externals =
   "externals"
   >::: [ "basic" >:: testExternals
        ; "children" >:: testExternalChildren
-       ; "non-function" >:: testExternalNonFunction ]
+       ; "non-function" >:: testExternalNonFunction
+       ]
 
 let props =
   "props"
@@ -808,11 +841,11 @@ let props =
        ; "custom-bool" >:: testPropCustomBool
        ; "custom-int" >:: testPropCustomInt
        ; "custom-float" >:: testPropCustomFloat
-       ; "custom-any" >:: testPropCustomAny ]
+       ; "custom-any" >:: testPropCustomAny
+       ]
 
-let elements = "elements" >::: ["custom" >:: testCustomElement]
-
-let svg = "svg" >::: ["basic" >:: testSvg]
+let elements = "elements" >::: [ "custom" >:: testCustomElement ]
+let svg = "svg" >::: [ "basic" >:: testSvg ]
 
 let suite =
   "ocaml"
@@ -830,4 +863,5 @@ let suite =
        ; externals
        ; props
        ; elements
-       ; svg ]
+       ; svg
+       ]

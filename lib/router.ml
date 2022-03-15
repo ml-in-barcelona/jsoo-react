@@ -3,7 +3,6 @@
 module Browser =
 [%js:
 type history
-
 type window
 
 val window_to_js : window -> Ojs.t
@@ -11,15 +10,10 @@ val window_to_js : window -> Ojs.t
 type location
 
 val history : history option [@@js.global "history"]
-
 val window : window option [@@js.global "window"]
-
 val location : window -> location [@@js.get]
-
 val pathname : location -> string [@@js.get]
-
 val hash : location -> string [@@js.get]
-
 val search : location -> string [@@js.get]
 
 val push_state : history -> Ojs.t -> string -> href:string -> unit
@@ -33,9 +27,7 @@ module Event =
 type t
 
 val event : t [@@js.global "Event"]
-
 val make_event_ie11_compatible : string -> t [@@js.new "Event"]
-
 val create_event_non_ie8 : string -> t [@@js.global "document.createEvent"]
 
 val init_event_non_ie8 : t -> string -> bool -> bool -> unit
@@ -57,7 +49,7 @@ let safe_make_event eventName =
   then Event.make_event_ie11_compatible eventName
   else
     let event = Event.create_event_non_ie8 "Event" in
-    Event.init_event_non_ie8 event eventName true true ;
+    Event.init_event_non_ie8 event eventName true true;
     Event.event
 
 let slice_to_end s =
@@ -70,66 +62,57 @@ let slice_to_end s =
 (* The library doesn't provide search for now. Users can roll their own solution/data structure.*)
 let path () =
   match Browser.window with
-  | None ->
-      []
+  | None -> []
   | Some w -> (
-    match
-      let open Browser in
-      w |> location |> pathname
-    with
-    | "" | "/" ->
-        []
-    | raw ->
-        let raw = slice_to_end raw in
-        let raw =
-          let n = String.length raw in
-          match n > 0 && raw.[n - 1] = '/' with
-          | true ->
-              String.sub raw 0 (n - 1)
-          | false ->
-              raw
-        in
-        raw |> String.split_on_char '/' )
+      match
+        let open Browser in
+        w |> location |> pathname
+      with
+      | "" | "/" -> []
+      | raw ->
+          let raw = slice_to_end raw in
+          let raw =
+            let n = String.length raw in
+            match n > 0 && raw.[n - 1] = '/' with
+            | true -> String.sub raw 0 (n - 1)
+            | false -> raw
+          in
+          raw |> String.split_on_char '/')
 
 let hash () =
   match Browser.window with
-  | None ->
-      ""
+  | None -> ""
   | Some w -> (
-    match
-      let open Browser in
-      w |> location |> hash
-    with
-    | "" | "#" ->
-        ""
-    | raw ->
-        (* remove the preceeding #, which every hash seems to have. *)
-        slice_to_end raw )
+      match
+        let open Browser in
+        w |> location |> hash
+      with
+      | "" | "#" -> ""
+      | raw ->
+          (* remove the preceeding #, which every hash seems to have. *)
+          slice_to_end raw)
 
 let search () =
   match Browser.window with
-  | None ->
-      ""
+  | None -> ""
   | Some w -> (
-    match
-      let open Browser in
-      w |> location |> search
-    with
-    | "" | "?" ->
-        ""
-    | raw ->
-        (* remove the preceeding ?, which every search seems to have. *)
-        slice_to_end raw )
+      match
+        let open Browser in
+        w |> location |> search
+      with
+      | "" | "?" -> ""
+      | raw ->
+          (* remove the preceeding ?, which every search seems to have. *)
+          slice_to_end raw)
 
 let push path =
   match
     let open Browser in
     (history, window)
   with
-  | None, _ | _, None ->
-      ()
+  | None, _ | _, None -> ()
   | Some history, Some window ->
-      Browser.push_state history Ojs.null "" ~href:path ;
+      Browser.push_state history Ojs.null "" ~href:path;
       Event.dispatch_event window (safe_make_event "popstate")
 
 let replace path =
@@ -137,62 +120,57 @@ let replace path =
     let open Browser in
     (history, window)
   with
-  | None, _ | _, None ->
-      ()
+  | None, _ | _, None -> ()
   | Some history, Some window ->
-      Browser.replace_state history Ojs.null "" ~href:path ;
+      Browser.replace_state history Ojs.null "" ~href:path;
       Event.dispatch_event window (safe_make_event "popstate")
 
-type url = {path: string list; hash: string; search: string}
+type url =
+  { path : string list
+  ; hash : string
+  ; search : string
+  }
 
 let url_not_equal a b =
   let rec list_not_equal xs ys =
     match (xs, ys) with
-    | [], [] ->
-        false
-    | [], _ :: _ | _ :: _, [] ->
-        true
-    | x :: xs, y :: ys ->
-        if x != y then true else list_not_equal xs ys
+    | [], [] -> false
+    | [], _ :: _ | _ :: _, [] -> true
+    | x :: xs, y :: ys -> if x != y then true else list_not_equal xs ys
   in
   a.hash != b.hash || a.search != b.search || list_not_equal a.path b.path
 
 type watcher_id = unit -> unit
 
-let url () = {path= path (); hash= hash (); search= search ()}
+let url () = { path = path (); hash = hash (); search = search () }
 
 (* alias exposed publicly *)
 let dangerously_get_initial_url = url
 
 let watch_url callback =
   match Browser.window with
-  | None ->
-      fun () -> ()
+  | None -> fun () -> ()
   | Some window ->
       let watcher_id () = callback (url ()) in
-      Event.add_event_listener window "popstate" watcher_id ;
+      Event.add_event_listener window "popstate" watcher_id;
       watcher_id
 
 let unwatch_url watcher_id =
   match Browser.window with
-  | None ->
-      ()
-  | Some window ->
-      Event.remove_event_listener window "popstate" watcher_id
+  | None -> ()
+  | Some window -> Event.remove_event_listener window "popstate" watcher_id
 
 let use_url ?server_url () =
   let url, set_url =
     Core.use_state (fun () ->
         match server_url with
-        | Some url ->
-            url
-        | None ->
-            dangerously_get_initial_url () )
+        | Some url -> url
+        | None -> dangerously_get_initial_url ())
   in
   Core.use_effect_once (fun () ->
       let watcher_id = watch_url (fun url -> set_url (fun _ -> url)) in
       (* check for updates that may have occured between the initial state and the subscribe above *)
       let new_url = dangerously_get_initial_url () in
-      if url_not_equal new_url url then set_url (fun _ -> new_url) ;
-      Some (fun () -> unwatch_url watcher_id) ) ;
+      if url_not_equal new_url url then set_url (fun _ -> new_url);
+      Some (fun () -> unwatch_url watcher_id));
   url
