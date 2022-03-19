@@ -1,4 +1,6 @@
 module Prop : sig
+  include module type of Dom_aria_attributes
+
   type t = Dom_dsl_core.Prop.t
 
   (** Common *)
