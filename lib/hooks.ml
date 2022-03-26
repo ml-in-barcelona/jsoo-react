@@ -2,6 +2,10 @@ let use_ref initial =
   let state, _ = Core.use_state (fun () -> ref initial) in
   state
 
+let use_ref_lazy init =
+  let state, _ = Core.use_state (fun () -> ref (init ())) in
+  state
+
 let use_effect ~on ?(equal = ( = )) ?(release = Fun.const ()) acquire =
   let last_value = use_ref on in
   let state = use_ref None in
