@@ -199,6 +199,59 @@ let test_hooks_use_effect_custom_equal () =
       act (fun () -> React.Dom.render (C.make ~a:2 ~b:3 ()) (Html.element c));
       assert_equal !count 2)
 
+let test_hooks_use_memo () =
+  let count = ref 0 in
+  let module UseMemo = struct
+    let%component make ~a =
+      let result =
+        React.Hooks.use_memo ~on:a (fun a ->
+            incr count;
+            a ^ Int.to_string !count)
+      in
+      div [||] [ string result ]
+  end in
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"foo" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "foo1"));
+
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"foo" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "foo1"));
+
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"bar" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "bar2"));
+
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"foo" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "foo3")))
+
+let test_hooks_use_memo_custom_equal () =
+  let count = ref 0 in
+  let module UseMemo = struct
+    let%component make ~a ~b =
+      let equal a b = fst a = fst b in
+      let result =
+        React.Hooks.use_memo ~on:(a, b) ~equal (fun (a, b) ->
+            incr count;
+            a ^ b ^ Int.to_string !count)
+      in
+      div [||] [ string result ]
+  end in
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"foo" ~b:"x" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "foox1"));
+
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"foo" ~b:"y" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "foox1"));
+
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"bar" ~b:"y" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "bary2")))
+
 let test_use_effect_always () =
   let count = ref 0 in
   let module C = struct
@@ -872,6 +925,8 @@ let hooks =
        ; "use_effect" >::: [ "release" >:: test_hooks_use_effect_release ]
        ; "use_effect"
          >::: [ "custom equal" >:: test_hooks_use_effect_custom_equal ]
+       ; "use_memo" >::: [ "basic" >:: test_hooks_use_memo ]
+       ; "use_memo" >::: [ "custom equal" >:: test_hooks_use_memo_custom_equal ]
        ]
 
 let use_effect =

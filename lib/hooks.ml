@@ -23,3 +23,14 @@ let use_effect ~on ?(equal = ( = )) ?(release = Fun.const ()) acquire =
         release ();
         acquire ());
       None)
+
+let use_memo ~on:input ?(equal = ( = )) f =
+  let last_input = use_ref input in
+  let output = use_ref_lazy (fun () -> f input) in
+
+  if not (equal input !last_input) then begin
+    last_input := input;
+    output := f input
+  end;
+
+  !output
