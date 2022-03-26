@@ -185,6 +185,20 @@ let test_hooks_use_effect_release () =
       act (fun () -> React.Dom.render (div [||] []) (Html.element c));
       assert_equal !acquired [])
 
+let test_hooks_use_effect_custom_equal () =
+  let count = ref 0 in
+  let module C = struct
+    let%component make ~a ~b =
+      let equal a b = fst a = fst b in
+      React.Hooks.use_effect ~equal ~on:(a, b) (fun () -> incr count);
+      div [||] []
+  end in
+  withContainer (fun c ->
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c));
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:3 ()) (Html.element c));
+      act (fun () -> React.Dom.render (C.make ~a:2 ~b:3 ()) (Html.element c));
+      assert_equal !count 2)
+
 let test_use_effect_always () =
   let count = ref 0 in
   let module C = struct
@@ -856,6 +870,8 @@ let hooks =
   >::: [ "use_ref" >::: [ "basic" >:: test_hooks_use_ref ]
        ; "use_effect" >::: [ "basic" >:: test_hooks_use_effect ]
        ; "use_effect" >::: [ "release" >:: test_hooks_use_effect_release ]
+       ; "use_effect"
+         >::: [ "custom equal" >:: test_hooks_use_effect_custom_equal ]
        ]
 
 let use_effect =
