@@ -166,11 +166,11 @@ let test_hooks_use_effect () =
       act (fun () -> React.Dom.render (C.make ~a:2 ~b:3 ()) (Html.element c));
       assert_equal !count 2)
 
-let test_hooks_use_effect_release () =
+let test_hooks_use_resource_release () =
   let acquired = ref [] in
   let module C = struct
     let%component make ~a ~b =
-      React.Hooks.use_effect ~on:(a, b)
+      React.Hooks.use_resource ~on:(a, b)
         ~release:(fun resource ->
           if resource = List.hd !acquired then acquired := List.tl !acquired)
         (fun () ->
@@ -922,9 +922,9 @@ let hooks =
   "hooks"
   >::: [ "use_ref" >::: [ "basic" >:: test_hooks_use_ref ]
        ; "use_effect" >::: [ "basic" >:: test_hooks_use_effect ]
-       ; "use_effect" >::: [ "release" >:: test_hooks_use_effect_release ]
        ; "use_effect"
          >::: [ "custom equal" >:: test_hooks_use_effect_custom_equal ]
+       ; "use_resource" >::: [ "release" >:: test_hooks_use_resource_release ]
        ; "use_memo" >::: [ "basic" >:: test_hooks_use_memo ]
        ; "use_memo" >::: [ "custom equal" >:: test_hooks_use_memo_custom_equal ]
        ]
