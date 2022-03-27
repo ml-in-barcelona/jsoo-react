@@ -204,7 +204,7 @@ let test_hooks_use_memo () =
   let module UseMemo = struct
     let%component make ~a =
       let result =
-        React.Hooks.use_memo ~on:a (fun a ->
+        React.Hooks.use_memo ~on:a (fun () ->
             incr count;
             a ^ Int.to_string !count)
       in
@@ -233,7 +233,7 @@ let test_hooks_use_memo_custom_equal () =
     let%component make ~a ~b =
       let equal a b = fst a = fst b in
       let result =
-        React.Hooks.use_memo ~on:(a, b) ~equal (fun (a, b) ->
+        React.Hooks.use_memo ~on:(a, b) ~equal (fun () ->
             incr count;
             a ^ b ^ Int.to_string !count)
       in

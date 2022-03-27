@@ -27,13 +27,13 @@ let use_resource ~on:deps ?(equal = ( = )) ~release acquire =
 let use_effect ~on ?equal ?(cleanup = fun () -> ()) f =
   use_resource ~on ?equal ~release:cleanup f
 
-let use_memo ~on:input ?(equal = ( = )) f =
-  let last_input = use_ref input in
-  let output = use_ref_lazy (fun () -> f input) in
+let use_memo ~on:deps ?(equal = ( = )) f =
+  let last_deps = use_ref deps in
+  let value = use_ref_lazy (fun () -> f ()) in
 
-  if not (equal input !last_input) then begin
-    last_input := input;
-    output := f input
+  if not (equal deps !last_deps) then begin
+    last_deps := deps;
+    value := f ()
   end;
 
-  !output
+  !value
