@@ -11,6 +11,7 @@ val use_reducer :
 val use_effect :
      on:'deps
   -> ?equal:('deps -> 'deps -> bool)
+  -> ?before_render:bool
   -> ?cleanup:(unit -> unit)
   -> (unit -> unit)
   -> unit
@@ -24,6 +25,7 @@ val use_effect_always :
 val use_resource :
      on:'deps
   -> ?equal:('deps -> 'deps -> bool)
+  -> ?before_render:bool
   -> release:('resource -> unit)
   -> (unit -> 'resource)
   -> unit
