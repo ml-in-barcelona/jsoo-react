@@ -137,6 +137,121 @@ let testContext () =
             (Html.element c));
       assert_equal c##.textContent (Js.Opt.return (Js.string "bar")))
 
+let test_hooks_use_ref () =
+  let module C = struct
+    let%component make ~cb () =
+      let myRef = React.Hooks.use_ref 1 in
+      React.use_effect_once (fun () ->
+          myRef := !myRef + 1;
+          cb myRef;
+          None);
+      div [||] []
+  end in
+  withContainer (fun c ->
+      let myRef = ref None in
+      let cb reactRef = myRef := Some reactRef in
+      act (fun () -> React.Dom.render (C.make ~cb ()) (Html.element c));
+      assert_equal (myRef.contents |> Option.map (fun item -> !item)) (Some 2))
+
+let test_hooks_use_effect () =
+  let count = ref 0 in
+  let module C = struct
+    let%component make ~a ~b =
+      React.Hooks.use_effect ~on:(a, b) (fun () -> incr count);
+      div [||] []
+  end in
+  withContainer (fun c ->
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c));
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c));
+      act (fun () -> React.Dom.render (C.make ~a:2 ~b:3 ()) (Html.element c));
+      assert_equal !count 2)
+
+let test_hooks_use_resource_release () =
+  let acquired = ref [] in
+  let module C = struct
+    let%component make ~a ~b =
+      React.Hooks.use_resource ~on:(a, b)
+        ~release:(fun resource ->
+          if resource = List.hd !acquired then acquired := List.tl !acquired)
+        (fun () ->
+          acquired := (a, b) :: !acquired;
+          (a, b));
+      div [||] []
+  end in
+  withContainer (fun c ->
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c));
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c));
+      act (fun () -> React.Dom.render (C.make ~a:2 ~b:3 ()) (Html.element c));
+      act (fun () -> React.Dom.render (div [||] []) (Html.element c));
+      assert_equal !acquired [])
+
+let test_hooks_use_effect_custom_equal () =
+  let count = ref 0 in
+  let module C = struct
+    let%component make ~a ~b =
+      let equal a b = fst a = fst b in
+      React.Hooks.use_effect ~equal ~on:(a, b) (fun () -> incr count);
+      div [||] []
+  end in
+  withContainer (fun c ->
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:2 ()) (Html.element c));
+      act (fun () -> React.Dom.render (C.make ~a:1 ~b:3 ()) (Html.element c));
+      act (fun () -> React.Dom.render (C.make ~a:2 ~b:3 ()) (Html.element c));
+      assert_equal !count 2)
+
+let test_hooks_use_memo () =
+  let count = ref 0 in
+  let module UseMemo = struct
+    let%component make ~a =
+      let result =
+        React.Hooks.use_memo ~on:a (fun () ->
+            incr count;
+            a ^ Int.to_string !count)
+      in
+      div [||] [ string result ]
+  end in
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"foo" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "foo1"));
+
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"foo" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "foo1"));
+
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"bar" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "bar2"));
+
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"foo" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "foo3")))
+
+let test_hooks_use_memo_custom_equal () =
+  let count = ref 0 in
+  let module UseMemo = struct
+    let%component make ~a ~b =
+      let equal a b = fst a = fst b in
+      let result =
+        React.Hooks.use_memo ~on:(a, b) ~equal (fun () ->
+            incr count;
+            a ^ b ^ Int.to_string !count)
+      in
+      div [||] [ string result ]
+  end in
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"foo" ~b:"x" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "foox1"));
+
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"foo" ~b:"y" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "foox1"));
+
+      act (fun () ->
+          React.Dom.render (UseMemo.make ~a:"bar" ~b:"y" ()) (Html.element c));
+      assert_equal c##.textContent (Js.Opt.return (Js.string "bary2")))
+
 let test_use_effect_always () =
   let count = ref 0 in
   let module C = struct
@@ -803,6 +918,17 @@ let basic =
 
 let context = "context" >::: [ "testContext" >:: testContext ]
 
+let hooks =
+  "hooks"
+  >::: [ "use_ref" >::: [ "basic" >:: test_hooks_use_ref ]
+       ; "use_effect" >::: [ "basic" >:: test_hooks_use_effect ]
+       ; "use_effect"
+         >::: [ "custom equal" >:: test_hooks_use_effect_custom_equal ]
+       ; "use_resource" >::: [ "release" >:: test_hooks_use_resource_release ]
+       ; "use_memo" >::: [ "basic" >:: test_hooks_use_memo ]
+       ; "use_memo" >::: [ "custom equal" >:: test_hooks_use_memo_custom_equal ]
+       ]
+
 let use_effect =
   "use_effect"
   >::: [ "use_effect_always" >:: test_use_effect_always
@@ -881,6 +1007,7 @@ let suite =
   "ocaml"
   >::: [ basic
        ; context
+       ; hooks
        ; use_effect
        ; use_callback
        ; use_state

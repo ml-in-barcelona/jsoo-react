@@ -1,4 +1,5 @@
 include Core
+module Hooks = Hooks
 
 module Dom = struct
   include Dom
