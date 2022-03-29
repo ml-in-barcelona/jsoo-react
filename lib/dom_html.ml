@@ -15,18 +15,15 @@ module Prop = struct
 
   let accessKey = string "accessKey"
   let className = string "className" (* substitute for "class" *)
-
   let classNames names = className (String.concat " " names)
   let contentEditable = bool "contentEditable"
   let contextMenu = string "contextMenu"
   let dir = string "dir" (* "ltr", "rtl" or "auto" *)
-
   let draggable = bool "draggable"
   let hidden = bool "hidden"
   let id = string "id"
   let lang = string "lang"
   let role = string "role" (* ARIA role *)
-
   let style = (any "style" : Dom.Style.t -> t)
   let spellCheck = bool "spellCheck"
   let tabIndex = int "tabIndex"
@@ -45,7 +42,6 @@ module Prop = struct
   let accept = string "accept"
   let acceptCharset = string "acceptCharset"
   let action = string "action" (* uri *)
-
   let allowFullScreen = bool "allowFullScreen"
   let alt = string "alt"
   let async = bool "async"
@@ -53,16 +49,13 @@ module Prop = struct
   (* has a fixed, but large-ish, set of possible values *)
 
   let autoCapitalize = string "autoCapitalize" (* Mobile Safari specific *)
-
   let autoFocus = bool "autoFocus"
   let autoPlay = bool "autoPlay"
   let challenge = string "challenge"
   let charSet = string "charSet"
   let checked = bool "checked"
   let cite = string "cite" (* uri *)
-
   let crossOrigin = string "crossOrigin" (* anonymous, use-credentials *)
-
   let cols = int "cols"
   let colSpan = int "colSpan"
   let content = string "content"
@@ -71,7 +64,6 @@ module Prop = struct
   (* set of values specifying the coordinates of a region *)
 
   let data = string "data" (* uri *)
-
   let dateTime = string "dateTime"
   (* "valid date string with optional time" *)
 
@@ -86,47 +78,36 @@ module Prop = struct
 
   let form = string "form"
   let formAction = string "formAction" (* uri *)
-
   let formTarget = string "formTarget" (* "_blank", "_self", etc. *)
-
   let formMethod = string "formMethod" (* "post", "get", "put" *)
-
   let headers = string "headers"
   let height = string "height"
   (* in html5 this can only be a number, but in html4 it can ba a percentage as well *)
 
   let high = int "high"
   let href = string "href" (* uri *)
-
   let hrefLang = string "hrefLang"
   let htmlFor = string "htmlFor" (* substitute for "for" *)
-
   let httpEquiv = string "httpEquiv"
   (* has a fixed set of possible values *)
 
   let icon = string "icon" (* uri? *)
-
   let inputMode = string "inputMode"
   (* "verbatim", "latin", "numeric", etc. *)
 
   let integrity = string "integrity"
   let keyType = string "keyType"
   let kind = string "kind" (* has a fixed set of possible values *)
-
   let label = string "label"
   let list = string "list"
   let loop = bool "loop"
   let low = int "low"
   let manifest = string "manifest" (* uri *)
-
   let max = string "max" (* should be int or Js.Date.t *)
-
   let maxLength = int "maxLength"
   let media = string "media" (* a valid media query *)
-
   let mediaGroup = string "mediaGroup"
   let method_ = string "method" (* "post" or "get", reserved keyword *)
-
   let min = string "min"
   let minLength = int "minLength"
   let multiple = bool "multiple"
@@ -135,14 +116,11 @@ module Prop = struct
   let nonce = string "nonce"
   let noValidate = bool "noValidate"
   let open_ = bool "open" (* reserved keyword *)
-
   let optimum = int "optimum"
   let pattern = string "pattern" (* valid Js RegExp *)
-
   let placeholder = string "placeholder"
   let playsInline = bool "playsInline"
   let poster = string "poster" (* uri *)
-
   let preload = string "preload"
   (* "none", "metadata" or "auto" (and "" as a synonym for "auto") *)
 
@@ -156,9 +134,7 @@ module Prop = struct
   let rows = int "rows"
   let rowSpan = int "rowSpan"
   let sandbox = string "sandbox" (* has a fixed set of possible values *)
-
   let scope = string "scope" (* has a fixed set of possible values *)
-
   let scoped = bool "scoped"
   let scrolling = string "scrolling"
   (* html4 only, "auto", "yes" or "no" *)
@@ -169,14 +145,12 @@ module Prop = struct
   let sizes = string "sizes"
   let span = int "span"
   let src = string "src" (* uri *)
-
   let srcDoc = string "srcDoc"
   let srcLang = string "srcLang"
   let srcSet = string "srcSet"
   let start = int "start"
   let step = float_ "step"
   let summary = string "summary" (* deprecated *)
-
   let target = string "target"
   let type_ = string "type"
   (* has a fixed but large-ish set of possible values, reserved keyword *)
@@ -429,7 +403,6 @@ let meter = h "meter"
 let nav = h "nav"
 let noscript = h "noscript"
 let object_ = h "object" (* reserved keyword *)
-
 let ol = h "ol"
 let optgroup = h "optgroup"
 let option = h "option"

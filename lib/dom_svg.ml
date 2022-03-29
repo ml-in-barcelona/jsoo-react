@@ -24,13 +24,11 @@ module Prop = struct
   let baselineShift = string_prop "baselineShift"
   let bbox = string_prop "bbox"
   let begin_ = string_prop "begin" (* reserved keyword *)
-
   let bias = string_prop "bias"
   let by = string_prop "by"
   let calcMode = string_prop "calcMode"
   let capHeight = string_prop "capHeight"
   let className = string_prop "className" (* substitute for "class" *)
-
   let classNames names = className (String.concat " " names)
   let clip = string_prop "clip"
   let clipPath = string_prop "clipPath"
@@ -60,7 +58,6 @@ module Prop = struct
   let elevation = string_prop "elevation"
   let enableBackground = string_prop "enableBackground"
   let end_ = string_prop "end" (* reserved keyword *)
-
   let exponent = string_prop "exponent"
   let externalResourcesRequired = string_prop "externalResourcesRequired"
   let fill = string_prop "fill"
@@ -98,7 +95,6 @@ module Prop = struct
   let ideographic = string_prop "ideographic"
   let imageRendering = string_prop "imageRendering"
   let in_ = string_prop "in" (* reserved keyword *)
-
   let in2 = string_prop "in2"
   let intercept = string_prop "intercept"
   let k = string_prop "k"
@@ -209,7 +205,6 @@ module Prop = struct
   let textLength = string_prop "textLength"
   let textRendering = string_prop "textRendering"
   let to_ = string_prop "to" (* reserved keyword *)
-
   let transform = string_prop "transform"
   let u1 = string_prop "u1"
   let u2 = string_prop "u2"
