@@ -41,11 +41,13 @@ let make =
           Js_of_ocaml.Js.t)
       =
       make
-        ?name:(fun (type res) -> fun (type a0) ->
-                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                   fun
-                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                     -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
+        ?name:((fun (type res) ->
+                  fun (type a0) ->
+                    fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                      fun
+                        (_ :
+                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                        -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res))
                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
     fun ?name ->
       fun ?key ->
@@ -95,15 +97,19 @@ let make =
           Js_of_ocaml.Js.t)
       =
       make
-        ~b:(fun (type res) -> fun (type a0) ->
-              fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
+        ~b:((fun (type res) ->
+               fun (type a0) ->
+                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                   fun
+                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                     -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res))
               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
-        ~a:(fun (type res) -> fun (type a0) ->
-              fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                  -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+        ~a:((fun (type res) ->
+               fun (type a0) ->
+                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                   fun
+                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                     -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
               (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
     fun ~a ->
       fun ~b ->
@@ -195,17 +201,21 @@ module Bar =
               Js_of_ocaml.Js.t)
           =
           make
-            ~b:(fun (type res) -> fun (type a0) ->
-                  fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                    fun
-                      (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                      -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
+            ~b:((fun (type res) ->
+                   fun (type a0) ->
+                     fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                       fun
+                         (_ :
+                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                         -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res))
                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
-            ~a:(fun (type res) -> fun (type a0) ->
-                  fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                    fun
-                      (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                      -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+            ~a:((fun (type res) ->
+                   fun (type a0) ->
+                     fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                       fun
+                         (_ :
+                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                         -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
         fun ~a ->
           fun ~b ->
@@ -256,17 +266,21 @@ module Bar =
               Js_of_ocaml.Js.t)
           =
           component
-            ~b:(fun (type res) -> fun (type a0) ->
-                  fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                    fun
-                      (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                      -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
+            ~b:((fun (type res) ->
+                   fun (type a0) ->
+                     fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                       fun
+                         (_ :
+                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                         -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res))
                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
-            ~a:(fun (type res) -> fun (type a0) ->
-                  fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                    fun
-                      (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                      -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+            ~a:((fun (type res) ->
+                   fun (type a0) ->
+                     fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                       fun
+                         (_ :
+                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                         -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
         fun ~a ->
           fun ~b ->
@@ -324,17 +338,21 @@ module Func(M:X_int) =
               Js_of_ocaml.Js.t)
           =
           make
-            ~b:(fun (type res) -> fun (type a0) ->
-                  fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                    fun
-                      (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                      -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res)
+            ~b:((fun (type res) ->
+                   fun (type a0) ->
+                     fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                       fun
+                         (_ :
+                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                         -> (Js_of_ocaml.Js.Unsafe.get a0 "b" : res))
                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#b))
-            ~a:(fun (type res) -> fun (type a0) ->
-                  fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                    fun
-                      (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                      -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
+            ~a:((fun (type res) ->
+                   fun (type a0) ->
+                     fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                       fun
+                         (_ :
+                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                         -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res))
                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)) () in
         fun ~a ->
           fun ~b ->
@@ -413,14 +431,16 @@ module Memo =
                  < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
                ->
                make
-                 ~a:(fun (type res) -> fun (type a0) ->
-                       fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                         fun
-                           (_ :
-                             a0 ->
-                               < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                           -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-                       (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a))) in
+                 ~a:((fun (type res) ->
+                        fun (type a0) ->
+                          fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                            fun
+                              (_ :
+                                a0 ->
+                                  < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                              -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : 
+                              res)) (Props : < .. >  Js_of_ocaml.Js.t)
+                       (fun x -> x#a))) in
         fun ~a ->
           fun ?key ->
             fun () -> React.create_element make (make_props ?key ~a ()))
@@ -461,14 +481,16 @@ module MemoCustomCompareProps =
                  < a: 'a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
                ->
                make
-                 ~a:(fun (type res) -> fun (type a0) ->
-                       fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                         fun
-                           (_ :
-                             a0 ->
-                               < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                           -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : res)
-                       (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#a)))
+                 ~a:((fun (type res) ->
+                        fun (type a0) ->
+                          fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                            fun
+                              (_ :
+                                a0 ->
+                                  < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                              -> (Js_of_ocaml.Js.Unsafe.get a0 "a" : 
+                              res)) (Props : < .. >  Js_of_ocaml.Js.t)
+                       (fun x -> x#a)))
             ~compare:(fun prevPros -> fun nextProps -> false) in
         fun ~a ->
           fun ?key ->
@@ -605,19 +627,24 @@ let make =
           Js_of_ocaml.Js.t)
       =
       make
-        ~children:(fun (type res) -> fun (type a0) ->
+        ~children:((fun (type res) ->
+                      fun (type a0) ->
+                        fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                          fun
+                            (_ :
+                              a0 ->
+                                < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                            ->
+                            (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                            res)) (Props : < .. >  Js_of_ocaml.Js.t)
+                     (fun x -> x#children))
+        ~title:((fun (type res) ->
+                   fun (type a0) ->
                      fun (a0 : a0 Js_of_ocaml.Js.t) ->
                        fun
                          (_ :
                            a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                         -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
-                         res) (Props : < .. >  Js_of_ocaml.Js.t)
-                     (fun x -> x#children))
-        ~title:(fun (type res) -> fun (type a0) ->
-                  fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                    fun
-                      (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                      -> (Js_of_ocaml.Js.Unsafe.get a0 "title" : res)
+                         -> (Js_of_ocaml.Js.Unsafe.get a0 "title" : res))
                   (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#title)) in
     fun ~title ->
       fun ~children ->
@@ -672,16 +699,17 @@ let make =
            ->
            fun ref ->
              make
-               ~children:(fun (type res) -> fun (type a0) ->
-                            fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                              fun
-                                (_ :
-                                  a0 ->
-                                    < get: res   ;.. > 
-                                      Js_of_ocaml.Js.gen_prop)
-                                ->
-                                (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
-                                res) (Props : < .. >  Js_of_ocaml.Js.t)
+               ~children:((fun (type res) ->
+                             fun (type a0) ->
+                               fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                                 fun
+                                   (_ :
+                                     a0 ->
+                                       < get: res   ;.. > 
+                                         Js_of_ocaml.Js.gen_prop)
+                                   ->
+                                   (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                                   res)) (Props : < .. >  Js_of_ocaml.Js.t)
                             (fun x -> x#children)) ref) in
     fun ~children ->
       fun ?key ->
@@ -769,29 +797,34 @@ let make =
           Js_of_ocaml.Js.t)
       =
       make
-        ?onClick:(fun (type res) -> fun (type a0) ->
-                    fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                      fun
-                        (_ :
-                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                        -> (Js_of_ocaml.Js.Unsafe.get a0 "onClick" : 
-                        res) (Props : < .. >  Js_of_ocaml.Js.t)
-                    (fun x -> x#onClick))
-        ?isDisabled:(fun (type res) -> fun (type a0) ->
+        ?onClick:((fun (type res) ->
+                     fun (type a0) ->
                        fun (a0 : a0 Js_of_ocaml.Js.t) ->
                          fun
                            (_ :
                              a0 ->
                                < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                           ->
-                           (Js_of_ocaml.Js.Unsafe.get a0 "isDisabled" : 
-                           res) (Props : < .. >  Js_of_ocaml.Js.t)
+                           -> (Js_of_ocaml.Js.Unsafe.get a0 "onClick" : 
+                           res)) (Props : < .. >  Js_of_ocaml.Js.t)
+                    (fun x -> x#onClick))
+        ?isDisabled:((fun (type res) ->
+                        fun (type a0) ->
+                          fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                            fun
+                              (_ :
+                                a0 ->
+                                  < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                              ->
+                              (Js_of_ocaml.Js.Unsafe.get a0 "isDisabled" : 
+                              res)) (Props : < .. >  Js_of_ocaml.Js.t)
                        (fun x -> x#isDisabled))
-        ~name:(fun (type res) -> fun (type a0) ->
-                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                   fun
-                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                     -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
+        ~name:((fun (type res) ->
+                  fun (type a0) ->
+                    fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                      fun
+                        (_ :
+                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                        -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res))
                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
     fun ~name ->
       fun ?isDisabled ->
@@ -837,11 +870,13 @@ let make =
           Js_of_ocaml.Js.t)
       =
       make
-        ?name:(fun (type res) -> fun (type a0) ->
-                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                   fun
-                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                     -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
+        ?name:((fun (type res) ->
+                  fun (type a0) ->
+                    fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                      fun
+                        (_ :
+                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                        -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res))
                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
     fun ?name ->
       fun ?key ->
