@@ -31,11 +31,13 @@ let make =
           Js_of_ocaml.Js.t)
       =
       make
-        ?name:(fun (type res) -> fun (type a0) ->
-                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                   fun
-                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                     -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
+        ?name:((fun (type res) ->
+                  fun (type a0) ->
+                    fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                      fun
+                        (_ :
+                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                        -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res))
                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
     fun ?name ->
       fun ?key ->
@@ -72,13 +74,16 @@ let make =
           Js_of_ocaml.Js.t)
       =
       make
-        ~children:(fun (type res) -> fun (type a0) ->
-                     fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                       fun
-                         (_ :
-                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                         -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
-                         res) (Props : < .. >  Js_of_ocaml.Js.t)
+        ~children:((fun (type res) ->
+                      fun (type a0) ->
+                        fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                          fun
+                            (_ :
+                              a0 ->
+                                < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                            ->
+                            (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                            res)) (Props : < .. >  Js_of_ocaml.Js.t)
                      (fun x -> x#children)) in
     fun ~children ->
       fun ?key ->
@@ -113,13 +118,16 @@ let make =
           Js_of_ocaml.Js.t)
       =
       make
-        ~children:(fun (type res) -> fun (type a0) ->
-                     fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                       fun
-                         (_ :
-                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                         -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
-                         res) (Props : < .. >  Js_of_ocaml.Js.t)
+        ~children:((fun (type res) ->
+                      fun (type a0) ->
+                        fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                          fun
+                            (_ :
+                              a0 ->
+                                < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                            ->
+                            (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                            res)) (Props : < .. >  Js_of_ocaml.Js.t)
                      (fun x -> x#children)) in
     fun ~children ->
       fun ?key ->
@@ -156,13 +164,16 @@ let make =
           Js_of_ocaml.Js.t)
       =
       make
-        ~children:(fun (type res) -> fun (type a0) ->
-                     fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                       fun
-                         (_ :
-                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                         -> (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
-                         res) (Props : < .. >  Js_of_ocaml.Js.t)
+        ~children:((fun (type res) ->
+                      fun (type a0) ->
+                        fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                          fun
+                            (_ :
+                              a0 ->
+                                < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                            ->
+                            (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
+                            res)) (Props : < .. >  Js_of_ocaml.Js.t)
                      (fun x -> x#children)) () in
     fun ~children ->
       fun ?key ->
@@ -197,11 +208,13 @@ let make =
           Js_of_ocaml.Js.t)
       =
       make
-        ?name:(fun (type res) -> fun (type a0) ->
-                 fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                   fun
-                     (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                     -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res)
+        ?name:((fun (type res) ->
+                  fun (type a0) ->
+                    fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                      fun
+                        (_ :
+                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                        -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res))
                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
     fun ?name ->
       fun ?key ->
@@ -245,10 +258,13 @@ let make =
   ((let make
       (Props : < foo: a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t) =
       make
-        ~foo:(fun (type res) -> fun (type a0) ->
-                fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                    -> (Js_of_ocaml.Js.Unsafe.get a0 "foo" : res)
+        ~foo:((fun (type res) ->
+                 fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "foo" : res))
                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#foo)) in
     fun ~foo ->
       fun ?key ->
@@ -280,10 +296,13 @@ let make =
         < foo: 'foo Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
       =
       make
-        ~foo:(fun (type res) -> fun (type a0) ->
-                fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                    -> (Js_of_ocaml.Js.Unsafe.get a0 "foo" : res)
+        ~foo:((fun (type res) ->
+                 fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "foo" : res))
                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#foo)) in
     fun ~foo ->
       fun ?key ->
@@ -321,10 +340,13 @@ let make =
         < bar: int option Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t)
       =
       make
-        ~bar:(fun (type res) -> fun (type a0) ->
-                fun (a0 : a0 Js_of_ocaml.Js.t) ->
-                  fun (_ : a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
-                    -> (Js_of_ocaml.Js.Unsafe.get a0 "bar" : res)
+        ~bar:((fun (type res) ->
+                 fun (type a0) ->
+                   fun (a0 : a0 Js_of_ocaml.Js.t) ->
+                     fun
+                       (_ :
+                         a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
+                       -> (Js_of_ocaml.Js.Unsafe.get a0 "bar" : res))
                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#bar)) in
     fun ~bar ->
       fun ?key ->
