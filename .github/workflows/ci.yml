@@ -41,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: |
           opam install . --deps-only --with-doc --with-test
-          opam install ocamlformat
+          opam install ocamlformat.0.21.0
 
       - name: Build
         run: make build
