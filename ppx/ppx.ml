@@ -943,9 +943,7 @@ let jsxMapper () =
         match str_label with
         | Str_label.Optional str ->
             [%expr
-              maybe
-                [%e Exp.ident { loc; txt = Ldot (Lident "Prop", str) }]
-                [%e value]]
+              Prop.(maybe [%e Exp.ident { loc; txt = Lident str }]) [%e value]]
         | Labelled str ->
             [%expr
               [%e Exp.ident { loc; txt = Ldot (Lident "Prop", str) }] [%e value]]

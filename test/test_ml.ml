@@ -99,7 +99,7 @@ let testOptionalPropsUppercase () =
 let testOptionalPropsLowercase () =
   let module LinkWithMaybeHref = struct
     (* NOTE: collision caused by namespace pollution *)
-    let%component make ~href = a [| maybe Prop.href href |] []
+    let%component make ~href = a [| Prop.(maybe href) href |] []
   end in
   withContainer (fun c ->
       act (fun () ->
@@ -821,14 +821,16 @@ let testWithId () =
 let testPropMaybeNone () =
   withContainer (fun c ->
       act (fun () ->
-          React.Dom.render (div [| maybe className None |] []) (Html.element c));
+          React.Dom.render
+            (div [| Prop.(maybe className) None |] [])
+            (Html.element c));
       assert_equal c##.innerHTML (Js.string "<div></div>"))
 
 let testPropMaybeSome () =
   withContainer (fun c ->
       act (fun () ->
           React.Dom.render
-            (div [| maybe className (Some "foo") |] [])
+            (div [| Prop.(maybe className) (Some "foo") |] [])
             (Html.element c));
       assert_equal c##.innerHTML (Js.string "<div class=\"foo\"></div>"))
 
@@ -882,6 +884,22 @@ let testCustomElement () =
         (Js.string
            "<cool-element coolness=\"max\"><chill \
             data-out=\"true\"></chill></cool-element>"))
+
+let testElementMaybeNone () =
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render
+            (maybe (fun cls -> div [| className cls |] []) None)
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string ""))
+
+let testElementMaybeSome () =
+  withContainer (fun c ->
+      act (fun () ->
+          React.Dom.render
+            (maybe (fun cls -> div [| className cls |] []) (Some "foo"))
+            (Html.element c));
+      assert_equal c##.innerHTML (Js.string "<div class=\"foo\"></div>"))
 
 let testSvg () =
   withContainer (fun c ->
@@ -1000,7 +1018,13 @@ let props =
        ; "custom-any" >:: testPropCustomAny
        ]
 
-let elements = "elements" >::: [ "custom" >:: testCustomElement ]
+let elements =
+  "elements"
+  >::: [ "custom" >:: testCustomElement
+       ; "maybe-none" >:: testElementMaybeNone
+       ; "maybe-some" >:: testElementMaybeSome
+       ]
+
 let svg = "svg" >::: [ "basic" >:: testSvg ]
 
 let suite =

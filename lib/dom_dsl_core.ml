@@ -36,4 +36,5 @@ module Common = struct
   let string = Core.string
   let int = Core.int
   let float = Core.float
+  let maybe f = function Some value -> f value | None -> none
 end
