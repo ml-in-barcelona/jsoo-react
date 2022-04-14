@@ -863,45 +863,39 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
       let js_props_obj = make_js_props_obj ~loc:gloc named_arg_list in
       make_make_props js_props_obj fn_name gloc named_arg_list named_type_list
     in
-    let outer_make expression =
-      Vb.mk ~loc:binding_loc
-        ~attrs:(List.filter otherAttrsPure binding.pvb_attributes)
-        (Pat.var ~loc:binding_pat_loc { loc = binding_pat_loc; txt = fn_name })
-        (let outer =
-           make_funs_for_make_props_body
-             (List.map pluckLabelDefaultLocType named_arg_list_with_key_and_ref)
-             (let loc = gloc in
-              [%expr
-                fun () ->
-                  React.set_display_name [%e expression] __FUNCTION__;
-                  React.create_element [%e expression]
-                    [%e
-                      Exp.apply ~loc
-                        (Exp.ident ~loc
-                           { loc; txt = Lident (make_props_name fn_name) })
-                        (List.map
-                           (fun ( arg
-                                , _default
-                                , _pattern
-                                , _alias
-                                , _pattern_loc
-                                , _type ) ->
-                             ( Str_label.to_arg_label arg
-                             , Exp.ident ~loc:gloc
-                                 { loc = gloc
-                                 ; txt = Lident (Str_label.str arg)
-                                 } ))
-                           named_arg_list_with_key_and_ref
-                        @ [ ( Nolabel
-                            , Exp.construct { loc; txt = Lident "()" } None )
-                          ])]])
-         in
-         make_props @@ ml_comp @@ js_comp @@ outer)
-    in
-    let inner_make_ident =
-      Exp.ident ~loc:gloc { loc = gloc; txt = Lident fn_name }
-    in
-    outer_make inner_make_ident
+    let fn_ident = Exp.ident ~loc:gloc { loc = gloc; txt = Lident fn_name } in
+    Vb.mk ~loc:binding_loc
+      ~attrs:(List.filter otherAttrsPure binding.pvb_attributes)
+      (Pat.var ~loc:binding_pat_loc { loc = binding_pat_loc; txt = fn_name })
+      (let outer =
+         make_funs_for_make_props_body
+           (List.map pluckLabelDefaultLocType named_arg_list_with_key_and_ref)
+           (let loc = gloc in
+            [%expr
+              fun () ->
+                React.set_display_name [%e fn_ident] __FUNCTION__;
+                React.create_element [%e fn_ident]
+                  [%e
+                    Exp.apply ~loc
+                      (Exp.ident ~loc
+                         { loc; txt = Lident (make_props_name fn_name) })
+                      (List.map
+                         (fun ( arg
+                              , _default
+                              , _pattern
+                              , _alias
+                              , _pattern_loc
+                              , _type ) ->
+                           ( Str_label.to_arg_label arg
+                           , Exp.ident ~loc:gloc
+                               { loc = gloc; txt = Lident (Str_label.str arg) }
+                           ))
+                         named_arg_list_with_key_and_ref
+                      @ [ ( Nolabel
+                          , Exp.construct { loc; txt = Lident "()" } None )
+                        ])]])
+       in
+       make_props @@ ml_comp @@ js_comp @@ outer)
   else binding
 
 (* Builds the args list for elements like <Foo bar=2 />, or for React.Fragment: <> <div /> <p /> </> *)
