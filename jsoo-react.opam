@@ -16,7 +16,7 @@ depends: [
   "webtest-js" {with-test}
   "js_of_ocaml-ppx" {with-test}
   "conf-npm" {with-test}
-  "ocamlformat" {= "0.20.1" & with-test}
+  "ocamlformat" {= "0.21.0" & with-test}
   "reason" {with-test}
   "ppx_blob" {with-test}
   "js_of_ocaml-lwt" {with-test}
