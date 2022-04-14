@@ -51,7 +51,9 @@ let make =
                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
     fun ?name ->
       fun ?key ->
-        fun () -> React.create_element make (make_props ?key ?name ()))
+        fun () ->
+          React.set_display_name make __FUNCTION__;
+          React.create_element make (make_props ?key ?name ()))
     [@merlin.hide ])
 let make =
   let make_props
@@ -114,7 +116,9 @@ let make =
     fun ~a ->
       fun ~b ->
         fun ?key ->
-          fun () -> React.create_element make (make_props ?key ~b ~a ()))
+          fun () ->
+            React.set_display_name make __FUNCTION__;
+            React.create_element make (make_props ?key ~b ~a ()))
     [@merlin.hide ])
 module External =
   struct
@@ -220,7 +224,9 @@ module Bar =
         fun ~a ->
           fun ~b ->
             fun ?key ->
-              fun () -> React.create_element make (make_props ?key ~b ~a ()))
+              fun () ->
+                React.set_display_name make __FUNCTION__;
+                React.create_element make (make_props ?key ~b ~a ()))
         [@merlin.hide ])
     let component =
       let component_props
@@ -286,6 +292,7 @@ module Bar =
           fun ~b ->
             fun ?key ->
               fun () ->
+                React.set_display_name component __FUNCTION__;
                 React.create_element component
                   (component_props ?key ~b ~a ()))
         [@merlin.hide ])
@@ -357,7 +364,9 @@ module Func(M:X_int) =
         fun ~a ->
           fun ~b ->
             fun ?key ->
-              fun () -> React.create_element make (make_props ?key ~b ~a ()))
+              fun () ->
+                React.set_display_name make __FUNCTION__;
+                React.create_element make (make_props ?key ~b ~a ()))
         [@merlin.hide ])
   end
 module ForwardRef =
@@ -393,7 +402,9 @@ module ForwardRef =
                fun theRef -> make theRef) in
         fun ?key ->
           fun ?ref ->
-            fun () -> React.create_element make (make_props ?ref ?key ()))
+            fun () ->
+              React.set_display_name make __FUNCTION__;
+              React.create_element make (make_props ?ref ?key ()))
         [@merlin.hide ])
   end
 module Memo =
@@ -443,7 +454,9 @@ module Memo =
                        (fun x -> x#a))) in
         fun ~a ->
           fun ?key ->
-            fun () -> React.create_element make (make_props ?key ~a ()))
+            fun () ->
+              React.set_display_name make __FUNCTION__;
+              React.create_element make (make_props ?key ~a ()))
         [@merlin.hide ])
   end
 module MemoCustomCompareProps =
@@ -494,7 +507,9 @@ module MemoCustomCompareProps =
             ~compare:(fun prevPros -> fun nextProps -> false) in
         fun ~a ->
           fun ?key ->
-            fun () -> React.create_element make (make_props ?key ~a ()))
+            fun () ->
+              React.set_display_name make __FUNCTION__;
+              React.create_element make (make_props ?key ~a ()))
         [@merlin.hide ])
   end
 let fragment foo = ((React.Fragment.make ~children:[foo] ())[@bla ])
@@ -650,6 +665,7 @@ let make =
       fun ~children ->
         fun ?key ->
           fun () ->
+            React.set_display_name make __FUNCTION__;
             React.create_element make (make_props ?key ~children ~title ()))
     [@merlin.hide ])
 let t = FancyButton.make ~ref:buttonRef ~children:[div [||] []] ()
@@ -715,6 +731,7 @@ let make =
       fun ?key ->
         fun ?ref ->
           fun () ->
+            React.set_display_name make __FUNCTION__;
             React.create_element make (make_props ?ref ?key ~children ()))
     [@merlin.hide ])
 let testAttributes =
@@ -831,6 +848,7 @@ let make =
         fun ?onClick ->
           fun ?key ->
             fun () ->
+              React.set_display_name make __FUNCTION__;
               React.create_element make
                 (make_props ?key ?onClick ?isDisabled ~name ()))
     [@merlin.hide ])
@@ -880,5 +898,7 @@ let make =
                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
     fun ?name ->
       fun ?key ->
-        fun () -> React.create_element make (make_props ?key ?name ()))
+        fun () ->
+          React.set_display_name make __FUNCTION__;
+          React.create_element make (make_props ?key ?name ()))
     [@merlin.hide ])

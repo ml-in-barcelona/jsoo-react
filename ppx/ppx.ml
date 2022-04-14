@@ -873,6 +873,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
              (let loc = gloc in
               [%expr
                 fun () ->
+                  React.set_display_name [%e expression] __FUNCTION__;
                   React.create_element [%e expression]
                     [%e
                       Exp.apply ~loc
