@@ -39,11 +39,10 @@ let make =
                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                         -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res))
                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
-    fun ?name ->
-      fun ?key ->
-        fun () ->
-          React.set_display_name make __FUNCTION__;
-          React.create_element make (make_props ?key ?name ()))
+    React.set_display_name make __FUNCTION__;
+    (fun ?name ->
+       fun ?key ->
+         fun () -> React.create_element make (make_props ?key ?name ())))
     [@merlin.hide ])
 let make =
   let make_props
@@ -87,11 +86,10 @@ let make =
                             (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
                             res)) (Props : < .. >  Js_of_ocaml.Js.t)
                      (fun x -> x#children)) in
-    fun ~children ->
-      fun ?key ->
-        fun () ->
-          React.set_display_name make __FUNCTION__;
-          React.create_element make (make_props ?key ~children ()))
+    React.set_display_name make __FUNCTION__;
+    (fun ~children ->
+       fun ?key ->
+         fun () -> React.create_element make (make_props ?key ~children ())))
     [@merlin.hide ])
 let make =
   let make_props
@@ -133,11 +131,10 @@ let make =
                             (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
                             res)) (Props : < .. >  Js_of_ocaml.Js.t)
                      (fun x -> x#children)) in
-    fun ~children ->
-      fun ?key ->
-        fun () ->
-          React.set_display_name make __FUNCTION__;
-          React.create_element make (make_props ?key ~children ()))
+    React.set_display_name make __FUNCTION__;
+    (fun ~children ->
+       fun ?key ->
+         fun () -> React.create_element make (make_props ?key ~children ())))
     [@merlin.hide ])
 let make =
   let make_props
@@ -181,11 +178,10 @@ let make =
                             (Js_of_ocaml.Js.Unsafe.get a0 "children" : 
                             res)) (Props : < .. >  Js_of_ocaml.Js.t)
                      (fun x -> x#children)) () in
-    fun ~children ->
-      fun ?key ->
-        fun () ->
-          React.set_display_name make __FUNCTION__;
-          React.create_element make (make_props ?key ~children ()))
+    React.set_display_name make __FUNCTION__;
+    (fun ~children ->
+       fun ?key ->
+         fun () -> React.create_element make (make_props ?key ~children ())))
     [@merlin.hide ])
 let make =
   let make_props
@@ -224,11 +220,10 @@ let make =
                           a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                         -> (Js_of_ocaml.Js.Unsafe.get a0 "name" : res))
                  (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#name)) in
-    fun ?name ->
-      fun ?key ->
-        fun () ->
-          React.set_display_name make __FUNCTION__;
-          React.create_element make (make_props ?key ?name ()))
+    React.set_display_name make __FUNCTION__;
+    (fun ?name ->
+       fun ?key ->
+         fun () -> React.create_element make (make_props ?key ?name ())))
     [@merlin.hide ])
 let make =
   let make_props : ?key:string -> unit -> <  >  Js_of_ocaml.Js.t =
@@ -243,10 +238,8 @@ let make =
                                                                    ] in
   let make () = (div [||] [] : React.element) in
   ((let make (Props : <  >  Js_of_ocaml.Js.t) = make () in
-    fun ?key ->
-      fun () ->
-        React.set_display_name make __FUNCTION__;
-        React.create_element make (make_props ?key ()))
+    React.set_display_name make __FUNCTION__;
+    (fun ?key -> fun () -> React.create_element make (make_props ?key ())))
     [@merlin.hide ])
 let make =
   let make_props
@@ -279,11 +272,10 @@ let make =
                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                        -> (Js_of_ocaml.Js.Unsafe.get a0 "foo" : res))
                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#foo)) in
-    fun ~foo ->
-      fun ?key ->
-        fun () ->
-          React.set_display_name make __FUNCTION__;
-          React.create_element make (make_props ?key ~foo ()))
+    React.set_display_name make __FUNCTION__;
+    (fun ~foo ->
+       fun ?key ->
+         fun () -> React.create_element make (make_props ?key ~foo ())))
     [@merlin.hide ])
 let make =
   let make_props
@@ -319,11 +311,10 @@ let make =
                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                        -> (Js_of_ocaml.Js.Unsafe.get a0 "foo" : res))
                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#foo)) in
-    fun ~foo ->
-      fun ?key ->
-        fun () ->
-          React.set_display_name make __FUNCTION__;
-          React.create_element make (make_props ?key ~foo ()))
+    React.set_display_name make __FUNCTION__;
+    (fun ~foo ->
+       fun ?key ->
+         fun () -> React.create_element make (make_props ?key ~foo ())))
     [@merlin.hide ])
 let make =
   let make_props
@@ -365,11 +356,10 @@ let make =
                          a0 -> < get: res   ;.. >  Js_of_ocaml.Js.gen_prop)
                        -> (Js_of_ocaml.Js.Unsafe.get a0 "bar" : res))
                 (Props : < .. >  Js_of_ocaml.Js.t) (fun x -> x#bar)) in
-    fun ~bar ->
-      fun ?key ->
-        fun () ->
-          React.set_display_name make __FUNCTION__;
-          React.create_element make (make_props ?key ~bar ()))
+    React.set_display_name make __FUNCTION__;
+    (fun ~bar ->
+       fun ?key ->
+         fun () -> React.create_element make (make_props ?key ~bar ())))
     [@merlin.hide ])
 let make =
   let make_props

@@ -656,6 +656,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
     let binding_loc = binding.pvb_loc in
     let binding_pat_loc = binding.pvb_pat.ppat_loc in
     let fn_name = getFnName binding.pvb_pat in
+    let fn_ident = Exp.ident ~loc:gloc { loc = gloc; txt = Lident fn_name } in
     let modified_binding_old binding =
       let expression = binding.pvb_expr in
       (* TODO: there is a long-tail of unsupported features inside of blocks - Pexp_letmodule , Pexp_letexception , Pexp_ifthenelse *)
@@ -863,7 +864,12 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
       let js_props_obj = make_js_props_obj ~loc:gloc named_arg_list in
       make_make_props js_props_obj fn_name gloc named_arg_list named_type_list
     in
-    let fn_ident = Exp.ident ~loc:gloc { loc = gloc; txt = Lident fn_name } in
+    let set_display_name expr =
+      let loc = gloc in
+      [%expr
+        React.set_display_name [%e fn_ident] __FUNCTION__;
+        [%e expr]]
+    in
     Vb.mk ~loc:binding_loc
       ~attrs:(List.filter otherAttrsPure binding.pvb_attributes)
       (Pat.var ~loc:binding_pat_loc { loc = binding_pat_loc; txt = fn_name })
@@ -873,7 +879,6 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
            (let loc = gloc in
             [%expr
               fun () ->
-                React.set_display_name [%e fn_ident] __FUNCTION__;
                 React.create_element [%e fn_ident]
                   [%e
                     Exp.apply ~loc
@@ -895,7 +900,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
                           , Exp.construct { loc; txt = Lident "()" } None )
                         ])]])
        in
-       make_props @@ ml_comp @@ js_comp @@ outer)
+       make_props @@ ml_comp @@ js_comp @@ set_display_name @@ outer)
   else binding
 
 (* Builds the args list for elements like <Foo bar=2 />, or for React.Fragment: <> <div /> <p /> </> *)
