@@ -22,6 +22,8 @@
 open Ppxlib
 open Ast_helper
 
+let dev_mode = Sys.getenv_opt "JSOO_REACT_DEV" <> None
+
 module Str_label = struct
   type t =
     | Labelled of string
@@ -865,10 +867,12 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
       make_make_props js_props_obj fn_name gloc named_arg_list named_type_list
     in
     let set_display_name expr =
-      let loc = gloc in
-      [%expr
-        React.set_display_name [%e fn_ident] __FUNCTION__;
-        [%e expr]]
+      if dev_mode then
+        let loc = gloc in
+        [%expr
+          React.set_display_name [%e fn_ident] __FUNCTION__;
+          [%e expr]]
+      else expr
     in
     Vb.mk ~loc:binding_loc
       ~attrs:(List.filter otherAttrsPure binding.pvb_attributes)
