@@ -49,6 +49,15 @@
   (run ./main.exe --impl %{deps} -o %{targets})))
 
 (rule
+ (targets pp_ocaml_dev.result)
+ (deps input_ocaml.ml)
+ (action
+  (setenv
+   "JSOO_REACT_DEV"
+   "1"
+   (run ./main.exe --impl %{deps} -o %{targets}))))
+
+(rule
  (alias runtest)
  (action
   (progn
@@ -57,4 +66,5 @@
    (diff pp_errors_02_external_component_unlabelled_arg.expected
      pp_errors_02_external_component_unlabelled_arg.actual)
    (diff pp_reason.expected pp_reason.result)
-   (diff pp_ocaml.expected pp_ocaml.result))))
+   (diff pp_ocaml.expected pp_ocaml.result)
+   (diff pp_ocaml_dev.expected pp_ocaml_dev.result))))

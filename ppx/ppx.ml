@@ -22,6 +22,8 @@
 open Ppxlib
 open Ast_helper
 
+let dev_mode = Sys.getenv_opt "JSOO_REACT_DEV" <> None
+
 module Str_label = struct
   type t =
     | Labelled of string
@@ -656,6 +658,7 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
     let binding_loc = binding.pvb_loc in
     let binding_pat_loc = binding.pvb_pat.ppat_loc in
     let fn_name = getFnName binding.pvb_pat in
+    let fn_ident = Exp.ident ~loc:gloc { loc = gloc; txt = Lident fn_name } in
     let modified_binding_old binding =
       let expression = binding.pvb_expr in
       (* TODO: there is a long-tail of unsupported features inside of blocks - Pexp_letmodule , Pexp_letexception , Pexp_ifthenelse *)
@@ -863,44 +866,45 @@ let process_value_binding ~pstr_loc ~inside_component ~mapper binding =
       let js_props_obj = make_js_props_obj ~loc:gloc named_arg_list in
       make_make_props js_props_obj fn_name gloc named_arg_list named_type_list
     in
-    let outer_make expression =
-      Vb.mk ~loc:binding_loc
-        ~attrs:(List.filter otherAttrsPure binding.pvb_attributes)
-        (Pat.var ~loc:binding_pat_loc { loc = binding_pat_loc; txt = fn_name })
-        (let outer =
-           make_funs_for_make_props_body
-             (List.map pluckLabelDefaultLocType named_arg_list_with_key_and_ref)
-             (let loc = gloc in
-              [%expr
-                fun () ->
-                  React.create_element [%e expression]
-                    [%e
-                      Exp.apply ~loc
-                        (Exp.ident ~loc
-                           { loc; txt = Lident (make_props_name fn_name) })
-                        (List.map
-                           (fun ( arg
-                                , _default
-                                , _pattern
-                                , _alias
-                                , _pattern_loc
-                                , _type ) ->
-                             ( Str_label.to_arg_label arg
-                             , Exp.ident ~loc:gloc
-                                 { loc = gloc
-                                 ; txt = Lident (Str_label.str arg)
-                                 } ))
-                           named_arg_list_with_key_and_ref
-                        @ [ ( Nolabel
-                            , Exp.construct { loc; txt = Lident "()" } None )
-                          ])]])
-         in
-         make_props @@ ml_comp @@ js_comp @@ outer)
+    let set_display_name expr =
+      if dev_mode then
+        let loc = gloc in
+        [%expr
+          React.set_display_name [%e fn_ident] __FUNCTION__;
+          [%e expr]]
+      else expr
     in
-    let inner_make_ident =
-      Exp.ident ~loc:gloc { loc = gloc; txt = Lident fn_name }
-    in
-    outer_make inner_make_ident
+    Vb.mk ~loc:binding_loc
+      ~attrs:(List.filter otherAttrsPure binding.pvb_attributes)
+      (Pat.var ~loc:binding_pat_loc { loc = binding_pat_loc; txt = fn_name })
+      (let outer =
+         make_funs_for_make_props_body
+           (List.map pluckLabelDefaultLocType named_arg_list_with_key_and_ref)
+           (let loc = gloc in
+            [%expr
+              fun () ->
+                React.create_element [%e fn_ident]
+                  [%e
+                    Exp.apply ~loc
+                      (Exp.ident ~loc
+                         { loc; txt = Lident (make_props_name fn_name) })
+                      (List.map
+                         (fun ( arg
+                              , _default
+                              , _pattern
+                              , _alias
+                              , _pattern_loc
+                              , _type ) ->
+                           ( Str_label.to_arg_label arg
+                           , Exp.ident ~loc:gloc
+                               { loc = gloc; txt = Lident (Str_label.str arg) }
+                           ))
+                         named_arg_list_with_key_and_ref
+                      @ [ ( Nolabel
+                          , Exp.construct { loc; txt = Lident "()" } None )
+                        ])]])
+       in
+       make_props @@ ml_comp @@ js_comp @@ set_display_name @@ outer)
   else binding
 
 (* Builds the args list for elements like <Foo bar=2 />, or for React.Fragment: <> <div /> <p /> </> *)
