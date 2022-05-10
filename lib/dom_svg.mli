@@ -102,8 +102,10 @@ module Prop : sig
   val gradientTransform : string -> t
   val gradientUnits : string -> t
   val hanging : string -> t
+  val height : string -> t
   val horizAdvX : string -> t
   val horizOriginX : string -> t
+  val href : string -> t
   val id : string -> t
   val ideographic : string -> t
   val imageRendering : string -> t
@@ -241,6 +243,7 @@ module Prop : sig
   val viewBox : string -> t
   val viewTarget : string -> t
   val visibility : string -> t
+  val width : string -> t
   val widths : string -> t
   val wordSpacing : string -> t
   val writingMode : string -> t
