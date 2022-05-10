@@ -778,8 +778,9 @@ let make =
         ((fun ?isDisabled ->
             ((fun ?onClick ->
                 (((button
-                     [|(Prop.name name);(maybe Prop.onClick onClick);(
-                       Prop.disabled isDisabled)|] [])
+                     [|(Prop.name name);(((let open Prop in maybe onClick))
+                                           onClick);(Prop.disabled isDisabled)|]
+                     [])
                 [@reason.preserve_braces ]) : React.element))
             [@warning "-16"]))
         [@warning "-16"]))

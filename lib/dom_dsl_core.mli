@@ -25,7 +25,9 @@ module Common : sig
   end
 
   val fragment : Core.element list -> Core.element
+  val none : Core.element
   val string : string -> Core.element
   val int : int -> Core.element
   val float : float -> Core.element
+  val maybe : ('a -> Core.element) -> 'a option -> Core.element
 end
