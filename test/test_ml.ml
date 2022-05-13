@@ -925,6 +925,7 @@ let testSvg () =
             fill=\"pink\"></circle></svg>"))
 
 let testStrictModeArbitraryVal = ref "ja"
+
 let testStrictModeDoubleStateInitializer () =
   let module TestComponent = struct
     let%component make ?(initialValue = "testing strict mode") () =
