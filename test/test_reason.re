@@ -1175,6 +1175,32 @@ let testSvg = () =>
     );
   });
 
+let testStrictModeArbitraryVal = ref("ja");
+let testStrictModeDoubleStateInitializer = () => {
+  module TestComponent = {
+    [@react.component]
+    let make = (~initialValue="testing strict mode", ()) => {
+      let stateInitializer = () => {
+        testStrictModeArbitraryVal := testStrictModeArbitraryVal^ ++ "ja";
+        doc##.title := Js.string(testStrictModeArbitraryVal^);
+        initialValue;
+      };
+      let (text, _) = React.use_state(stateInitializer);
+      <div> {text |> React.string} </div>;
+    };
+  };
+  withContainer(c => {
+    open ReactDOMTestUtils;
+    act(() => {
+      React.Dom.render(
+        <React.StrictMode> <TestComponent /> </React.StrictMode>,
+        Dom_html.element(c),
+      )
+    });
+    assert_equal(doc##.title, Js.string("jajaja"));
+  });
+};
+
 let basic =
   "basic"
   >::: [
@@ -1276,6 +1302,13 @@ let elements = "elements" >::: ["custom" >:: testCustomElement];
 
 let svg = "svg" >::: ["basic" >:: testSvg];
 
+let strict_mode =
+  "strict_mode"
+  >::: [
+    "testStrictModeDoubleStateInitializer"
+    >:: testStrictModeDoubleStateInitializer,
+  ];
+
 let suite =
   "reason"
   >::: [
@@ -1293,4 +1326,5 @@ let suite =
     props,
     elements,
     svg,
+    strict_mode,
   ];
