@@ -32,6 +32,7 @@ module Common = struct
   end
 
   let fragment children = Core.Fragment.make ~children ()
+  let strict_mode children = Core.StrictMode.make ~children ()
   let none = fragment []
   let string = Core.string
   let int = Core.int

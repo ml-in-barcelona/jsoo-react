@@ -25,6 +25,7 @@ module Common : sig
   end
 
   val fragment : Core.element list -> Core.element
+  val strict_mode : Core.element list -> Core.element
   val none : Core.element
   val string : string -> Core.element
   val int : int -> Core.element

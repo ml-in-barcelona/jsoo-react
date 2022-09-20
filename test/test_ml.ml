@@ -924,6 +924,27 @@ let testSvg () =
             stroke-width=\"2\" stroke=\"magenta\" \
             fill=\"pink\"></circle></svg>"))
 
+let testStrictModeArbitraryVal = ref "ja"
+
+let testStrictModeDoubleStateInitializer () =
+  let module TestComponent = struct
+    let%component make ?(initialValue = "testing strict mode") () =
+      let text, _ =
+        React.use_state (fun () ->
+            testStrictModeArbitraryVal :=
+              String.concat !testStrictModeArbitraryVal [ ""; "ja" ];
+            initialValue)
+      in
+      div [| className "value" |] [ React.string text ]
+  end in
+  withContainer (fun c ->
+      let open ReactDOMTestUtils in
+      act (fun () ->
+          React.Dom.render
+            (strict_mode [ TestComponent.make () ])
+            (Html.element c));
+      assert_equal testStrictModeArbitraryVal (ref "jajaja"))
+
 let basic =
   "basic"
   >::: [ "testDom" >:: testDom
@@ -1027,6 +1048,12 @@ let elements =
 
 let svg = "svg" >::: [ "basic" >:: testSvg ]
 
+let strict_mode =
+  "strict_mode"
+  >::: [ "testStrictModeDoubleStateInitializer"
+         >:: testStrictModeDoubleStateInitializer
+       ]
+
 let suite =
   "ocaml"
   >::: [ basic
@@ -1045,4 +1072,5 @@ let suite =
        ; props
        ; elements
        ; svg
+       ; strict_mode
        ]

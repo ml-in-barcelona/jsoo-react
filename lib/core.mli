@@ -647,6 +647,30 @@ module Fragment : sig
           (make_props ?key ()) children]
 end
 
+module StrictMode : sig
+  val make : children:element list -> ?key:string -> unit -> element
+    [@@js.custom
+      external to_component :
+           Ojs.t
+        -> < children : element Js_of_ocaml.Js.readonly_prop > Js_of_ocaml.Js.t
+           component
+        = "%identity"
+
+      val strict_mode_internal' : Imports.react -> Ojs.t [@@js.get "StrictMode"]
+
+      let strict_mode_internal = strict_mode_internal' Imports.react
+
+      let make_props ?key () =
+        match key with
+        | Some k -> Js_of_ocaml.Js.Unsafe.(obj [| ("key", inject k) |])
+        | None -> Js_of_ocaml.Js.Unsafe.(obj [||])
+
+      let make ~children ?key () =
+        create_element_variadic
+          (to_component strict_mode_internal)
+          (make_props ?key ()) children]
+end
+
 val memo :
   ?compare:('props -> 'props -> bool) -> 'props component -> 'props component
   [@@js.custom
