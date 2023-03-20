@@ -584,7 +584,7 @@ let testUseMemo1 () =
           React.Dom.render (UseMemo.make ~a:fooString ()) (Html.element c));
       assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 1"));
       act (fun () ->
-          React.Dom.render (UseMemo.make ~a:"foo" ()) (Html.element c));
+          React.Dom.render (UseMemo.make ~a:"bar" ()) (Html.element c));
       assert_equal c##.textContent (Js.Opt.return (Js.string "`count` is 2")))
 
 let testMemo () =

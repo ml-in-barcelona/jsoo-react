@@ -558,7 +558,7 @@ let testUseMemo1 = () => {
       React.Dom.render(<UseMemo a=fooString />, Dom_html.element(c))
     });
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 1")));
-    act(() => {React.Dom.render(<UseMemo a="foo" />, Dom_html.element(c))});
+    act(() => {React.Dom.render(<UseMemo a="bar" />, Dom_html.element(c))});
     assert_equal(c##.textContent, Js.Opt.return(Js.string("`count` is 2")));
   });
 };
