@@ -49,4 +49,4 @@ $(opam_file): dune-project ## Update the package dependencies when new deps are 
 
 init: ## Create a local opam switch and setups githooks
 	git config core.hooksPath .githooks
-	opam switch create . --deps-only --with-test
+	opam switch create . 4.12.1 --deps-only --with-test
