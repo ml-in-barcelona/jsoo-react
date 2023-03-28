@@ -17,7 +17,7 @@ depends: [
   "js_of_ocaml-ppx" {with-test}
   "conf-npm" {with-test}
   "ocamlformat" {= "0.21.0" & with-test}
-  "reason" {with-test}
+  "reason" {= "3.8.2" & with-test}
   "ppx_blob" {with-test}
   "js_of_ocaml-lwt" {with-test}
   "odoc" {with-doc}
