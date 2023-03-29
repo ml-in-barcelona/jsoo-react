@@ -14,11 +14,8 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("name",
-                                                                    (
-                                                                    inject
-                                                                    name))|]
-    [@@merlin.hide ] in
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("name", (inject name))|][@@merlin.hide ] in
   let make =
     ((fun ?(name= (("")[@reason.raw_literal ""])) ->
         (((React.Fragment.make
@@ -74,9 +71,8 @@ let make =
                 [|("key",
                     (inject
                        (Js_of_ocaml.Js.Optdef.option
-                          (Option.map Js_of_ocaml.Js.string key))));("b",
-                                                                    (inject b));
-                  ("a", (inject a))|][@@merlin.hide ] in
+                          (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                  ("b", (inject b));("a", (inject a))|][@@merlin.hide ] in
   let make =
     ((fun ~a ->
         ((fun ~b ->
@@ -139,7 +135,7 @@ module External =
                     [|("key",
                         (inject
                            (Js_of_ocaml.Js.Optdef.option
-                              (Option.map Js_of_ocaml.Js.string key))));
+                              (Stdlib.Option.map Js_of_ocaml.Js.string key))));
                       ("b", (inject (Js_of_ocaml.Js.string b)));("a",
                                                                   (inject a))|]
         [@@merlin.hide ] in
@@ -178,7 +174,7 @@ module Bar =
                     [|("key",
                         (inject
                            (Js_of_ocaml.Js.Optdef.option
-                              (Option.map Js_of_ocaml.Js.string key))));
+                              (Stdlib.Option.map Js_of_ocaml.Js.string key))));
                       ("b", (inject b));("a", (inject a))|][@@merlin.hide ] in
       let make =
         ((fun ~a ->
@@ -243,7 +239,7 @@ module Bar =
                     [|("key",
                         (inject
                            (Js_of_ocaml.Js.Optdef.option
-                              (Option.map Js_of_ocaml.Js.string key))));
+                              (Stdlib.Option.map Js_of_ocaml.Js.string key))));
                       ("b", (inject b));("a", (inject a))|][@@merlin.hide ] in
       let component =
         ((fun ~a ->
@@ -315,7 +311,7 @@ module Func(M:X_int) =
                     [|("key",
                         (inject
                            (Js_of_ocaml.Js.Optdef.option
-                              (Option.map Js_of_ocaml.Js.string key))));
+                              (Stdlib.Option.map Js_of_ocaml.Js.string key))));
                       ("b", (inject b));("a", (inject a))|][@@merlin.hide ] in
       let make =
         ((fun ~a ->
@@ -376,7 +372,7 @@ module ForwardRef =
                     ("key",
                       (inject
                          (Js_of_ocaml.Js.Optdef.option
-                            (Option.map Js_of_ocaml.Js.string key))))|]
+                            (Stdlib.Option.map Js_of_ocaml.Js.string key))))|]
         [@@merlin.hide ] in
       let make =
         ((fun theRef ->
@@ -413,7 +409,7 @@ module Memo =
                   [|("key",
                       (inject
                          (Js_of_ocaml.Js.Optdef.option
-                            (Option.map Js_of_ocaml.Js.string key))));
+                            (Stdlib.Option.map Js_of_ocaml.Js.string key))));
                     ("a", (inject a))|][@@merlin.hide ] in
       let make =
         ((fun ~a ->
@@ -463,7 +459,7 @@ module MemoCustomCompareProps =
                   [|("key",
                       (inject
                          (Js_of_ocaml.Js.Optdef.option
-                            (Option.map Js_of_ocaml.Js.string key))));
+                            (Stdlib.Option.map Js_of_ocaml.Js.string key))));
                     ("a", (inject a))|][@@merlin.hide ] in
       let make =
         ((fun ~a ->
@@ -605,10 +601,9 @@ let make =
                 [|("key",
                     (inject
                        (Js_of_ocaml.Js.Optdef.option
-                          (Option.map Js_of_ocaml.Js.string key))));("children",
-                                                                    (inject
-                                                                    children));
-                  ("title", (inject title))|][@@merlin.hide ] in
+                          (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                  ("children", (inject children));("title", (inject title))|]
+    [@@merlin.hide ] in
   let make =
     ((fun ~title ->
         ((fun ~children ->
@@ -676,10 +671,8 @@ let make =
                   ("key",
                     (inject
                        (Js_of_ocaml.Js.Optdef.option
-                          (Option.map Js_of_ocaml.Js.string key))));("children",
-                                                                    (inject
-                                                                    children))|]
-    [@@merlin.hide ] in
+                          (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                  ("children", (inject children))|][@@merlin.hide ] in
   let make =
     ((fun ~children ->
         ((fun ref ->
@@ -769,7 +762,7 @@ let make =
                   [|("key",
                       (inject
                          (Js_of_ocaml.Js.Optdef.option
-                            (Option.map Js_of_ocaml.Js.string key))));
+                            (Stdlib.Option.map Js_of_ocaml.Js.string key))));
                     ("onClick", (inject onClick));("isDisabled",
                                                     (inject isDisabled));
                     ("name", (inject name))|][@@merlin.hide ] in
@@ -851,11 +844,8 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("name",
-                                                                    (
-                                                                    inject
-                                                                    name))|]
-    [@@merlin.hide ] in
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("name", (inject name))|][@@merlin.hide ] in
   let make =
     ((fun ?(name= (("joe")[@reason.raw_literal "joe"])) ->
         (((div [||]

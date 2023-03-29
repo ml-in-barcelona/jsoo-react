@@ -264,7 +264,8 @@ let rec make_funs_for_make_props_body list args =
 let makeAttributeValue ~loc ~isOptional (type_ : Html.attributeType) value =
   match (type_, isOptional) with
   | String, true ->
-      [%expr Option.map Js_of_ocaml.Js.string ([%e value] : string option)]
+      [%expr
+        Stdlib.Option.map Js_of_ocaml.Js.string ([%e value] : string option)]
   | String, false -> [%expr Js_of_ocaml.Js.string ([%e value] : string)]
   | Int, false -> [%expr ([%e value] : int)]
   | Int, true -> [%expr ([%e value] : int option)]
@@ -340,7 +341,7 @@ let make_js_props_obj ~loc named_arg_list_with_key_and_ref =
           [%e Exp.constant ~loc (Const.string label_str)]
           , inject
               (Js_of_ocaml.Js.Optdef.option
-                 (Option.map Js_of_ocaml.Js.string [%e id]))]
+                 (Stdlib.Option.map Js_of_ocaml.Js.string [%e id]))]
     | "ref" ->
         [%expr
           [%e Exp.constant ~loc (Const.string label_str)]
@@ -359,14 +360,16 @@ let make_js_props_obj ~loc named_arg_list_with_key_and_ref =
 let rec get_wrap_fn_for_type ~loc typ =
   match typ with
   | Some [%type: React.element list] ->
-      Some [%expr fun v -> Js_of_ocaml.Js.array (Array.of_list v)]
+      Some [%expr fun v -> Js_of_ocaml.Js.array (Stdlib.Array.of_list v)]
   | Some [%type: string] -> Some [%expr Js_of_ocaml.Js.string]
   | Some [%type: bool] -> Some [%expr Js_of_ocaml.Js.bool]
   | Some [%type: [%t? inner_typ] array] ->
       Some
         (match get_wrap_fn_for_type ~loc (Some inner_typ) with
         | Some inner_wrapf ->
-            [%expr fun v -> Js_of_ocaml.Js.array (Array.map [%e inner_wrapf] v)]
+            [%expr
+              fun v ->
+                Js_of_ocaml.Js.array (Stdlib.Array.map [%e inner_wrapf] v)]
         | None -> [%expr Js_of_ocaml.Js.array])
   | _ -> None
 
@@ -388,7 +391,7 @@ let make_external_js_props_obj ~loc named_arg_list =
           [%e Exp.constant ~loc (Const.string l)]
           , inject
               (Js_of_ocaml.Js.Optdef.option
-                 (Option.map [%e wrapf] [%e label_ident]))]
+                 (Stdlib.Option.map [%e wrapf] [%e label_ident]))]
     | Optional l, None ->
         [%expr
           [%e Exp.constant ~loc (Const.string l)]

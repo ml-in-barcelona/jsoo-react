@@ -16,11 +16,8 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("name",
-                                                                    (
-                                                                    inject
-                                                                    name))|]
-    [@@merlin.hide ] in
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("name", (inject name))|][@@merlin.hide ] in
   let make =
     ((fun ?(name= "") ->
         (div [||] [React.string ("Hello " ^ name)] : React.element))
@@ -59,11 +56,8 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("children",
-                                                                    (
-                                                                    inject
-                                                                    children))|]
-    [@@merlin.hide ] in
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("children", (inject children))|][@@merlin.hide ] in
   let make =
     ((fun ~children:(first, second) ->
         (div [||] [first; second] : React.element))
@@ -105,11 +99,8 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("children",
-                                                                    (
-                                                                    inject
-                                                                    children))|]
-    [@@merlin.hide ] in
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("children", (inject children))|][@@merlin.hide ] in
   let make = ((fun ~children:kids -> (div [||] kids : React.element))
     [@warning "-16"]) in
   ((let make
@@ -149,11 +140,8 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("children",
-                                                                    (
-                                                                    inject
-                                                                    children))|]
-    [@@merlin.hide ] in
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("children", (inject children))|][@@merlin.hide ] in
   let make =
     ((fun ~children:(first, second) ->
         fun () -> (div [||] [first; second] : React.element))
@@ -195,11 +183,8 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("name",
-                                                                    (
-                                                                    inject
-                                                                    name))|]
-    [@@merlin.hide ] in
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("name", (inject name))|][@@merlin.hide ] in
   let make = ((fun ?(name= "") -> (div [||] [name] : React.element))
     [@warning "-16"]) in
   ((let make
@@ -229,8 +214,8 @@ let make =
             [|("key",
                 (inject
                    (Js_of_ocaml.Js.Optdef.option
-                      (Option.map Js_of_ocaml.Js.string key))))|][@@merlin.hide
-                                                                   ] in
+                      (Stdlib.Option.map Js_of_ocaml.Js.string key))))|]
+    [@@merlin.hide ] in
   let make () = (div [||] [] : React.element) in
   ((let make (Props : <  >  Js_of_ocaml.Js.t) = make () in
     fun ?key -> fun () -> React.create_element make (make_props ?key ()))
@@ -249,11 +234,8 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("foo",
-                                                                    (
-                                                                    inject
-                                                                    foo))|]
-    [@@merlin.hide ] in
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("foo", (inject foo))|][@@merlin.hide ] in
   let make (type a) ~foo:(foo : a)  = (div [||] [] : _) in
   ((let make
       (Props : < foo: a Js_of_ocaml.Js.readonly_prop   >  Js_of_ocaml.Js.t) =
@@ -285,11 +267,8 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("foo",
-                                                                    (
-                                                                    inject
-                                                                    foo))|]
-    [@@merlin.hide ] in
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("foo", (inject foo))|][@@merlin.hide ] in
   let make (type a) = (fun ~foo:_ -> div [||] [] : foo:a -> _) in
   ((let make
       (Props :
@@ -324,11 +303,8 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("bar",
-                                                                    (
-                                                                    inject
-                                                                    bar))|]
-    [@@merlin.hide ] in
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("bar", (inject bar))|][@@merlin.hide ] in
   let make =
     ((fun ~bar:(bar : int option) ->
         (div [||]
@@ -368,11 +344,8 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("name",
-                                                                    (
-                                                                    inject
-                                                                    name))|]
-    [@@merlin.hide ] in
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("name", (inject name))|][@@merlin.hide ] in
   fun ~name ->
     fun ?key ->
       fun () ->
@@ -396,11 +369,8 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("name",
-                                                                    (
-                                                                    inject
-                                                                    (Js_of_ocaml.Js.Optdef.option
-                                                                    name)))|]
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("name", (inject (Js_of_ocaml.Js.Optdef.option name)))|]
     [@@merlin.hide ] in
   fun ?name ->
     fun ?key ->
@@ -425,15 +395,12 @@ let make =
               [|("key",
                   (inject
                      (Js_of_ocaml.Js.Optdef.option
-                        (Option.map Js_of_ocaml.Js.string key))));("names",
-                                                                    (
-                                                                    inject
-                                                                    ((fun v
-                                                                    ->
-                                                                    Js_of_ocaml.Js.array
-                                                                    (Array.map
-                                                                    Js_of_ocaml.Js.string
-                                                                    v)) names)))|]
+                        (Stdlib.Option.map Js_of_ocaml.Js.string key))));
+                ("names",
+                  (inject
+                     ((fun v ->
+                         Js_of_ocaml.Js.array
+                           (Stdlib.Array.map Js_of_ocaml.Js.string v)) names)))|]
     [@@merlin.hide ] in
   fun ~names ->
     fun ?key ->
