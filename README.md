@@ -2,11 +2,13 @@
 
 [![Actions Status](https://github.com/ml-in-barcelona/jsoo-react/workflows/CI/badge.svg?branch=main)](https://github.com/ml-in-barcelona/jsoo-react/actions?query=branch%3Amain)
 
-Bindings to [React](https://reactjs.org/) for [js_of_ocaml](https://ocsigen.org/js_of_ocaml/), including JSX ppx.
+Bindings to [React](https://reactjs.org/) for [js_of_ocaml](https://ocsigen.org/js_of_ocaml/), including the JSX ppx.
+
+> **Status**: experimental phase
+> 
+> The library is expected to break backwards compatibility on minor releases.
 
 Adapted from [ReasonReact](https://github.com/reasonml/reason-react/).
-
-`jsoo-react` allows to use React from OCaml, but it is still at the **experimental** phase: there is no published version in [opam](opam.ocaml.org/) yet, and the library is expected to break backwards compatibility often.
 
 Bug reports and contributions are welcome!
 
