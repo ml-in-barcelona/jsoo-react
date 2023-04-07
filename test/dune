@@ -22,9 +22,6 @@
 
 (rule
  (alias runtest)
- (deps
-  external.js
-  test_jsoo_react.bc.js
-  node_modules)
+ (deps external.js test_jsoo_react.bc.js node_modules)
  (action
   (run node test_jsoo_react.bc.js)))
