@@ -1,4 +1,6 @@
-(lang dune 2.7)
+(lang dune 3.7)
+
+(using directory-targets 0.1)
 
 (name jsoo-react)
 
@@ -20,7 +22,6 @@
  (synopsis "Bindings to ReactJS for js_of_ocaml, including JSX ppx")
  (depends
   ;; General system dependencies
-  (dune (and (>= 2) (< 4)))
   (ocaml (and (>= 4.12.0) (< 5.0.0)))
 
   (js_of_ocaml (and (>= 4.0.0) (< 5.2.0)))
