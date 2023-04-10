@@ -5,7 +5,7 @@
 Bindings to [React](https://reactjs.org/) for [js_of_ocaml](https://ocsigen.org/js_of_ocaml/), including the JSX ppx.
 
 > **Status**: experimental phase
-> 
+>
 > The library is expected to break backwards compatibility on minor releases.
 
 Adapted from [ReasonReact](https://github.com/reasonml/reason-react/).
@@ -23,22 +23,22 @@ For new projects, the best way to start is by using [the jsoo-react template](ht
 1. Install the `jsoo-react` package:
 
     ```bash
-    opam pin add -y jsoo-react https://github.com/ml-in-barcelona/jsoo-react.git
+    opam install jsoo-react
     ```
 
 2. Add `jsoo-react` library and ppx to [dune](https://dune.readthedocs.io/en/stable/) file of your executable JavaScript app:
 
-    ```
-    (executables
-    (names index)
-    (modes js)
-    (libraries jsoo-react.lib)
-    (preprocess
-      (pps jsoo-react.ppx)))
+    ```dune
+        (executables
+        (names index)
+        (modes js)
+        (libraries jsoo-react.lib)
+        (preprocess
+        (pps jsoo-react.ppx)))
     ```
 
 3. Provision React.js library
-    
+
     `jsoo-react` uses `require` to import React and ReactDOM. This means that you will likely need to use a bundler such as Webpack or rollup.js.
 
     Note that at this moment, `jsoo-react` is compatible with **React 16**, so be sure to have the appropriate constraints in your `package.json`.
