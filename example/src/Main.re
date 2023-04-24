@@ -15,7 +15,8 @@ let firstExample = {
   path: "hello-world-ocaml",
   title: "Hello World OCaml",
   element: <HelloWorldOCaml />,
-  code: <Code text=[%blob "HelloWorldOCaml.ml"] />,
+  code:
+    <Code text=[%blob "../../../default/example/src/HelloWorldOCaml.ml"] />,
   showTitle: true,
 };
 let examples = [
@@ -24,14 +25,15 @@ let examples = [
     path: "hello-world-reason",
     title: "Hello World Reason",
     element: <HelloWorldReason />,
-    code: <Code text=[%blob "HelloWorldReason.re"] />,
+    code:
+      <Code text=[%blob "../../../default/example/src/HelloWorldReason.re"] />,
     showTitle: true,
   },
   {
     path: "events",
     title: "Events",
     element: <Events />,
-    code: <Code text=[%blob "Events.re"] />,
+    code: <Code text=[%blob "../../../default/example/src/Events.re"] />,
     showTitle: true,
   },
   {
@@ -41,9 +43,9 @@ let examples = [
     code:
       <>
         <p> {"EffectsAndState component:" |> s} </p>
-        <Code text=[%blob "EffectsAndState.re"] />
+        <Code text=[%blob "../../../default/example/src/EffectsAndState.re"] />
         <p> {"UseEffect component:" |> s} </p>
-        <Code text=[%blob "UseEffect.re"] />
+        <Code text=[%blob "../../../default/example/src/UseEffect.re"] />
       </>,
     showTitle: true,
   },
@@ -51,7 +53,7 @@ let examples = [
     path: "refs",
     title: "Refs",
     element: <Refs />,
-    code: <Code text=[%blob "Refs.re"] />,
+    code: <Code text=[%blob "../../../default/example/src/Refs.re"] />,
     showTitle: true,
   },
   {
@@ -61,7 +63,7 @@ let examples = [
       <div style=React.Dom.Style.(make([|height("50vw")|]))>
         <WebComponent />
       </div>,
-    code: <Code text=[%blob "WebComponent.ml"] />,
+    code: <Code text=[%blob "../../../default/example/src/WebComponent.ml"] />,
     showTitle: true,
   },
   {
@@ -76,9 +78,9 @@ let examples = [
     code:
       <div>
         <strong> {"Interface" |> s} </strong>
-        <Code text=[%blob "Interface.rei"] />
+        <Code text=[%blob "../../../default/example/src/Interface.rei"] />
         <strong> {"Implementation" |> s} </strong>
-        <Code text=[%blob "Interface.re"] />
+        <Code text=[%blob "../../../default/example/src/Interface.re"] />
       </div>,
     showTitle: false,
   },
@@ -93,7 +95,7 @@ let examples = [
         </a>
         {"." |> s}
       </p>,
-    code: <Code text=[%blob "Bindings.rei"] />,
+    code: <Code text=[%blob "../../../default/example/src/Bindings.rei"] />,
     showTitle: false,
   },
   {
@@ -131,7 +133,7 @@ let examples = [
           {":" |> s}
         </p>
       </>,
-    code: <Code text=[%blob "Code.re"] />,
+    code: <Code text=[%blob "../../../default/example/src/Code.re"] />,
     showTitle: false,
   },
 ];

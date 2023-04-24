@@ -49,9 +49,5 @@ jobs:
       - name: Check formatting
         run: make format-check
 
-      - name: "Install npm packages for tests"
-        run: yarn install
-        working-directory: test
-
       - name: Run tests
         run: make test
