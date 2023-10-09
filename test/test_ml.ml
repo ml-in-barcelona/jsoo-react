@@ -695,7 +695,7 @@ let testChildrenMapWithIndex () =
         [ React.Children.mapi children (fun element index ->
               React.clone_element element
                 (let open Js_of_ocaml.Js.Unsafe in
-                obj [| ("key", inject index); ("data-index", inject index) |]))
+                 obj [| ("key", inject index); ("data-index", inject index) |]))
         ]
   end in
   withContainer (fun c ->

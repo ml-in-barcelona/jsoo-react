@@ -33,7 +33,9 @@ module Bar = {
   };
 };
 
-module type X_int = {let x: int;};
+module type X_int = {
+  let x: int;
+};
 
 module Func = (M: X_int) => {
   let x = M.x + 1;

@@ -14,45 +14,44 @@ external dom_element_to_js : dom_element -> Ojs.t = "%identity"
 external dom_element_of_js : Ojs.t -> dom_element = "%identity"]
 
 val unmount_component_at_node : dom_element -> bool
-  [@@js.custom
-    val unmount_component_at_node_internal :
-      Imports.react_dom -> dom_element -> bool
-      [@@js.call "unmountComponentAtNode"]
+[@@js.custom
+  val unmount_component_at_node_internal :
+    Imports.react_dom -> dom_element -> bool
+  [@@js.call "unmountComponentAtNode"]
 
-    let unmount_component_at_node dom_element =
-      unmount_component_at_node_internal Imports.react_dom dom_element]
+  let unmount_component_at_node dom_element =
+    unmount_component_at_node_internal Imports.react_dom dom_element]
 
 val render : Core.element -> dom_element -> unit
-  [@@js.custom
-    val render_internal :
-      Imports.react_dom -> Core.element -> dom_element -> unit
-      [@@js.call "render"]
+[@@js.custom
+  val render_internal : Imports.react_dom -> Core.element -> dom_element -> unit
+  [@@js.call "render"]
 
-    let render element dom_element =
-      render_internal Imports.react_dom element dom_element]
+  let render element dom_element =
+    render_internal Imports.react_dom element dom_element]
 
 val render_to_element : id:string -> Core.element -> unit
-  [@@js.custom
-    val get_element_by_id : string -> dom_element option
-      [@@js.global "document.getElementById"]
+[@@js.custom
+  val get_element_by_id : string -> dom_element option
+  [@@js.global "document.getElementById"]
 
-    let render_to_element ~id react_element =
-      match get_element_by_id id with
-      | None ->
-          raise
-            (Invalid_argument
-               ("ReactDOM.render_to_element : no element of id " ^ id
-              ^ " found in the HTML."))
-      | Some element -> render react_element element]
+  let render_to_element ~id react_element =
+    match get_element_by_id id with
+    | None ->
+        raise
+          (Invalid_argument
+             ("ReactDOM.render_to_element : no element of id " ^ id
+            ^ " found in the HTML."))
+    | Some element -> render react_element element]
 
 val create_portal : Core.element -> dom_element -> Core.element
-  [@@js.custom
-    val create_portal_internal :
-      Imports.react_dom -> Core.element -> dom_element -> Core.element
-      [@@js.call "createPortal"]
+[@@js.custom
+  val create_portal_internal :
+    Imports.react_dom -> Core.element -> dom_element -> Core.element
+  [@@js.call "createPortal"]
 
-    let create_portal element dom_element =
-      create_portal_internal Imports.react_dom element dom_element]
+  let create_portal element dom_element =
+    create_portal_internal Imports.react_dom element dom_element]
 
 type dom_ref = private Ojs.t
 
@@ -82,27 +81,27 @@ val create_element :
        (* props has to be non-optional as otherwise gen_js_api will put an empty list and React will break *)
   -> Core.element list
   -> Core.element
-  [@@js.custom
-    val create_element_internal :
-         Imports.react
-      -> string
-      -> props:domProps
-      -> (Core.element list[@js.variadic])
-      -> Core.element
-      [@@js.call "createElement"]
+[@@js.custom
+  val create_element_internal :
+       Imports.react
+    -> string
+    -> props:domProps
+    -> (Core.element list[@js.variadic])
+    -> Core.element
+  [@@js.call "createElement"]
 
-    let create_element typ ~props elts =
-      create_element_internal Imports.react typ ~props elts]
+  let create_element typ ~props elts =
+    create_element_internal Imports.react typ ~props elts]
 
 val forward_ref : ('props -> dom_ref -> Core.element) -> 'props Core.component
-  [@@js.custom
-    val forward_ref_internal :
-         Imports.react
-      -> ('props -> dom_ref -> Core.element)
-      -> 'props Core.component
-      [@@js.call "forwardRef"]
+[@@js.custom
+  val forward_ref_internal :
+       Imports.react
+    -> ('props -> dom_ref -> Core.element)
+    -> 'props Core.component
+  [@@js.call "forwardRef"]
 
-    let forward_ref renderFunc = forward_ref_internal Imports.react renderFunc]
+  let forward_ref renderFunc = forward_ref_internal Imports.react renderFunc]
 
 type block
 
