@@ -1,46 +1,46 @@
 (* Adapted from reason-react: https://reasonml.github.io/reason-react/docs/en/router *)
 
 module Browser =
-[%js:
-type history
-type window
+  [%js:
+  type history
+  type window
 
-val window_to_js : window -> Ojs.t
+  val window_to_js : window -> Ojs.t
 
-type location
+  type location
 
-val history : history option [@@js.global "history"]
-val window : window option [@@js.global "window"]
-val location : window -> location [@@js.get]
-val pathname : location -> string [@@js.get]
-val hash : location -> string [@@js.get]
-val search : location -> string [@@js.get]
+  val history : history option [@@js.global "history"]
+  val window : window option [@@js.global "window"]
+  val location : window -> location [@@js.get]
+  val pathname : location -> string [@@js.get]
+  val hash : location -> string [@@js.get]
+  val search : location -> string [@@js.get]
 
-val push_state : history -> Ojs.t -> string -> href:string -> unit
+  val push_state : history -> Ojs.t -> string -> href:string -> unit
   [@@js.call "pushState"]
 
-val replace_state : history -> Ojs.t -> string -> href:string -> unit
+  val replace_state : history -> Ojs.t -> string -> href:string -> unit
   [@@js.call "replaceState"]]
 
 module Event =
-[%js:
-type t
+  [%js:
+  type t
 
-val event : t [@@js.global "Event"]
-val make_event_ie11_compatible : string -> t [@@js.new "Event"]
-val create_event_non_ie8 : string -> t [@@js.global "document.createEvent"]
+  val event : t [@@js.global "Event"]
+  val make_event_ie11_compatible : string -> t [@@js.new "Event"]
+  val create_event_non_ie8 : string -> t [@@js.global "document.createEvent"]
 
-val init_event_non_ie8 : t -> string -> bool -> bool -> unit
+  val init_event_non_ie8 : t -> string -> bool -> bool -> unit
   [@@js.call "initEvent"]
 
-(* The cb is t => unit, but access is restricted for now *)
-val add_event_listener : Browser.window -> string -> (unit -> unit) -> unit
+  (* The cb is t => unit, but access is restricted for now *)
+  val add_event_listener : Browser.window -> string -> (unit -> unit) -> unit
   [@@js.call "addEventListener"]
 
-val remove_event_listener : Browser.window -> string -> (unit -> unit) -> unit
+  val remove_event_listener : Browser.window -> string -> (unit -> unit) -> unit
   [@@js.call "removeEventListener"]
 
-val dispatch_event : Browser.window -> t -> unit [@@js.call "dispatchEvent"]]
+  val dispatch_event : Browser.window -> t -> unit [@@js.call "dispatchEvent"]]
 
 let safe_make_event eventName =
   if

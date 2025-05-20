@@ -20,10 +20,9 @@
  (synopsis "Bindings to ReactJS for js_of_ocaml, including JSX ppx")
  (depends
   ;; General system dependencies
-  (dune (and (>= 2) (< 4)))
-  (ocaml (and (>= 4.12.0) (< 5.0.0)))
+  (ocaml (>= 4.12.0))
 
-  (js_of_ocaml (and (>= 4.0.0) (< 5.2.0)))
+  (js_of_ocaml (>= 4.0.0))
   (gen_js_api (and (>= 1.0.8) (< 1.2.0)))
   (ppxlib (>= 0.23.0))
 

@@ -318,7 +318,7 @@ module Prop = struct
     type html_object
 
     val make_react_html_object : __html:string -> html_object
-      [@@js.builder] [@@js.verbatim_names]]
+    [@@js.builder] [@@js.verbatim_names]]
 
   let dangerouslySetInnerHTML (str : Dom.SafeString.t) =
     any "dangerouslySetInnerHTML"
